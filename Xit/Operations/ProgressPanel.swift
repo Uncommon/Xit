@@ -1,20 +1,24 @@
 import SwiftUI
+import Combine
 
 struct ProgressPanel: View
 {
-  @ObservedObject var model: ObservableProgress
+  @State var message: String = ""
+  let publisher: AnyPublisher<RemoteProgressMessage, RepoError>
   let stopAction: (() -> Void)?
   
+  @State private var progress: TransferProgress = EmptyProgress()
+
   var body: some View
   {
     VStack(alignment: .leading) {
-      if model.progress.totalObjects == 0 {
-        ProgressView(model.message).progressViewStyle(LinearProgressViewStyle())
+      if progress.totalObjects == 0 {
+        ProgressView(message).progressViewStyle(LinearProgressViewStyle())
       }
       else {
-        ProgressView(model.message,
-                     value: Float(model.progress.receivedObjects),
-                     total: Float(model.progress.totalObjects))
+        ProgressView(message,
+                     value: Float(progress.receivedObjects),
+                     total: Float(progress.totalObjects))
       }
       if let stopAction = stopAction {
         HStack {
@@ -23,49 +27,41 @@ struct ProgressPanel: View
         }.padding([.top], 8)
       }
     }.padding()
+      .onReceive(publisher
+        // Must catch because onReceive requires Failure == Never
+        .catch({ _ in
+          // Stop when there's an error. Some other subscriber will
+          // display the error.
+          Empty<RemoteProgressMessage, Never>(completeImmediately: true)
+        })
+        .handleEvents(receiveCompletion: { _ in
+          stopAction?()
+        }, receiveCancel: {
+          stopAction?()
+        })) {
+        if case let .download(progress) = $0 {
+          self.progress = progress
+        }
+      }
+    
+  }
+  init(message: String, publisher: AnyPublisher<RemoteProgressMessage, RepoError>, stopAction: (() -> Void)? = nil)
+  {
+    self.publisher = publisher
+    self.stopAction = stopAction
+    self.message = message
   }
 }
 
-class ObservableProgress: ObservableObject
+struct EmptyProgress: TransferProgress
 {
-  struct EmptyProgress: TransferProgress
-  {
-    var totalObjects: UInt32 { 0 }
-    var indexedObjects: UInt32 { 0 }
-    var receivedObjects: UInt32 { 0 }
-    var localObjects: UInt32 { 0 }
-    var totalDeltas: UInt32 { 0 }
-    var indexedDeltas: UInt32 { 0 }
-    var receivedBytes: Int { 0 }
-  }
-  
-  @Published var progress: TransferProgress
-  @Published var message: String = ""
-  var canceled = false
-  
-  init(message: String)
-  {
-    self.progress = EmptyProgress()
-    self.message = message
-  }
-  
-  init(message: String, progress: TransferProgress)
-  {
-    self.progress = progress
-    self.message = message
-  }
-  
-  func progressCallback(_ progress: TransferProgress) -> Bool
-  {
-    self.progress = progress
-    return !canceled
-  }
-  
-  func messageCallback(_ message: String) -> Bool
-  {
-    self.message = message
-    return !canceled
-  }
+  var totalObjects: UInt32 { 0 }
+  var indexedObjects: UInt32 { 0 }
+  var receivedObjects: UInt32 { 0 }
+  var localObjects: UInt32 { 0 }
+  var totalDeltas: UInt32 { 0 }
+  var indexedDeltas: UInt32 { 0 }
+  var receivedBytes: Int { 0 }
 }
 
 struct ProgressPanel_Previews: PreviewProvider
@@ -80,19 +76,28 @@ struct ProgressPanel_Previews: PreviewProvider
     var indexedDeltas: UInt32 { 0 }
     var receivedBytes: Int { 0 }
   }
-  
-  static var emptyProgress = ObservableProgress(message: "Starting...")
-  static var partialProgress = ObservableProgress(
-    message: "Progress...",
-    progress: PreviewProgress(totalObjects: 5, receivedObjects: 10))
+  static let sequence = Timer.publish(every: 1, on: .main, in: .default)
+    .autoconnect()
+    .map {
+      (date: Date) -> RemoteProgressMessage in
+      let percent = date.timeIntervalSince1970
+        .truncatingRemainder(dividingBy: 100)
+      return .download(
+        PreviewProgress(totalObjects: 100, receivedObjects: UInt32(percent)))
+    }
+    .setFailureType(to: RepoError.self)
+    .eraseToAnyPublisher()
 
   static var previews: some View
   {
+    let result1: Result<RemoteProgressMessage, RepoError> = .success(.download(EmptyProgress()))
 
     Group {
-      ProgressPanel(model: partialProgress,
+      ProgressPanel(message: "Progressing",
+                    publisher: result1.publisher.eraseToAnyPublisher(),
                     stopAction: {})
-      ProgressPanel(model: emptyProgress,
+      ProgressPanel(message: "Starting...",
+                    publisher: sequence,
                     stopAction: nil)
     }
   }

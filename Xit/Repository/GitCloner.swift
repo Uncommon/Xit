@@ -6,31 +6,44 @@ public class GitCloner: Cloning
   public func clone(from source: URL, to destination: URL,
                     branch: String,
                     recurseSubmodules: Bool,
-                    callbacks: RemoteCallbacks) throws -> Repository?
+                    publisher: RemoteProgressPublisher) throws -> Repository?
   {
     var options = git_clone_options.defaultOptions()
     
     return try branch.withCString {
       (cBranch) in
-      try git_remote_callbacks.withCallbacks(callbacks) {
+      try git_remote_callbacks.withCallbacks(publisher.callbacks) {
         (gitCallbacks) in
         options.bare = 0
         options.checkout_branch = cBranch
         options.fetch_opts.callbacks = gitCallbacks
         
-        let gitRepo = try OpaquePointer.from {
-          git_clone(&$0, source.absoluteString, destination.path, &options)
+        let gitRepo: OpaquePointer
+        
+        do {
+          gitRepo = try OpaquePointer.from {
+            git_clone(&$0, source.absoluteString, destination.path, &options)
+          }
+        }
+        catch let error as RepoError {
+          publisher.error(error)
+          throw error
+        }
+        catch let error  {
+          publisher.error(.unexpected)
+          throw error
         }
         guard let repo = XTRepository(gitRepo: gitRepo)
         else { return nil}
 
         if recurseSubmodules {
           for sub in repo.submodules() {
-            try sub.update(callbacks: callbacks)
+            try sub.update(callbacks: publisher.callbacks)
             // recurse
           }
         }
         
+        publisher.finished()
         return repo
       }
     }

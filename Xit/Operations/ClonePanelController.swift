@@ -48,8 +48,6 @@ final class ClonePanelController: NSWindowController
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
   
-  var progressPanel: ProgressPanelController?
-  
   private static var currentController: ClonePanelController?
   
   static var isShowingPanel: Bool { currentController != nil }
@@ -65,80 +63,6 @@ final class ClonePanelController: NSWindowController
       currentController = controller
       controller.window?.center()
       return controller
-    }
-  }
-  
-  @objc required dynamic init?(coder: NSCoder)
-  {
-    fatalError("init(coder:) has not been implemented")
-  }
-  
-  func showProgressPanel(progress: ObservableProgress)
-  {
-    guard let window = self.window
-    else { return }
-    
-    progressPanel = .init(model: progress) {
-      guard let window = self.window,
-            let progressWindow = self.progressPanel?.window
-      else { return }
-      progress.canceled = true
-      window.endSheet(progressWindow)
-      self.progressPanel = nil
-    }
-    
-    guard let progressWindow = progressPanel?.window
-    else { return }
-    
-    window.beginSheet(progressWindow, completionHandler: nil)
-  }
-  
-  @IBAction
-  func clone(_ sender: Any?)
-  {
-    guard let sourceURL = URL(string: data.url)
-    else {
-      return
-    }
-    let destURL = URL(fileURLWithPath: data.destination +/ data.name,
-                      isDirectory: true)
-    
-    let progress = ObservableProgress(message: "Fetching...")
-    let callbacks = RemoteCallbacks(
-          passwordBlock: nil, // use from PasswordOpController
-          downloadProgress:  progress.progressCallback(_:),
-          sidebandMessage: progress.messageCallback(_:))
-    
-    showProgressPanel(progress: progress)
-    
-    DispatchQueue.global(qos: .userInitiated).async {
-      [self] in
-      let result = Result(catching: {
-        try cloner.clone(from: sourceURL,
-                         to: destURL,
-                         branch: data.selectedBranch,
-                         recurseSubmodules: data.recurse,
-                         callbacks: callbacks)
-      })
-      
-      DispatchQueue.main.async {
-        switch result {
-          case .success(let repository):
-            guard repository != nil
-            else { break }
-            XTDocumentController.shared
-                .openDocument(withContentsOf: destURL, display: true,
-                              completionHandler: { (_, _, _) in })
-            close()
-          case .failure(let error):
-            let alert = NSAlert()
-            
-            alert.messageText = error.localizedDescription
-            alert.beginSheetModal(for: window!, completionHandler: {
-              _ in close()
-            })
-        }
-      }
     }
   }
   
@@ -176,7 +100,55 @@ final class ClonePanelController: NSWindowController
 
     data.destination = defaultDestination()
   }
+
+  @objc required dynamic init?(coder: NSCoder)
+  {
+    fatalError("init(coder:) has not been implemented")
+  }
   
+  @IBAction
+  func clone(_ sender: Any?)
+  {
+    guard let sourceURL = URL(string: data.url)
+    else {
+      return
+    }
+    let destURL = URL(fileURLWithPath: data.destination +/ data.name,
+                      isDirectory: true)
+    
+    let publisher = RemoteProgressPublisher()
+    
+    DispatchQueue.global(qos: .userInitiated).async {
+      [self] in
+      let result = Result(catching: {
+        try cloner.clone(from: sourceURL,
+                         to: destURL,
+                         branch: data.selectedBranch,
+                         recurseSubmodules: data.recurse,
+                         publisher: publisher)
+      })
+      
+      DispatchQueue.main.async {
+        switch result {
+          case .success(let repository):
+            guard repository != nil
+            else { break }
+            XTDocumentController.shared
+                .openDocument(withContentsOf: destURL, display: true,
+                              completionHandler: { (_, _, _) in })
+            close()
+          case .failure(let error):
+            let alert = NSAlert()
+            
+            alert.messageText = error.localizedDescription
+            alert.beginSheetModal(for: window!, completionHandler: {
+              _ in close()
+            })
+        }
+      }
+    }
+  }
+
   func defaultDestination() -> String
   {
     let manager = FileManager.default

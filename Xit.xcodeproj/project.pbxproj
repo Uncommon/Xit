@@ -15,7 +15,6 @@
 		891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891B02132666C36400E20F2B /* ClonePanelController.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
-		891C5F882678E9FA0099695D /* ProgressPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F872678E9F90099695D /* ProgressPanelController.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
 		895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52126507E3E0073F15A /* FakePullRequest.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
@@ -52,6 +51,8 @@
 		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89DAE199267EAD61005AEA8F /* CloneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE198267EAD61005AEA8F /* CloneData.swift */; };
+		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
+		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
@@ -461,7 +462,6 @@
 		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
-		891C5F872678E9F90099695D /* ProgressPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanelController.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
@@ -501,6 +501,8 @@
 		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
+		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
+		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C3FA470313D0F8E200AC4F9B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -1125,6 +1127,7 @@
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
+				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1178,8 +1181,8 @@
 				C936AD0B1D4C0FA900C5ADC3 /* PasswordOpController.swift */,
 				C94866BE1D25861E000BDB0A /* PasswordPanelController.swift */,
 				C94866BF1D25861E000BDB0A /* PasswordPanelController.xib */,
+				89DAE19A267FE176005AEA8F /* ProgressHost.swift */,
 				891C5F8526739AF80099695D /* ProgressPanel.swift */,
-				891C5F872678E9F90099695D /* ProgressPanelController.swift */,
 				89C927871D43B0460074F71A /* PullOpController.swift */,
 				89AB953624DE064B0029CECC /* PushNewPanelController.swift */,
 				89AB952124DDE63E0029CECC /* PushNewPanelController.xib */,
@@ -1659,7 +1662,6 @@
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
 				C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */,
 				8983E1A4266519020075370C /* LabeledField.swift in Sources */,
-				891C5F882678E9FA0099695D /* ProgressPanelController.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
 				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,
 				C94A30261E3154D400B4496B /* TextPreviewController.swift in Sources */,
@@ -1719,6 +1721,7 @@
 				C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */,
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
 				C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */,
+				89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */,
 				C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
 				C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */,
@@ -1774,6 +1777,7 @@
 				C93D30C321558419009BA29F /* GeneralPrefsController.swift in Sources */,
 				C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */,
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
+				89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */,
 				C9065F6020FFE1D900C01110 /* Notifications.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */,
