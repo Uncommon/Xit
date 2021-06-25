@@ -45,6 +45,9 @@ final class ClonePanelController: NSWindowController
 {
   let cloner: Cloning
   let data = CloneData(readURL: ClonePanelController.readURL(_:))
+  var progressShown = false
+  var progressBinding: Binding<Bool>!
+  let progressPublisher = RemoteProgressPublisher()
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
   
@@ -68,22 +71,27 @@ final class ClonePanelController: NSWindowController
   
   init(cloner: Cloning)
   {
+    self.cloner = cloner
+
     let window = NSWindow(contentRect: .init(origin: .zero,
                                              size: .init(width: 300,
                                                          height: 100)),
                           styleMask: [.closable, .resizable, .titled],
                           backing: .buffered, defer: false)
-    let panel = ClonePanel(data: data,
-                           close: { window.close() },
-                           // Avoid capturing self yet
-                           clone: { window.tryToPerform(#selector(Self.clone(_:)),
-                                                        with: nil) })
-                .environment(\.window, window)
-    let viewController = NSHostingController(rootView: panel)
-
-    self.cloner = cloner
     
     super.init(window: window)
+    progressBinding = Binding(
+        get: { self.progressShown },
+        set: { self.progressShown = $0 })
+
+    let panel = ClonePanel(data: data,
+                           close: { window.close() },
+                           clone: { self.clone() })
+                .environment(\.window, window)
+    let host = ProgressHost(presenting: progressBinding, message: "Cloning...",
+                            publisher: progressPublisher) { panel }
+    let viewController = NSHostingController(rootView: host)
+
     window.title = "Clone a Repository"
     window.contentViewController = viewController
     window.collectionBehavior = [.transient, .participatesInCycle,
@@ -106,8 +114,7 @@ final class ClonePanelController: NSWindowController
     fatalError("init(coder:) has not been implemented")
   }
   
-  @IBAction
-  func clone(_ sender: Any?)
+  func clone()
   {
     guard let sourceURL = URL(string: data.url)
     else {
@@ -116,7 +123,7 @@ final class ClonePanelController: NSWindowController
     let destURL = URL(fileURLWithPath: data.destination +/ data.name,
                       isDirectory: true)
     
-    let publisher = RemoteProgressPublisher()
+    progressBinding.wrappedValue = true
     
     DispatchQueue.global(qos: .userInitiated).async {
       [self] in
@@ -125,10 +132,11 @@ final class ClonePanelController: NSWindowController
                          to: destURL,
                          branch: data.selectedBranch,
                          recurseSubmodules: data.recurse,
-                         publisher: publisher)
+                         publisher: progressPublisher)
       })
       
       DispatchQueue.main.async {
+        progressBinding.wrappedValue = false
         switch result {
           case .success(let repository):
             guard repository != nil
@@ -141,9 +149,7 @@ final class ClonePanelController: NSWindowController
             let alert = NSAlert()
             
             alert.messageText = error.localizedDescription
-            alert.beginSheetModal(for: window!, completionHandler: {
-              _ in close()
-            })
+            alert.beginSheetModal(for: window!, completionHandler: nil)
         }
       }
     }
