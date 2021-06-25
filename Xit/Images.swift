@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable line_length
+
 extension NSImage.Name
 {
   static let xtBitBucketTemplate = "bitbucketTemplate"
@@ -23,7 +25,7 @@ extension NSImage
     self.init(systemSymbolName: systemSymbolName, accessibilityDescription: nil)
   }
   
-  static var xtBranchFolder: NSImage { .init(systemSymbolName: "folder.fill")! }
+  static var xtBranchFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtBranchTemplate: NSImage { .init(named: .xtBranchTemplate)! }
   static var xtCloud: NSImage { .init(systemSymbolName: "cloud")! }
   static var xtCurrentBranch: NSImage { .init(named: NSImage.menuOnStateTemplateName)! }
@@ -31,16 +33,16 @@ extension NSImage
   static var xtFile: NSImage { .init(systemSymbolName: "doc")! }
   static var xtFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtRefresh: NSImage { .init(named: NSImage.refreshTemplateName)! }
-  static var xtRemote: NSImage { .init(systemSymbolName: "cloud.fill")! }
+  static var xtRemote: NSImage { .init(systemSymbolName: "cloud")! }
   static var xtStageAll: NSImage { .init(named: .xtStageAllTemplate)! }
   static var xtStageButton: NSImage { .init(systemSymbolName: "circle")! }
   static var xtStageButtonHover: NSImage { .init(systemSymbolName: "chevron.up.circle")! }
   static var xtStageButtonPressed: NSImage { .init(systemSymbolName: "chevron.up.circle.fill")! }
   static var xtStaged: NSImage { .init(systemSymbolName: "arrow.up.circle")! }
-  static var xtStaging: NSImage { .init(systemSymbolName: "arrow.up.and.down.circle.fill")! }
-  static var xtStash: NSImage { .init(systemSymbolName: "tray.fill")! }
-  static var xtSubmodule: NSImage { .init(systemSymbolName: "square.split.bottomrightquarter.fill")! }
-  static var xtTag: NSImage { .init(systemSymbolName: "tag.fill")! }
+  static var xtStaging: NSImage { .init(systemSymbolName: "arrow.up.and.down.circle")! }
+  static var xtStash: NSImage { .init(systemSymbolName: "tray")! }
+  static var xtSubmodule: NSImage { .init(systemSymbolName: "square.split.bottomrightquarter")! }
+  static var xtTag: NSImage { .init(systemSymbolName: "tag")! }
   static var xtUndo: NSImage { .init(systemSymbolName: "arrow.uturn.backward.circle")! }
   static var xtUnstageAll: NSImage { .init(named: .xtUnstageAllTemplate)! }
   static var xtUnstageButtonHover: NSImage { .init(systemSymbolName: "chevron.down.circle")! }
