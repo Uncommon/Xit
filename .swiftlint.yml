@@ -12,6 +12,7 @@ disabled_rules:
     - private_over_fileprivate
     - empty_parentheses_with_trailing_closure
     - redundant_optional_initialization # Why are only `var` optionals implicitly initialized?
+    - multiple_closures_with_trailing_closure
 opt_in_rules:
     - anyobject_protocol
     - closure_spacing
