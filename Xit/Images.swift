@@ -5,7 +5,6 @@ import Foundation
 extension NSImage.Name
 {
   static let xtBitBucketTemplate = "bitbucketTemplate"
-  static let xtBranchTemplate = "branchTemplate"
   static let xtBuildFailed = "buildFailed"
   static let xtBuildInProgress = "buildInProgress"
   static let xtBuildSucceeded = "buildSucceeded"
@@ -26,7 +25,7 @@ extension NSImage
   }
   
   static var xtBranchFolder: NSImage { .init(systemSymbolName: "folder")! }
-  static var xtBranchTemplate: NSImage { .init(named: .xtBranchTemplate)! }
+  static var xtBranch: NSImage { .init(named: "scm.branch")! }
   static var xtCloud: NSImage { .init(systemSymbolName: "cloud")! }
   static var xtCurrentBranch: NSImage { .init(named: NSImage.menuOnStateTemplateName)! }
   static var xtCurrentRemoteBranch: NSImage { .init(systemSymbolName: "checkmark.circle")! }

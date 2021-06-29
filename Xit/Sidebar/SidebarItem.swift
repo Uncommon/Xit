@@ -166,7 +166,7 @@ class BranchSidebarItem: SidebarItem
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
-  { NSImage(named: .xtBranchTemplate) }
+  { .xtBranch }
   
   var fullName: String { title }
   var remote: Remote? { nil }

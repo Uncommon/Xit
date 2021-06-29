@@ -273,7 +273,7 @@ class TitleBarController: NSObject
     for branch in branches {
       let item = NSMenuItem(title: branch, action: nil, keyEquivalent: "")
       
-      item.image = .xtBranchTemplate
+      item.image = .xtBranch
       branchPopup.menu?.addItem(item)
     }
     if let current = current, branches.contains(current) {
