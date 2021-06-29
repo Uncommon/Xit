@@ -46,7 +46,7 @@ final class ClonePanelController: NSWindowController
   let cloner: Cloning
   let data = CloneData(readURL: ClonePanelController.readURL(_:))
   var progressShown = false
-  var progressBinding: Binding<Bool>!
+  let presentingModel = PresentingModel()
   let progressPublisher = RemoteProgressPublisher()
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
@@ -80,16 +80,15 @@ final class ClonePanelController: NSWindowController
                           backing: .buffered, defer: false)
     
     super.init(window: window)
-    progressBinding = Binding(
-        get: { self.progressShown },
-        set: { self.progressShown = $0 })
 
     let panel = ClonePanel(data: data,
                            close: { window.close() },
                            clone: { self.clone() })
                 .environment(\.window, window)
-    let host = ProgressHost(presenting: progressBinding, message: "Cloning...",
-                            publisher: progressPublisher) { panel }
+    let host = ProgressHost(model: presentingModel, message: "Cloning...",
+                            publisher: progressPublisher.subject
+                              .eraseToAnyPublisher(),
+                            content: { panel })
     let viewController = NSHostingController(rootView: host)
 
     window.title = "Clone a Repository"
@@ -123,7 +122,7 @@ final class ClonePanelController: NSWindowController
     let destURL = URL(fileURLWithPath: data.destination +/ data.name,
                       isDirectory: true)
     
-    progressBinding.wrappedValue = true
+    presentingModel.showSheet = true
     
     DispatchQueue.global(qos: .userInitiated).async {
       [self] in
@@ -136,7 +135,7 @@ final class ClonePanelController: NSWindowController
       })
       
       DispatchQueue.main.async {
-        progressBinding.wrappedValue = false
+        presentingModel.showSheet = false
         switch result {
           case .success(let repository):
             guard repository != nil
@@ -146,10 +145,12 @@ final class ClonePanelController: NSWindowController
                               completionHandler: { (_, _, _) in })
             close()
           case .failure(let error):
+            guard let window = self.window
+            else { break }
             let alert = NSAlert()
             
             alert.messageText = error.localizedDescription
-            alert.beginSheetModal(for: window!, completionHandler: nil)
+            alert.beginSheetModal(for: window, completionHandler: nil)
         }
       }
     }

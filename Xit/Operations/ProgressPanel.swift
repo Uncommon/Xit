@@ -17,7 +17,8 @@ struct ProgressPanel: View
       }
       else {
         ProgressView(message,
-                     value: Float(progress.receivedObjects),
+                     value: (Float(progress.receivedObjects) +
+                             Float(progress.indexedObjects)) / 2,
                      total: Float(progress.totalObjects))
       }
       if let stopAction = stopAction {
@@ -64,18 +65,19 @@ struct EmptyProgress: TransferProgress
   var receivedBytes: Int { 0 }
 }
 
+struct PreviewProgress: TransferProgress
+{
+  var totalObjects: UInt32
+  var indexedObjects: UInt32 { 0 }
+  var receivedObjects: UInt32
+  var localObjects: UInt32 { 0 }
+  var totalDeltas: UInt32 { 0 }
+  var indexedDeltas: UInt32 { 0 }
+  var receivedBytes: Int { 0 }
+}
+
 struct ProgressPanel_Previews: PreviewProvider
 {
-  struct PreviewProgress: TransferProgress
-  {
-    var totalObjects: UInt32
-    var indexedObjects: UInt32 { 0 }
-    var receivedObjects: UInt32
-    var localObjects: UInt32 { 0 }
-    var totalDeltas: UInt32 { 0 }
-    var indexedDeltas: UInt32 { 0 }
-    var receivedBytes: Int { 0 }
-  }
   static let sequence = Timer.publish(every: 1, on: .main, in: .default)
     .autoconnect()
     .map {
