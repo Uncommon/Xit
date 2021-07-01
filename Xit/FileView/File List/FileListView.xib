@@ -23,10 +23,10 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <scrollView fixedFrame="YES" borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iNs-2M-agM">
-                    <rect key="frame" x="0.0" y="0.0" width="404" height="220"/>
+                    <rect key="frame" x="0.0" y="0.0" width="404" height="241"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="xkm-f2-uEC">
-                        <rect key="frame" x="0.0" y="0.0" width="404" height="220"/>
+                        <rect key="frame" x="0.0" y="0.0" width="404" height="241"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="sequential" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="cZW-qJ-i9c" id="aNl-iT-Tie" customClass="FileListView" customModule="Xit" customModuleProvider="target">
@@ -36,7 +36,7 @@
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn identifier="action" width="26" minWidth="26" maxWidth="26" id="fen-Li-6Hx">
+                                    <tableColumn identifier="action" width="20" minWidth="20" maxWidth="20" id="fen-Li-6Hx">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Action">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -49,11 +49,11 @@
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
                                             <tableCellView identifier="action" id="RCW-kB-Ke6" customClass="TableButtonView" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="11" y="1" width="31" height="17"/>
+                                                <rect key="frame" x="11" y="1" width="25" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="svc-4R-rk4" customClass="RolloverButton" customModule="Xit" customModuleProvider="target">
-                                                        <rect key="frame" x="5" y="-3" width="17" height="23"/>
+                                                        <rect key="frame" x="1" y="-3" width="17" height="23"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="circle" catalog="system" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="fnT-dA-ze0">
                                                             <behavior key="behavior" lightByContents="YES"/>
@@ -80,7 +80,7 @@
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
                                             <tableCellView identifier="fileCell" id="Me4-S3-Xwj" customClass="FileCellView" customModule="Xit" customModuleProvider="target">
-                                                <rect key="frame" x="45" y="1" width="321" height="17"/>
+                                                <rect key="frame" x="39" y="1" width="321" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KdB-Qc-9Do">
@@ -172,6 +172,7 @@
                             </outlineView>
                         </subviews>
                     </clipView>
+                    <edgeInsets key="contentInsets" left="0.0" right="0.0" top="21" bottom="0.0"/>
                     <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="HEG-aO-xns">
                         <rect key="frame" x="0.0" y="204" width="379" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -181,127 +182,124 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hup-ei-vsz">
-                    <rect key="frame" x="-1" y="219" width="406" height="23"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="21" id="DCl-SM-woA"/>
-                    </constraints>
-                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u2t-z5-qie">
-                        <behavior key="behavior" lightByContents="YES"/>
-                        <font key="font" metaFont="system"/>
-                    </buttonCell>
-                </button>
-                <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eB6-ub-8f2">
-                    <rect key="frame" x="337" y="219" width="67" height="23"/>
-                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="8Tl-dI-Xev">
-                        <font key="font" metaFont="system"/>
-                        <segments>
-                            <segment toolTip="List view" image="NSListViewTemplate" width="30" selected="YES"/>
-                            <segment toolTip="Outline view" image="NSPathTemplate" width="32" tag="1"/>
-                        </segments>
-                    </segmentedCell>
-                    <connections>
-                        <action selector="viewSwitched:" target="-2" id="ju5-gE-Lr7"/>
-                    </connections>
-                </segmentedControl>
-                <imageView translatesAutoresizingMaskIntoConstraints="NO" id="7CW-AS-mzV">
-                    <rect key="frame" x="5" y="219.5" width="16" height="23"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="16" id="95e-GZ-yJJ"/>
-                        <constraint firstAttribute="width" constant="16" id="FYM-cA-6ub"/>
-                    </constraints>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="doc" catalog="system" id="A3f-xT-8bW"/>
-                </imageView>
-                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
-                    <rect key="frame" x="27" y="224" width="32" height="16"/>
-                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Files" id="bAt-yr-gVd">
-                        <font key="font" metaFont="system"/>
-                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                    </textFieldCell>
-                </textField>
-                <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
-                    <rect key="frame" x="306" y="223" width="25" height="15"/>
+                <visualEffectView blendingMode="withinWindow" material="headerView" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="UPU-52-JWg">
+                    <rect key="frame" x="0.0" y="220" width="404" height="21"/>
                     <subviews>
-                        <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
-                            <rect key="frame" x="-5" y="0.0" width="30" height="15"/>
+                        <imageView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7CW-AS-mzV">
+                            <rect key="frame" x="8" y="-0.5" width="16" height="23"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="25" id="qo1-zG-Axt"/>
+                                <constraint firstAttribute="height" constant="16" id="95e-GZ-yJJ"/>
+                                <constraint firstAttribute="width" constant="16" id="FYM-cA-6ub"/>
                             </constraints>
-                            <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" altersStateOfSelectedItem="NO" id="HcG-5P-T5p">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="menu"/>
-                                <menu key="menu" id="8bv-cO-Cqt">
-                                    <items>
-                                        <menuItem image="NSActionTemplate" hidden="YES" id="cjU-tH-Zw9">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="Stage All" id="RWJ-Cl-NhJ">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="stageAll:" target="-2" id="xX5-EW-aST"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Unstage All" id="uyC-Rm-xOQ">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="unstageAll:" target="-2" id="1wp-Xp-CpX"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Revert" id="J5Y-DV-RIc" userLabel="Revert">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="revert:" target="-2" id="AE5-3a-0Wg"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="9WW-vS-0eu"/>
-                                        <menuItem title="Show Ignored Files" id="9nZ-X0-lps">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="showIgnored:" target="-2" id="8nK-DJ-lvE"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="oa3-WC-5I0"/>
-                                        <menuItem title="Open" id="sAe-3u-SKM">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="open:" target="-2" id="29T-l1-l3y"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Show in Finder" id="Fef-jx-E7e">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="showInFinder:" target="-2" id="sxD-b8-zoE"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </popUpButtonCell>
-                        </popUpButton>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="doc" catalog="system" id="A3f-xT-8bW"/>
+                        </imageView>
+                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
+                            <rect key="frame" x="30" y="3" width="32" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Files" id="bAt-yr-gVd">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
+                            <rect key="frame" x="304" y="3" width="25" height="15"/>
+                            <subviews>
+                                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
+                                    <rect key="frame" x="-5" y="0.0" width="30" height="15"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="25" id="qo1-zG-Axt"/>
+                                    </constraints>
+                                    <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" altersStateOfSelectedItem="NO" id="HcG-5P-T5p">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="8bv-cO-Cqt">
+                                            <items>
+                                                <menuItem image="NSActionTemplate" hidden="YES" id="cjU-tH-Zw9">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="Stage All" id="RWJ-Cl-NhJ">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="stageAll:" target="-2" id="xX5-EW-aST"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Unstage All" id="uyC-Rm-xOQ">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="unstageAll:" target="-2" id="1wp-Xp-CpX"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Revert" id="J5Y-DV-RIc" userLabel="Revert">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="revert:" target="-2" id="AE5-3a-0Wg"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="9WW-vS-0eu"/>
+                                                <menuItem title="Show Ignored Files" id="9nZ-X0-lps">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="showIgnored:" target="-2" id="8nK-DJ-lvE"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="oa3-WC-5I0"/>
+                                                <menuItem title="Open" id="sAe-3u-SKM">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="open:" target="-2" id="29T-l1-l3y"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="Show in Finder" id="Fef-jx-E7e">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <connections>
+                                                        <action selector="showInFinder:" target="-2" id="sxD-b8-zoE"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
+                            </subviews>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
+                        <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eB6-ub-8f2">
+                            <rect key="frame" x="335" y="-2" width="71" height="24"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="8Tl-dI-Xev">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment toolTip="List view" image="list.bullet" catalog="system" width="30" selected="YES"/>
+                                    <segment toolTip="Outline view" image="list.bullet.indent" catalog="system" width="32" tag="1"/>
+                                </segments>
+                            </segmentedCell>
+                            <connections>
+                                <action selector="viewSwitched:" target="-2" id="ju5-gE-Lr7"/>
+                            </connections>
+                        </segmentedControl>
                     </subviews>
-                    <visibilityPriorities>
-                        <integer value="1000"/>
-                    </visibilityPriorities>
-                    <customSpacing>
-                        <real value="3.4028234663852886e+38"/>
-                    </customSpacing>
-                </stackView>
+                    <constraints>
+                        <constraint firstItem="eB6-ub-8f2" firstAttribute="top" secondItem="UPU-52-JWg" secondAttribute="top" id="5xy-Lp-h1Y"/>
+                        <constraint firstItem="H5h-Tj-wed" firstAttribute="centerY" secondItem="7CW-AS-mzV" secondAttribute="centerY" id="6Mx-he-Dfp"/>
+                        <constraint firstItem="oZ7-u4-Nl7" firstAttribute="centerY" secondItem="UPU-52-JWg" secondAttribute="centerY" id="DPO-Er-LV2"/>
+                        <constraint firstItem="eB6-ub-8f2" firstAttribute="leading" secondItem="oZ7-u4-Nl7" secondAttribute="trailing" constant="8" symbolic="YES" id="J1v-fJ-iMv"/>
+                        <constraint firstItem="H5h-Tj-wed" firstAttribute="leading" secondItem="7CW-AS-mzV" secondAttribute="trailing" constant="8" symbolic="YES" id="KqH-j6-TfJ"/>
+                        <constraint firstItem="7CW-AS-mzV" firstAttribute="centerY" secondItem="UPU-52-JWg" secondAttribute="centerY" id="NEI-zc-1T4"/>
+                        <constraint firstAttribute="trailing" secondItem="eB6-ub-8f2" secondAttribute="trailing" id="atR-Nt-dGP"/>
+                        <constraint firstAttribute="height" constant="21" id="baa-hb-rEh"/>
+                        <constraint firstItem="7CW-AS-mzV" firstAttribute="leading" secondItem="UPU-52-JWg" secondAttribute="leading" constant="8" id="cIE-W8-6IS"/>
+                    </constraints>
+                </visualEffectView>
             </subviews>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="hup-ei-vsz" secondAttribute="trailing" constant="-1" id="4gl-6P-EJK"/>
-                <constraint firstItem="H5h-Tj-wed" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" constant="1" id="BYV-MQ-Lbp"/>
-                <constraint firstItem="hup-ei-vsz" firstAttribute="leading" secondItem="QOl-HK-Eoa" secondAttribute="leading" constant="-1" id="I0A-KY-h8k"/>
-                <constraint firstItem="oZ7-u4-Nl7" firstAttribute="centerY" secondItem="hup-ei-vsz" secondAttribute="centerY" id="Is6-Qi-VZU"/>
-                <constraint firstItem="hup-ei-vsz" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="X3b-Vv-xuF"/>
-                <constraint firstItem="eB6-ub-8f2" firstAttribute="leading" secondItem="oZ7-u4-Nl7" secondAttribute="trailing" constant="6" id="Y54-HV-9iR"/>
-                <constraint firstItem="7CW-AS-mzV" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" constant="2" id="Yxa-OS-P8v"/>
-                <constraint firstItem="eB6-ub-8f2" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="c0D-HZ-DWR"/>
-                <constraint firstItem="H5h-Tj-wed" firstAttribute="leading" secondItem="7CW-AS-mzV" secondAttribute="trailing" constant="8" id="gEi-fI-DkL"/>
-                <constraint firstItem="oZ7-u4-Nl7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="H5h-Tj-wed" secondAttribute="trailing" constant="4" id="sr8-rw-gw4"/>
-                <constraint firstItem="7CW-AS-mzV" firstAttribute="leading" secondItem="QOl-HK-Eoa" secondAttribute="leading" constant="5" id="y8X-cs-IdC"/>
-                <constraint firstAttribute="trailing" secondItem="eB6-ub-8f2" secondAttribute="trailing" id="zuH-QE-q3j"/>
+                <constraint firstItem="UPU-52-JWg" firstAttribute="leading" secondItem="QOl-HK-Eoa" secondAttribute="leading" id="9Bc-ql-cfJ"/>
+                <constraint firstItem="UPU-52-JWg" firstAttribute="top" secondItem="QOl-HK-Eoa" secondAttribute="top" id="Djr-cz-4JF"/>
+                <constraint firstAttribute="trailing" secondItem="UPU-52-JWg" secondAttribute="trailing" id="zHq-Oi-2vo"/>
             </constraints>
-            <point key="canvasLocation" x="2197.5" y="331.5"/>
+            <point key="canvasLocation" x="2197" y="331.5"/>
         </customView>
         <menu id="xba-e5-1Y8">
             <items>
@@ -365,10 +363,10 @@
     <resources>
         <image name="NSActionTemplate" width="15" height="15"/>
         <image name="NSFolder" width="32" height="32"/>
-        <image name="NSListViewTemplate" width="16" height="12"/>
-        <image name="NSPathTemplate" width="19" height="12"/>
         <image name="circle" catalog="system" width="15" height="15"/>
         <image name="doc" catalog="system" width="14" height="16"/>
+        <image name="list.bullet" catalog="system" width="16" height="12"/>
+        <image name="list.bullet.indent" catalog="system" width="19" height="12"/>
         <image name="pencil.circle.fill" catalog="system" width="15" height="15"/>
     </resources>
 </document>
