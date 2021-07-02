@@ -85,7 +85,8 @@ final class ClonePanelController: NSWindowController
                            close: { window.close() },
                            clone: { self.clone() })
                 .environment(\.window, window)
-    let host = ProgressHost(model: presentingModel, message: "Cloning...",
+    let host = ProgressHost(model: presentingModel,
+                            message: "Cloning...",
                             publisher: progressPublisher.subject
                               .eraseToAnyPublisher(),
                             content: { panel })
@@ -93,8 +94,6 @@ final class ClonePanelController: NSWindowController
 
     window.title = "Clone a Repository"
     window.contentViewController = viewController
-    window.collectionBehavior = [.transient, .participatesInCycle,
-                                 .fullScreenAuxiliary]
     window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()
     window.delegate = self

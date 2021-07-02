@@ -3,7 +3,7 @@ import Combine
 
 struct ProgressPanel: View
 {
-  @State var message: String = ""
+  @State private var message: String
   let publisher: AnyPublisher<RemoteProgressMessage, RepoError>
   let stopAction: (() -> Void)?
   
@@ -29,6 +29,7 @@ struct ProgressPanel: View
       }
     }.padding()
       .onReceive(publisher
+        .receive(on: DispatchQueue.main)
         // Must catch because onReceive requires Failure == Never
         .catch({ _ in
           // Stop when there's an error. Some other subscriber will
@@ -36,8 +37,6 @@ struct ProgressPanel: View
           Empty<RemoteProgressMessage, Never>(completeImmediately: true)
         })
         .handleEvents(receiveCompletion: { _ in
-          stopAction?()
-        }, receiveCancel: {
           stopAction?()
         })) {
         if case let .download(progress) = $0 {
@@ -50,7 +49,7 @@ struct ProgressPanel: View
   {
     self.publisher = publisher
     self.stopAction = stopAction
-    self.message = message
+    self._message = .init(wrappedValue: message)
   }
 }
 
