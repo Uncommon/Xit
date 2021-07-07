@@ -21,16 +21,16 @@ extension Submodule
   }
 }
 
-struct SubmoduleStatus: OptionSet
+public struct SubmoduleStatus: OptionSet
 {
-  let rawValue: git_submodule_status_t.RawValue
+  public let rawValue: git_submodule_status_t.RawValue
   
   init(_ status: git_submodule_status_t)
   {
     self.rawValue = status.rawValue
   }
   
-  init(rawValue: UInt32)
+  public init(rawValue: UInt32)
   {
     self.rawValue = rawValue
   }
@@ -91,6 +91,18 @@ public class GitSubmodule: Submodule
   public var url: URL?
   { URL(string: String(cString: git_submodule_url(submodule))) }
   
+  public var owner: OpaquePointer { git_submodule_owner(submodule) }
+  
+  public var status: SubmoduleStatus
+  {
+    var gitStatus: UInt32 = 0
+    let result = git_submodule_status(&gitStatus, owner, name,
+                                      GIT_SUBMODULE_IGNORE_NONE)
+    
+    try? RepoError.throwIfGitError(result)
+    return SubmoduleStatus(rawValue: gitStatus)
+  }
+  
   public var ignoreRule: SubmoduleIgnore
   {
     get
@@ -128,6 +140,22 @@ public class GitSubmodule: Submodule
     }
   }
   
+  /// Starts adding a new submodule. After this, clone the submodule, and then
+  /// call `addFinalize()`.
+  static func add(to repo: OpaquePointer, url: String, path: String) throws -> GitSubmodule
+  {
+    let submodule = try OpaquePointer.from {
+      git_submodule_add_setup(&$0, repo, url, path, 0)
+    }
+    
+    return GitSubmodule(submodule: submodule)
+  }
+  
+  public func addFinalize() throws
+  {
+    try RepoError.throwIfGitError(git_submodule_add_finalize(submodule))
+  }
+  
   public func update(initialize: Bool, callbacks: RemoteCallbacks) throws
   {
     var options = git_submodule_update_options.defaultOptions()
@@ -138,5 +166,19 @@ public class GitSubmodule: Submodule
       
       try RepoError.throwIfGitError(result)
     }
+  }
+  
+  public func addToIndex(writeImmediately: Bool = true) throws
+  {
+    let result = git_submodule_add_to_index(submodule, writeImmediately ? 1 : 0)
+    
+    try RepoError.throwIfGitError(result)
+  }
+  
+  public func reload(force: Bool = true) throws
+  {
+    let result = git_submodule_reload(submodule, force ? 1 : 0)
+    
+    try RepoError.throwIfGitError(result)
   }
 }

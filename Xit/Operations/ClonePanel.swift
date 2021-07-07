@@ -33,7 +33,7 @@ struct ClonePanel: View
                      }.labelsHidden()
                       .disabled(data.branches.isEmpty)
                       .fixedSize(horizontal: true, vertical: true))
-        LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
+        //LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
       Spacer(minLength: 12)
       HStack {
