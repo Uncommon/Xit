@@ -223,6 +223,7 @@
 		C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */; };
 		C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */; };
 		C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */; };
+		C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */; };
 		C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */; };
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
@@ -673,6 +674,7 @@
 		C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RenameBranchPanelController.xib; sourceTree = "<group>"; };
 		C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Actions.swift"; sourceTree = "<group>"; };
 		C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Files.swift"; sourceTree = "<group>"; };
+		C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPanel.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsWindowController.swift; sourceTree = "<group>"; };
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
@@ -1163,6 +1165,7 @@
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
 				C98925C41DB693CC00E5645C /* TagPanelController.swift */,
 				C98925C51DB693CC00E5645C /* TagPanelController.xib */,
+				C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1651,6 +1654,7 @@
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				89D0630E25CC5C6D00EF5020 /* CommitHeader.swift in Sources */,
+				C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */,
