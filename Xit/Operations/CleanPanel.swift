@@ -2,19 +2,16 @@ import SwiftUI
 
 struct CleanableItem
 {
-  enum ItemType { case file, directory }
-
   let path: String
-  let type: ItemType
   let ignored: Bool
 
   var icon: NSImage
   {
-    switch type {
-      case .file:
-        return NSWorkspace.shared.icon(forFileType: path.pathExtension)
-      case .directory:
-        return .init(named: NSImage.folderName)!
+    if path.hasSuffix("/") {
+      return .init(named: NSImage.folderName)!
+    }
+    else {
+      return NSWorkspace.shared.icon(forFileType: path.pathExtension)
     }
   }
 }
@@ -52,14 +49,24 @@ struct CleanPanel: View
           .foregroundColor(cleanNonIgnored ? .primary : .secondary)
         TextField("", text: $regex)
       }.disabled(!cleanNonIgnored)
+
       List(filteredItems, selection: $selection) { item in
         HStack {
           Image(nsImage: item.icon)
             .resizable().frame(width: 16, height: 16)
-          Text(item.path)
+          Text(item.path.droppingSuffix("/"))
         }
       }.border(Color(.separatorColor))
+      ZStack(alignment: .leading) {
+        // path must be non-nil or else the control will be a different size
+        PathControl(path: selection.first ?? "")
+          .opacity(selection.count == 1 ? 1 : 0)
+        Text("\(selection.count) items selected").foregroundColor(.secondary)
+          .opacity(selection.count > 1 ? 1 : 0)
+      }
+
       HStack {
+        Text("\(filteredItems.count) item(s) total")
         Spacer()
         Button("Cancel") {
 
@@ -85,9 +92,9 @@ struct CleanPanel_Previews: PreviewProvider
     @State var regex = ""
 
     @State var items: [CleanableItem] = [
-      .init(path: "build.o", type: .file, ignored: true),
-      .init(path: "file.txt", type: .file, ignored: false),
-      .init(path: "folder", type: .directory, ignored: true),
+      .init(path: "build.o", ignored: true),
+      .init(path: "file.txt", ignored: false),
+      .init(path: "folder/", ignored: true),
     ]
 
     var body: some View
