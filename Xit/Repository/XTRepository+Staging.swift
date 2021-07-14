@@ -134,13 +134,21 @@ extension XTRepository: FileStatusDetection
             workspace: DeltaStatus(worktreeStatus: data.status))
   }
   
-  func statusChanges(_ show: StatusShow, showIgnored: Bool = false,
+  func statusChanges(_ show: StatusShow,
+                     showIgnored: Bool = false,
+                     recurseUntracked: Bool = true,
                      amend: Bool = false) -> [FileChange]
   {
-    var options: StatusOptions = [.includeUntracked, .recurseUntrackedDirs]
+    var options: StatusOptions = [.includeUntracked]
     
     if showIgnored {
-      options.formUnion([.includeIgnored, .recurseIgnoredDirs])
+      options.formUnion([.includeIgnored])
+      if recurseUntracked {
+        options.formUnion([.recurseIgnoredDirs])
+      }
+    }
+    if recurseUntracked {
+      options.formUnion([.recurseUntrackedDirs])
     }
     if amend {
       options.formUnion(.amending)
@@ -185,7 +193,8 @@ extension XTRepository: FileStatusDetection
     }
   }
   
-  public func unstagedChanges(showIgnored: Bool = false) -> [FileChange]
+  public func unstagedChanges(showIgnored: Bool = false,
+                              recurseUntracked: Bool = true) -> [FileChange]
   {
     return mutex.withLock {
       if cachedIgnored == showIgnored,
@@ -193,7 +202,9 @@ extension XTRepository: FileStatusDetection
         return result
       }
       else {
-        let result = statusChanges(.workdirOnly, showIgnored: showIgnored)
+        let result = statusChanges(.workdirOnly,
+                                   showIgnored: showIgnored,
+                                   recurseUntracked: recurseUntracked)
         
         cachedUnstagedChanges = result
         cachedIgnored = showIgnored

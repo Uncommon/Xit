@@ -224,6 +224,12 @@ extension XTWindowController
   }
 
   @IBAction
+  func clean(_ sender: AnyObject)
+  {
+    startOperation { CleanOpController(windowController: self) }
+  }
+
+  @IBAction
   func remoteSettings(_ sender: AnyObject)
   {
     guard let menuItem = sender as? NSMenuItem
