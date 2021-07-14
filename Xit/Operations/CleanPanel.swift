@@ -25,37 +25,43 @@ protocol CleanPanelDelegate: AnyObject
   func refresh()
 }
 
+class CleanData: ObservableObject
+{
+  @Published var cleanFolders: Bool = false
+  @Published var cleanIgnored: Bool = false
+  @Published var cleanNonIgnored: Bool = true
+  @Published var regex: String = ""
+  @Published var items: [CleanableItem] = []
+}
+
 struct CleanPanel: View
 {
   weak var delegate: CleanPanelDelegate?
 
-  @Binding var cleanFolders: Bool
-  @Binding var cleanIgnored: Bool
-  @Binding var cleanNonIgnored: Bool
-  @Binding var regex: String
-  @Binding var items: [CleanableItem]
+  @ObservedObject var model: CleanData
 
   @State private var selection: Set<String> = []
   @Environment(\.window) private var window: NSWindow
 
   var filteredItems: [CleanableItem]
   {
-    items.filter {
-      $0.ignored && cleanIgnored || !$0.ignored && cleanNonIgnored
+    model.items.filter {
+      $0.ignored && model.cleanIgnored ||
+      !$0.ignored && model.cleanNonIgnored
     }
   }
 
   var body: some View
   {
     VStack(alignment: .leading) {
-      Toggle("Clean untracked directories", isOn: $cleanFolders)
-      Toggle("Clean ignored files", isOn: $cleanIgnored)
-      Toggle("Clean non-ignored files", isOn: $cleanNonIgnored)
+      Toggle("Clean untracked directories", isOn: $model.cleanFolders)
+      Toggle("Clean ignored files", isOn: $model.cleanIgnored)
+      Toggle("Clean non-ignored files", isOn: $model.cleanNonIgnored)
       HStack {
         Text("Regex for non-ignored files:")
-          .foregroundColor(cleanNonIgnored ? .primary : .secondary)
-        TextField("", text: $regex)
-      }.disabled(!cleanNonIgnored)
+          .foregroundColor(model.cleanNonIgnored ? .primary : .secondary)
+        TextField("", text: $model.regex)
+      }.disabled(!model.cleanNonIgnored)
 
       List(filteredItems, selection: $selection) { item in
         HStack {
@@ -64,7 +70,9 @@ struct CleanPanel: View
           Text(item.path.droppingSuffix("/"))
             .foregroundColor(item.ignored ? .secondary : .primary)
         }
-      }.border(Color(.separatorColor))
+      }
+        .border(Color(.separatorColor))
+        .frame(minWidth: 200, minHeight: 100)
       ZStack(alignment: .leading) {
         // path must be non-nil or else the control will be a different size
         PathControl(path: selection.first ?? "")
@@ -75,6 +83,7 @@ struct CleanPanel: View
 
       HStack {
         Text("\(filteredItems.count) item(s) total")
+          .fixedSize(horizontal: true, vertical: true)
         Button {
           delegate?.refresh()
         } label: {
@@ -147,19 +156,16 @@ struct CleanPanel_Previews: PreviewProvider
 
   struct Preview: View
   {
-    @State var cleanFolders = true
-    @State var cleanIgnored = false
-    @State var cleanNonIgnored = true
-    @State var regex = ""
-
-    @State var items: [CleanableItem]
+    let model = CleanData()
 
     var body: some View
     {
-      CleanPanel(delegate: EmptyDelegate(),
-                 cleanFolders: $cleanFolders, cleanIgnored: $cleanIgnored,
-                 cleanNonIgnored: $cleanNonIgnored, regex: $regex,
-                 items: $items)
+      CleanPanel(delegate: EmptyDelegate(), model: model)
+    }
+
+    init(items: [CleanableItem])
+    {
+      model.items = items
     }
   }
 

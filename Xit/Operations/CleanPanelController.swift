@@ -4,41 +4,25 @@ import Combine
 
 final class CleanPanelController: NSWindowController
 {
-  class DataModel: ObservableObject
-  {
-    @Published var cleanFolders: Bool = false
-    @Published var cleanIgnored: Bool = false
-    @Published var cleanNonIgnored: Bool = true
-    @Published var regex: String = ""
-    @Published var items: [CleanableItem] = []
-  }
-
   typealias Repository = FileStatusDetection & FileContents
 
   let repository: Repository
-  let model = DataModel()
+  let model = CleanData()
 
   init(repository: Repository)
   {
-    let window = NSWindow(contentRect: .zero, styleMask: .docModalWindow,
-                          backing: .buffered, defer: false)
+    let panel = CleanPanel(model: model)
+    let viewController = NSHostingController(rootView: panel)
+    let window = NSWindow(contentViewController: viewController)
 
     self.repository = repository
     super.init(window: window)
 
+    viewController.rootView = CleanPanel(delegate: self, model: model)
     refresh()
 
-    let panel = CleanPanel(
-          delegate: self,
-          cleanFolders: .init(model, keyPath: \.cleanFolders),
-          cleanIgnored: .init(model, keyPath: \.cleanIgnored),
-          cleanNonIgnored: .init(model, keyPath: \.cleanNonIgnored),
-          regex: .init(model, keyPath: \.regex),
-          items: .init(model, keyPath: \.items))
-      .environment(\.window, window)
-    let viewController = NSHostingController(rootView: panel)
-
     window.contentViewController = viewController
+    window.contentMinSize = viewController.view.intrinsicContentSize
   }
 
   required init?(coder: NSCoder)
