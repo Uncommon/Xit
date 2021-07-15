@@ -18,6 +18,31 @@ extension CleanableItem: Identifiable
   var id: String { path }
 }
 
+enum CleanMode: Int, CaseIterable
+{
+  case all, untracked, ignored
+
+  var shouldCleanIgnored: Bool
+  {
+    switch self {
+      case .ignored, .all:
+        return true
+      case .untracked:
+        return false
+    }
+  }
+
+  var shouldCleanUntracked: Bool
+  {
+    switch self {
+      case .untracked, .all:
+        return true
+      case .ignored:
+        return false
+    }
+  }
+}
+
 protocol CleanPanelDelegate: AnyObject
 {
   func closePanel()
@@ -27,11 +52,19 @@ protocol CleanPanelDelegate: AnyObject
 
 class CleanData: ObservableObject
 {
+  @Published var mode: CleanMode = .untracked
   @Published var cleanFolders: Bool = false
-  @Published var cleanIgnored: Bool = false
-  @Published var cleanNonIgnored: Bool = true
   @Published var regex: String = ""
   @Published var items: [CleanableItem] = []
+
+  var filteredItems: [CleanableItem]
+  {
+    items.filter {
+      (!$0.path.hasSuffix("/") || cleanFolders) &&
+      ($0.ignored && mode.shouldCleanIgnored ||
+       !$0.ignored && mode.shouldCleanUntracked)
+    }
+  }
 }
 
 struct CleanPanel: View
@@ -43,32 +76,35 @@ struct CleanPanel: View
   @State private var selection: Set<String> = []
   @Environment(\.window) private var window: NSWindow
 
-  var filteredItems: [CleanableItem]
-  {
-    model.items.filter {
-      $0.ignored && model.cleanIgnored ||
-      !$0.ignored && model.cleanNonIgnored
-    }
-  }
-
   var body: some View
   {
     VStack(alignment: .leading) {
-      Toggle("Clean untracked directories", isOn: $model.cleanFolders)
-      Toggle("Clean ignored files", isOn: $model.cleanIgnored)
-      Toggle("Clean non-ignored files", isOn: $model.cleanNonIgnored)
+      HStack(alignment: .firstTextBaseline) {
+        Text("Clean:")
+        VStack(alignment: .leading) {
+          Picker(selection: $model.mode, label: EmptyView()) {
+            Text("All").tag(CleanMode.all)
+            Text("Untracked").tag(CleanMode.untracked)
+            Text("Ignored").tag(CleanMode.ignored)
+          }.pickerStyle(SegmentedPickerStyle()).fixedSize()
+          Toggle("Directories", isOn: $model.cleanFolders)
+        }
+      }
       HStack {
-        Text("Regex for non-ignored files:")
-          .foregroundColor(model.cleanNonIgnored ? .primary : .secondary)
-        TextField("", text: $model.regex)
-      }.disabled(!model.cleanNonIgnored)
+        Text("Filter:")
+          .foregroundColor(model.mode.shouldCleanUntracked ? .primary : .secondary)
+        TextField("Regular expression", text: $model.regex)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+      }.disabled(!model.mode.shouldCleanUntracked)
 
-      List(filteredItems, selection: $selection) { item in
+      List(model.filteredItems, selection: $selection) { item in
         HStack {
+          Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
+            .frame(width: 16)
           Image(nsImage: item.icon)
             .resizable().frame(width: 16, height: 16)
-          Text(item.path.droppingSuffix("/"))
-            .foregroundColor(item.ignored ? .secondary : .primary)
+          Text(item.path.lastPathComponent)
+            .fixedSize(horizontal: true, vertical: true)
         }
       }
         .border(Color(.separatorColor))
@@ -77,12 +113,13 @@ struct CleanPanel: View
         // path must be non-nil or else the control will be a different size
         PathControl(path: selection.first ?? "")
           .opacity(selection.count == 1 ? 1 : 0)
+          .fixedSize(horizontal: false, vertical: true)
         Text("\(selection.count) items selected").foregroundColor(.secondary)
           .opacity(selection.count > 1 ? 1 : 0)
       }
 
       HStack {
-        Text("\(filteredItems.count) item(s) total")
+        Text("\(model.filteredItems.count) item(s) total")
           .fixedSize(horizontal: true, vertical: true)
         Button {
           delegate?.refresh()
@@ -98,7 +135,7 @@ struct CleanPanel: View
         }.disabled(selection.isEmpty)
         Button("Clean All") {
           cleanAll()
-        }.keyboardShortcut(.defaultAction).disabled(filteredItems.isEmpty)
+        }.keyboardShortcut(.defaultAction).disabled(model.filteredItems.isEmpty)
       }
     }.padding()
   }
@@ -135,7 +172,7 @@ struct CleanPanel: View
   {
     confirmClean("Are you sure you want to clean all listed files?") {
       do {
-        try delegate?.clean(filteredItems.map { $0.path })
+        try delegate?.clean(model.filteredItems.map { $0.path })
         delegate?.closePanel()
       }
       catch {
@@ -175,6 +212,8 @@ struct CleanPanel_Previews: PreviewProvider
       .init(path: "build.o", ignored: true),
       .init(path: "file.txt", ignored: false),
       .init(path: "folder/", ignored: true),
+      .init(path: "something with a really long name that should not wrap to a second line no matter how long it is",
+            ignored: false),
     ])
     Preview(items: [])
   }
