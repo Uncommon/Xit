@@ -6,8 +6,8 @@ class PasswordOpController: SimpleOperationController
   var host = ""
   var path = ""
   var port = 80
-  let semaphore = DispatchSemaphore(value: 0)
-  var closeObserver: NSObjectProtocol?
+  private(set) var passwordController: PasswordPanelController?
+  private var closeObserver: NSObjectProtocol?
 
   required init(windowController: XTWindowController)
   {
@@ -19,68 +19,35 @@ class PasswordOpController: SimpleOperationController
                                    object: windowController.window,
                                    queue: .main) {
       (_) in
-      self.semaphore.signal()
+      self.abort()
     }
   }
   
   override func abort()
   {
-    self.semaphore.signal()
+    passwordController = nil
   }
   
   /// User/password callback
   func getPassword() -> (String, String)?
   {
-    var result: (String, String)?
+    guard passwordController == nil
+    else {
+      assertionFailure("already have a password sheet")
+      return nil
+    }
+    let (window, controller) = DispatchQueue.main.sync {
+      (windowController?.window, PasswordPanelController())
+    }
+    guard let window = window
+    else { return nil }
     
-    DispatchQueue.main.async {
-      guard let window = self.windowController?.window
-      else {
-        _ = self.semaphore.signal()
-        return
-      }
-      
-      let panel = PasswordPanelController.controller()
-
-      if self.host.isEmpty {
-        panel.keychainCheck.isHidden = true
-      }
-      
-      window.beginSheet(panel.window!) { (response) in
-        if response == .OK {
-          result = (panel.userName, panel.password)
-          if panel.storeInKeychain {
-            self.storeKeychainPassword(host: self.host, path: self.path,
-                                       port: UInt16(self.port),
-                                       account: panel.userName,
-                                       password: panel.password)
-          }
-        }
-        _ = self.semaphore.signal()
-      }
-    }
-    _ = semaphore.wait(timeout: DispatchTime.distantFuture)
-    return result
+    passwordController = controller
+    return controller.getPassword(parentWindow: window,
+                                  host: host, path: path, port: UInt16(port))
   }
   
-  func storeKeychainPassword(host: String, path: String, port: UInt16,
-                             account: String, password: String)
-  {
-    self.onSuccess {
-      DispatchQueue.main.async {
-        do {
-          try XTKeychain.shared.save(host: host, path: path, port: port,
-                                     account: account, password: password)
-        }
-        catch let error as NSError {
-          NSLog("Keychain save failed: error \(error.code)")
-          NSAlert.showMessage(message: .cantSavePassword)
-        }
-      }
-    }
-  }
-  
-  func setKeychainInfoURL(_ url: URL)
+  func setKeychainInfo(from url: URL)
   {
     host = url.host ?? ""
     path = url.path

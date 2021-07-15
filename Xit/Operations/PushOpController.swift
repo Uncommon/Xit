@@ -174,7 +174,7 @@ class PushOpController: PasswordOpController
                                       uploadProgress: self.progressCallback)
       
       if let url = remote.pushURL ?? remote.url {
-        self.setKeychainInfoURL(url)
+        self.setKeychainInfo(from: url)
       }
 
       try repository.push(branches: branches,
