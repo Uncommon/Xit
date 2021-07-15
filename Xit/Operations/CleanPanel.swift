@@ -62,7 +62,8 @@ class CleanData: ObservableObject
     items.filter {
       (!$0.path.hasSuffix("/") || cleanFolders) &&
       ($0.ignored && mode.shouldCleanIgnored ||
-       !$0.ignored && mode.shouldCleanUntracked)
+       !$0.ignored && mode.shouldCleanUntracked) &&
+      (regex.isEmpty || $0.path.range(of: regex, options: .regularExpression) != nil)
     }
   }
 }
@@ -83,9 +84,9 @@ struct CleanPanel: View
         Text("Clean:")
         VStack(alignment: .leading) {
           Picker(selection: $model.mode, label: EmptyView()) {
-            Text("All").tag(CleanMode.all)
-            Text("Untracked").tag(CleanMode.untracked)
-            Text("Ignored").tag(CleanMode.ignored)
+            Text("   All     ").tag(CleanMode.all)
+            Text(" Untracked ").tag(CleanMode.untracked)
+            Text(" Ignored ").tag(CleanMode.ignored)
           }.pickerStyle(SegmentedPickerStyle()).fixedSize()
           Toggle("Directories", isOn: $model.cleanFolders)
         }
@@ -95,7 +96,7 @@ struct CleanPanel: View
           .foregroundColor(model.mode.shouldCleanUntracked ? .primary : .secondary)
         TextField("Regular expression", text: $model.regex)
           .textFieldStyle(RoundedBorderTextFieldStyle())
-      }.disabled(!model.mode.shouldCleanUntracked)
+      }
 
       List(model.filteredItems, selection: $selection) { item in
         HStack {
