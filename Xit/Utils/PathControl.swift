@@ -8,7 +8,7 @@ struct PathControl: NSViewRepresentable
 
   func makeNSView(context: Context) -> NSPathControl
   {
-    let control = NSPathControl()
+    let control = CompressiblePathControl()
 
     control.setDraggingSourceOperationMask([], forLocal: true)
     control.setDraggingSourceOperationMask([], forLocal: false)
@@ -39,6 +39,17 @@ struct PathControl: NSViewRepresentable
       nsView.pathItems = []
     }
   }
+}
+
+/// A variant of `NSPathControl` with a very small `intrinsicSize`
+/// - Note: SwiftUI resists making a control smaller than its intrinsic size,
+/// but a path control's content - and therefore its intrinsic size - varies.
+/// This could cause the containing window to suddenly become bigger when the
+/// path control is given a longer path.
+class CompressiblePathControl: NSPathControl
+{
+  override var intrinsicContentSize: NSSize
+  { .init(width: 20, height: super.intrinsicContentSize.height) }
 }
 
 struct PathControl_Previews: PreviewProvider {

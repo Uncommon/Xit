@@ -106,11 +106,14 @@ struct CleanPanel: View
       HStack(alignment: .firstTextBaseline) {
         Text("Clean:")
         VStack(alignment: .leading) {
-          Picker(selection: $model.mode, label: EmptyView()) {
-            Text("   All     ").tag(CleanMode.all)
-            Text(" Untracked ").tag(CleanMode.untracked)
-            Text(" Ignored ").tag(CleanMode.ignored)
-          }.pickerStyle(SegmentedPickerStyle()).fixedSize()
+          HStack(alignment: .firstTextBaseline) {
+            Picker(selection: $model.mode, label: EmptyView()) {
+              Text(" Untracked ").tag(CleanMode.untracked)
+              Text(" Ignored ").tag(CleanMode.ignored)
+              Text("  All   ").tag(CleanMode.all)
+            }.pickerStyle(SegmentedPickerStyle()).fixedSize()
+            Text("files").fixedSize()
+          }
           Toggle("Directories", isOn: $model.cleanFolders)
         }
       }
@@ -126,13 +129,15 @@ struct CleanPanel: View
 
       List(model.filteredItems, selection: $selection) { item in
         HStack {
-          Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
-            .frame(width: 16)
-            .foregroundColor(item.ignored ? .secondary : .green)
           Image(nsImage: item.icon)
             .resizable().frame(width: 16, height: 16)
           Text(item.path.lastPathComponent)
-            .fixedSize(horizontal: true, vertical: true)
+            .lineLimit(1)
+            .truncationMode(.tail)
+          Spacer()
+          Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
+            .frame(width: 16)
+            .foregroundColor(item.ignored ? .secondary : .green)
         }
       }
         .border(Color(.separatorColor))
@@ -141,14 +146,18 @@ struct CleanPanel: View
         // path must be non-nil or else the control will be a different size
         PathControl(path: selection.first ?? "")
           .opacity(selection.count == 1 ? 1 : 0)
-          .fixedSize(horizontal: false, vertical: true)
+          .frame(maxWidth: .infinity)
         Text("\(selection.count) items selected").foregroundColor(.secondary)
           .opacity(selection.count > 1 ? 1 : 0)
-      }
+        Text("No selection").foregroundColor(.secondary)
+          .opacity(selection.isEmpty ? 1 : 0)
+      }.fixedSize(horizontal: false, vertical: true)
+      Spacer(minLength: 20)
 
       HStack {
         Text("\(model.filteredItems.count) item(s) total")
-          .fixedSize(horizontal: true, vertical: true)
+          .lineLimit(1)
+          .truncationMode(.tail)
         Button {
           delegate?.refresh()
         } label: {
@@ -165,7 +174,7 @@ struct CleanPanel: View
           cleanAll()
         }.keyboardShortcut(.defaultAction).disabled(model.filteredItems.isEmpty)
       }
-    }.padding()
+    }.frame(minWidth: 400).padding(20)
   }
 
   func confirmClean(_ message: String, onConfirm: @escaping () -> Void)
@@ -236,9 +245,10 @@ struct CleanPanel_Previews: PreviewProvider
 
   static var previews: some View
   {
+    // swiftlint: disable line_length
     Preview(items: [
       .init(path: "build.o", ignored: true),
-      .init(path: "file.txt", ignored: false),
+      .init(path: "very/loooooong/path/for/just/a/single little/file.txt", ignored: false),
       .init(path: "folder/", ignored: true),
       .init(path: "something with a really long name that should not wrap to a second line no matter how long it is",
             ignored: false),
