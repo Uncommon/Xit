@@ -204,14 +204,15 @@ struct MockTransferProgress: TransferProgress
 
 public struct RemoteCallbacks
 {
-  /// Callback for getting the user and password
-  let passwordBlock: (() -> (String, String)?)?
+  /// Callback for getting the user and password when they could not be
+  /// discovered automatically
+  var passwordBlock: (() -> (String, String)?)?
   /// Fetch progress. Return false to stop the operation
-  let downloadProgress: ((TransferProgress) -> Bool)?
+  var downloadProgress: ((TransferProgress) -> Bool)?
   /// Push progress. Return false to stop the operation
-  let uploadProgress: ((PushTransferProgress) -> Bool)?
+  var uploadProgress: ((PushTransferProgress) -> Bool)?
   /// Message from the server
-  let sidebandMessage: ((String) -> Bool)?
+  var sidebandMessage: ((String) -> Bool)?
   
   init(passwordBlock: (() -> (String, String)?)? = nil,
        downloadProgress: ((TransferProgress) -> Bool)? = nil,

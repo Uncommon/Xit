@@ -91,6 +91,18 @@ final class ClonePanelController: NSWindowController
       }
 
     data.destination = defaultDestination()
+    
+    progressPublisher.setPasswordBlock {
+      let panel = PasswordPanelController()
+      guard let url = URL(string: self.data.url)
+      else { return nil }
+      
+      return panel.getPassword(
+          parentWindow: window,
+          host: url.host ?? "",
+          path: url.path,
+          port: UInt16(url.port ?? url.defaultPort))
+    }
   }
 
   @objc required dynamic init?(coder: NSCoder)
@@ -207,14 +219,14 @@ final class ClonePanelController: NSWindowController
     let name: String
     let branches: [String]
     let selectedBranch: String
+    let noPassword: () -> (String, String)? = { nil }
     
     name = url.path.lastPathComponent.deletingPathExtension
 
     do {
-      // May need a password callback depending on the host
       let (heads, defaultBranchRef) = try
         remote.withConnection(direction: .fetch,
-                              callbacks: .init(),
+                              callbacks: .init(passwordBlock: noPassword),
                               action: {
         (try $0.referenceAdvertisements(), $0.defaultBranch)
       })
@@ -263,5 +275,7 @@ extension ClonePanelController: NSWindowDelegate
     if window == Self.currentController?.window {
       Self.currentController = nil
     }
+    // The password block captures self because it needs the latest URL
+    progressPublisher.setPasswordBlock(nil)
   }
 }

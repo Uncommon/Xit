@@ -35,6 +35,11 @@ public class RemoteProgressPublisher
         })
   }
   
+  func setPasswordBlock(_ block: (() -> (String, String)?)?)
+  {
+    callbacks.passwordBlock = block
+  }
+  
   func finished()
   {
     subject.send(completion: .finished)
