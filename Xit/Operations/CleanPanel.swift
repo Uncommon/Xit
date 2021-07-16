@@ -52,18 +52,41 @@ protocol CleanPanelDelegate: AnyObject
 
 class CleanData: ObservableObject
 {
+  enum FilterType
+  {
+    case contains, wildcard, regex
+
+    func predicate(filter: String) -> NSPredicate
+    {
+      switch self {
+        case .contains: return .init(format: "self CONTAINS %@", filter)
+        case .wildcard: return .init(format: "self LIKE %@", filter)
+        // NSPreditace has MATCHES for regular expressions, but throws an
+        // exception if the regex is invalid.
+        case .regex: return .init {
+          (string, _) in
+          (string as! String).range(of: filter, options: .regularExpression) != nil
+        }
+      }
+    }
+  }
+
   @Published var mode: CleanMode = .untracked
   @Published var cleanFolders: Bool = false
-  @Published var regex: String = ""
+  @Published var filter: String = ""
+  @Published var filterType: FilterType = .contains
   @Published var items: [CleanableItem] = []
 
   var filteredItems: [CleanableItem]
   {
-    items.filter {
+    let predicate: NSPredicate? =
+          filter.isEmpty ? nil : filterType.predicate(filter: filter)
+
+    return items.filter {
       (!$0.path.hasSuffix("/") || cleanFolders) &&
       ($0.ignored && mode.shouldCleanIgnored ||
        !$0.ignored && mode.shouldCleanUntracked) &&
-      (regex.isEmpty || $0.path.range(of: regex, options: .regularExpression) != nil)
+      (predicate?.evaluate(with: $0.path.lastPathComponent) ?? true)
     }
   }
 }
@@ -92,9 +115,12 @@ struct CleanPanel: View
         }
       }
       HStack {
-        Text("Filter:")
-          .foregroundColor(model.mode.shouldCleanUntracked ? .primary : .secondary)
-        TextField("Regular expression", text: $model.regex)
+        Picker(selection: $model.filterType, label: EmptyView()) {
+          Text("Contains").tag(CleanData.FilterType.contains)
+          Text("Wildcard").tag(CleanData.FilterType.wildcard)
+          Text("Regex").tag(CleanData.FilterType.regex)
+        }.fixedSize()
+        TextField("Filter", text: $model.filter)
           .textFieldStyle(RoundedBorderTextFieldStyle())
       }
 
@@ -102,6 +128,7 @@ struct CleanPanel: View
         HStack {
           Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
             .frame(width: 16)
+            .foregroundColor(item.ignored ? .secondary : .green)
           Image(nsImage: item.icon)
             .resizable().frame(width: 16, height: 16)
           Text(item.path.lastPathComponent)

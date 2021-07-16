@@ -58,6 +58,7 @@ extension CleanPanelController: CleanPanelDelegate
     model.items = repository.unstagedChanges(showIgnored: true,
                                              recurseUntracked: false)
       .filter { $0.status.isCleanable }
+      .sorted(byKeyPath: \.path.lastPathComponent)
       .map { .init(path: $0.gitPath, ignored: $0.status == .ignored) }
   }
 }
