@@ -90,18 +90,12 @@ class TestRepoEnvironment
   /// Launches the app and opens this environment's repository.
   func open()
   {
-    XitApp.launchArguments = ["-noServices", "YES",
+    XitApp.launchArguments = [repoURL.path,
+                              "-noServices", "YES",
                               "-ApplePersistenceIgnoreState", "YES"]
     XitApp.launch()
     XitApp.activate()
-    
-    // Unfortunately XCUIApplication.path is undocumented but there seems to
-    // be no other way at it. We need to make sure NSWorkspace doesn't launch
-    // a new instance.
-    let appURL = URL(fileURLWithPath: XitApp.value(forKey: "path") as! String)
-    
-    NSWorkspace.shared.open([repoURL], withApplicationAt: appURL,
-                            configuration: .init(), completionHandler: nil)
+
     XCTAssertTrue(XitApp.windows[repo.rawValue].waitForExistence(timeout: 5.0))
   }
   
