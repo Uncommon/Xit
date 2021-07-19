@@ -23,6 +23,7 @@ final class CleanPanelController: NSWindowController
 
     window.contentViewController = viewController
     window.contentMinSize = viewController.view.intrinsicContentSize
+    window.setAccessibilityIdentifier(.Clean.window)
   }
 
   required init?(coder: NSCoder)

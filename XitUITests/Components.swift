@@ -14,17 +14,17 @@ enum Window
   static let branchPopup = window.popUpButtons["branchPopup"]
   static let tabStatus = window.buttons["tabStatus"]
   
-  static let pullMenu = XitApp.menus["pullPopup"]
-  static let pushMenu = XitApp.menus["pushPopup"]
-  static let fetchMenu = XitApp.menus["fetchPopup"]
+  static let pullMenu = XitApp.menus[.PopupMenu.pull]
+  static let pushMenu = XitApp.menus[.PopupMenu.push]
+  static let fetchMenu = XitApp.menus[.PopupMenu.fetch]
 }
 
 enum PrefsWindow
 {
-  static let window = XitApp.windows["Preferences"]
-  static let generalTab = window.toolbars.buttons["General"]
+  static let window = XitApp.windows[.Preferences.window]
+  static let generalTab = window.toolbars.buttons[.Preferences.Toolbar.general]
   
-  static let tabStatusCheck = window.checkBoxes["tabStatus"]
+  static let tabStatusCheck = window.checkBoxes[.Preferences.Controls.tabStatus]
   
   static func open(file: StaticString = #file, line: UInt = #line)
   {
@@ -46,9 +46,9 @@ enum PrefsWindow
 
 enum Sidebar
 {
-  static let list = Window.window.outlines["sidebar"]
-  static let filter = Window.window.searchFields["sidebarFilter"]
-  static let addButton = Window.window.popUpButtons["sidebarAdd"]
+  static let list = Window.window.outlines[.Sidebar.list]
+  static let filter = Window.window.searchFields[.Sidebar.filter]
+  static let addButton = Window.window.popUpButtons[.Sidebar.add]
   static let stagingCell = list.cells.element(boundBy: 1)
   
   static func cell(named name: String) -> XCUIElement
@@ -59,7 +59,7 @@ enum Sidebar
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
     let expected = "\(workspace)▸\(staged)"
-    let statusButton = stagingCell.buttons["workspaceStatus"]
+    let statusButton = stagingCell.buttons[.Sidebar.workspaceStatus]
     
     XCTAssertEqual(expected, statusButton.title)
   }
@@ -79,14 +79,14 @@ enum Sidebar
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
     
-    return cell.buttons["workspaceStatus"]
+    return cell.buttons[.Sidebar.workspaceStatus]
   }
   
   static func trackingStatusIndicator(branch: String) -> XCUIElement
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
     
-    return cell.buttons["trackingStatus"]
+    return cell.buttons[.Sidebar.trackingStatus]
   }
 }
 

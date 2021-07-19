@@ -112,9 +112,11 @@ struct CleanPanel: View
               Text(" Ignored ").tag(CleanMode.ignored)
               Text("  All   ").tag(CleanMode.all)
             }.pickerStyle(SegmentedPickerStyle()).fixedSize()
+              .accessibilityIdentifier(.Clean.Controls.mode)
             Text("files").fixedSize()
           }
           Toggle("Directories", isOn: $model.cleanFolders)
+            .accessibilityIdentifier(.Clean.Controls.directories)
         }
       }
       HStack {
@@ -123,8 +125,10 @@ struct CleanPanel: View
           Text("Wildcard").tag(CleanData.FilterType.wildcard)
           Text("Regex").tag(CleanData.FilterType.regex)
         }.fixedSize()
+          .accessibilityIdentifier(.Clean.Controls.filterType)
         TextField("Filter", text: $model.filter)
           .textFieldStyle(RoundedBorderTextFieldStyle())
+          .accessibilityIdentifier(.Clean.Controls.filterField)
       }
 
       List(model.filteredItems, selection: $selection) { item in
@@ -134,6 +138,7 @@ struct CleanPanel: View
           Text(item.path.lastPathComponent)
             .lineLimit(1)
             .truncationMode(.tail)
+            .accessibilityIdentifier(.Clean.List.fileName)
           Spacer()
           Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
             .frame(width: 16)
@@ -142,6 +147,7 @@ struct CleanPanel: View
       }
         .border(Color(.separatorColor))
         .frame(minWidth: 200, minHeight: 100)
+        .accessibilityIdentifier(.Clean.Controls.fileList)
       ZStack(alignment: .leading) {
         // path must be non-nil or else the control will be a different size
         PathControl(path: selection.first ?? "")
@@ -149,6 +155,7 @@ struct CleanPanel: View
           .frame(maxWidth: .infinity)
         Text("\(selection.count) items selected").foregroundColor(.secondary)
           .opacity(selection.count > 1 ? 1 : 0)
+          .accessibilityIdentifier(.Clean.Text.selected)
         Text("No selection").foregroundColor(.secondary)
           .opacity(selection.isEmpty ? 1 : 0)
       }.fixedSize(horizontal: false, vertical: true)
@@ -158,21 +165,28 @@ struct CleanPanel: View
         Text("\(model.filteredItems.count) item(s) total")
           .lineLimit(1)
           .truncationMode(.tail)
+          .accessibilityIdentifier(.Clean.Text.total)
         Button {
           delegate?.refresh()
         } label: {
           Image(systemName: "arrow.clockwise")
         }.buttonStyle(BorderlessButtonStyle())
+          .accessibilityIdentifier(.Clean.Button.refresh)
         Spacer()
         Button("Cancel") {
           delegate?.closePanel()
         }.keyboardShortcut(.cancelAction)
+          .accessibilityIdentifier(.Clean.Button.cancel)
         Button("Clean Selected") {
           cleanSelected()
-        }.disabled(selection.isEmpty)
+        }.keyboardShortcut(.delete)
+          .disabled(selection.isEmpty)
+          .accessibilityIdentifier(.Clean.Button.cleanSelected)
         Button("Clean All") {
           cleanAll()
-        }.keyboardShortcut(.defaultAction).disabled(model.filteredItems.isEmpty)
+        }.keyboardShortcut(.defaultAction)
+          .disabled(model.filteredItems.isEmpty)
+          .accessibilityIdentifier(.Clean.Button.cleanAll)
       }
     }.frame(minWidth: 400).padding(20)
   }
@@ -245,7 +259,7 @@ struct CleanPanel_Previews: PreviewProvider
 
   static var previews: some View
   {
-    // swiftlint: disable line_length
+    // swiftlint:disable line_length
     Preview(items: [
       .init(path: "build.o", ignored: true),
       .init(path: "very/loooooong/path/for/just/a/single little/file.txt", ignored: false),
