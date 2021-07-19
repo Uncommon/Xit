@@ -227,7 +227,8 @@ class FakeFileChangesRepo: FileChangesRepo
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   { return [] }
   func stagedChanges() -> [FileChange] { return [] }
-  func unstagedChanges(showIgnored: Bool) -> [FileChange] { return [] }
+  func unstagedChanges(showIgnored: Bool, recurseUntracked: Bool) -> [FileChange]
+  { return [] }
   func amendingStagedChanges() -> [FileChange] { return [] }
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
   { return .unmodified }
