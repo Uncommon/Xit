@@ -141,12 +141,21 @@
                                     <size key="minSize" width="12" height="25"/>
                                     <size key="maxSize" width="12" height="25"/>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="66506D70-3F42-4930-8EB0-B634AEB5B43B" label="Clean" paletteLabel="Clean" tag="-1" image="trash.circle" catalog="system" bordered="YES" id="cy8-mD-4QZ">
-                                    <size key="minSize" width="27" height="25"/>
-                                    <size key="maxSize" width="27" height="25"/>
-                                    <connections>
-                                        <action selector="clean:" target="2em-8b-shT" id="efl-OY-EM7"/>
-                                    </connections>
+                                <toolbarItem implicitItemIdentifier="290444F5-1543-4AF2-B8AE-51333F9B09BC" explicitItemIdentifier="xit.clean" label="Clean" paletteLabel="Clean" sizingBehavior="auto" id="SEm-mB-BJY">
+                                    <nil key="toolTip"/>
+                                    <segmentedControl key="view" verticalHuggingPriority="750" id="4Bj-H4-LRj">
+                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="WPj-TE-tri">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Stash" image="trash.circle" catalog="system" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <connections>
+                                            <action selector="clean:" target="2em-8b-shT" id="AR9-Jt-Ny6"/>
+                                        </connections>
+                                    </segmentedControl>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="a3N-zr-oA8"/>
                             </allowedToolbarItems>
@@ -160,7 +169,7 @@
                                 <toolbarItem reference="AXd-Bz-cV9"/>
                                 <toolbarItem reference="9Jc-2J-e8T"/>
                                 <toolbarItem reference="oLO-yb-35r"/>
-                                <toolbarItem reference="cy8-mD-4QZ"/>
+                                <toolbarItem reference="SEm-mB-BJY"/>
                                 <toolbarItem reference="a3N-zr-oA8"/>
                                 <toolbarItem reference="gxy-S3-Tn6"/>
                                 <toolbarItem reference="EmV-8X-pjB"/>
