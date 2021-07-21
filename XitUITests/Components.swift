@@ -19,6 +19,13 @@ enum Window
   static let fetchMenu = XitApp.menus[.PopupMenu.fetch]
 }
 
+enum Toolbar
+{
+  // Finding these items by ID rather than title doesn't work
+  static let clean = Window.window.toolbars.buttons["Clean"]
+  static let stash = Window.window.toolbars.buttons["Stash"]
+}
+
 enum PrefsWindow
 {
   static let window = XitApp.windows[.Preferences.window]
@@ -194,6 +201,32 @@ enum HistoryList
     static let copySHAItem = menu.menuItems["Copy SHA"]
     static let resetItem = menu.menuItems["Reset to this commit..."]
   }
+}
+
+enum CleanSheet
+{
+  static let window = XitApp.sheets[.Clean.window]
+
+  static let modeControl = window.radioGroups[.Clean.Controls.mode]
+
+  enum Mode
+  {
+    // Use index because segments can't have accessibility IDs
+    static let untracked = modeControl.radioButtons.element(boundBy: 0)
+    static let ignored = modeControl.radioButtons.element(boundBy: 1)
+    static let all = modeControl.radioButtons.element(boundBy: 2)
+  }
+
+  static let directoriesCheck = window.checkBoxes[.Clean.Controls.directories]
+  static let filterPopup = window.popUpButtons[.Clean.Controls.filterType]
+  static let selectedText = window.staticTexts[.Clean.Text.selected]
+
+  static let totalText = window.staticTexts[.Clean.Text.total]
+  static let refreshButton = window.buttons[.Clean.Button.refresh]
+
+  static let cancelButton = window.buttons[.Clean.Button.cancel]
+  static let cleanSelectedButton = window.buttons[.Clean.Button.cleanSelected]
+  static let cleanAllButton = window.buttons[.Clean.Button.cleanAll]
 }
 
 enum ResetSheet

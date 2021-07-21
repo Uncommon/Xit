@@ -168,68 +168,114 @@ class ReadOnlyUITests: XCTestCase
     HistoryList.ContextMenu.resetItem.click()
     
     XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
-    XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Sets the current branch to point to the selected commit, and \
-                   all staged changes are forgotten. Workspace files are not changed.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "There are changes, but this option will preserve them.")
-    
-    ResetSheet.softButton.click()
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Sets the current branch to point to the selected commit, but \
-                   staged changes are retained and workspace files are not changed.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "There are changes, but this option will preserve them.")
 
-    ResetSheet.hardButton.click()
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Clears all staged and workspace changes, and sets the current \
-                   branch to point to the selected commit.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "You have uncommitted changes that will be lost with this option.")
+    XCTContext.runActivity(named: "Mixed mode") { _ in
+      XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Sets the current branch to point to the selected commit, and \
+                     all staged changes are forgotten. Workspace files are not changed.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "There are changes, but this option will preserve them.")
+    }
+
+    XCTContext.runActivity(named: "Soft mode") { _ in
+      ResetSheet.softButton.click()
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Sets the current branch to point to the selected commit, but \
+                     staged changes are retained and workspace files are not changed.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "There are changes, but this option will preserve them.")
+    }
+
+    XCTContext.runActivity(named: "Hard mode") { _ in
+      ResetSheet.hardButton.click()
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Clears all staged and workspace changes, and sets the current \
+                     branch to point to the selected commit.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "You have uncommitted changes that will be lost with this option.")
+    }
   }
   
-  func checkPopup(button: XCUIElement, menu: XCUIElement, itemTitles: [String],
+  func checkPopup(_ context: String,
+                  button: XCUIElement, menu: XCUIElement, itemTitles: [String],
                   file: StaticString = #file, line: UInt = #line)
   {
-    button.press(forDuration: 0.5)
-    
-    XCTAssertTrue(menu.isHittable)
-    XCTAssertEqual(menu.menuItems.count, itemTitles.count,
-                   "wrong number of items", file: file, line: line)
-    
-    for (index, title) in itemTitles.enumerated() {
-      XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
-                     file: file, line: line)
+    XCTContext.runActivity(named: context) { _ in
+      button.press(forDuration: 0.5)
+
+      XCTAssertTrue(menu.isHittable)
+      XCTAssertEqual(menu.menuItems.count, itemTitles.count,
+                     "wrong number of items", file: file, line: line)
+
+      for (index, title) in itemTitles.enumerated() {
+        XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
+                       file: file, line: line)
+      }
+      XitApp.typeKey(.escape, modifierFlags: [])
     }
-    XitApp.typeKey(.escape, modifierFlags: [])
   }
   
   func testRepoOpMenus()
   {
-    checkPopup(button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
+    checkPopup("Fetch menu",
+               button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
       "Fetch all remotes",
       "Fetch \"origin/master\"",
       "",
       "Fetch remote \"origin\"",
     ])
     
-    checkPopup(button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
+    checkPopup("Push menu",
+               button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
       "Push to \"origin/master\"",
       "",
       "Push to any tracking branches on \"origin\"",
     ])
     
-    checkPopup(button: Window.pullButton, menu: Window.pullMenu, itemTitles: [
+    checkPopup("Pull menu",
+               button: Window.pullButton, menu: Window.pullMenu, itemTitles: [
       "Pull from \"origin/master\""
     ])
+  }
+
+  func testClean()
+  {
+    Toolbar.clean.click()
+
+    let cell1 = CleanSheet.window.cells.firstMatch
+
+    XCTContext.runActivity(named: "Initial state") { _ in
+      XCTAssertEqual(CleanSheet.directoriesCheck.value as? Int, 0)
+      XCTAssertEqual(CleanSheet.window.cells.count, 1)
+      XCTAssertEqual(CleanSheet.totalText.stringValue, "1 item(s) total")
+      XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+      XCTAssertEqual(cell1.staticTexts.firstMatch.stringValue, "UntrackedImage.png")
+    }
+
+    XCTContext.runActivity(named: "Cell selected") { _ in
+      cell1.click()
+
+      XCTAssertTrue(CleanSheet.cleanSelectedButton.isEnabled)
+    }
+
+    XCTContext.runActivity(named: "Ignored mode") { _ in
+      CleanSheet.Mode.ignored.click()
+
+      let ignoredNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"]
+      let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
+                                 .map { $0.stringValue }
+
+      XCTAssertEqual(CleanSheet.window.cells.count, 3)
+      XCTAssertEqual(CleanSheet.totalText.stringValue, "3 item(s) total")
+      XCTAssertEqual(cellTitles, ignoredNames)
+    }
   }
 }
 

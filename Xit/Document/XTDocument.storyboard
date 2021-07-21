@@ -101,6 +101,7 @@
                                                 <segment toolTip="Stash" image="tray.fill" catalog="system" width="32"/>
                                             </segments>
                                         </segmentedCell>
+                                        <accessibility identifier="xit.stash"/>
                                         <connections>
                                             <action selector="stash:" target="uko-xc-GwC" id="5nA-Fh-COj"/>
                                         </connections>
@@ -152,6 +153,7 @@
                                                 <segment toolTip="Stash" image="trash.circle" catalog="system" width="32"/>
                                             </segments>
                                         </segmentedCell>
+                                        <accessibility identifier="xit.clean"/>
                                         <connections>
                                             <action selector="clean:" target="2em-8b-shT" id="AR9-Jt-Ny6"/>
                                         </connections>
