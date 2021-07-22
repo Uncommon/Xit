@@ -142,7 +142,11 @@ struct CleanPanel: View
           Spacer()
           Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
             .frame(width: 16)
-            .foregroundColor(item.ignored ? .secondary : .green)
+            // If the user drags to select multiple items, this doesn't update
+            // until the drag is finished.
+            .foregroundColor(selection.contains(item.path)
+                             ? .primary
+                             : item.ignored ? .secondary : .green)
         }
       }
         .border(Color(.separatorColor))

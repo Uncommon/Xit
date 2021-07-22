@@ -272,9 +272,24 @@ class ReadOnlyUITests: XCTestCase
       let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
                                  .map { $0.stringValue }
 
-      XCTAssertEqual(CleanSheet.window.cells.count, 3)
-      XCTAssertEqual(CleanSheet.totalText.stringValue, "3 item(s) total")
+      XCTAssertEqual(CleanSheet.window.cells.count, ignoredNames.count)
+      XCTAssertEqual(CleanSheet.totalText.stringValue,
+                     "\(ignoredNames.count) item(s) total")
       XCTAssertEqual(cellTitles, ignoredNames)
+    }
+
+    XCTContext.runActivity(named: "All files mode") { _ in
+      CleanSheet.Mode.all.click()
+
+      let allNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
+                      "UntrackedImage.png"]
+      let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
+                                 .map { $0.stringValue }
+
+      XCTAssertEqual(CleanSheet.window.cells.count, allNames.count)
+      XCTAssertEqual(CleanSheet.totalText.stringValue,
+                     "\(allNames.count) item(s) total")
+      XCTAssertEqual(cellTitles, allNames)
     }
   }
 }
