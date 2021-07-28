@@ -15,7 +15,8 @@ extension AXID
     public enum Controls
     {
       static let directories = AXID("directoriesCheck")
-      static let mode = AXID("modePicker")
+      static let fileMode = AXID("fileModePicker")
+      static let folderMode = AXID("folderModePicker")
       static let filterType = AXID("filterType")
       static let filterField = AXID("filterField")
       static let fileList = AXID("fileList")

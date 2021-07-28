@@ -252,7 +252,7 @@ class ReadOnlyUITests: XCTestCase
     let cell1 = CleanSheet.window.cells.firstMatch
 
     XCTContext.runActivity(named: "Initial state") { _ in
-      XCTAssertEqual(CleanSheet.directoriesCheck.value as? Int, 0)
+      XCTAssertEqual(CleanSheet.folderMode.stringValue, "Ignore")
       XCTAssertEqual(CleanSheet.window.cells.count, 1)
       XCTAssertEqual(CleanSheet.totalText.stringValue, "1 item(s) total")
       XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
@@ -266,7 +266,8 @@ class ReadOnlyUITests: XCTestCase
     }
 
     XCTContext.runActivity(named: "Ignored mode") { _ in
-      CleanSheet.Mode.ignored.click()
+      CleanSheet.fileMode.click()
+      CleanSheet.FileMode.ignored.click()
 
       let ignoredNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"]
       let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
@@ -279,7 +280,8 @@ class ReadOnlyUITests: XCTestCase
     }
 
     XCTContext.runActivity(named: "All files mode") { _ in
-      CleanSheet.Mode.all.click()
+      CleanSheet.fileMode.click()
+      CleanSheet.FileMode.all.click()
 
       let allNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
                       "UntrackedImage.png"]

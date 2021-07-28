@@ -207,17 +207,23 @@ enum CleanSheet
 {
   static let window = XitApp.sheets[.Clean.window]
 
-  static let modeControl = window.radioGroups[.Clean.Controls.mode]
+  static let fileMode = window.popUpButtons[.Clean.Controls.fileMode]
+  static let folderMode = window.popUpButtons[.Clean.Controls.folderMode]
 
-  enum Mode
+  enum FileMode
   {
-    // Use index because segments can't have accessibility IDs
-    static let untracked = modeControl.radioButtons.element(boundBy: 0)
-    static let ignored = modeControl.radioButtons.element(boundBy: 1)
-    static let all = modeControl.radioButtons.element(boundBy: 2)
+    static let untracked = window.menuItems["Untracked only"]
+    static let ignored = window.menuItems["Ignored only"]
+    static let all = window.menuItems["All"]
   }
 
-  static let directoriesCheck = window.checkBoxes[.Clean.Controls.directories]
+  enum FolderMode
+  {
+    static let cleanFolder = window.menuItems["Clean entire folder"]
+    static let recurse = window.menuItems["List contents"]
+    static let ignore = window.menuItems["Ignore"]
+  }
+
   static let filterPopup = window.popUpButtons[.Clean.Controls.filterType]
   static let selectedText = window.staticTexts[.Clean.Text.selected]
 

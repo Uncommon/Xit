@@ -82,7 +82,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     self.config = config
     
     super.init()
-}
+  }
   
   @objc(initWithURL:)
   convenience init?(url: URL)

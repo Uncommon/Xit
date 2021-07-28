@@ -43,6 +43,11 @@ enum CleanMode: Int, CaseIterable
   }
 }
 
+enum CleanFolderMode
+{
+  case clean, recurse, ignore
+}
+
 protocol CleanPanelDelegate: AnyObject
 {
   func closePanel()
@@ -72,7 +77,7 @@ class CleanData: ObservableObject
   }
 
   @Published var mode: CleanMode = .untracked
-  @Published var cleanFolders: Bool = false
+  @Published var folderMode: CleanFolderMode = .ignore
   @Published var filter: String = ""
   @Published var filterType: FilterType = .contains
   @Published var items: [CleanableItem] = []
@@ -83,7 +88,7 @@ class CleanData: ObservableObject
           filter.isEmpty ? nil : filterType.predicate(filter: filter)
 
     return items.filter {
-      (!$0.path.hasSuffix("/") || cleanFolders) &&
+      (!$0.path.hasSuffix("/") || folderMode == .clean) &&
       ($0.ignored && mode.shouldCleanIgnored ||
        !$0.ignored && mode.shouldCleanUntracked) &&
       (predicate?.evaluate(with: $0.path.lastPathComponent) ?? true)
@@ -103,22 +108,27 @@ struct CleanPanel: View
   var body: some View
   {
     VStack(alignment: .leading) {
-      HStack(alignment: .firstTextBaseline) {
-        Text("Clean:")
+      HStack {
+        Spacer()
         VStack(alignment: .leading) {
-          HStack(alignment: .firstTextBaseline) {
+          LabeledField("Files:",
             Picker(selection: $model.mode, label: EmptyView()) {
-              Text(" Untracked ").tag(CleanMode.untracked)
-              Text(" Ignored ").tag(CleanMode.ignored)
-              Text("  All   ").tag(CleanMode.all)
-            }.pickerStyle(SegmentedPickerStyle()).fixedSize()
-              .accessibilityIdentifier(.Clean.Controls.mode)
-            Text("files").fixedSize()
-          }
-          Toggle("Directories", isOn: $model.cleanFolders)
-            .accessibilityIdentifier(.Clean.Controls.directories)
+              Text("Untracked only").tag(CleanMode.untracked)
+              Text("Ignored only").tag(CleanMode.ignored)
+              Text("All").tag(CleanMode.all)
+            }.fixedSize()
+              .accessibilityIdentifier(.Clean.Controls.fileMode))
+          LabeledField("Folders:",
+            Picker(selection: $model.folderMode, label: EmptyView()) {
+              Text("Ignore").tag(CleanFolderMode.ignore)
+              Text("Clean entire folder").tag(CleanFolderMode.clean)
+              Text("List contents").tag(CleanFolderMode.recurse)
+            }.fixedSize())
+             .accessibilityIdentifier(.Clean.Controls.folderMode)
         }
-      }
+        Spacer()
+      }.padding(.bottom, 10)
+
       HStack {
         Picker(selection: $model.filterType, label: EmptyView()) {
           Text("Contains").tag(CleanData.FilterType.contains)
@@ -192,7 +202,7 @@ struct CleanPanel: View
           .disabled(model.filteredItems.isEmpty)
           .accessibilityIdentifier(.Clean.Button.cleanAll)
       }
-    }.frame(minWidth: 400).padding(20)
+    }.labelWidthGroup().frame(minWidth: 400).padding(20)
   }
 
   func confirmClean(_ message: String, onConfirm: @escaping () -> Void)

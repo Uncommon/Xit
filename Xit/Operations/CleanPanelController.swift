@@ -9,6 +9,8 @@ final class CleanPanelController: NSWindowController
   let repository: Repository
   let model = CleanData()
 
+  private var folderSubscriber: AnyCancellable?
+
   init(repository: Repository)
   {
     let panel = CleanPanel(model: model)
@@ -21,6 +23,8 @@ final class CleanPanelController: NSWindowController
     viewController.rootView = CleanPanel(delegate: self, model: model)
     refresh()
 
+    folderSubscriber = model.$folderMode.sink { self.refresh(folderMode: $0) }
+
     window.contentViewController = viewController
     window.contentMinSize = viewController.view.intrinsicContentSize
     window.setAccessibilityIdentifier(.Clean.window)
@@ -29,6 +33,18 @@ final class CleanPanelController: NSWindowController
   required init?(coder: NSCoder)
   {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  func refresh(folderMode: CleanFolderMode)
+  {
+    model.items = repository.unstagedChanges(
+        showIgnored: true,
+        recurseUntracked: model.mode != .ignored && folderMode == .recurse,
+        useCache: false)
+      .filter { $0.status.isCleanable }
+      .sorted { $0.path.lastPathComponent.localizedCompare(
+                  $1.path.lastPathComponent) == .orderedAscending}
+      .map { .init(path: $0.gitPath, ignored: $0.status == .ignored) }
   }
 }
 
@@ -56,12 +72,7 @@ extension CleanPanelController: CleanPanelDelegate
 
   func refresh()
   {
-    model.items = repository.unstagedChanges(showIgnored: true,
-                                             recurseUntracked: false)
-      .filter { $0.status.isCleanable }
-      .sorted { $0.path.lastPathComponent.localizedCompare(
-                  $1.path.lastPathComponent) == .orderedAscending}
-      .map { .init(path: $0.gitPath, ignored: $0.status == .ignored) }
+    refresh(folderMode: model.folderMode)
   }
 }
 

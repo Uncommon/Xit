@@ -85,14 +85,16 @@ class ModifyingUITests: XCTestCase
   
   func reset(modeButton: XCUIElement)
   {
-    env.write("some stuff", to: "README1.txt")
-    env.write("other stuff", to: "REAME_")
-    env.git.run(args: ["add", "REAME_"])
-    HistoryList.row(1).rightClick()
-    HistoryList.ContextMenu.resetItem.click()
-    XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
-    modeButton.click()
-    ResetSheet.resetButton.click()
+    XCTContext.runActivity(named: "Resetting") { _ in
+      env.write("some stuff", to: "README1.txt")
+      env.write("other stuff", to: "REAME_")
+      env.git.run(args: ["add", "REAME_"])
+      HistoryList.row(1).rightClick()
+      HistoryList.ContextMenu.resetItem.click()
+      XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
+      modeButton.click()
+      ResetSheet.resetButton.click()
+    }
   }
   
   func testResetSoft()
