@@ -245,6 +245,17 @@ class ReadOnlyUITests: XCTestCase
     ])
   }
 
+  func assertCleanFiles(_ names: [String],
+                        file: StaticString = #filePath, line: UInt = #line)
+  {
+    let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
+                               .map { $0.stringValue }
+
+    XCTAssertEqual(cellTitles, names)
+    XCTAssertEqual(CleanSheet.totalText.stringValue,
+                   "\(names.count) item(s) total")
+  }
+
   func testClean()
   {
     Toolbar.clean.click()
@@ -253,10 +264,8 @@ class ReadOnlyUITests: XCTestCase
 
     XCTContext.runActivity(named: "Initial state") { _ in
       XCTAssertEqual(CleanSheet.folderMode.stringValue, "Ignore")
-      XCTAssertEqual(CleanSheet.window.cells.count, 1)
-      XCTAssertEqual(CleanSheet.totalText.stringValue, "1 item(s) total")
       XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
-      XCTAssertEqual(cell1.staticTexts.firstMatch.stringValue, "UntrackedImage.png")
+      assertCleanFiles(["UntrackedImage.png"])
     }
 
     XCTContext.runActivity(named: "Cell selected") { _ in
@@ -269,29 +278,15 @@ class ReadOnlyUITests: XCTestCase
       CleanSheet.fileMode.click()
       CleanSheet.FileMode.ignored.click()
 
-      let ignoredNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"]
-      let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
-                                 .map { $0.stringValue }
-
-      XCTAssertEqual(CleanSheet.window.cells.count, ignoredNames.count)
-      XCTAssertEqual(CleanSheet.totalText.stringValue,
-                     "\(ignoredNames.count) item(s) total")
-      XCTAssertEqual(cellTitles, ignoredNames)
+      assertCleanFiles([".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"])
     }
 
     XCTContext.runActivity(named: "All files mode") { _ in
       CleanSheet.fileMode.click()
       CleanSheet.FileMode.all.click()
 
-      let allNames = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
-                      "UntrackedImage.png"]
-      let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
-                                 .map { $0.stringValue }
-
-      XCTAssertEqual(CleanSheet.window.cells.count, allNames.count)
-      XCTAssertEqual(CleanSheet.totalText.stringValue,
-                     "\(allNames.count) item(s) total")
-      XCTAssertEqual(cellTitles, allNames)
+      assertCleanFiles([".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
+                        "UntrackedImage.png"])
     }
   }
 }
