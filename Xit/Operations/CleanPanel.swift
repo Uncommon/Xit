@@ -113,16 +113,16 @@ struct CleanPanel: View
         VStack(alignment: .leading) {
           LabeledField("Files:",
             Picker(selection: $model.mode, label: EmptyView()) {
-              Text("Untracked only").tag(CleanMode.untracked)
-              Text("Ignored only").tag(CleanMode.ignored)
-              Text("All").tag(CleanMode.all)
+              Text(.untrackedOnly).tag(CleanMode.untracked)
+              Text(.ignoredOnly).tag(CleanMode.ignored)
+              Text(.all).tag(CleanMode.all)
             }.fixedSize()
               .accessibilityIdentifier(.Clean.Controls.fileMode))
           LabeledField("Folders:",
             Picker(selection: $model.folderMode, label: EmptyView()) {
-              Text("Ignore").tag(CleanFolderMode.ignore)
-              Text("Clean entire folder").tag(CleanFolderMode.clean)
-              Text("List contents").tag(CleanFolderMode.recurse)
+              Text(.ignore).tag(CleanFolderMode.ignore)
+              Text(.cleanEntireFolder).tag(CleanFolderMode.clean)
+              Text(.listContents).tag(CleanFolderMode.recurse)
             }.fixedSize())
              .accessibilityIdentifier(.Clean.Controls.folderMode)
         }
@@ -131,12 +131,12 @@ struct CleanPanel: View
 
       HStack {
         Picker(selection: $model.filterType, label: EmptyView()) {
-          Text("Contains").tag(CleanData.FilterType.contains)
-          Text("Wildcard").tag(CleanData.FilterType.wildcard)
-          Text("Regex").tag(CleanData.FilterType.regex)
+          Text(.contains).tag(CleanData.FilterType.contains)
+          Text(.wildcard).tag(CleanData.FilterType.wildcard)
+          Text(.regex).tag(CleanData.FilterType.regex)
         }.fixedSize()
           .accessibilityIdentifier(.Clean.Controls.filterType)
-        TextField("Filter", text: $model.filter)
+        TextField(.filter, text: $model.filter)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .accessibilityIdentifier(.Clean.Controls.filterField)
       }
@@ -167,16 +167,16 @@ struct CleanPanel: View
         PathControl(path: selection.first ?? "")
           .opacity(selection.count == 1 ? 1 : 0)
           .frame(maxWidth: .infinity)
-        Text("\(selection.count) items selected").foregroundColor(.secondary)
+        Text(.itemSelected(selection.count)).foregroundColor(.secondary)
           .opacity(selection.count > 1 ? 1 : 0)
           .accessibilityIdentifier(.Clean.Text.selected)
-        Text("No selection").foregroundColor(.secondary)
+        Text(.noSelection).foregroundColor(.secondary)
           .opacity(selection.isEmpty ? 1 : 0)
       }.fixedSize(horizontal: false, vertical: true)
       Spacer(minLength: 20)
 
       HStack {
-        Text("\(model.filteredItems.count) item(s) total")
+        Text(.itemsTotal(model.filteredItems.count))
           .lineLimit(1)
           .truncationMode(.tail)
           .accessibilityIdentifier(.Clean.Text.total)
@@ -186,8 +186,10 @@ struct CleanPanel: View
           Image(systemName: "arrow.clockwise")
         }.buttonStyle(BorderlessButtonStyle())
           .accessibilityIdentifier(.Clean.Button.refresh)
+
         Spacer()
-        Button("Cancel") {
+
+        Button(.cancel) {
           delegate?.closePanel()
         }.keyboardShortcut(.cancelAction)
           .accessibilityIdentifier(.Clean.Button.cancel)
