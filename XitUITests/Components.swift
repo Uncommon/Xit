@@ -233,6 +233,19 @@ enum CleanSheet
   static let cancelButton = window.buttons[.Clean.Button.cancel]
   static let cleanSelectedButton = window.buttons[.Clean.Button.cleanSelected]
   static let cleanAllButton = window.buttons[.Clean.Button.cleanAll]
+
+  static func assertCleanFiles(_ names: [String],
+                               file: StaticString = #filePath,
+                               line: UInt = #line)
+  {
+    let cellTitles = window.cells.staticTexts.allElementsBoundByIndex
+                           .map { $0.stringValue }
+
+    XCTAssertEqual(cellTitles, names, file: file, line: line)
+    XCTAssertEqual(totalText.stringValue,
+                   "\(names.count) item(s) total",
+                   file: file, line: line)
+  }
 }
 
 enum ResetSheet

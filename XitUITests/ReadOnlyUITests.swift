@@ -245,17 +245,6 @@ class ReadOnlyUITests: XCTestCase
     ])
   }
 
-  func assertCleanFiles(_ names: [String],
-                        file: StaticString = #filePath, line: UInt = #line)
-  {
-    let cellTitles = CleanSheet.window.cells.staticTexts.allElementsBoundByIndex
-                               .map { $0.stringValue }
-
-    XCTAssertEqual(cellTitles, names)
-    XCTAssertEqual(CleanSheet.totalText.stringValue,
-                   "\(names.count) item(s) total")
-  }
-
   func testClean()
   {
     Toolbar.clean.click()
@@ -265,7 +254,7 @@ class ReadOnlyUITests: XCTestCase
     XCTContext.runActivity(named: "Initial state") { _ in
       XCTAssertEqual(CleanSheet.folderMode.stringValue, "Ignore")
       XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
-      assertCleanFiles(["UntrackedImage.png"])
+      CleanSheet.assertCleanFiles(["UntrackedImage.png"])
     }
 
     XCTContext.runActivity(named: "Cell selected") { _ in
@@ -278,15 +267,17 @@ class ReadOnlyUITests: XCTestCase
       CleanSheet.fileMode.click()
       CleanSheet.FileMode.ignored.click()
 
-      assertCleanFiles([".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"])
+      CleanSheet.assertCleanFiles(
+          [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"])
     }
 
     XCTContext.runActivity(named: "All files mode") { _ in
       CleanSheet.fileMode.click()
       CleanSheet.FileMode.all.click()
 
-      assertCleanFiles([".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
-                        "UntrackedImage.png"])
+      CleanSheet.assertCleanFiles(
+          [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
+           "UntrackedImage.png"])
     }
   }
 }

@@ -18,6 +18,12 @@ extension CleanableItem: Identifiable
   var id: String { path }
 }
 
+extension CleanableItem: Equatable
+{
+  static func ==(lhs: CleanableItem, rhs: CleanableItem) -> Bool
+  { lhs.path == rhs.path }
+}
+
 enum CleanMode: Int, CaseIterable
 {
   case all, untracked, ignored
@@ -103,6 +109,8 @@ struct CleanPanel: View
   @ObservedObject var model: CleanData
 
   @State private var selection: Set<String> = []
+  @State private var cleanSelectedAlertShown = false
+  @State private var cleanAllAlertShown = false
   @Environment(\.window) private var window: NSWindow
 
   var body: some View
@@ -193,59 +201,59 @@ struct CleanPanel: View
           delegate?.closePanel()
         }.keyboardShortcut(.cancelAction)
           .accessibilityIdentifier(.Clean.Button.cancel)
-        Button("Clean Selected") {
-          cleanSelected()
+        Button(.cleanSelected) {
+          cleanSelectedAlertShown = true
         }.keyboardShortcut(.delete)
           .disabled(selection.isEmpty)
+          .alert(isPresented: $cleanSelectedAlertShown) {
+            confirmCleanAlert(.confirmCleanSelected, onConfirm: cleanSelected)
+          }
           .accessibilityIdentifier(.Clean.Button.cleanSelected)
-        Button("Clean All") {
-          cleanAll()
+        Button(.cleanAll) {
+          cleanAllAlertShown = true
         }.keyboardShortcut(.defaultAction)
           .disabled(model.filteredItems.isEmpty)
+          .alert(isPresented: $cleanAllAlertShown) {
+            confirmCleanAlert(.confirmCleanAll, onConfirm: cleanAll)
+          }
           .accessibilityIdentifier(.Clean.Button.cleanAll)
       }
     }.labelWidthGroup().frame(minWidth: 400).padding(20)
+      .onChange(of: model.filteredItems) {
+        (newValue) in
+        selection.formIntersection(newValue.map { $0.path })
+      }
   }
 
-  func confirmClean(_ message: String, onConfirm: @escaping () -> Void)
+  func confirmCleanAlert(_ message: UIString, onConfirm: @escaping () -> Void)
+    -> Alert
   {
-    let alert = NSAlert()
-
-    alert.messageText = message
-    alert.addButton(withTitle: "Cancel")
-    alert.addButton(withTitle: "Delete")
-    alert.beginSheetModal(for: window) {
-      guard $0 == .OK
-      else { return }
-
-      onConfirm()
-    }
+    Alert(title: Text(message),
+          primaryButton: .destructive(Text(.delete),
+                                      action: onConfirm),
+          secondaryButton: .cancel())
   }
 
   func cleanSelected()
   {
-    confirmClean("Are you sure you want to delete the selected files?") {
-      do {
-        try delegate?.clean(Array(selection))
-      }
-      catch {
-        // show error
-      }
-      delegate?.refresh()
+    do {
+      try delegate?.clean(Array(selection))
     }
+    catch {
+      // show error
+    }
+    delegate?.refresh()
   }
 
   func cleanAll()
   {
-    confirmClean("Are you sure you want to clean all listed files?") {
-      do {
-        try delegate?.clean(model.filteredItems.map { $0.path })
-        delegate?.closePanel()
-      }
-      catch {
-        // show error
-      }
+    do {
+      try delegate?.clean(model.filteredItems.map { $0.path })
     }
+    catch {
+      // show error
+    }
+    delegate?.refresh()
   }
 }
 

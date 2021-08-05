@@ -203,4 +203,25 @@ class ModifyingUITests: XCTestCase
     HistoryList.row(0).click()
     XCTAssertEqual(CommitHeader.messageField.stringValue, enteredText)
   }
+
+  func testClean()
+  {
+    env.open()
+
+    Toolbar.clean.click()
+    CleanSheet.fileMode.click()
+    CleanSheet.FileMode.ignored.click()
+    CleanSheet.window.cells.firstMatch.click()
+    CleanSheet.cleanSelectedButton.click()
+    XitApp.sheets.buttons["Delete"].click()
+
+    CleanSheet.assertCleanFiles(["joshaber.pbxuser", "joshaber.perspectivev3"])
+    XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+
+    CleanSheet.cleanAllButton.click()
+    XitApp.sheets.buttons["Delete"].click()
+
+    CleanSheet.assertCleanFiles([])
+    XCTAssertFalse(CleanSheet.cleanAllButton.isEnabled)
+  }
 }

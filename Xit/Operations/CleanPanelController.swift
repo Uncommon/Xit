@@ -88,12 +88,3 @@ extension DeltaStatus
     }
   }
 }
-
-extension Binding
-{
-  init<T>(_ object: T, keyPath: ReferenceWritableKeyPath<T, Value>)
-  {
-    self.init(get: { object[keyPath: keyPath] },
-              set: { object[keyPath: keyPath] = $0 })
-  }
-}
