@@ -225,17 +225,20 @@ class FakeFileChangesRepo: FileChangesRepo
   func unstageAllFiles() throws {}
   
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
-  { return [] }
+  { [] }
   func stagedChanges() -> [FileChange] { return [] }
-  func unstagedChanges(showIgnored: Bool) -> [FileChange] { return [] }
+  func unstagedChanges(showIgnored: Bool,
+                       recurseUntracked: Bool,
+                       useCache: Bool) -> [FileChange]
+  { [] }
   func amendingStagedChanges() -> [FileChange] { return [] }
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func stagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func unstagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
-  func isIgnored(path: String) -> Bool { return false }
+  { .unmodified }
+  func isIgnored(path: String) -> Bool { false }
 }

@@ -75,6 +75,7 @@
 		C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9120EDE23EE04C00052387E /* ResetPanelController.swift */; };
 		C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9120EDF23EE04C00052387E /* ResetPanelController.xib */; };
 		C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91727B523689F500023DC57 /* ReadOnlyUITests.swift */; };
+		C919B9E526B09F4D007952FA /* LabeledField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919B9D326B09F4D007952FA /* LabeledField.swift */; };
 		C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91E9A001D527A1300E128AC /* HistoryTableController.swift */; };
 		C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; };
 		C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C91F346F1D30647E005F9BDF /* Siesta.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -223,6 +224,16 @@
 		C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */; };
 		C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */; };
 		C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */; };
+		C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */; };
+		C9C30137269E09EF00EBBBC8 /* PathControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30136269E09EF00EBBBC8 /* PathControl.swift */; };
+		C9C30139269E2D8100EBBBC8 /* CleanPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30138269E2D8100EBBBC8 /* CleanPanelController.swift */; };
+		C9C3013B269E4A7100EBBBC8 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3013A269E4A7100EBBBC8 /* Environment.swift */; };
+		C9C3013D269F771200EBBBC8 /* CleanOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3013C269F771200EBBBC8 /* CleanOpController.swift */; };
+		C9C3013F26A2816F00EBBBC8 /* AXID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3013E26A2816F00EBBBC8 /* AXID.swift */; };
+		C9C3014126A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3014026A5BB7D00EBBBC8 /* AXIdentifiers.swift */; };
+		C9C3014226A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3014026A5BB7D00EBBBC8 /* AXIdentifiers.swift */; };
+		C9C3014426A5BBFD00EBBBC8 /* AXIDTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3014326A5BBFD00EBBBC8 /* AXIDTest.swift */; };
+		C9C3014526A5BC4800EBBBC8 /* AXID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3013E26A2816F00EBBBC8 /* AXID.swift */; };
 		C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */; };
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
@@ -525,6 +536,7 @@
 		C91727B323689F500023DC57 /* XitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C91727B523689F500023DC57 /* ReadOnlyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyUITests.swift; sourceTree = "<group>"; };
 		C91727B723689F500023DC57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C919B9D326B09F4D007952FA /* LabeledField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledField.swift; sourceTree = "<group>"; };
 		C91E9A001D527A1300E128AC /* HistoryTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableController.swift; sourceTree = "<group>"; };
 		C91F34631D30647D005F9BDF /* Siesta.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Siesta.xcodeproj; path = siesta/Siesta.xcodeproj; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
@@ -673,6 +685,14 @@
 		C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RenameBranchPanelController.xib; sourceTree = "<group>"; };
 		C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Actions.swift"; sourceTree = "<group>"; };
 		C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Files.swift"; sourceTree = "<group>"; };
+		C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPanel.swift; sourceTree = "<group>"; };
+		C9C30136269E09EF00EBBBC8 /* PathControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathControl.swift; sourceTree = "<group>"; };
+		C9C30138269E2D8100EBBBC8 /* CleanPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPanelController.swift; sourceTree = "<group>"; };
+		C9C3013A269E4A7100EBBBC8 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		C9C3013C269F771200EBBBC8 /* CleanOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanOpController.swift; sourceTree = "<group>"; };
+		C9C3013E26A2816F00EBBBC8 /* AXID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXID.swift; sourceTree = "<group>"; };
+		C9C3014026A5BB7D00EBBBC8 /* AXIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXIdentifiers.swift; sourceTree = "<group>"; };
+		C9C3014326A5BBFD00EBBBC8 /* AXIDTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXIDTest.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsWindowController.swift; sourceTree = "<group>"; };
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
@@ -781,9 +801,11 @@
 				C9EA19082350E5DE00DDAA25 /* CocoaExtensions.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
+				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
+				C919B9D326B09F4D007952FA /* LabeledField.swift */,
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
@@ -794,6 +816,7 @@
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
+				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -894,6 +917,8 @@
 				31C7C12A13EC730500A65FE9 /* Utils */,
 				894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */,
 				C90F92771E0199E400FE8589 /* AppDelegate.swift */,
+				C9C3013E26A2816F00EBBBC8 /* AXID.swift */,
+				C9C3014026A5BB7D00EBBBC8 /* AXIdentifiers.swift */,
 				C900464F211501CB00706029 /* Colors.swift */,
 				C967AAB41FAA45B3008A4DF0 /* Debug.swift */,
 				C9F1B5EF2217264A00293305 /* Nibs.swift */,
@@ -1133,6 +1158,9 @@
 		C9790D0920EED4E10024D3EA /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */,
+				C9C30138269E2D8100EBBBC8 /* CleanPanelController.swift */,
+				C9C3013C269F771200EBBBC8 /* CleanOpController.swift */,
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
 				C90FD5941D217D5B00A30570 /* FetchPanelController.swift */,
 				C90FD5951D217D5B00A30570 /* FetchPanelController.xib */,
@@ -1220,6 +1248,7 @@
 				C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */,
 				C94107CC236B427700D4B0D7 /* TestRepo.swift */,
 				C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */,
+				C9C3014326A5BBFD00EBBBC8 /* AXIDTest.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1589,6 +1618,7 @@
 				C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */,
 				C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */,
 				C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */,
+				C919B9E526B09F4D007952FA /* LabeledField.swift in Sources */,
 				C957B84B1D2D53040040F858 /* SheetController.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
@@ -1597,6 +1627,8 @@
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
 				C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */,
 				895CD52E265379450073F15A /* CommitPanel.swift in Sources */,
+				C9C30137269E09EF00EBBBC8 /* PathControl.swift in Sources */,
+				C9C3013B269E4A7100EBBBC8 /* Environment.swift in Sources */,
 				C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */,
 				C957B8541D2D533C0040F858 /* AddAccountController.swift in Sources */,
 				C9DB64451EA534A0003015D6 /* XTRepository+Iterators.swift in Sources */,
@@ -1604,6 +1636,7 @@
 				C9BDF4C11D99A70F0034841F /* RenameBranchOpController.swift in Sources */,
 				C948D5B71D2C6A4800F72A27 /* AccountsPrefsController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
+				C9C3013F26A2816F00EBBBC8 /* AXID.swift in Sources */,
 				C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */,
 				895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */,
 				C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */,
@@ -1651,6 +1684,7 @@
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				89D0630E25CC5C6D00EF5020 /* CommitHeader.swift in Sources */,
+				C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
 				C9FFCC881FB3B1D000FA2F21 /* TreeLoader.swift in Sources */,
 				C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */,
@@ -1661,6 +1695,7 @@
 				C90A09F722F4E55100B42EFE /* RefName.swift in Sources */,
 				C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */,
 				C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */,
+				C9C3013D269F771200EBBBC8 /* CleanOpController.swift in Sources */,
 				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,
 				C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */,
 				C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */,
@@ -1705,6 +1740,7 @@
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
 				C959A7271F6C8440004277CD /* GitBlob.swift in Sources */,
 				C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */,
+				C9C3014126A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
 				C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
@@ -1751,6 +1787,7 @@
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */,
+				C9C30139269E2D8100EBBBC8 /* CleanPanelController.swift in Sources */,
 				891261B01F867FCC00C292B7 /* GitTree.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */,
 				C98AFFB22502CF6700AD20EC /* GitBuffer.swift in Sources */,
@@ -1813,14 +1850,17 @@
 			files = (
 				C90FD41D23845679006358C7 /* ModifyingUITests.swift in Sources */,
 				C90FD40B237F685B006358C7 /* StringExtensions.swift in Sources */,
+				C9C3014526A5BC4800EBBBC8 /* AXID.swift in Sources */,
 				C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */,
 				C954C1652374BF5B000D5339 /* Components.swift in Sources */,
 				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
 				C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */,
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
+				C9C3014226A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				891052D92523F3D30095E299 /* TestErrors.swift in Sources */,
 				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,
+				C9C3014426A5BBFD00EBBBC8 /* AXIDTest.swift in Sources */,
 				C954C1662374E493000D5339 /* CLIRunner.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 			);

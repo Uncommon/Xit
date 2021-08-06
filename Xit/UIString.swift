@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // swiftlint:disable line_length
 
@@ -199,7 +200,31 @@ struct UIString: RawRepresentable
   { UIString(format: UIString.authFailedTemplate, service, account) }
   static func buildStatus(_ branch: String) -> UIString
   { UIString(format: UIString.buildStatusTemplate, branch) }
-  
+
+  // Clone
+  static let untrackedOnly = ›"Untracked only"
+  static let ignoredOnly = ›"Ignored only"
+  static let all = ›"All"
+  static let ignore = ›"Ignore"
+  static let cleanEntireFolder = ›"Clean entire folder"
+  static let listContents = ›"List contents"
+  static let contains = ›"Contains"
+  static let wildcard = ›"Wildcard"
+  static let regex = ›"Regex"
+  static let filter = ›"Filter"
+  static let cleanAll = ›"Clean All"
+  static let cleanSelected = ›"Clean Selected"
+  static let confirmCleanAll = ›"Are you sure you want to delete all listed files?"
+  static let confirmCleanSelected = ›"Are you sure you want to delete the selected file(s)?"
+
+  static let itemsSelectedTemplate = "%d items selected"
+  static let itemsTotalTemplate = "%d item(s) total"
+
+  static func itemSelected(_ count: Int) -> UIString
+  { .init(format: UIString.itemsSelectedTemplate, count) }
+  static func itemsTotal(_ count: Int) -> UIString
+  { .init(format: itemsTotalTemplate, count) }
+
   // Pull request status
   static let approved = ›"Approved"
   static let needsWork = ›"Needs work"
@@ -394,4 +419,33 @@ extension NSSegmentedControl
               trackingMode: trackingMode,
               target: target, action: action)
   }
+}
+
+extension Button where Label == Text
+{
+  init(_ string: UIString, action: @escaping () -> Void)
+  {
+    self.init(string.rawValue, action: action)
+  }
+}
+
+extension Text
+{
+  init(_ string: UIString)
+  {
+    self.init(verbatim: string.rawValue)
+  }
+}
+
+extension TextField where Label == Text
+{
+  init(_ title: UIString,
+       text: Binding<String>,
+       onEditingChanged: @escaping (Bool) -> Void = { _ in },
+       onCommit: @escaping () -> Void = {})
+  {
+    self.init(title.rawValue, text: text,
+              onEditingChanged: onEditingChanged, onCommit: onCommit)
+  }
+
 }

@@ -85,14 +85,16 @@ class ModifyingUITests: XCTestCase
   
   func reset(modeButton: XCUIElement)
   {
-    env.write("some stuff", to: "README1.txt")
-    env.write("other stuff", to: "REAME_")
-    env.git.run(args: ["add", "REAME_"])
-    HistoryList.row(1).rightClick()
-    HistoryList.ContextMenu.resetItem.click()
-    XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
-    modeButton.click()
-    ResetSheet.resetButton.click()
+    XCTContext.runActivity(named: "Resetting") { _ in
+      env.write("some stuff", to: "README1.txt")
+      env.write("other stuff", to: "REAME_")
+      env.git.run(args: ["add", "REAME_"])
+      HistoryList.row(1).rightClick()
+      HistoryList.ContextMenu.resetItem.click()
+      XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
+      modeButton.click()
+      ResetSheet.resetButton.click()
+    }
   }
   
   func testResetSoft()
@@ -200,5 +202,31 @@ class ModifyingUITests: XCTestCase
     CommitEntry.commitButton.click()
     HistoryList.row(0).click()
     XCTAssertEqual(CommitHeader.messageField.stringValue, enteredText)
+  }
+
+  func testClean()
+  {
+    env.open()
+
+    Toolbar.clean.click()
+    CleanSheet.fileMode.click()
+    CleanSheet.FileMode.ignored.click()
+
+    XCTContext.runActivity(named: "Clean selected") { _ in
+      CleanSheet.window.cells.firstMatch.click()
+      CleanSheet.cleanSelectedButton.click()
+      XitApp.sheets.buttons["Delete"].click()
+
+      CleanSheet.assertCleanFiles(["joshaber.pbxuser", "joshaber.perspectivev3"])
+      XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+    }
+
+    XCTContext.runActivity(named: "Clean all") { _ in
+      CleanSheet.cleanAllButton.click()
+      XitApp.sheets.buttons["Delete"].click()
+
+      CleanSheet.assertCleanFiles([])
+      XCTAssertFalse(CleanSheet.cleanAllButton.isEnabled)
+    }
   }
 }

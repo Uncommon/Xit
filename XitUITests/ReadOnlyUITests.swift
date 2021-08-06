@@ -7,11 +7,15 @@ class ReadOnlyUITests: XCTestCase
 
   override class func setUp()
   {
-    env = TestRepoEnvironment(.testApp, testName: self.description())!
+    env = TestRepoEnvironment(.testApp, testName: self.description())
   }
   
-  override func setUp()
+  override func setUpWithError() throws
   {
+    if Self.env == nil {
+      // Error should have been logged in setUp()
+      throw XCTSkip()
+    }
     Self.env.open()
   }
   
@@ -168,68 +172,144 @@ class ReadOnlyUITests: XCTestCase
     HistoryList.ContextMenu.resetItem.click()
     
     XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
-    XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Sets the current branch to point to the selected commit, and \
-                   all staged changes are forgotten. Workspace files are not changed.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "There are changes, but this option will preserve them.")
-    
-    ResetSheet.softButton.click()
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Sets the current branch to point to the selected commit, but \
-                   staged changes are retained and workspace files are not changed.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "There are changes, but this option will preserve them.")
 
-    ResetSheet.hardButton.click()
-    XCTAssertEqual(ResetSheet.modeDescription.stringValue,
-                   """
-                   Clears all staged and workspace changes, and sets the current \
-                   branch to point to the selected commit.
-                   """)
-    XCTAssertEqual(ResetSheet.statusText.stringValue,
-                   "You have uncommitted changes that will be lost with this option.")
+    XCTContext.runActivity(named: "Mixed mode") { _ in
+      XCTAssertTrue(ResetSheet.mixedButton.intValue == 1)
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Sets the current branch to point to the selected commit, and \
+                     all staged changes are forgotten. Workspace files are not changed.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "There are changes, but this option will preserve them.")
+    }
+
+    XCTContext.runActivity(named: "Soft mode") { _ in
+      ResetSheet.softButton.click()
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Sets the current branch to point to the selected commit, but \
+                     staged changes are retained and workspace files are not changed.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "There are changes, but this option will preserve them.")
+    }
+
+    XCTContext.runActivity(named: "Hard mode") { _ in
+      ResetSheet.hardButton.click()
+      XCTAssertEqual(ResetSheet.modeDescription.stringValue,
+                     """
+                     Clears all staged and workspace changes, and sets the current \
+                     branch to point to the selected commit.
+                     """)
+      XCTAssertEqual(ResetSheet.statusText.stringValue,
+                     "You have uncommitted changes that will be lost with this option.")
+    }
   }
   
-  func checkPopup(button: XCUIElement, menu: XCUIElement, itemTitles: [String],
+  func checkPopup(_ context: String,
+                  button: XCUIElement, menu: XCUIElement, itemTitles: [String],
                   file: StaticString = #file, line: UInt = #line)
   {
-    button.press(forDuration: 0.5)
-    
-    XCTAssertTrue(menu.isHittable)
-    XCTAssertEqual(menu.menuItems.count, itemTitles.count,
-                   "wrong number of items", file: file, line: line)
-    
-    for (index, title) in itemTitles.enumerated() {
-      XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
-                     file: file, line: line)
+    XCTContext.runActivity(named: context) { _ in
+      button.press(forDuration: 0.5)
+
+      XCTAssertTrue(menu.isHittable)
+      XCTAssertEqual(menu.menuItems.count, itemTitles.count,
+                     "wrong number of items", file: file, line: line)
+
+      for (index, title) in itemTitles.enumerated() {
+        XCTAssertEqual(menu.menuItems.element(boundBy: index).title, title,
+                       file: file, line: line)
+      }
+      XitApp.typeKey(.escape, modifierFlags: [])
     }
-    XitApp.typeKey(.escape, modifierFlags: [])
   }
   
   func testRepoOpMenus()
   {
-    checkPopup(button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
+    checkPopup("Fetch menu",
+               button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
       "Fetch all remotes",
       "Fetch \"origin/master\"",
       "",
       "Fetch remote \"origin\"",
     ])
     
-    checkPopup(button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
+    checkPopup("Push menu",
+               button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
       "Push to \"origin/master\"",
       "",
       "Push to any tracking branches on \"origin\"",
     ])
     
-    checkPopup(button: Window.pullButton, menu: Window.pullMenu, itemTitles: [
+    checkPopup("Pull menu",
+               button: Window.pullButton, menu: Window.pullMenu, itemTitles: [
       "Pull from \"origin/master\""
     ])
+  }
+
+  func testClean() throws
+  {
+    Toolbar.clean.click()
+
+    let cell1 = CleanSheet.window.cells.firstMatch
+
+    XCTContext.runActivity(named: "Initial state") { _ in
+      XCTAssertEqual(CleanSheet.folderMode.stringValue, "Ignore")
+      XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+      CleanSheet.assertCleanFiles(["UntrackedImage.png"])
+    }
+
+    XCTContext.runActivity(named: "Cell selected") { _ in
+      cell1.click()
+
+      XCTAssertTrue(CleanSheet.cleanSelectedButton.isEnabled)
+    }
+
+    XCTContext.runActivity(named: "Ignored mode") { _ in
+      CleanSheet.fileMode.click()
+      CleanSheet.FileMode.ignored.click()
+
+      CleanSheet.assertCleanFiles(
+          [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"])
+    }
+
+    let allFiles = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
+                    "UntrackedImage.png"]
+
+    XCTContext.runActivity(named: "All files mode") { _ in
+      CleanSheet.fileMode.click()
+      CleanSheet.FileMode.all.click()
+
+      CleanSheet.assertCleanFiles(allFiles)
+    }
+
+    // Because .DS_Store is first in the list, clean should fail without
+    // deleting any files, so the repo should remain unmodified.
+    try XCTContext.runActivity(named: "Attempt to clean locked file") { _ in
+      let url = Self.env.repoURL.appendingPathComponent(".DS_Store")
+
+      XCTAssertNoThrow(try FileManager.default
+          .setAttributes([.immutable: NSNumber(booleanLiteral: true)],
+                         ofItemAtPath: url.path))
+      addTeardownBlock {
+        try? FileManager.default
+          .setAttributes([.immutable: NSNumber(booleanLiteral: false)],
+                         ofItemAtPath: url.path)
+      }
+      cell1.click()
+      CleanSheet.cleanSelectedButton.click()
+      XitApp.sheets.buttons["Delete"].click() // confirmation
+      XitApp.sheets.buttons["OK"].click() // locked file error
+
+      CleanSheet.cleanAllButton.click()
+      XitApp.sheets.buttons["Delete"].click()
+      XitApp.sheets.buttons["OK"].click()
+
+      CleanSheet.refreshButton.click()
+      CleanSheet.assertCleanFiles(allFiles)
+    }
   }
 }
 
