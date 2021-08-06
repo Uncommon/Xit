@@ -20,7 +20,7 @@ extension CleanableItem: Identifiable
 
 extension CleanableItem: Equatable
 {
-  static func ==(lhs: CleanableItem, rhs: CleanableItem) -> Bool
+  static func == (lhs: CleanableItem, rhs: CleanableItem) -> Bool
   { lhs.path == rhs.path }
 }
 
@@ -57,6 +57,7 @@ enum CleanFolderMode
 protocol CleanPanelDelegate: AnyObject
 {
   func closePanel()
+  /// Should throw `CleanPanel.CleanError`
   func clean(_ files: [String]) throws
   func refresh()
 }
@@ -106,11 +107,20 @@ struct CleanPanel: View
 {
   weak var delegate: CleanPanelDelegate?
 
+  struct CleanError: Error, Identifiable
+  {
+    let path: String
+    let orginal: Error
+
+    var id: String { path }
+  }
+
   @ObservedObject var model: CleanData
 
   @State private var selection: Set<String> = []
   @State private var cleanSelectedAlertShown = false
   @State private var cleanAllAlertShown = false
+  @State private var cleanError: CleanError?
   @Environment(\.window) private var window: NSWindow
 
   var body: some View
@@ -159,7 +169,7 @@ struct CleanPanel: View
             .accessibilityIdentifier(.Clean.List.fileName)
           Spacer()
           Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
-            .frame(width: 16)
+            .frame(width: 20)
             // If the user drags to select multiple items, this doesn't update
             // until the drag is finished.
             .foregroundColor(selection.contains(item.path)
@@ -170,6 +180,7 @@ struct CleanPanel: View
         .border(Color(.separatorColor))
         .frame(minWidth: 200, minHeight: 100)
         .accessibilityIdentifier(.Clean.Controls.fileList)
+
       ZStack(alignment: .leading) {
         // path must be non-nil or else the control will be a different size
         PathControl(path: selection.first ?? "")
@@ -181,6 +192,7 @@ struct CleanPanel: View
         Text(.noSelection).foregroundColor(.secondary)
           .opacity(selection.isEmpty ? 1 : 0)
       }.fixedSize(horizontal: false, vertical: true)
+
       Spacer(minLength: 20)
 
       HStack {
@@ -201,6 +213,12 @@ struct CleanPanel: View
           delegate?.closePanel()
         }.keyboardShortcut(.cancelAction)
           .accessibilityIdentifier(.Clean.Button.cancel)
+          // This isn't related to the Cancel button, but putting it higher up
+          // in the view hierarchy makes the confirmation alerts not show.
+          .alert(item: $cleanError) { (error) in
+            Alert(title: Text("An error occurred while deleting files."),
+                  message: Text("\(error.path)\n\n\(error.orginal.localizedDescription)"))
+          }
         Button(.cleanSelected) {
           cleanSelectedAlertShown = true
         }.keyboardShortcut(.delete)
@@ -239,9 +257,10 @@ struct CleanPanel: View
     do {
       try delegate?.clean(Array(selection))
     }
-    catch {
-      // show error
+    catch let error as CleanError {
+      cleanError = error
     }
+    catch {}
     delegate?.refresh()
   }
 
@@ -250,9 +269,10 @@ struct CleanPanel: View
     do {
       try delegate?.clean(model.filteredItems.map { $0.path })
     }
-    catch {
-      // show error
+    catch let error as CleanError {
+      cleanError = error
     }
+    catch {}
     delegate?.refresh()
   }
 }

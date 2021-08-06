@@ -65,7 +65,12 @@ extension CleanPanelController: CleanPanelDelegate
       let url = repository.fileURL(path)
 
       if fileManager.fileExists(atPath: url.path) {
-        try fileManager.removeItem(at: url)
+        do {
+          try fileManager.removeItem(at: url)
+        }
+        catch let error {
+          throw CleanPanel.CleanError(path: path, orginal: error)
+        }
       }
     }
   }

@@ -211,17 +211,22 @@ class ModifyingUITests: XCTestCase
     Toolbar.clean.click()
     CleanSheet.fileMode.click()
     CleanSheet.FileMode.ignored.click()
-    CleanSheet.window.cells.firstMatch.click()
-    CleanSheet.cleanSelectedButton.click()
-    XitApp.sheets.buttons["Delete"].click()
 
-    CleanSheet.assertCleanFiles(["joshaber.pbxuser", "joshaber.perspectivev3"])
-    XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+    XCTContext.runActivity(named: "Clean selected") { _ in
+      CleanSheet.window.cells.firstMatch.click()
+      CleanSheet.cleanSelectedButton.click()
+      XitApp.sheets.buttons["Delete"].click()
 
-    CleanSheet.cleanAllButton.click()
-    XitApp.sheets.buttons["Delete"].click()
+      CleanSheet.assertCleanFiles(["joshaber.pbxuser", "joshaber.perspectivev3"])
+      XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+    }
 
-    CleanSheet.assertCleanFiles([])
-    XCTAssertFalse(CleanSheet.cleanAllButton.isEnabled)
+    XCTContext.runActivity(named: "Clean all") { _ in
+      CleanSheet.cleanAllButton.click()
+      XitApp.sheets.buttons["Delete"].click()
+
+      CleanSheet.assertCleanFiles([])
+      XCTAssertFalse(CleanSheet.cleanAllButton.isEnabled)
+    }
   }
 }

@@ -7,11 +7,15 @@ class ReadOnlyUITests: XCTestCase
 
   override class func setUp()
   {
-    env = TestRepoEnvironment(.testApp, testName: self.description())!
+    env = TestRepoEnvironment(.testApp, testName: self.description())
   }
   
-  override func setUp()
+  override func setUpWithError() throws
   {
+    if Self.env == nil {
+      // Error should have been logged in setUp()
+      throw XCTSkip()
+    }
     Self.env.open()
   }
   
@@ -245,7 +249,7 @@ class ReadOnlyUITests: XCTestCase
     ])
   }
 
-  func testClean()
+  func testClean() throws
   {
     Toolbar.clean.click()
 
@@ -271,13 +275,40 @@ class ReadOnlyUITests: XCTestCase
           [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3"])
     }
 
+    let allFiles = [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
+                    "UntrackedImage.png"]
+
     XCTContext.runActivity(named: "All files mode") { _ in
       CleanSheet.fileMode.click()
       CleanSheet.FileMode.all.click()
 
-      CleanSheet.assertCleanFiles(
-          [".DS_Store", "joshaber.pbxuser", "joshaber.perspectivev3",
-           "UntrackedImage.png"])
+      CleanSheet.assertCleanFiles(allFiles)
+    }
+
+    // Because .DS_Store is first in the list, clean should fail without
+    // deleting any files, so the repo should remain unmodified.
+    try XCTContext.runActivity(named: "Attempt to clean locked file") { _ in
+      let url = Self.env.repoURL.appendingPathComponent(".DS_Store")
+
+      XCTAssertNoThrow(try FileManager.default
+          .setAttributes([.immutable: NSNumber(booleanLiteral: true)],
+                         ofItemAtPath: url.path))
+      addTeardownBlock {
+        try? FileManager.default
+          .setAttributes([.immutable: NSNumber(booleanLiteral: false)],
+                         ofItemAtPath: url.path)
+      }
+      cell1.click()
+      CleanSheet.cleanSelectedButton.click()
+      XitApp.sheets.buttons["Delete"].click() // confirmation
+      XitApp.sheets.buttons["OK"].click() // locked file error
+
+      CleanSheet.cleanAllButton.click()
+      XitApp.sheets.buttons["Delete"].click()
+      XitApp.sheets.buttons["OK"].click()
+
+      CleanSheet.refreshButton.click()
+      CleanSheet.assertCleanFiles(allFiles)
     }
   }
 }
