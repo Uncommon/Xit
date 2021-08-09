@@ -215,6 +215,15 @@ extension Sequence where Iterator.Element: Hashable
   }
 }
 
+extension Sequence
+{
+  func sorted<T>(byKeyPath keyPath: KeyPath<Element, T>) -> [Element]
+    where T: Comparable
+  {
+    sorted(by: { $0[keyPath: keyPath] < $1[keyPath: keyPath] })
+  }
+}
+
 extension NSMutableArray
 {
   func sort(keyPath key: String, ascending: Bool = true)

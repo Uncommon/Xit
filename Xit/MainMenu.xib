@@ -401,6 +401,12 @@ DQ
                                     <action selector="stash:" target="-1" id="Xyb-Rg-trG"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Clean..." id="W4I-UU-4ym">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="clean:" target="-1" id="lPR-6w-Tep"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="614"/>
                             <menuItem title="Check Out Branch" id="612">
                                 <modifierMask key="keyEquivalentModifierMask"/>

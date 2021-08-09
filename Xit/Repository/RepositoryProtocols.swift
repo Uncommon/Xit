@@ -80,7 +80,9 @@ public protocol FileStatusDetection: AnyObject
 
   func stagedChanges() -> [FileChange]
   func amendingStagedChanges() -> [FileChange]
-  func unstagedChanges(showIgnored: Bool) -> [FileChange]
+  func unstagedChanges(showIgnored: Bool,
+                       recurseUntracked: Bool,
+                       useCache: Bool) -> [FileChange]
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
   func stagedStatus(for path: String) throws -> DeltaStatus
@@ -93,7 +95,16 @@ extension FileStatusDetection
   // Because protocols can't have default parameter values
   func unstagedChanges() -> [FileChange]
   {
-    return unstagedChanges(showIgnored: false)
+    return unstagedChanges(showIgnored: false,
+                           recurseUntracked: true,
+                           useCache: true)
+  }
+
+  func unstagedChanges(showIgnored: Bool) -> [FileChange]
+  {
+    unstagedChanges(showIgnored: showIgnored,
+                    recurseUntracked: true,
+                    useCache: true)
   }
 }
 

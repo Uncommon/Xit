@@ -134,13 +134,21 @@ extension XTRepository: FileStatusDetection
             workspace: DeltaStatus(worktreeStatus: data.status))
   }
   
-  func statusChanges(_ show: StatusShow, showIgnored: Bool = false,
+  func statusChanges(_ show: StatusShow,
+                     showIgnored: Bool = false,
+                     recurse: Bool = true,
                      amend: Bool = false) -> [FileChange]
   {
-    var options: StatusOptions = [.includeUntracked, .recurseUntrackedDirs]
+    var options: StatusOptions = [.includeUntracked]
     
     if showIgnored {
-      options.formUnion([.includeIgnored, .recurseIgnoredDirs])
+      options.formUnion([.includeIgnored])
+      if recurse {
+        options.formUnion([.recurseIgnoredDirs])
+      }
+    }
+    if recurse {
+      options.formUnion([.recurseUntrackedDirs])
     }
     if amend {
       options.formUnion(.amending)
@@ -185,18 +193,24 @@ extension XTRepository: FileStatusDetection
     }
   }
   
-  public func unstagedChanges(showIgnored: Bool = false) -> [FileChange]
+  public func unstagedChanges(showIgnored: Bool = false,
+                              recurseUntracked: Bool = true,
+                              useCache: Bool = true) -> [FileChange]
   {
     return mutex.withLock {
-      if cachedIgnored == showIgnored,
+      if useCache && (cachedIgnored == showIgnored),
          let result = cachedUnstagedChanges {
         return result
       }
       else {
-        let result = statusChanges(.workdirOnly, showIgnored: showIgnored)
-        
-        cachedUnstagedChanges = result
-        cachedIgnored = showIgnored
+        let result = statusChanges(.workdirOnly,
+                                   showIgnored: showIgnored,
+                                   recurse: recurseUntracked)
+
+        if useCache {
+          cachedUnstagedChanges = result
+          cachedIgnored = showIgnored
+        }
         return result
       }
     }

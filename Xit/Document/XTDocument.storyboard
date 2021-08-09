@@ -98,9 +98,10 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="pPh-La-Jyh">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment toolTip="Stash" image="shippingbox.fill" catalog="system" width="32"/>
+                                                <segment toolTip="Stash" image="tray.fill" catalog="system" width="32"/>
                                             </segments>
                                         </segmentedCell>
+                                        <accessibility identifier="xit.stash"/>
                                         <connections>
                                             <action selector="stash:" target="uko-xc-GwC" id="5nA-Fh-COj"/>
                                         </connections>
@@ -141,6 +142,24 @@
                                     <size key="minSize" width="12" height="25"/>
                                     <size key="maxSize" width="12" height="25"/>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="290444F5-1543-4AF2-B8AE-51333F9B09BC" explicitItemIdentifier="xit.clean" label="Clean" paletteLabel="Clean" sizingBehavior="auto" id="SEm-mB-BJY">
+                                    <nil key="toolTip"/>
+                                    <segmentedControl key="view" verticalHuggingPriority="750" id="4Bj-H4-LRj">
+                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="WPj-TE-tri">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Stash" image="trash.circle" catalog="system" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility identifier="xit.clean"/>
+                                        <connections>
+                                            <action selector="clean:" target="2em-8b-shT" id="AR9-Jt-Ny6"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="a3N-zr-oA8"/>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="HjO-mu-IiC"/>
@@ -152,6 +171,8 @@
                                 <toolbarItem reference="AXd-Bz-cV9"/>
                                 <toolbarItem reference="9Jc-2J-e8T"/>
                                 <toolbarItem reference="oLO-yb-35r"/>
+                                <toolbarItem reference="SEm-mB-BJY"/>
+                                <toolbarItem reference="a3N-zr-oA8"/>
                                 <toolbarItem reference="gxy-S3-Tn6"/>
                                 <toolbarItem reference="EmV-8X-pjB"/>
                             </defaultToolbarItems>
@@ -715,9 +736,10 @@
         <image name="rectangle.bottomthird.inset.fill" catalog="system" width="18" height="14"/>
         <image name="rectangle.leftthird.inset.fill" catalog="system" width="18" height="14"/>
         <image name="rectangle.topthird.inset.fill" catalog="system" width="18" height="14"/>
-        <image name="shippingbox.fill" catalog="system" width="16" height="16"/>
         <image name="square.and.arrow.down" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.up.fill" catalog="system" width="15" height="17"/>
+        <image name="trash.circle" catalog="system" width="15" height="15"/>
+        <image name="tray.fill" catalog="system" width="18" height="13"/>
     </resources>
 </document>

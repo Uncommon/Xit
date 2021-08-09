@@ -112,7 +112,7 @@ class XTWindowController: NSWindowController,
     
     if window.tabbedWindows == nil {
       style.formUnion([.fullSizeContentView])
-      if (!toolbar.items.contains(where: findSeparator)) {
+      if !toolbar.items.contains(where: findSeparator) {
         toolbar.insertItem(withItemIdentifier: .sidebarTrackingSeparator, at: 3)
       }
     }

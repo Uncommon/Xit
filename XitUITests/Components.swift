@@ -14,17 +14,24 @@ enum Window
   static let branchPopup = window.popUpButtons["branchPopup"]
   static let tabStatus = window.buttons["tabStatus"]
   
-  static let pullMenu = XitApp.menus["pullPopup"]
-  static let pushMenu = XitApp.menus["pushPopup"]
-  static let fetchMenu = XitApp.menus["fetchPopup"]
+  static let pullMenu = XitApp.menus[.PopupMenu.pull]
+  static let pushMenu = XitApp.menus[.PopupMenu.push]
+  static let fetchMenu = XitApp.menus[.PopupMenu.fetch]
+}
+
+enum Toolbar
+{
+  // Finding these items by ID rather than title doesn't work
+  static let clean = Window.window.toolbars.buttons["Clean"]
+  static let stash = Window.window.toolbars.buttons["Stash"]
 }
 
 enum PrefsWindow
 {
-  static let window = XitApp.windows["Preferences"]
-  static let generalTab = window.toolbars.buttons["General"]
+  static let window = XitApp.windows[.Preferences.window]
+  static let generalTab = window.toolbars.buttons[.Preferences.Toolbar.general]
   
-  static let tabStatusCheck = window.checkBoxes["tabStatus"]
+  static let tabStatusCheck = window.checkBoxes[.Preferences.Controls.tabStatus]
   
   static func open(file: StaticString = #file, line: UInt = #line)
   {
@@ -46,9 +53,9 @@ enum PrefsWindow
 
 enum Sidebar
 {
-  static let list = Window.window.outlines["sidebar"]
-  static let filter = Window.window.searchFields["sidebarFilter"]
-  static let addButton = Window.window.popUpButtons["sidebarAdd"]
+  static let list = Window.window.outlines[.Sidebar.list]
+  static let filter = Window.window.searchFields[.Sidebar.filter]
+  static let addButton = Window.window.popUpButtons[.Sidebar.add]
   static let stagingCell = list.cells.element(boundBy: 1)
   
   static func cell(named name: String) -> XCUIElement
@@ -59,7 +66,7 @@ enum Sidebar
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
     let expected = "\(workspace)▸\(staged)"
-    let statusButton = stagingCell.buttons["workspaceStatus"]
+    let statusButton = stagingCell.buttons[.Sidebar.workspaceStatus]
     
     XCTAssertEqual(expected, statusButton.title)
   }
@@ -79,14 +86,14 @@ enum Sidebar
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
     
-    return cell.buttons["workspaceStatus"]
+    return cell.buttons[.Sidebar.workspaceStatus]
   }
   
   static func trackingStatusIndicator(branch: String) -> XCUIElement
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
     
-    return cell.buttons["trackingStatus"]
+    return cell.buttons[.Sidebar.trackingStatus]
   }
 }
 
@@ -193,6 +200,51 @@ enum HistoryList
     static let menu = XitApp.menus["HistoryMenu"]
     static let copySHAItem = menu.menuItems["Copy SHA"]
     static let resetItem = menu.menuItems["Reset to this commit..."]
+  }
+}
+
+enum CleanSheet
+{
+  static let window = XitApp.sheets[.Clean.window]
+
+  static let fileMode = window.popUpButtons[.Clean.Controls.fileMode]
+  static let folderMode = window.popUpButtons[.Clean.Controls.folderMode]
+
+  enum FileMode
+  {
+    static let untracked = window.menuItems["Untracked only"]
+    static let ignored = window.menuItems["Ignored only"]
+    static let all = window.menuItems["All"]
+  }
+
+  enum FolderMode
+  {
+    static let cleanFolder = window.menuItems["Clean entire folder"]
+    static let recurse = window.menuItems["List contents"]
+    static let ignore = window.menuItems["Ignore"]
+  }
+
+  static let filterPopup = window.popUpButtons[.Clean.Controls.filterType]
+  static let selectedText = window.staticTexts[.Clean.Text.selected]
+
+  static let totalText = window.staticTexts[.Clean.Text.total]
+  static let refreshButton = window.buttons[.Clean.Button.refresh]
+
+  static let cancelButton = window.buttons[.Clean.Button.cancel]
+  static let cleanSelectedButton = window.buttons[.Clean.Button.cleanSelected]
+  static let cleanAllButton = window.buttons[.Clean.Button.cleanAll]
+
+  static func assertCleanFiles(_ names: [String],
+                               file: StaticString = #filePath,
+                               line: UInt = #line)
+  {
+    let cellTitles = window.cells.staticTexts.allElementsBoundByIndex
+                           .map { $0.stringValue }
+
+    XCTAssertEqual(cellTitles, names, file: file, line: line)
+    XCTAssertEqual(totalText.stringValue,
+                   "\(names.count) item(s) total",
+                   file: file, line: line)
   }
 }
 

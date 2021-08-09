@@ -23,6 +23,13 @@ extension FakeCommit
   }
 }
 
+class FakeConnectedRemote: ConnectedRemote
+{
+  var defaultBranch: String? { nil }
+  
+  func referenceAdvertisements() throws -> [RemoteHead] { [] }
+}
+
 class FakeRemote: Remote
 {
   var name: String?
@@ -35,11 +42,11 @@ class FakeRemote: Remote
   func updateURLString(_ URLString: String?) throws {}
   func updatePushURLString(_ URLString: String?) throws {}
 
-  func withConnection(direction: RemoteConnectionDirection,
-                      callbacks: RemoteCallbacks,
-                      action: () throws -> Void) throws
+  func withConnection<T>(direction: RemoteConnectionDirection,
+                         callbacks: RemoteCallbacks,
+                         action: (ConnectedRemote) throws -> T) throws -> T
   {
-    try action()
+    try action(FakeConnectedRemote())
   }
 }
 
@@ -225,17 +232,20 @@ class FakeFileChangesRepo: FileChangesRepo
   func unstageAllFiles() throws {}
   
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
-  { return [] }
+  { [] }
   func stagedChanges() -> [FileChange] { return [] }
-  func unstagedChanges(showIgnored: Bool) -> [FileChange] { return [] }
+  func unstagedChanges(showIgnored: Bool,
+                       recurseUntracked: Bool,
+                       useCache: Bool) -> [FileChange]
+  { [] }
   func amendingStagedChanges() -> [FileChange] { return [] }
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func stagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
+  { .unmodified }
   func unstagedStatus(for path: String) throws -> DeltaStatus
-  { return .unmodified }
-  func isIgnored(path: String) -> Bool { return false }
+  { .unmodified }
+  func isIgnored(path: String) -> Bool { false }
 }

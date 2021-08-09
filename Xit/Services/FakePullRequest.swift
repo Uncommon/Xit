@@ -44,13 +44,19 @@ class FakePRService: Service, PullRequestService, AccountService
     callback(requests)
   }
   
-  func approve(request: PullRequest, onSuccess: @escaping () -> Void, onFailure: @escaping (RequestError) -> Void)
+  func approve(request: PullRequest,
+               onSuccess: @escaping () -> Void,
+               onFailure: @escaping (RequestError) -> Void)
   { onSuccess() }
 
-  func unapprove(request: PullRequest, onSuccess: @escaping () -> Void, onFailure: @escaping (RequestError) -> Void)
+  func unapprove(request: PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
   { onSuccess() }
 
-  func needsWork(request: PullRequest, onSuccess: @escaping () -> Void, onFailure: @escaping (RequestError) -> Void)
+  func needsWork(request: PullRequest,
+                 onSuccess: @escaping () -> Void,
+                 onFailure: @escaping (RequestError) -> Void)
   { onSuccess() }
   
   func merge(request: PullRequest) {}

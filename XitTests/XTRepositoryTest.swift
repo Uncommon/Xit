@@ -645,6 +645,42 @@ class XTRepositoryTest: XTTest
     XCTAssertEqual(changes[2].status, DeltaStatus.untracked);
   }
 
+  func assertUnstagedChanged(ignored: Bool, recurse: Bool,
+                             expectedResult: [String],
+                             file: StaticString = #filePath, line: Int = #line)
+  {
+    let result = repository.unstagedChanges(showIgnored: ignored,
+                                            recurseUntracked: recurse,
+                                            useCache: false).map { $0.path }
+
+    XCTAssertEqual(result, expectedResult)
+  }
+
+  func testIgnoredUntrackedFolders() throws
+  {
+    let folder1 = "folder1/"
+    let folder2 = "folder2/"
+    let subFile1 = folder1 + "ignored.txt"
+    let subFile2 = folder2 + "untracked.txt"
+    let gitignore = ".gitignore"
+
+    try execute(in: repository) {
+      Write("content", to: subFile1)
+      Write("content", to: subFile2)
+
+      Write("\(gitignore)\n\(folder1)", to: gitignore)
+    }
+
+    assertUnstagedChanged(ignored: false, recurse: false,
+                          expectedResult: [folder2])
+    assertUnstagedChanged(ignored: false, recurse: true,
+                          expectedResult: [subFile2])
+    assertUnstagedChanged(ignored: true, recurse: false,
+                          expectedResult: [gitignore, folder1, folder2])
+    assertUnstagedChanged(ignored: true, recurse: true,
+                          expectedResult: [gitignore, subFile1, subFile2])
+  }
+
   func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?,
                         file: StaticString = #file, line: UInt = #line) throws
   {
