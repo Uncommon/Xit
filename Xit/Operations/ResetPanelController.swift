@@ -87,9 +87,9 @@ class ResetPanelController: SheetController
     let center = NotificationCenter.default
 
     center.addObserver(forName: .XTRepositoryIndexChanged,
-                       object: repository, queue: nil, using: updateBlock)
+                       object: repository, queue: .main, using: updateBlock)
     center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                       object: repository, queue: nil, using: updateBlock)
+                       object: repository, queue: .main, using: updateBlock)
     updateStatusText()
   }
 
