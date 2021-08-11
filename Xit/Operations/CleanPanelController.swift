@@ -20,10 +20,13 @@ final class CleanPanelController: NSWindowController
     self.repository = repository
     super.init(window: window)
 
+    // Set the view again, but with a delegate now that `self` is constructed.
     viewController.rootView = CleanPanel(delegate: self, model: model)
     refresh()
 
-    folderSubscriber = model.$folderMode.sink { self.refresh(folderMode: $0) }
+    folderSubscriber = model.$folderMode.sink {
+      self.refresh(folderMode: $0)
+    }
 
     window.contentViewController = viewController
     window.contentMinSize = viewController.view.intrinsicContentSize
@@ -42,8 +45,7 @@ final class CleanPanelController: NSWindowController
         recurseUntracked: model.mode != .ignored && folderMode == .recurse,
         useCache: false)
       .filter { $0.status.isCleanable }
-      .sorted { $0.path.lastPathComponent.localizedCompare(
-                  $1.path.lastPathComponent) == .orderedAscending}
+      .sorted { $0.path.lastPathComponent <~ $1.path.lastPathComponent }
       .map { .init(path: $0.gitPath, ignored: $0.status == .ignored) }
   }
 }

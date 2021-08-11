@@ -78,7 +78,7 @@ final class ClonePanelController: NSWindowController
                             content: { panel })
     let viewController = NSHostingController(rootView: host)
 
-    window.title = "Clone a Repository"
+    window.titleString = .cloneTitle
     window.contentViewController = viewController
     window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()

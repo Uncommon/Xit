@@ -8,25 +8,27 @@ struct ClonePanel: View
   
   var popupSelection: Binding<String>
   {
-    data.branches.isEmpty ? .constant("Unavailable") : $data.selectedBranch
+    data.branches.isEmpty ? .constant(UIString.unavailable.rawValue)
+                          : $data.selectedBranch
   }
   
   var popupBranches: [String]
   {
-    data.branches.isEmpty ? ["Unavailable"] : data.branches
+    data.branches.isEmpty ? [UIString.unavailable.rawValue] : data.branches
   }
   
   var body: some View
   {
     VStack {
       Form {
-        LabeledField("Source URL:", TextField("",text: $data.url))
-        LabeledField("Clone to:", PathField(path: $data.destination))
-        LabeledField("Name:", TextField("", text: $data.name))
-        LabeledField("Full path:", Text(data.destination +/ data.name))
+        LabeledField(.sourceURL.colon, TextField("", text: $data.url))
+        LabeledField(.cloneTo.colon, PathField(path: $data.destination))
+        LabeledField(.name.colon, TextField("", text: $data.name))
+        LabeledField(.fullPath.colon, Text(data.destination +/ data.name))
         Divider()
-        LabeledField(label: Text("Check out branch:"),
-                     content: Picker(selection: popupSelection, label: Text("")) {
+        LabeledField(label: Text(.checkOutBranch.colon),
+                     content: Picker(selection: popupSelection,
+                                     label: EmptyView()) {
                        ForEach(popupBranches, id: \.self) {
                          Text($0)
                        }
@@ -46,10 +48,10 @@ struct ClonePanel: View
           Text(error)
         }
         Spacer()
-        Button("Cancel") {
+        Button(.cancel) {
           close()
         }.keyboardShortcut(.cancelAction)
-        Button("Clone") {
+        Button(.clone) {
           clone()
         }.keyboardShortcut(.defaultAction)
          .disabled(!data.results.allSucceeded)

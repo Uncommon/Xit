@@ -29,6 +29,11 @@ struct UIString: RawRepresentable
     rawValue = error.localizedDescription
   }
   
+  var colon: UIString
+  {
+    UIString(rawValue: rawValue.appending(":"))
+  }
+  
   static let emptyString = ›""
   
   static let openPrompt = ›"Open a directory that contains a Git repository"
@@ -45,6 +50,7 @@ struct UIString: RawRepresentable
   static let apply = ›"Apply"
   static let cancel = ›"Cancel"
   static let clear = ›"Clear"
+  static let clone = ›"Clone"
   static let commit = ›"Commit"
   static let create = ›"Create"
   static let createRemote = ›"Create Remote"
@@ -201,7 +207,7 @@ struct UIString: RawRepresentable
   static func buildStatus(_ branch: String) -> UIString
   { UIString(format: UIString.buildStatusTemplate, branch) }
 
-  // Clone
+  // Clean
   static let untrackedOnly = ›"Untracked only"
   static let ignoredOnly = ›"Ignored only"
   static let all = ›"All"
@@ -224,6 +230,16 @@ struct UIString: RawRepresentable
   { .init(format: UIString.itemsSelectedTemplate, count) }
   static func itemsTotal(_ count: Int) -> UIString
   { .init(format: itemsTotalTemplate, count) }
+
+  // Clone
+  static let checkOutBranch = ›"Check out branch"
+  static let cloneTitle = ›"Clone a Repository"
+  static let cloneTo = ›"Clone to"
+  static let cloning = ›"Cloning..."
+  static let fullPath = ›"Full path"
+  static let name = ›"Name"
+  static let sourceURL = ›"Source URL"
+  static let unavailable = ›"Unavailable"
 
   // Pull request status
   static let approved = ›"Approved"
@@ -419,6 +435,15 @@ extension NSSegmentedControl
     self.init(labels: labelStrings.map { $0.rawValue },
               trackingMode: trackingMode,
               target: target, action: action)
+  }
+}
+
+extension NSWindow
+{
+  var titleString: UIString
+  {
+    get { UIString(rawValue: title) }
+    set { title = newValue.rawValue }
   }
 }
 
