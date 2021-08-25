@@ -29,6 +29,14 @@ class SidebarTableCellView: NSTableCellView
       textField.uiStringValue = item.displayTitle
       textField.isEditable = item.isEditable
       textField.isSelectable = item.isSelectable
+      
+      if let localItem = item as? LocalBranchSidebarItem,
+         localItem.isCurrent {
+        textField.setAccessibilityIdentifier(.Sidebar.currentBranch)
+      }
+      else {
+        textField.setAccessibilityIdentifier(nil)
+      }
     }
   }
   weak var prDelegate: PullRequestActionDelegate?

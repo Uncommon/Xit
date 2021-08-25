@@ -178,7 +178,6 @@ class RepositoryWatcher
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
       repository.clearCachedBranch()
       publishers.send(.head)
-      post(.XTRepositoryHeadChanged)
     }
   }
   

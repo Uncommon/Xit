@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 extension NSTouchBarItem.Identifier
 {
@@ -10,6 +11,8 @@ extension NSTouchBarItem.Identifier
 class CommitEntryController: NSViewController, RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
+
+  private var headSink: AnyCancellable?
   
   private weak var repo: Repository!
   {
@@ -22,11 +25,12 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
         [weak self] _ in
         self?.updateStagedStatus()
       }
-      center.addObserver(forName: .XTRepositoryHeadChanged,
-                            object: repo, queue: .main) {
-        [weak self] _ in
-        self?.resetAmend()
-      }
+      headSink = repoUIController?.repoController.headPublisher
+        .receive(on: DispatchQueue.main)
+        .sink {
+          [weak self] _ in
+          self?.resetAmend()
+        }
       resetMessage()
     }
   }

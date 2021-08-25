@@ -13,7 +13,7 @@ class SideBarDataSource: NSObject
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
 
-  private var configSink: AnyCancellable?
+  private var headSink, configSink: AnyCancellable?
   
   weak var model: SidebarDataModel! = nil
   {
@@ -31,20 +31,23 @@ class SideBarDataSource: NSObject
         [weak self] (_) in
         self?.stashChanged()
       }
-      center.addObserver(forName: .XTRepositoryHeadChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        guard let self = self
-        else { return }
-        self.outline.reloadItem(self.displayItem(.branches),
-                                reloadChildren: true)
+      if let repoController = viewController?.repoUIController?.repoController {
+        headSink = repoController.headPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] in
+            guard let self = self
+            else { return }
+            self.outline.reloadItem(self.displayItem(.branches),
+                                    reloadChildren: true)
+          }
+        configSink = repoController.configPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] in
+            self?.reload()
+          }
       }
-      configSink = viewController?.repoUIController?.repoController.configPublisher
-        .receive(on: DispatchQueue.main)
-        .sink {
-          [weak self] in
-          self?.reload()
-        }
       reload()
     }
   }

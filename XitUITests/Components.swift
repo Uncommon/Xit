@@ -57,6 +57,9 @@ enum Sidebar
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
   static let stagingCell = list.cells.element(boundBy: 1)
+  static let currentBranchCell =
+      list.cells.containing(.staticText,
+                            identifier: .Sidebar.currentBranch).firstMatch
   
   static func cell(named name: String) -> XCUIElement
   {

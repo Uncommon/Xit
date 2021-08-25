@@ -1,10 +1,10 @@
 import Cocoa
 
-class SidebarCheckedRowView: NSTableRowView
+final class SidebarCheckedRowView: NSTableRowView
 {
-  weak var imageView: NSImageView?
-  let image: NSImage
-  let imageToolTip: UIString?
+  private weak var imageView: NSImageView?
+  private let image: NSImage
+  private let imageToolTip: UIString?
   
   init(image: NSImage = .xtCurrentBranch,
        toolTip: UIString? = nil)
