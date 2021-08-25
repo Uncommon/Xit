@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 public typealias Repository =
     BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
@@ -9,6 +10,18 @@ public typealias Repository =
 public protocol BasicRepository
 {
   var controller: RepositoryController? { get set }
+}
+
+public protocol RepositoryPublishing
+{
+  // These all just notify that a thing in the repository has changed
+  var configPublisher: AnyPublisher<Void, Never> { get }
+  var headPublisher: AnyPublisher<Void, Never> { get }
+  var indexPublisher: AnyPublisher<Void, Never> { get }
+  var refLogPublisher: AnyPublisher<Void, Never> { get }
+  var refsPublisher: AnyPublisher<Void, Never> { get }
+  var stashPublisher: AnyPublisher<Void, Never> { get }
+  var workspacePublisher: AnyPublisher<Void, Never> { get }
 }
 
 public protocol WritingManagement

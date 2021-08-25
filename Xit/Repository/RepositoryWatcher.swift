@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 let XTAddedRefsKey = "addedRefs"
 let XTDeletedRefsKey = "deletedRefs"
@@ -14,7 +15,14 @@ class RepositoryWatcher
   var stream: FileEventStream! = nil
   var packedRefsWatcher: FileMonitor?
   var stashWatcher: FileMonitor?
-  
+
+  enum Notification: CaseIterable
+  {
+    case head, index, refLog, refs, stash
+  }
+
+  let publishers = PublisherGroup<Void, Never, Notification>()
+
   let mutex = Mutex()
   
   private var lastIndexChangeGuarded = Date()
@@ -26,6 +34,7 @@ class RepositoryWatcher
     {
       mutex.withLock { lastIndexChangeGuarded = newValue }
       controller?.invalidateIndex()
+      publishers.send(.index)
       NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
                                       object: controller?.repository)
     }
@@ -91,6 +100,7 @@ class RepositoryWatcher
     stashWatcher = watcher
     watcher.notifyBlock = {
       [weak self] (_, _) in
+      self?.publishers.send(.stash)
       self?.post(.XTRepositoryStashChanged)
     }
   }
@@ -167,6 +177,7 @@ class RepositoryWatcher
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
       repository.clearCachedBranch()
+      publishers.send(.head)
       post(.XTRepositoryHeadChanged)
     }
   }
@@ -208,6 +219,7 @@ class RepositoryWatcher
     
     if !refChanges.isEmpty {
       repository.rebuildRefsIndex()
+      publishers.send(.refs)
       post(.XTRepositoryRefsChanged)
       repository.refsChanged()
     }
@@ -218,6 +230,7 @@ class RepositoryWatcher
   func checkLogs(changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
+      publishers.send(.refLog)
       post(.XTRepositoryRefLogChanged)
     }
   }
@@ -232,4 +245,33 @@ class RepositoryWatcher
     checkRefs(changedPaths: standardizedPaths, repository: repository)
     checkLogs(changedPaths: standardizedPaths)
   }
+}
+
+/// A set of publishers, identified by `TypeEnum`, that all send the same type
+/// via `PassthroughSubject`.
+class PublisherGroup<Value, Error, TypeEnum>
+  where Error: Swift.Error, TypeEnum: CaseIterable & Hashable
+{
+  typealias Subject = PassthroughSubject<Value, Error>
+
+  private let subjects: [TypeEnum: Subject] =
+    TypeEnum.allCases.reduce(into: [:]) { $0[$1] = .init() }
+
+  func subject(_ type: TypeEnum) -> Subject
+  { subjects[type]! }
+
+  func publisher(_ type: TypeEnum) -> AnyPublisher<Value, Error>
+  { subjects[type]!.eraseToAnyPublisher() }
+
+  func send(_ type: TypeEnum, _ value: Value)
+  { subjects[type]!.send(value) }
+
+  subscript(_ type: TypeEnum) -> AnyPublisher<Value, Error>
+  { publisher(type) }
+}
+
+extension PublisherGroup where Value == Void
+{
+  func send(_ type: TypeEnum)
+  { subjects[type]!.send() }
 }

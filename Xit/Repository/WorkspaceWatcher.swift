@@ -1,11 +1,14 @@
 import Foundation
-
+import Combine
 
 class WorkspaceWatcher: NSObject
 {
   weak var controller: RepositoryController?
   private(set) var stream: FileEventStream! = nil
   var skipIgnored = true
+
+  private let subject = PassthroughSubject<Void, Never>()
+  var publisher: AnyPublisher<Void, Never> { subject.eraseToAnyPublisher() }
   
   init?(controller: RepositoryController)
   {
@@ -53,6 +56,7 @@ class WorkspaceWatcher: NSObject
   
     DispatchQueue.main.async {
       controller.invalidateIndex()
+      self.subject.send()
       NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
                                       object: controller.repository,
                                       userInfo: userInfo)

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 public protocol RepositoryController: AnyObject
 {
@@ -87,6 +88,37 @@ class GitRepositoryController: NSObject, RepositoryController
     repoWatcher?.stop()
     configWatcher.stop()
     workspaceWatcher?.stop()
+  }
+}
+
+extension GitRepositoryController: RepositoryPublishing
+{
+  var configPublisher: AnyPublisher<Void, Never> {
+    configWatcher.configPublisher
+  }
+
+  var headPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.head]
+  }
+
+  var indexPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.index]
+  }
+
+  var refLogPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.refLog]
+  }
+
+  var refsPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.refs]
+  }
+
+  var stashPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.stash]
+  }
+
+  var workspacePublisher: AnyPublisher<Void, Never> {
+    workspaceWatcher!.publisher
   }
 }
 
