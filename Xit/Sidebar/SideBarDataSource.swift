@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
@@ -11,6 +12,8 @@ class SideBarDataSource: NSObject
   
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
+
+  private var configSink: AnyCancellable?
   
   weak var model: SidebarDataModel! = nil
   {
@@ -36,11 +39,12 @@ class SideBarDataSource: NSObject
         self.outline.reloadItem(self.displayItem(.branches),
                                 reloadChildren: true)
       }
-      center.addObserver(forName: .XTRepositoryConfigChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.reload()
-      }
+      configSink = viewController?.repoUIController?.repoController.configPublisher
+        .receive(on: DispatchQueue.main)
+        .sink {
+          [weak self] in
+          self?.reload()
+        }
       reload()
     }
   }

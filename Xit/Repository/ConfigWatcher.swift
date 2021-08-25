@@ -59,9 +59,5 @@ class ConfigWatcher
     
     repository.config.invalidate()
     configSubject.send()
-    DispatchQueue.main.async {
-      NotificationCenter.default.post(name: .XTRepositoryConfigChanged,
-                                      object: repository)
-    }
   }
 }
