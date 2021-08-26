@@ -22,6 +22,10 @@ public protocol RepositoryPublishing
   var refsPublisher: AnyPublisher<Void, Never> { get }
   var stashPublisher: AnyPublisher<Void, Never> { get }
   var workspacePublisher: AnyPublisher<Void, Never> { get }
+
+  /// Causes `indexPublisher` to send a message without waiting for a change
+  /// to be detected.
+  func indexChanged()
 }
 
 public protocol WritingManagement

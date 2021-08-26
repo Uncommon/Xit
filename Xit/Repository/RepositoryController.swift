@@ -120,6 +120,10 @@ extension GitRepositoryController: RepositoryPublishing
   var workspacePublisher: AnyPublisher<Void, Never> {
     workspaceWatcher!.publisher
   }
+
+  func indexChanged() {
+    repoWatcher!.publishers.send(.index)
+  }
 }
 
 // Caching

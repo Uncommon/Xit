@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Quartz
 
 /// View controller for the file list and detail view.
@@ -49,6 +50,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
   var indexTimer: Timer?
+  var indexSink: AnyCancellable?
   
   var contentControllers: [XTFileContentController]
   { [diffController, blameController, textController, previewController] }
@@ -181,11 +183,12 @@ class FileViewController: NSViewController, RepositoryWindowViewController
 
     let center = NotificationCenter.default
 
-    center.addObserver(forName: .XTRepositoryIndexChanged,
-                          object: repository, queue: .main) {
-      [weak self] _ in
-      self?.indexChanged()
-    }
+    indexSink = repoUIController?.repoController.indexPublisher
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [weak self] in
+        self?.indexChanged()
+      }
 
     guard let controller = repoUIController
     else { return }

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 class FileListController: NSViewController, RepositoryWindowViewController
 {
@@ -387,7 +388,7 @@ extension CommitFileListController
 /// because of Swift) an abstract class.
 class StagingFileListController: FileListController
 {
-  var indexObserver: NSObjectProtocol?
+  var indexSink: AnyCancellable?
   
   /// Actions (used by toolbar buttons) that modify the repository or workspace,
   /// so the buttons should be hidden if a stash is selected.
@@ -411,13 +412,13 @@ class StagingFileListController: FileListController
   override func finishLoad(controller: RepositoryUIController)
   {
     super.finishLoad(controller: controller)
-    
-    indexObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryIndexChanged,
-        object: controller.repository, queue: .main) {
-      [weak self] _ in
-      self?.viewDataSource.reload()
-    }
+
+    indexSink = controller.repoController.indexPublisher
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [weak self] in
+        self?.viewDataSource.reload()
+      }
   }
   
   func addModifyingToolbarButton(image: NSImage,

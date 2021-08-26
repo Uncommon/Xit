@@ -12,25 +12,26 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
 
-  private var headSink: AnyCancellable?
+  private var headSink, indexSink: AnyCancellable?
   
   private weak var repo: Repository!
   {
     didSet
     {
-      let center = NotificationCenter.default
-      
-      center.addObserver(forName: .XTRepositoryIndexChanged,
-                            object: repo, queue: .main) {
-        [weak self] _ in
-        self?.updateStagedStatus()
+      if let controller = repoUIController?.repoController {
+        indexSink = controller.headPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] in
+            self?.updateStagedStatus()
+          }
+        headSink = controller.headPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] _ in
+            self?.resetAmend()
+          }
       }
-      headSink = repoUIController?.repoController.headPublisher
-        .receive(on: DispatchQueue.main)
-        .sink {
-          [weak self] _ in
-          self?.resetAmend()
-        }
       resetMessage()
     }
   }

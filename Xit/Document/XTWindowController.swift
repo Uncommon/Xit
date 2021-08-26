@@ -9,7 +9,6 @@ protocol RepositoryUIController: AnyObject
 
   func select(sha: String)
   func updateForFocus()
-  func postIndexNotification()
   func showErrorMessage(error: RepoError)
 }
 
@@ -217,19 +216,6 @@ class XTWindowController: NSWindowController,
   {
     touchBar = makeTouchBar()
     validateTouchBar()
-  }
-  
-  func postIndexNotification()
-  {
-    guard let repo = xtDocument?.repository
-    else { return }
-    let deadline: DispatchTime = .now() + .milliseconds(125)
-    
-    repo.invalidateIndex()
-    DispatchQueue.main.asyncAfter(deadline: deadline) {
-      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: repo)
-    }
   }
 
   func updateMiniwindowTitle()

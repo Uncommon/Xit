@@ -35,8 +35,6 @@ class RepositoryWatcher
       mutex.withLock { lastIndexChangeGuarded = newValue }
       controller?.invalidateIndex()
       publishers.send(.index)
-      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: controller?.repository)
     }
   }
   

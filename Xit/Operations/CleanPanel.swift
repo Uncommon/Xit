@@ -217,7 +217,11 @@ struct CleanPanel: View
           // in the view hierarchy makes the confirmation alerts not show.
           .alert(item: $cleanError) { (error) in
             Alert(title: Text("An error occurred while deleting files."),
-                  message: Text("\(error.path)\n\n\(error.orginal.localizedDescription)"))
+                  message: Text("""
+                      \(error.path)
+
+                      \(error.orginal.localizedDescription)
+                      """))
           }
         Button(.cleanSelected) {
           cleanSelectedAlertShown = true

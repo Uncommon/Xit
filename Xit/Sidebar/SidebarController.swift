@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// Manages the main window sidebar.
 class SidebarController: NSViewController, SidebarCommandHandler,
@@ -18,6 +19,8 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   private(set) var model: SidebarDataModel!
   private(set) var pullRequestManager: SidebarPRManager! = nil
   private(set) var buildStatusController: BuildStatusController! = nil
+
+  private var indexSink: AnyCancellable?
 
   weak var repo: XTRepository!
   {
@@ -39,11 +42,12 @@ class SidebarController: NSViewController, SidebarCommandHandler,
 
       let center = NotificationCenter.default
 
-      center.addObserver(forName: .XTRepositoryIndexChanged,
-                            object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
-      }
+      indexSink = repoUIController?.repoController.indexPublisher
+        .receive(on: DispatchQueue.main)
+        .sink {
+          [weak self] in
+          self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+        }
       center.addObserver(forName: .XTRepositoryWorkspaceChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in

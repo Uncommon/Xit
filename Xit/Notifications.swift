@@ -2,8 +2,6 @@ import Foundation
 
 extension NSNotification.Name
 {
-  /// The repository's index has changed.
-  static let XTRepositoryIndexChanged = Self("XTRepositoryIndexChanged")
   /// The repository's refs have changed.
   static let XTRepositoryRefsChanged = Self("XTRepositoryRefsChanged")
   /// A file in the workspace has changed.
