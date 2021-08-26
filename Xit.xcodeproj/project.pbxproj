@@ -217,6 +217,7 @@
 		C9BAE6141D3039C500A87F13 /* OperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* OperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */; };
 		C9BBBBF826D7F13700469007 /* CombineExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BBBBF726D7F13700469007 /* CombineExtensions.swift */; };
+		C9BBBC0B26D7FD7600469007 /* PublisherGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */; };
 		C9BC1B9B1DDF51B900C71562 /* FileEventStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */; };
 		C9BD02FB226A275600172C0B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C9BD02FA226A275600172C0B /* Credits.rtf */; };
 		C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BD02FC226A278900172C0B /* MainMenu.xib */; };
@@ -678,6 +679,7 @@
 		C9BAE6131D3039C500A87F13 /* OperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteOptionsOpController.swift; sourceTree = "<group>"; };
 		C9BBBBF726D7F13700469007 /* CombineExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineExtensions.swift; sourceTree = "<group>"; };
+		C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublisherGroup.swift; sourceTree = "<group>"; };
 		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
 		C9BD02FA226A275600172C0B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		C9BD02FC226A278900172C0B /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
@@ -812,6 +814,8 @@
 				C929D0451D415F6F00D7DC52 /* MiscExtensions.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
+				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
+				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
@@ -819,7 +823,6 @@
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
-				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1653,6 +1656,7 @@
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */,
+				C9BBBC0B26D7FD7600469007 /* PublisherGroup.swift in Sources */,
 				C9004650211501CB00706029 /* Colors.swift in Sources */,
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
