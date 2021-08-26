@@ -33,8 +33,7 @@ class SideBarDataSource: NSObject
       }
       if let repoController = viewController?.repoUIController?.repoController {
         sinks.append(repoController.headPublisher
-          .receive(on: DispatchQueue.main)
-          .sink {
+          .sinkOnMainQueue {
             [weak self] in
             guard let self = self
             else { return }
@@ -42,8 +41,7 @@ class SideBarDataSource: NSObject
                                     reloadChildren: true)
           })
         sinks.append(repoController.configPublisher
-          .receive(on: DispatchQueue.main)
-          .sink {
+          .sinkOnMainQueue {
             [weak self] in
             self?.reload()
           })

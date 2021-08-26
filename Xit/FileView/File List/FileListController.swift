@@ -414,8 +414,7 @@ class StagingFileListController: FileListController
     super.finishLoad(controller: controller)
 
     indexSink = controller.repoController.indexPublisher
-      .receive(on: DispatchQueue.main)
-      .sink {
+      .sinkOnMainQueue {
         [weak self] in
         self?.viewDataSource.reload()
       }

@@ -41,8 +41,7 @@ public class HistoryTableController: NSViewController,
 
     if let controller = repoUIController?.repoController {
       sinks.append(controller.refsPublisher
-        .receive(on: DispatchQueue.main)
-        .sink {
+        .sinkOnMainQueue {
           [weak self] in
           // To do: dynamic updating
           // - new and changed refs: add if they're not already in the list

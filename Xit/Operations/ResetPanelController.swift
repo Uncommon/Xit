@@ -91,8 +91,7 @@ class ResetPanelController: SheetController
     let center = NotificationCenter.default
 
     sinks.append(controller.indexPublisher
-      .receive(on: DispatchQueue.main)
-      .sink {
+      .sinkOnMainQueue {
         [weak self] in
         self?.updateStatusText()
       })

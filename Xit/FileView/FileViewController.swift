@@ -184,8 +184,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     let center = NotificationCenter.default
 
     indexSink = repoUIController?.repoController.indexPublisher
-      .receive(on: DispatchQueue.main)
-      .sink {
+      .sinkOnMainQueue {
         [weak self] in
         self?.indexChanged()
       }

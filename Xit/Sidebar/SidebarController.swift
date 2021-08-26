@@ -42,14 +42,12 @@ class SidebarController: NSViewController, SidebarCommandHandler,
 
       if let controller = repoUIController?.repoController {
         sinks.append(controller.indexPublisher
-          .receive(on: DispatchQueue.main)
-          .sink {
+          .sinkOnMainQueue {
             [weak self] in
             self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
           })
         sinks.append(controller.refsPublisher
-          .receive(on: DispatchQueue.main)
-          .sink {
+          .sinkOnMainQueue {
             [weak self] in
             self?.reload()
           })

@@ -69,8 +69,7 @@ class XTWindowController: NSWindowController,
     
     repoController = GitRepositoryController(repository: repo)
     sinks.append(repoController.refsPublisher
-      .receive(on: DispatchQueue.main)
-      .sink {
+      .sinkOnMainQueue {
         [weak self] in
         self?.updateBranchList()
       })
