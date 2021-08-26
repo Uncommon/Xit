@@ -181,8 +181,7 @@ class PushOpController: PasswordOpController
                           remote: remote,
                           callbacks: callbacks)
       callback?()
-      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
-                                      object: repository)
+      self.windowController?.repoController.refsChanged()
       self.ended()
     }
   }

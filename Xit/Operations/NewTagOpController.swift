@@ -42,8 +42,7 @@ class NewTagOpController: OperationController
       else {
         try? repository.createLightweightTag(name: name, targetOID: oid)
       }
-      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
-                                      object: repository)
+      self.windowController?.repoController.refsChanged()
       self.ended()
     }
   }

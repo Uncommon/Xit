@@ -20,7 +20,7 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   private(set) var pullRequestManager: SidebarPRManager! = nil
   private(set) var buildStatusController: BuildStatusController! = nil
 
-  private var indexSink: AnyCancellable?
+  private var sinks: [AnyCancellable] = []
 
   weak var repo: XTRepository!
   {
@@ -40,23 +40,27 @@ class SidebarController: NSViewController, SidebarCommandHandler,
       sidebarDelegate.pullRequestManager = pullRequestManager
       sidebarDelegate.buildStatusController = buildStatusController
 
+      if let controller = repoUIController?.repoController {
+        sinks.append(controller.indexPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] in
+            self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+          })
+        sinks.append(controller.refsPublisher
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] in
+            self?.reload()
+          })
+      }
+
       let center = NotificationCenter.default
 
-      indexSink = repoUIController?.repoController.indexPublisher
-        .receive(on: DispatchQueue.main)
-        .sink {
-          [weak self] in
-          self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
-        }
       center.addObserver(forName: .XTRepositoryWorkspaceChanged,
                             object: repo, queue: .main) {
         [weak self] (_) in
         self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
-      }
-      center.addObserver(forName: .XTRepositoryRefsChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.reload()
       }
     }
   }

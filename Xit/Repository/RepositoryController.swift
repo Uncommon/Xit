@@ -124,6 +124,10 @@ extension GitRepositoryController: RepositoryPublishing
   func indexChanged() {
     repoWatcher!.publishers.send(.index)
   }
+
+  func refsChanged() {
+    repoWatcher?.publishers.send(.refs)
+  }
 }
 
 // Caching
@@ -134,7 +138,7 @@ extension GitRepositoryController
     mutex.lock()
     defer { mutex.unlock() }
     if cachedBranch == nil {
-      refsChanged()
+      resetCachedBranch()
     }
     return cachedBranch
   }
@@ -153,7 +157,7 @@ extension GitRepositoryController
     }
   }
   
-  func refsChanged()
+  func resetCachedBranch()
   {
     cachedBranches = [:]
     

@@ -34,8 +34,7 @@ class RenameBranchOpController: OperationController
     
     tryRepoOperation {
       try repository.rename(branch: self.branchName, to: newName)
-      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
-                                      object: repository)
+      self.windowController?.repoController.refsChanged()
       self.ended()
     }
   }

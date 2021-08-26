@@ -14,7 +14,7 @@ public protocol BasicRepository
 
 public protocol RepositoryPublishing
 {
-  // These all just notify that a thing in the repository has changed
+  // These all just notify that a thing in the repository has changed.
   var configPublisher: AnyPublisher<Void, Never> { get }
   var headPublisher: AnyPublisher<Void, Never> { get }
   var indexPublisher: AnyPublisher<Void, Never> { get }
@@ -23,9 +23,10 @@ public protocol RepositoryPublishing
   var stashPublisher: AnyPublisher<Void, Never> { get }
   var workspacePublisher: AnyPublisher<Void, Never> { get }
 
-  /// Causes `indexPublisher` to send a message without waiting for a change
-  /// to be detected.
+  // Methods for manually triggering change messages without waiting for
+  // changes to be detected automatically.
   func indexChanged()
+  func refsChanged()
 }
 
 public protocol WritingManagement

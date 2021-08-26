@@ -55,7 +55,7 @@ class ResetPanelController: SheetController
   private var isStageClean: Bool
   { repository.stagedChanges().isEmpty }
 
-  private var indexSink: AnyCancellable?
+  private var sinks: [AnyCancellable] = []
   
   public var mode: ResetMode
   {
@@ -90,12 +90,12 @@ class ResetPanelController: SheetController
     
     let center = NotificationCenter.default
 
-    indexSink = controller.indexPublisher
+    sinks.append(controller.indexPublisher
       .receive(on: DispatchQueue.main)
       .sink {
         [weak self] in
         self?.updateStatusText()
-      }
+      })
     center.addObserver(forName: .XTRepositoryWorkspaceChanged,
                        object: repository, queue: nil, using: updateBlock)
     updateStatusText()

@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 protocol RepositoryUIController: AnyObject
 {
@@ -29,7 +30,8 @@ class XTWindowController: NSWindowController,
   var historySplitController: HistorySplitController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
-  var refsChangedObserver, workspaceObserver: NSObjectProtocol?
+  var workspaceObserver: NSObjectProtocol?
+  var sinks: [AnyCancellable] = []
   var repository: Repository { (xtDocument?.repository as Repository?)! }
 
   @objc dynamic var isAmending = false
@@ -66,12 +68,12 @@ class XTWindowController: NSWindowController,
     else { return }
     
     repoController = GitRepositoryController(repository: repo)
-    refsChangedObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryRefsChanged,
-        object: repo, queue: .main) {
-      [weak self] _ in
-      self?.updateBranchList()
-    }
+    sinks.append(repoController.refsPublisher
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [weak self] in
+        self?.updateBranchList()
+      })
     workspaceObserver = NotificationCenter.default.addObserver(
         forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
       [weak self] (_) in

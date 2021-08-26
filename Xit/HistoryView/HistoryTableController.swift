@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 fileprivate let batchSize = 500
 
@@ -21,10 +22,9 @@ public class HistoryTableController: NSViewController,
   @IBOutlet var contextMenu: NSMenu!
   
   var tableView: HistoryTableView { view as! HistoryTableView }
-
   let history = GitCommitHistory()
-  
   var repository: Repository { repoController?.repository as! Repository }
+  var sinks: [AnyCancellable] = []
   
   func finishLoad(repository: Repository)
   {
@@ -38,19 +38,23 @@ public class HistoryTableController: NSViewController,
     table.intercellSpacing = spacing
     
     loadHistory()
+
+    if let controller = repoUIController?.repoController {
+      sinks.append(controller.refsPublisher
+        .receive(on: DispatchQueue.main)
+        .sink {
+          [weak self] in
+          // To do: dynamic updating
+          // - new and changed refs: add if they're not already in the list
+          // - deleted and changed refs: recursively remove unreferenced commits
+
+          // For now: just reload
+          self?.reload()
+        })
+    }
     
     let center = NotificationCenter.default
     
-    center.addObserver(forName: .XTRepositoryRefsChanged,
-                          object: repository, queue: .main) {
-      [weak self] _ in
-      // To do: dynamic updating
-      // - new and changed refs: add if they're not already in the list
-      // - deleted and changed refs: recursively remove unreferenced commits
-      
-      // For now: just reload
-      self?.reload()
-    }
     center.addObserver(forName: .XTReselectModel,
                           object: repository, queue: .main) {
                             [weak self] _ in

@@ -49,7 +49,7 @@ class FetchTests: UnicodeRepoUITests
     
     Window.fetchButton.press(forDuration: 0.5)
     Window.fetchMenu.menuItems["Fetch remote \"\(remoteName)\""].click()
-    wait(for: [hiding(of: Window.progressSpinner)], timeout: 1.0)
+    wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
     
     XCTAssertTrue(statusIndicator.exists)
     XCTAssertEqual(statusIndicator.title, "↓1")

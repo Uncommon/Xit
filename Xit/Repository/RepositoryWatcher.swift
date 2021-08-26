@@ -217,7 +217,6 @@ class RepositoryWatcher
     if !refChanges.isEmpty {
       repository.rebuildRefsIndex()
       publishers.send(.refs)
-      post(.XTRepositoryRefsChanged)
       repository.refsChanged()
     }
     

@@ -12,25 +12,25 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
 
-  private var headSink, indexSink: AnyCancellable?
-  
+  private var sinks: [AnyCancellable] = []
+
   private weak var repo: Repository!
   {
     didSet
     {
       if let controller = repoUIController?.repoController {
-        indexSink = controller.headPublisher
+        sinks.append(controller.headPublisher
           .receive(on: DispatchQueue.main)
           .sink {
             [weak self] in
             self?.updateStagedStatus()
-          }
-        headSink = controller.headPublisher
+          })
+        sinks.append(controller.headPublisher
           .receive(on: DispatchQueue.main)
           .sink {
             [weak self] _ in
             self?.resetAmend()
-          }
+          })
       }
       resetMessage()
     }

@@ -31,8 +31,7 @@ class PullOpController: FetchOpController
                                  callbacks: callbacks)
       
       try repository.pull(branch: branch, remote: remote, options: options)
-      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
-                                      object: repository)
+      self.windowController?.repoController.refsChanged()
       self.ended()
     }
   }
