@@ -2,8 +2,6 @@ import Foundation
 
 extension NSNotification.Name
 {
-  /// A file in the workspace has changed.
-  static let XTRepositoryWorkspaceChanged = Self("XTRepositoryWorkspaceChanged")
   /// The stash log has changed.
   static let XTRepositoryStashChanged = Self("XTRepositoryStashChanged")
   /// There is a new selection to be displayed.

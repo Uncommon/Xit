@@ -30,7 +30,6 @@ class XTWindowController: NSWindowController,
   var historySplitController: HistorySplitController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
-  var workspaceObserver: NSObjectProtocol?
   var sinks: [AnyCancellable] = []
   var repository: Repository { (xtDocument?.repository as Repository?)! }
 
@@ -73,18 +72,11 @@ class XTWindowController: NSWindowController,
         [weak self] in
         self?.updateBranchList()
       })
-    workspaceObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
-      [weak self] (_) in
-      guard let self = self
-      else { return }
-
-      // Even though the observer is supposed to be on the main queue,
-      // it doesn't always happen.
-      DispatchQueue.main.async {
-        self.updateTabStatus()
-      }
-    }
+    sinks.append(repoController.workspacePublisher
+      .sinkOnMainQueue {
+        [weak self] _ in
+        self?.updateTabStatus()
+      })
     kvObservers.append(repo.observe(\.currentBranch) {
       [weak self] (_, _) in
       self?.titleBarController?.selectedBranch = repo.currentBranch

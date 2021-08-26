@@ -21,7 +21,9 @@ public protocol RepositoryPublishing
   var refLogPublisher: AnyPublisher<Void, Never> { get }
   var refsPublisher: AnyPublisher<Void, Never> { get }
   var stashPublisher: AnyPublisher<Void, Never> { get }
-  var workspacePublisher: AnyPublisher<Void, Never> { get }
+
+  /// Published value is the paths that changed this time.
+  var workspacePublisher: AnyPublisher<[String], Never> { get }
 
   // Methods for manually triggering change messages without waiting for
   // changes to be detected automatically.

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Abstract base class for file list data sources.
 class FileListDataSourceBase: NSObject
@@ -6,6 +7,7 @@ class FileListDataSourceBase: NSObject
   @IBOutlet weak var outlineView: NSOutlineView!
   @IBOutlet weak var controller: FileViewController!
   let useWorkspaceList: Bool
+  private var sinks: [AnyCancellable] = []
 
   weak var delegate: FileListDelegate?
 
@@ -16,15 +18,17 @@ class FileListDataSourceBase: NSObject
       let center = NotificationCenter.default
 
       (self as! FileListDataSource).reload()
-      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                            object: repoUIController.repository, queue: .main) {
-        [weak self] (note) in
-        guard let self = self
-        else { return }
-        
-        if self.outlineView?.dataSource === self {
-          self.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
-        }
+
+      if let repoController = controller?.repoUIController?.repoController {
+        sinks.append(repoController.workspacePublisher
+          .sinkOnMainQueue {
+            [weak self] (paths) in
+            guard let self = self
+            else { return }
+            if self.outlineView?.dataSource === self {
+              self.workspaceChanged(paths)
+            }
+          })
       }
       center.addObserver(forName: .XTSelectedModelChanged,
                             object: repoUIController, queue: .main) {

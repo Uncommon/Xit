@@ -81,22 +81,18 @@ class ResetPanelController: SheetController
   public func observe(repository: FileStatusDetection,
                       controller: RepositoryPublishing)
   {
-    let updateBlock: (Notification) -> Void = {
-      [weak self] _ in
-      self?.updateStatusText()
-    }
-    
     self.repository = repository
     
-    let center = NotificationCenter.default
-
     sinks.append(controller.indexPublisher
       .sinkOnMainQueue {
         [weak self] in
         self?.updateStatusText()
       })
-    center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                       object: repository, queue: nil, using: updateBlock)
+    sinks.append(controller.workspacePublisher
+                  .sinkOnMainQueue {
+      [weak self] _ in
+      self?.updateStatusText()
+    })
     updateStatusText()
   }
 

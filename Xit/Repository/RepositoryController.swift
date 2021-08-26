@@ -28,6 +28,7 @@ class GitRepositoryController: NSObject, RepositoryController
   fileprivate var repoWatcher: RepositoryWatcher?
   fileprivate let configWatcher: ConfigWatcher
   fileprivate var workspaceWatcher: WorkspaceWatcher?
+  private var workspaceSink: AnyCancellable?
 
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
@@ -80,6 +81,12 @@ class GitRepositoryController: NSObject, RepositoryController
     
     self.repoWatcher = RepositoryWatcher(controller: self)
     self.workspaceWatcher = WorkspaceWatcher(controller: self)
+
+    workspaceSink = workspaceWatcher?.publisher
+      .sinkOnMainQueue { // main queue might not be necessary
+        [weak self] _ in
+        self?.invalidateIndex()
+      }
     repository.controller = self
   }
   
@@ -117,7 +124,7 @@ extension GitRepositoryController: RepositoryPublishing
     repoWatcher!.publishers[.stash]
   }
 
-  var workspacePublisher: AnyPublisher<Void, Never> {
+  var workspacePublisher: AnyPublisher<[String], Never> {
     workspaceWatcher!.publisher
   }
 

@@ -51,14 +51,11 @@ class SidebarController: NSViewController, SidebarCommandHandler,
             [weak self] in
             self?.reload()
           })
-      }
-
-      let center = NotificationCenter.default
-
-      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                            object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+        sinks.append(controller.workspacePublisher
+                      .sinkOnMainQueue {
+          [weak self] _ in
+          self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+        })
       }
     }
   }
