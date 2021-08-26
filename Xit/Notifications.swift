@@ -10,6 +10,4 @@ extension NSNotification.Name
   static let XTReselectModel = Self("XTReselectModel")
   /// TeamCity build status has been downloaded/refreshed.
   static let XTTeamCityStatusChanged = Self("XTTeamCityStatusChanged")
-  
-  static let XTRepositoryRefLogChanged = Self("XTRepositoryRefLogChanged")
 }

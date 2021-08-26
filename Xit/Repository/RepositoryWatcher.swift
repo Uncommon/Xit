@@ -227,7 +227,6 @@ class RepositoryWatcher
   {
     if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
       publishers.send(.refLog)
-      post(.XTRepositoryRefLogChanged)
     }
   }
   
