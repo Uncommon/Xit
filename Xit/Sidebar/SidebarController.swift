@@ -64,6 +64,8 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   var amendingObserver: NSKeyValueObservation?
   var statusPopover: NSPopover?
 
+  private var selectionSink: AnyCancellable?
+
   var selectedItem: SidebarItem?
   {
     get
@@ -115,9 +117,7 @@ class SidebarController: NSViewController, SidebarCommandHandler,
         [weak self] (controller, _) in
         self?.sidebarDS.setAmending(controller.isAmending)
       }
-      NotificationCenter.default.addObserver(
-          forName: .XTSelectedModelChanged,
-          object: repoUIController, queue: .main) {
+      selectionSink = repoUIController.selectionPublisher.sink {
         [weak self] (_) in
         self?.selectedModelChanged()
       }

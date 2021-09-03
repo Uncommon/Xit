@@ -63,6 +63,16 @@ public class HistoryTableController: NSViewController,
       
       tableView.scrollRowToCenter(selectedIndex)
     }
+
+    if let controller = repoUIController {
+      sinks.append(controller.selectionPublisher.sink {
+        [weak self] (selection) in
+        guard let selection = selection
+        else { return }
+
+        self?.selectRow(sha: selection.shaToSelect)
+      })
+    }
   }
   
   public override func viewDidLoad()
@@ -70,23 +80,7 @@ public class HistoryTableController: NSViewController,
     super.viewDidLoad()
   
     tableView.setAccessibilityIdentifier("history")
-    let controller = view.window?.windowController!
-    
-    NotificationCenter.default.addObserver(
-        forName: .XTSelectedModelChanged,
-        object: controller,
-        queue: .main) {
-      [weak self] (_) in
-      guard let self = self,
-            let selection = self.repoUIController?.selection,
-            // In spite of the `object` parameter, notifications can come
-            // through for the wrong repository
-            selection.repository.repoURL == self.repository.repoURL
-      else { return }
-      
-      self.selectRow(sha: selection.shaToSelect)
-    }
-    
+
     history.postProgress = {
       [weak self] in
       self?.batchFinished(start: $0, end: $1)

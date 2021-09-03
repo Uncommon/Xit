@@ -1,8 +1,12 @@
 import XCTest
+import Combine
 @testable import Xit
 
 class FakeRepoUIController: RepositoryUIController
 {
+  var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
+  { Just(nil).eraseToAnyPublisher() }
+
   var repoController: GitRepositoryController!
   var repository: Repository
 

@@ -99,7 +99,6 @@ class RepositoryWatcher
     watcher.notifyBlock = {
       [weak self] (_, _) in
       self?.publishers.send(.stash)
-      self?.post(.XTRepositoryStashChanged)
     }
   }
   

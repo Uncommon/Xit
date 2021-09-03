@@ -24,27 +24,27 @@ class SideBarDataSource: NSObject
       
       stagingItem.selection = StagingSelection(repository: repo)
       
-      let center = NotificationCenter.default
-
-      center.addObserver(forName: .XTRepositoryStashChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.stashChanged()
-      }
       if let repoController = viewController?.repoUIController?.repoController {
-        sinks.append(repoController.headPublisher
-          .sinkOnMainQueue {
-            [weak self] in
-            guard let self = self
-            else { return }
-            self.outline.reloadItem(self.displayItem(.branches),
-                                    reloadChildren: true)
-          })
-        sinks.append(repoController.configPublisher
-          .sinkOnMainQueue {
-            [weak self] in
-            self?.reload()
-          })
+        sinks.append(contentsOf: [
+          repoController.headPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              guard let self = self
+              else { return }
+              self.outline.reloadItem(self.displayItem(.branches),
+                                      reloadChildren: true)
+            },
+          repoController.configPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              self?.reload()
+            },
+          repoController.stashPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              self?.stashChanged()
+            },
+        ])
       }
       reload()
     }

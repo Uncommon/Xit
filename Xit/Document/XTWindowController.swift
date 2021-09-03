@@ -6,6 +6,7 @@ protocol RepositoryUIController: AnyObject
   var repository: Repository { get }
   var repoController: GitRepositoryController! { get }
   var selection: RepositorySelection? { get set }
+  var selectionPublisher: AnyPublisher<RepositorySelection?, Never> { get }
   var isAmending: Bool { get set }
 
   func select(sha: String)
@@ -41,6 +42,10 @@ class XTWindowController: NSWindowController,
   {
     didSet { selectionChanged(oldValue: oldValue) }
   }
+  private let selectionSubject =
+      CurrentValueSubject<RepositorySelection?, Never>(nil)
+  public var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
+  { selectionSubject.eraseToAnyPublisher() }
 
   var navBackStack = [RepositorySelection]()
   var navForwardStack = [RepositorySelection]()
@@ -168,15 +173,7 @@ class XTWindowController: NSWindowController,
       return
     }
 
-    var userInfo = [AnyHashable: Any]()
-
-    userInfo[NSKeyValueChangeKey.newKey] = selection
-    userInfo[NSKeyValueChangeKey.oldKey] = oldValue
-
-    NotificationCenter.default.post(
-        name: .XTSelectedModelChanged,
-        object: self,
-        userInfo: userInfo)
+    selectionSubject.send(selection)
 
     touchBar = makeTouchBar()
 

@@ -15,30 +15,30 @@ class FileListDataSourceBase: NSObject
   {
     didSet
     {
-      let center = NotificationCenter.default
-
       (self as! FileListDataSource).reload()
 
-      if let repoController = controller?.repoUIController?.repoController {
-        sinks.append(repoController.workspacePublisher
-          .sinkOnMainQueue {
-            [weak self] (paths) in
-            guard let self = self
-            else { return }
-            if self.outlineView?.dataSource === self {
-              self.workspaceChanged(paths)
-            }
-          })
-      }
-      center.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoUIController, queue: .main) {
-        [weak self] (_) in
-        guard let self = self,
-              self.outlineView?.dataSource === self,
-              self.repoUIController != nil // Otherwise we're on a stale timer
-        else { return }
-        
-        (self as? FileListDataSource)?.reload()
+      if let repoUIController = self.repoUIController {
+        sinks.append(contentsOf: [
+          repoUIController.repoController.workspacePublisher
+            .sinkOnMainQueue {
+              [weak self] (paths) in
+              guard let self = self
+              else { return }
+              if self.outlineView?.dataSource === self {
+                self.workspaceChanged(paths)
+              }
+            },
+          repoUIController.selectionPublisher
+            .sink {
+              [weak self] (_) in
+              guard let self = self,
+                    self.outlineView?.dataSource === self,
+                    self.repoUIController != nil // Otherwise it's a stale timer
+              else { return }
+
+              (self as? FileListDataSource)?.reload()
+            },
+        ])
       }
     }
   }
