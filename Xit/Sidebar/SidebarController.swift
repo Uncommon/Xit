@@ -57,6 +57,9 @@ class SidebarController: NSViewController, SidebarCommandHandler,
           self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
         })
       }
+      else {
+        assertionFailure("repoUIController is missing")
+      }
     }
   }
   var window: NSWindow? { view.window }

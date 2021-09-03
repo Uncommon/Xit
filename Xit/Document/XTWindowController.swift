@@ -7,9 +7,11 @@ protocol RepositoryUIController: AnyObject
   var repoController: GitRepositoryController! { get }
   var selection: RepositorySelection? { get set }
   var selectionPublisher: AnyPublisher<RepositorySelection?, Never> { get }
+  var reselectPublisher: AnyPublisher<Void, Never> { get }
   var isAmending: Bool { get set }
 
   func select(sha: String)
+  func reselect()
   func updateForFocus()
   func showErrorMessage(error: RepoError)
 }
@@ -46,6 +48,9 @@ class XTWindowController: NSWindowController,
       CurrentValueSubject<RepositorySelection?, Never>(nil)
   public var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
   { selectionSubject.eraseToAnyPublisher() }
+  private let reselectSubject = PassthroughSubject<Void, Never>()
+  public var reselectPublisher: AnyPublisher<Void, Never>
+  { reselectSubject.eraseToAnyPublisher() }
 
   var navBackStack = [RepositorySelection]()
   var navForwardStack = [RepositorySelection]()
@@ -199,6 +204,11 @@ class XTWindowController: NSWindowController,
     else { return }
   
     selection = CommitSelection(repository: repo, commit: commit)
+  }
+
+  func reselect()
+  {
+    reselectSubject.send()
   }
   
   /// Update for when a new object has been focused or selected

@@ -39,9 +39,9 @@ public class HistoryTableController: NSViewController,
     
     loadHistory()
 
-    if let controller = repoUIController?.repoController {
-      sinks.append(controller.refsPublisher
-        .sinkOnMainQueue {
+    if let controller = repoUIController {
+      sinks.append(contentsOf: [
+        controller.repoController.refsPublisher.sinkOnMainQueue {
           [weak self] in
           // To do: dynamic updating
           // - new and changed refs: add if they're not already in the list
@@ -49,29 +49,26 @@ public class HistoryTableController: NSViewController,
 
           // For now: just reload
           self?.reload()
-        })
-    }
-    
-    let center = NotificationCenter.default
-    
-    center.addObserver(forName: .XTReselectModel,
-                          object: repository, queue: .main) {
-                            [weak self] _ in
-      guard let tableView = self?.view as? NSTableView,
-            let selectedIndex = tableView.selectedRowIndexes.first
-      else { return }
-      
-      tableView.scrollRowToCenter(selectedIndex)
-    }
+        },
+        controller.selectionPublisher.sink {
+          [weak self] (selection) in
+          guard let selection = selection
+          else { return }
 
-    if let controller = repoUIController {
-      sinks.append(controller.selectionPublisher.sink {
-        [weak self] (selection) in
-        guard let selection = selection
-        else { return }
+          self?.selectRow(sha: selection.shaToSelect)
+        },
+        controller.reselectPublisher.sink {
+          [weak self] in
+          guard let tableView = self?.view as? NSTableView,
+                let selectedIndex = tableView.selectedRowIndexes.first
+          else { return }
 
-        self?.selectRow(sha: selection.shaToSelect)
-      })
+          tableView.scrollRowToCenter(selectedIndex)
+        },
+      ])
+    }
+    else {
+      assertionFailure("repoUIController is missing")
     }
   }
   
