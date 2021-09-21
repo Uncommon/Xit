@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol BuildStatusDisplay: AnyObject
 {
@@ -61,7 +62,7 @@ class BuildStatusController: NSObject
   
   let model: SidebarDataModel
   let buildStatusCache: BuildStatusCache
-  var statusObserver: NSObjectProtocol! = nil
+  var statusSink: AnyCancellable?
   var popover: NSPopover?
   weak var display: BuildStatusDisplay?
   var refreshTimer: Timer! = nil
@@ -76,10 +77,11 @@ class BuildStatusController: NSObject
     super.init()
     
     buildStatusCache.add(client: self)
-    statusObserver = NotificationCenter.default.addObserver(
-        forName: .XTTeamCityStatusChanged, object: nil, queue: .main) {
-      [weak self] _ in
-      self?.buildStatusCache.refresh()
+    if let api: TeamCityAPI = Services.shared.allServices.firstOfType() {
+      statusSink = api.$buildTypesStatus.sink {
+        [weak self] _ in
+        self?.buildStatusCache.refresh()
+      }
     }
     refreshTimer = .scheduledTimer(withTimeInterval: refreshInterval,
                                    repeats: true) {
