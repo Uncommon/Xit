@@ -103,8 +103,8 @@ extension Array
                             isOrderedBefore: (Element, Element) -> Bool)
                             -> Int
   {
-    var lo = 0
-    var hi = self.count - 1
+    var lo = startIndex
+    var hi = index(before: endIndex)
     
     while lo <= hi {
       let mid = (lo + hi)/2
