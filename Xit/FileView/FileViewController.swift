@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Quartz
 
 /// View controller for the file list and detail view.
@@ -49,6 +50,7 @@ class FileViewController: NSViewController, RepositoryWindowViewController
   var fileWatcher: FileEventStream?
   weak var lastClickedButton: NSButton?
   var indexTimer: Timer?
+  var sinks: [AnyCancellable] = []
   
   var contentControllers: [XTFileContentController]
   { [diffController, blameController, textController, previewController] }
@@ -179,22 +181,22 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     repo = repository
     diffController.repo = repository
 
-    let center = NotificationCenter.default
-
-    center.addObserver(forName: .XTRepositoryIndexChanged,
-                          object: repository, queue: .main) {
-      [weak self] _ in
-      self?.indexChanged()
-    }
-
     guard let controller = repoUIController
     else { return }
 
-    center.addObserver(forName: .XTSelectedModelChanged,
-                          object: controller, queue: .main) {
-      [weak self] _ in
-      self?.selectedModelChanged()
-    }
+    sinks.append(contentsOf: [
+      controller.repoController.indexPublisher
+        .sinkOnMainQueue {
+          [weak self] in
+          self?.indexChanged()
+        },
+      controller.selectionPublisher
+        .sink {
+          [weak self] _ in
+          self?.selectedModelChanged()
+        },
+    ])
+
     commitEntryController.configure(repository: repository,
                                     config: repository.config)
     
@@ -217,21 +219,24 @@ class FileViewController: NSViewController, RepositoryWindowViewController
     let listControllers = [commitListController,
                            stagedListController,
                            workspaceListController]
-    
-    for controller in listControllers {
-      center.addObserver(forName: NSOutlineView.selectionDidChangeNotification,
-                            object: controller.outlineView, queue: .main) {
+    let center = NotificationCenter.default
+
+    sinks.append(contentsOf: listControllers.map {
+      (listController) in
+      center.publisher(for: NSOutlineView.selectionDidChangeNotification,
+                       object: listController.outlineView)
+        .sink {
+          [weak self] _ in
+          self?.activeFileList = listController.outlineView
+          self?.refreshPreview()
+        }
+    })
+    sinks.append(center.publisher(for: .xtFirstResponderChanged,
+                                  object: view.window!)
+      .sinkOnMainQueue {
         [weak self] _ in
-        self?.activeFileList = controller.outlineView
-        self?.refreshPreview()
-      }
-    }
-    
-    center.addObserver(forName: .xtFirstResponderChanged,
-                          object: view.window!, queue: .main) {
-      [weak self] _ in
-      DispatchQueue.main.async { self?.updatePreviewForActiveList() }
-    }
+        self?.updatePreviewForActiveList()
+      })
   }
   
   override func loadView()

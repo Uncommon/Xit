@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Watches all files used to determine repository config settings.
 class ConfigWatcher
@@ -7,6 +8,11 @@ class ConfigWatcher
   private(set) var repoConfigStream: FileEventStream! = nil
   private(set) var userConfigStream: FileEventStream! = nil
   private(set) var globalConfigStream: FileEventStream! = nil
+
+  private var configSubject = PassthroughSubject<Void, Never>()
+
+  var configPublisher: AnyPublisher<Void, Never>
+  { configSubject.eraseToAnyPublisher() }
   
   init(repository: XTRepository)
   {
@@ -52,9 +58,6 @@ class ConfigWatcher
     else { return }
     
     repository.config.invalidate()
-    DispatchQueue.main.async {
-      NotificationCenter.default.post(name: .XTRepositoryConfigChanged,
-                                      object: repository)
-    }
+    configSubject.send()
   }
 }

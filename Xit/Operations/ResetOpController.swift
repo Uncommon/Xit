@@ -15,11 +15,12 @@ class ResetOpController: OperationController
   override func start() throws
   {
     guard let window = windowController?.window,
+          let repoController = windowController?.repoController,
           let repository = self.repository
     else { throw RepoError.unexpected }
     let panelController = ResetPanelController.controller()
     
-    panelController.observe(repository: repository)
+    panelController.observe(repository: repository, controller: repoController)
     window.beginSheet(panelController.window!) {
       (response) in
       if response == .OK {
@@ -41,8 +42,7 @@ class ResetOpController: OperationController
       
       // This doesn't get automatically sent because the index may have only
       // changed relative to the workspace.
-      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: repository)
+      self.windowController?.repoController.indexChanged()
 
       self.ended()
     }

@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// Manages the main window sidebar.
 class SidebarController: NSViewController, SidebarCommandHandler,
@@ -19,6 +20,8 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   private(set) var pullRequestManager: SidebarPRManager! = nil
   private(set) var buildStatusController: BuildStatusController! = nil
 
+  private var sinks: [AnyCancellable] = []
+
   weak var repo: XTRepository!
   {
     didSet
@@ -37,22 +40,25 @@ class SidebarController: NSViewController, SidebarCommandHandler,
       sidebarDelegate.pullRequestManager = pullRequestManager
       sidebarDelegate.buildStatusController = buildStatusController
 
-      let center = NotificationCenter.default
-
-      center.addObserver(forName: .XTRepositoryIndexChanged,
-                            object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+      if let controller = repoUIController?.repoController {
+        sinks.append(controller.indexPublisher
+          .sinkOnMainQueue {
+            [weak self] in
+            self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+          })
+        sinks.append(controller.refsPublisher
+          .sinkOnMainQueue {
+            [weak self] in
+            self?.reload()
+          })
+        sinks.append(controller.workspacePublisher
+                      .sinkOnMainQueue {
+          [weak self] _ in
+          self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+        })
       }
-      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                            object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
-      }
-      center.addObserver(forName: .XTRepositoryRefsChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.reload()
+      else {
+        assertionFailure("repoUIController is missing")
       }
     }
   }
@@ -60,6 +66,8 @@ class SidebarController: NSViewController, SidebarCommandHandler,
   var savedSidebarWidth: UInt = 0
   var amendingObserver: NSKeyValueObservation?
   var statusPopover: NSPopover?
+
+  private var selectionSink: AnyCancellable?
 
   var selectedItem: SidebarItem?
   {
@@ -112,9 +120,7 @@ class SidebarController: NSViewController, SidebarCommandHandler,
         [weak self] (controller, _) in
         self?.sidebarDS.setAmending(controller.isAmending)
       }
-      NotificationCenter.default.addObserver(
-          forName: .XTSelectedModelChanged,
-          object: repoUIController, queue: .main) {
+      selectionSink = repoUIController.selectionPublisher.sink {
         [weak self] (_) in
         self?.selectedModelChanged()
       }

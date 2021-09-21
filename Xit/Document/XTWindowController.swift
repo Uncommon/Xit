@@ -1,15 +1,18 @@
 import Cocoa
+import Combine
 
 protocol RepositoryUIController: AnyObject
 {
   var repository: Repository { get }
   var repoController: GitRepositoryController! { get }
   var selection: RepositorySelection? { get set }
+  var selectionPublisher: AnyPublisher<RepositorySelection?, Never> { get }
+  var reselectPublisher: AnyPublisher<Void, Never> { get }
   var isAmending: Bool { get set }
 
   func select(sha: String)
+  func reselect()
   func updateForFocus()
-  func postIndexNotification()
   func showErrorMessage(error: RepoError)
 }
 
@@ -30,7 +33,7 @@ class XTWindowController: NSWindowController,
   var historySplitController: HistorySplitController!
   weak var xtDocument: XTDocument?
   var repoController: GitRepositoryController!
-  var refsChangedObserver, workspaceObserver: NSObjectProtocol?
+  var sinks: [AnyCancellable] = []
   var repository: Repository { (xtDocument?.repository as Repository?)! }
 
   @objc dynamic var isAmending = false
@@ -41,6 +44,13 @@ class XTWindowController: NSWindowController,
   {
     didSet { selectionChanged(oldValue: oldValue) }
   }
+  private let selectionSubject =
+      CurrentValueSubject<RepositorySelection?, Never>(nil)
+  public var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
+  { selectionSubject.eraseToAnyPublisher() }
+  private let reselectSubject = PassthroughSubject<Void, Never>()
+  public var reselectPublisher: AnyPublisher<Void, Never>
+  { reselectSubject.eraseToAnyPublisher() }
 
   var navBackStack = [RepositorySelection]()
   var navForwardStack = [RepositorySelection]()
@@ -67,24 +77,16 @@ class XTWindowController: NSWindowController,
     else { return }
     
     repoController = GitRepositoryController(repository: repo)
-    refsChangedObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryRefsChanged,
-        object: repo, queue: .main) {
-      [weak self] _ in
-      self?.updateBranchList()
-    }
-    workspaceObserver = NotificationCenter.default.addObserver(
-        forName: .XTRepositoryWorkspaceChanged, object: repo, queue: .main) {
-      [weak self] (_) in
-      guard let self = self
-      else { return }
-
-      // Even though the observer is supposed to be on the main queue,
-      // it doesn't always happen.
-      DispatchQueue.main.async {
-        self.updateTabStatus()
-      }
-    }
+    sinks.append(repoController.refsPublisher
+      .sinkOnMainQueue {
+        [weak self] in
+        self?.updateBranchList()
+      })
+    sinks.append(repoController.workspacePublisher
+      .sinkOnMainQueue {
+        [weak self] _ in
+        self?.updateTabStatus()
+      })
     kvObservers.append(repo.observe(\.currentBranch) {
       [weak self] (_, _) in
       self?.titleBarController?.selectedBranch = repo.currentBranch
@@ -176,15 +178,7 @@ class XTWindowController: NSWindowController,
       return
     }
 
-    var userInfo = [AnyHashable: Any]()
-
-    userInfo[NSKeyValueChangeKey.newKey] = selection
-    userInfo[NSKeyValueChangeKey.oldKey] = oldValue
-
-    NotificationCenter.default.post(
-        name: .XTSelectedModelChanged,
-        object: self,
-        userInfo: userInfo)
+    selectionSubject.send(selection)
 
     touchBar = makeTouchBar()
 
@@ -211,25 +205,17 @@ class XTWindowController: NSWindowController,
   
     selection = CommitSelection(repository: repo, commit: commit)
   }
+
+  func reselect()
+  {
+    reselectSubject.send()
+  }
   
   /// Update for when a new object has been focused or selected
   func updateForFocus()
   {
     touchBar = makeTouchBar()
     validateTouchBar()
-  }
-  
-  func postIndexNotification()
-  {
-    guard let repo = xtDocument?.repository
-    else { return }
-    let deadline: DispatchTime = .now() + .milliseconds(125)
-    
-    repo.invalidateIndex()
-    DispatchQueue.main.asyncAfter(deadline: deadline) {
-      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: repo)
-    }
   }
 
   func updateMiniwindowTitle()

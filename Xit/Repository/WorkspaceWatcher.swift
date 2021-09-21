@@ -1,11 +1,14 @@
 import Foundation
-
+import Combine
 
 class WorkspaceWatcher: NSObject
 {
   weak var controller: RepositoryController?
   private(set) var stream: FileEventStream! = nil
   var skipIgnored = true
+
+  private let subject = PassthroughSubject<[String], Never>()
+  var publisher: AnyPublisher<[String], Never> { subject.eraseToAnyPublisher() }
   
   init?(controller: RepositoryController)
   {
@@ -38,24 +41,19 @@ class WorkspaceWatcher: NSObject
     guard let controller = self.controller,
           let repository = controller.repository as? FileStatusDetection
     else { return }
-    var userInfo = [String: Any]()
+    let changedPaths: [String]
   
     if skipIgnored {
       let filteredPaths = paths.filter { !repository.isIgnored(path: $0) }
       guard !filteredPaths.isEmpty
       else { return }
       
-      userInfo = [XTPathsKey: filteredPaths]
+      changedPaths = filteredPaths
     }
     else {
-      userInfo = [XTPathsKey: paths]
+      changedPaths = paths
     }
   
-    DispatchQueue.main.async {
-      controller.invalidateIndex()
-      NotificationCenter.default.post(name: .XTRepositoryWorkspaceChanged,
-                                      object: controller.repository,
-                                      userInfo: userInfo)
-    }
+    self.subject.send(changedPaths)
   }
 }

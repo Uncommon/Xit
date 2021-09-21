@@ -60,9 +60,10 @@ extension AXID
 
   enum Sidebar
   {
-    static let list = AXID("sidebar")
-    static let filter = AXID("sidebarFilter")
     static let add = AXID("sidebarAdd")
+    static let currentBranch = AXID("currentBranch")
+    static let filter = AXID("sidebarFilter")
+    static let list = AXID("sidebar")
     static let trackingStatus = AXID("trackingStatus")
     static let workspaceStatus = AXID("workspaceStatus")
   }

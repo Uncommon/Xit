@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 public protocol RepositoryController: AnyObject
 {
@@ -27,6 +28,7 @@ class GitRepositoryController: NSObject, RepositoryController
   fileprivate var repoWatcher: RepositoryWatcher?
   fileprivate let configWatcher: ConfigWatcher
   fileprivate var workspaceWatcher: WorkspaceWatcher?
+  private var workspaceSink: AnyCancellable?
 
   fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
@@ -79,6 +81,12 @@ class GitRepositoryController: NSObject, RepositoryController
     
     self.repoWatcher = RepositoryWatcher(controller: self)
     self.workspaceWatcher = WorkspaceWatcher(controller: self)
+
+    workspaceSink = workspaceWatcher?.publisher
+      .sinkOnMainQueue { // main queue might not be necessary
+        [weak self] _ in
+        self?.invalidateIndex()
+      }
     repository.controller = self
   }
   
@@ -90,6 +98,45 @@ class GitRepositoryController: NSObject, RepositoryController
   }
 }
 
+extension GitRepositoryController: RepositoryPublishing
+{
+  var configPublisher: AnyPublisher<Void, Never> {
+    configWatcher.configPublisher
+  }
+
+  var headPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.head]
+  }
+
+  var indexPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.index]
+  }
+
+  var refLogPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.refLog]
+  }
+
+  var refsPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.refs]
+  }
+
+  var stashPublisher: AnyPublisher<Void, Never> {
+    repoWatcher!.publishers[.stash]
+  }
+
+  var workspacePublisher: AnyPublisher<[String], Never> {
+    workspaceWatcher!.publisher
+  }
+
+  func indexChanged() {
+    repoWatcher!.publishers.send(.index)
+  }
+
+  func refsChanged() {
+    repoWatcher?.publishers.send(.refs)
+  }
+}
+
 // Caching
 extension GitRepositoryController
 {
@@ -98,7 +145,7 @@ extension GitRepositoryController
     mutex.lock()
     defer { mutex.unlock() }
     if cachedBranch == nil {
-      refsChanged()
+      resetCachedBranch()
     }
     return cachedBranch
   }
@@ -117,7 +164,7 @@ extension GitRepositoryController
     }
   }
   
-  func refsChanged()
+  func resetCachedBranch()
   {
     cachedBranches = [:]
     

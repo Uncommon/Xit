@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 fileprivate let batchSize = 500
 
@@ -21,10 +22,9 @@ public class HistoryTableController: NSViewController,
   @IBOutlet var contextMenu: NSMenu!
   
   var tableView: HistoryTableView { view as! HistoryTableView }
-
   let history = GitCommitHistory()
-  
   var repository: Repository { repoController?.repository as! Repository }
+  var sinks: [AnyCancellable] = []
   
   func finishLoad(repository: Repository)
   {
@@ -38,27 +38,37 @@ public class HistoryTableController: NSViewController,
     table.intercellSpacing = spacing
     
     loadHistory()
-    
-    let center = NotificationCenter.default
-    
-    center.addObserver(forName: .XTRepositoryRefsChanged,
-                          object: repository, queue: .main) {
-      [weak self] _ in
-      // To do: dynamic updating
-      // - new and changed refs: add if they're not already in the list
-      // - deleted and changed refs: recursively remove unreferenced commits
-      
-      // For now: just reload
-      self?.reload()
+
+    if let controller = repoUIController {
+      sinks.append(contentsOf: [
+        controller.repoController.refsPublisher.sinkOnMainQueue {
+          [weak self] in
+          // To do: dynamic updating
+          // - new and changed refs: add if they're not already in the list
+          // - deleted and changed refs: recursively remove unreferenced commits
+
+          // For now: just reload
+          self?.reload()
+        },
+        controller.selectionPublisher.sink {
+          [weak self] (selection) in
+          guard let selection = selection
+          else { return }
+
+          self?.selectRow(sha: selection.shaToSelect)
+        },
+        controller.reselectPublisher.sink {
+          [weak self] in
+          guard let tableView = self?.view as? NSTableView,
+                let selectedIndex = tableView.selectedRowIndexes.first
+          else { return }
+
+          tableView.scrollRowToCenter(selectedIndex)
+        },
+      ])
     }
-    center.addObserver(forName: .XTReselectModel,
-                          object: repository, queue: .main) {
-                            [weak self] _ in
-      guard let tableView = self?.view as? NSTableView,
-            let selectedIndex = tableView.selectedRowIndexes.first
-      else { return }
-      
-      tableView.scrollRowToCenter(selectedIndex)
+    else {
+      assertionFailure("repoUIController is missing")
     }
   }
   
@@ -67,23 +77,7 @@ public class HistoryTableController: NSViewController,
     super.viewDidLoad()
   
     tableView.setAccessibilityIdentifier("history")
-    let controller = view.window?.windowController!
-    
-    NotificationCenter.default.addObserver(
-        forName: .XTSelectedModelChanged,
-        object: controller,
-        queue: .main) {
-      [weak self] (_) in
-      guard let self = self,
-            let selection = self.repoUIController?.selection,
-            // In spite of the `object` parameter, notifications can come
-            // through for the wrong repository
-            selection.repository.repoURL == self.repository.repoURL
-      else { return }
-      
-      self.selectRow(sha: selection.shaToSelect)
-    }
-    
+
     history.postProgress = {
       [weak self] in
       self?.batchFinished(start: $0, end: $1)

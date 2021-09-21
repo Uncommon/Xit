@@ -35,6 +35,22 @@ class ModifyingUITests: XCTestCase
     XCTAssertFalse(branches.contains(oldBranchName))
     XCTAssertTrue(branches.contains(newBranchName))
   }
+
+  func testSwitchBranch()
+  {
+    env.open()
+
+    let branchText = Sidebar.currentBranchCell.staticTexts.firstMatch
+    let featureBranch = "feature"
+
+    XCTAssertEqual(branchText.stringValue, "master")
+
+    env.git.checkOut(branch: featureBranch)
+
+    wait(for: [expectation(for: .init(format: "value == %@", featureBranch),
+                          evaluatedWith: branchText)],
+         timeout: 5)
+  }
   
   func testTitleBarBranchSwitch()
   {

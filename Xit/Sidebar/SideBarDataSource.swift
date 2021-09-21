@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
@@ -11,7 +12,9 @@ class SideBarDataSource: NSObject
   
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
-  
+
+  private var sinks: [AnyCancellable] = []
+
   weak var model: SidebarDataModel! = nil
   {
     didSet
@@ -21,25 +24,27 @@ class SideBarDataSource: NSObject
       
       stagingItem.selection = StagingSelection(repository: repo)
       
-      let center = NotificationCenter.default
-
-      center.addObserver(forName: .XTRepositoryStashChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.stashChanged()
-      }
-      center.addObserver(forName: .XTRepositoryHeadChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        guard let self = self
-        else { return }
-        self.outline.reloadItem(self.displayItem(.branches),
-                                reloadChildren: true)
-      }
-      center.addObserver(forName: .XTRepositoryConfigChanged,
-                         object: repo, queue: .main) {
-        [weak self] (_) in
-        self?.reload()
+      if let repoController = viewController?.repoUIController?.repoController {
+        sinks.append(contentsOf: [
+          repoController.headPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              guard let self = self
+              else { return }
+              self.outline.reloadItem(self.displayItem(.branches),
+                                      reloadChildren: true)
+            },
+          repoController.configPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              self?.reload()
+            },
+          repoController.stashPublisher
+            .sinkOnMainQueue {
+              [weak self] in
+              self?.stashChanged()
+            },
+        ])
       }
       reload()
     }

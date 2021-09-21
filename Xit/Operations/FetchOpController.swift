@@ -153,8 +153,7 @@ class FetchOpController: PasswordOpController
                                  callbacks: callbacks)
       
       try repository.fetch(remote: remote, options: options)
-      NotificationCenter.default.post(name: .XTRepositoryRefsChanged,
-                                      object: repository)
+      self.windowController?.repoController.refsChanged()
       self.ended()
     }
   }

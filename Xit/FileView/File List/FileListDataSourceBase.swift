@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Abstract base class for file list data sources.
 class FileListDataSourceBase: NSObject
@@ -6,6 +7,7 @@ class FileListDataSourceBase: NSObject
   @IBOutlet weak var outlineView: NSOutlineView!
   @IBOutlet weak var controller: FileViewController!
   let useWorkspaceList: Bool
+  private var sinks: [AnyCancellable] = []
 
   weak var delegate: FileListDelegate?
 
@@ -13,28 +15,30 @@ class FileListDataSourceBase: NSObject
   {
     didSet
     {
-      let center = NotificationCenter.default
-
       (self as! FileListDataSource).reload()
-      center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                            object: repoUIController.repository, queue: .main) {
-        [weak self] (note) in
-        guard let self = self
-        else { return }
-        
-        if self.outlineView?.dataSource === self {
-          self.workspaceChanged(note.userInfo?[XTPathsKey] as? [String])
-        }
-      }
-      center.addObserver(forName: .XTSelectedModelChanged,
-                            object: repoUIController, queue: .main) {
-        [weak self] (_) in
-        guard let self = self,
-              self.outlineView?.dataSource === self,
-              self.repoUIController != nil // Otherwise we're on a stale timer
-        else { return }
-        
-        (self as? FileListDataSource)?.reload()
+
+      if let repoUIController = self.repoUIController {
+        sinks.append(contentsOf: [
+          repoUIController.repoController.workspacePublisher
+            .sinkOnMainQueue {
+              [weak self] (paths) in
+              guard let self = self
+              else { return }
+              if self.outlineView?.dataSource === self {
+                self.workspaceChanged(paths)
+              }
+            },
+          repoUIController.selectionPublisher
+            .sink {
+              [weak self] (_) in
+              guard let self = self,
+                    self.outlineView?.dataSource === self,
+                    self.repoUIController != nil // Otherwise it's a stale timer
+              else { return }
+
+              (self as? FileListDataSource)?.reload()
+            },
+        ])
       }
     }
   }

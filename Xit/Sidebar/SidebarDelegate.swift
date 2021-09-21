@@ -324,10 +324,8 @@ extension SidebarDelegate: XTOutlineViewDelegate
     
     if let oldSelection = repoUIController?.selection,
        let newSelection = newSelectedItem.selection,
-       oldSelection.shaToSelect == newSelection.shaToSelect &&
-       type(of: oldSelection) != type(of: newSelection) {
-      NotificationCenter.default.post(name: .XTReselectModel,
-                                      object: model?.repository)
+       oldSelection.shaToSelect == newSelection.shaToSelect {
+      repoUIController?.reselect()
     }
     controller?.selectedItem = newSelectedItem
   }

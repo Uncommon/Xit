@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 class ResetPanelController: SheetController
 {
@@ -53,6 +54,8 @@ class ResetPanelController: SheetController
   
   private var isStageClean: Bool
   { repository.stagedChanges().isEmpty }
+
+  private var sinks: [AnyCancellable] = []
   
   public var mode: ResetMode
   {
@@ -75,21 +78,21 @@ class ResetPanelController: SheetController
   
   /// Starts observing the given repository for status changes and updates
   /// informational text accordingly.
-  public func observe(repository: FileStatusDetection)
+  public func observe(repository: FileStatusDetection,
+                      controller: RepositoryPublishing)
   {
-    let updateBlock: (Notification) -> Void = {
-      [weak self] _ in
-      self?.updateStatusText()
-    }
-    
     self.repository = repository
     
-    let center = NotificationCenter.default
-
-    center.addObserver(forName: .XTRepositoryIndexChanged,
-                       object: repository, queue: nil, using: updateBlock)
-    center.addObserver(forName: .XTRepositoryWorkspaceChanged,
-                       object: repository, queue: nil, using: updateBlock)
+    sinks.append(controller.indexPublisher
+      .sinkOnMainQueue {
+        [weak self] in
+        self?.updateStatusText()
+      })
+    sinks.append(controller.workspacePublisher
+                  .sinkOnMainQueue {
+      [weak self] _ in
+      self?.updateStatusText()
+    })
     updateStatusText()
   }
 

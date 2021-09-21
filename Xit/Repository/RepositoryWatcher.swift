@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 let XTAddedRefsKey = "addedRefs"
 let XTDeletedRefsKey = "deletedRefs"
@@ -14,7 +15,14 @@ class RepositoryWatcher
   var stream: FileEventStream! = nil
   var packedRefsWatcher: FileMonitor?
   var stashWatcher: FileMonitor?
-  
+
+  enum Notification: CaseIterable
+  {
+    case head, index, refLog, refs, stash
+  }
+
+  let publishers = PublisherGroup<Void, Never, Notification>()
+
   let mutex = Mutex()
   
   private var lastIndexChangeGuarded = Date()
@@ -26,8 +34,7 @@ class RepositoryWatcher
     {
       mutex.withLock { lastIndexChangeGuarded = newValue }
       controller?.invalidateIndex()
-      NotificationCenter.default.post(name: .XTRepositoryIndexChanged,
-                                      object: controller?.repository)
+      publishers.send(.index)
     }
   }
   
@@ -91,7 +98,7 @@ class RepositoryWatcher
     stashWatcher = watcher
     watcher.notifyBlock = {
       [weak self] (_, _) in
-      self?.post(.XTRepositoryStashChanged)
+      self?.publishers.send(.stash)
     }
   }
   
@@ -167,7 +174,7 @@ class RepositoryWatcher
   {
     if paths(changedPaths, includeSubpaths: ["HEAD"]) {
       repository.clearCachedBranch()
-      post(.XTRepositoryHeadChanged)
+      publishers.send(.head)
     }
   }
   
@@ -208,7 +215,7 @@ class RepositoryWatcher
     
     if !refChanges.isEmpty {
       repository.rebuildRefsIndex()
-      post(.XTRepositoryRefsChanged)
+      publishers.send(.refs)
       repository.refsChanged()
     }
     
@@ -218,7 +225,7 @@ class RepositoryWatcher
   func checkLogs(changedPaths: [String])
   {
     if paths(changedPaths, includeSubpaths: ["logs/refs"]) {
-      post(.XTRepositoryRefLogChanged)
+      publishers.send(.refLog)
     }
   }
   

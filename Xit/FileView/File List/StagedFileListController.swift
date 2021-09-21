@@ -32,7 +32,7 @@ class StagedFileListController: StagingFileListController
     for change in changes {
       _ = try? repository.unstage(file: change.gitPath)
     }
-    repoUIController?.postIndexNotification()
+    repoUIController?.repoController.indexChanged()
   }
   
   @IBAction

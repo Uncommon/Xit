@@ -1,25 +1,15 @@
 import Foundation
 import Siesta
-
+import Combine
 
 /// API for getting TeamCity build information.
 class TeamCityAPI: BasicAuthService, ServiceAPI
 {
   var type: AccountType { .teamCity }
   static let rootPath = "/httpAuth/app/rest"
-  
-  fileprivate(set) var buildTypesStatus = Services.Status.notStarted
-  {
-    didSet
-    {
-      if buildTypesStatus != oldValue &&
-         buildTypesStatus == .done {
-        NotificationCenter.default.post(name: .XTTeamCityStatusChanged,
-                                        object: self)
-      }
-    }
-  }
-  
+
+  @Published fileprivate(set) var buildTypesStatus = Services.Status.notStarted
+
   /// Maps VCS root ID to repository URL.
   fileprivate(set) var vcsRootMap = [String: String]()
   /// Maps VCS root ID to branch specification.
@@ -155,9 +145,22 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURL: String) -> [String]
   {
-    return buildTypeURLs.keys.filter { buildTypeURLs[$0]?.contains(remoteURL)
-                                       ?? false }
+    guard let remoteURL = URL(string: remoteURL)
+    else { return [] }
+    func matchHostPath(_ url: String) -> Bool
+    {
+      guard let otherURL = URL(string: url)
+      else { return false }
+      return remoteURL.host == otherURL.host &&
+             remoteURL.path == otherURL.path
+    }
+
+    return buildTypeURLs.keys.filter {
+      buildTypeURLs[$0].map { $0.contains { matchHostPath($0) } } ?? false
+    }
   }
+
+
   
   /// Returns a cached build type with a matching ID
   func buildType(id: String) -> BuildType?

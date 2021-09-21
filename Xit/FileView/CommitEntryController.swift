@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 extension NSTouchBarItem.Identifier
 {
@@ -10,22 +11,24 @@ extension NSTouchBarItem.Identifier
 class CommitEntryController: NSViewController, RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
-  
+
+  private var sinks: [AnyCancellable] = []
+
   private weak var repo: Repository!
   {
     didSet
     {
-      let center = NotificationCenter.default
-      
-      center.addObserver(forName: .XTRepositoryIndexChanged,
-                            object: repo, queue: .main) {
-        [weak self] _ in
-        self?.updateStagedStatus()
-      }
-      center.addObserver(forName: .XTRepositoryHeadChanged,
-                            object: repo, queue: .main) {
-        [weak self] _ in
-        self?.resetAmend()
+      if let controller = repoUIController?.repoController {
+        sinks.append(controller.headPublisher
+          .sinkOnMainQueue {
+            [weak self] in
+            self?.updateStagedStatus()
+          })
+        sinks.append(controller.headPublisher
+          .sinkOnMainQueue {
+            [weak self] _ in
+            self?.resetAmend()
+          })
       }
       resetMessage()
     }
