@@ -5,7 +5,7 @@ import Combine
 class FakeRepoUIController: RepositoryUIController
 {
   let reselectPublisher: AnyPublisher<Void, Never> = Just(()).eraseToAnyPublisher()
-  
+
   var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
   { Just(nil).eraseToAnyPublisher() }
 

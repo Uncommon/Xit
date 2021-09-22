@@ -87,17 +87,13 @@ class BuildStatusCache: TeamCityAccessor
           return
         }
         
-        #if DEBUG
-        NSLog("\(buildType)/\(branchName): \(build.status?.rawValue ?? "?")")
-        #endif
-        var buildTypeStatuses = self.statuses[buildType] ??
-                                BranchStatuses()
+        var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
         
         buildTypeStatuses[branchName] = build
         self.statuses[buildType] = buildTypeStatuses
         for ref in self.clients {
           ref.client?.buildStatusUpdated(branch: branchName,
-                                            buildType: buildType)
+                                         buildType: buildType)
         }
       }
     }

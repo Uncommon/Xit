@@ -321,14 +321,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
                                       projectName: projectName ?? ""))
     
     let vcsIDs = rootEntries.childrenAttributes("id")
-    var urls = [String]()
-    
-    for vcsID in vcsIDs {
-      guard let vcsURL = vcsRootMap[vcsID]
-      else { continue }
-      
-      urls.append(vcsURL)
-    }
+    let urls = vcsIDs.compactMap { vcsRootMap[$0] }
+
     buildTypeURLs[buildTypeID] = urls
   }
 }
