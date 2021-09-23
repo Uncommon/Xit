@@ -111,7 +111,7 @@ class CheckOutRemoteWindowController: NSWindowController
   {
     let branchName = nameField.stringValue
     let refName = "refs/heads/" + branchName
-    var errorText = UIString.emptyString
+    var errorText = UIString.empty
     
     if !GitReference.isValidName(refName) {
       errorText = .branchNameInvalid

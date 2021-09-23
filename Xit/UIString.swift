@@ -36,7 +36,7 @@ struct UIString: RawRepresentable
     UIString(rawValue: rawValue.appending(":"))
   }
   
-  static let emptyString = ›""
+  static let empty = ›""
   
   static let openPrompt = ›"Open a directory that contains a Git repository"
   static let notARepository = ›"That folder does not contain a Git repository."
