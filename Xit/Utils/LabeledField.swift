@@ -39,6 +39,11 @@ extension LabeledField where Label == Text
   {
     self.init(label: Text(labelText), content: content)
   }
+  
+  init(_ labelString: UIString, _ content: Content)
+  {
+    self.init(label: Text(labelString.rawValue), content: content)
+  }
 }
 
 private struct LabelWidthPreferenceKey: MaxDimensionKey

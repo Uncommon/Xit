@@ -23,6 +23,13 @@ extension FakeCommit
   }
 }
 
+class FakeConnectedRemote: ConnectedRemote
+{
+  var defaultBranch: String? { nil }
+  
+  func referenceAdvertisements() throws -> [RemoteHead] { [] }
+}
+
 class FakeRemote: Remote
 {
   var name: String?
@@ -35,11 +42,11 @@ class FakeRemote: Remote
   func updateURLString(_ URLString: String?) throws {}
   func updatePushURLString(_ URLString: String?) throws {}
 
-  func withConnection(direction: RemoteConnectionDirection,
-                      callbacks: RemoteCallbacks,
-                      action: () throws -> Void) throws
+  func withConnection<T>(direction: RemoteConnectionDirection,
+                         callbacks: RemoteCallbacks,
+                         action: (ConnectedRemote) throws -> T) throws -> T
   {
-    try action()
+    try action(FakeConnectedRemote())
   }
 }
 

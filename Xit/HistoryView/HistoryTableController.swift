@@ -30,12 +30,7 @@ public class HistoryTableController: NSViewController,
   {
     history.repository = repository
     
-    guard let table = view as? NSTableView
-    else { return }
-    var spacing = table.intercellSpacing
-    
-    spacing.height = 0
-    table.intercellSpacing = spacing
+    tableView.intercellSpacing.height = 0
     
     loadHistory()
 

@@ -42,24 +42,30 @@ class ReadOnlyUITests: XCTestCase
   {
     let aBranches = Self.env.repo.defaultBranches.filter { $0.contains("a") }
     let andBranches = aBranches.filter { $0.contains("and") }
-    let masterBranchCell = Sidebar.list.cells["master"]
-    let newBranchCell = Sidebar.list.cells["new"]
+    let masterBranchCell = Sidebar.cell(named: "master")
+    let newBranchCell = Sidebar.cell(named: "new")
     
-    Sidebar.filter.click()
-    Sidebar.filter.typeText("a")
-    wait(for: [absence(of: newBranchCell)], timeout: 3.0)
+    XCTContext.runActivity(named: "Filter with 'a'") { _ in
+      Sidebar.filter.click()
+      Sidebar.filter.typeText("a")
+      wait(for: [absence(of: newBranchCell)], timeout: 5.0)
+      
+      Sidebar.assertBranches(aBranches)
+    }
     
-    Sidebar.assertBranches(aBranches)
-    
-    Sidebar.filter.typeText("nd")
-    wait(for: [absence(of: masterBranchCell)], timeout: 2.0)
+    XCTContext.runActivity(named: "Filter with 'and'") { _ in
+      Sidebar.filter.typeText("nd")
+      wait(for: [absence(of: masterBranchCell)], timeout: 5.0)
 
-    Sidebar.assertBranches(andBranches)
+      Sidebar.assertBranches(andBranches)
+    }
     
-    Sidebar.filter.buttons["cancel"].click()
-    Thread.sleep(forTimeInterval: 0.5)
+    XCTContext.runActivity(named: "Clear filter") { _ in
+      Sidebar.filter.buttons["cancel"].click()
+      wait(for: [presence(of: newBranchCell)], timeout: 8.0)
 
-    Sidebar.assertBranches(Self.env.repo.defaultBranches)
+      Sidebar.assertBranches(Self.env.repo.defaultBranches)
+    }
   }
 
   /// Commit header and file list are correct
@@ -155,14 +161,18 @@ class ReadOnlyUITests: XCTestCase
   {
     let resetItem = HistoryList.ContextMenu.resetItem
     
-    // For some reason row 0 is not hittable, but its cell is
-    HistoryList.row(0).children(matching: .cell).element(boundBy: 0).rightClick()
-    XCTAssertFalse(resetItem.isEnabled)
-    XitApp.typeKey(.escape, modifierFlags: [])
+    XCTContext.runActivity(named: "Disabled for current commit") { _ in
+      // For some reason row 0 is not hittable, but its cell is
+      HistoryList.row(0).children(matching: .cell).element(boundBy: 0).rightClick()
+      XCTAssertFalse(resetItem.isEnabled)
+      XitApp.typeKey(.escape, modifierFlags: [])
+    }
     
-    HistoryList.row(1).rightClick()
-    XCTAssertTrue(resetItem.isEnabled)
-    XitApp.typeKey(.escape, modifierFlags: [])
+    XCTContext.runActivity(named: "Enabled for other commit") { _ in
+      HistoryList.row(1).rightClick()
+      XCTAssertTrue(resetItem.isEnabled)
+      XitApp.typeKey(.escape, modifierFlags: [])
+    }
   }
   
   /// Reset mode description and status are updated when modes are selected

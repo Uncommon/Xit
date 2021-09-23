@@ -4,6 +4,8 @@ import Combine
 
 class FakeRepoUIController: RepositoryUIController
 {
+  let reselectPublisher: AnyPublisher<Void, Never> = Just(()).eraseToAnyPublisher()
+  
   var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
   { Just(nil).eraseToAnyPublisher() }
 
@@ -20,6 +22,7 @@ class FakeRepoUIController: RepositoryUIController
   }
   
   func select(sha: String) {}
+  func reselect() {}
   func showErrorMessage(error: RepoError) {}
   func updateForFocus() {}
   func postIndexNotification() {}

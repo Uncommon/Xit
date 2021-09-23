@@ -10,6 +10,7 @@ prefix func ›(string: StringLiteralType) -> UIString
   return UIString(rawValue: string)
 }
 
+/// Contains a string that is specifically for display in the user interface.
 struct UIString: RawRepresentable
 {
   let rawValue: String
@@ -29,7 +30,13 @@ struct UIString: RawRepresentable
     rawValue = error.localizedDescription
   }
   
-  static let emptyString = ›""
+  /// The string with a colon appended.
+  var colon: UIString
+  {
+    UIString(rawValue: rawValue.appending(":"))
+  }
+  
+  static let empty = ›""
   
   static let openPrompt = ›"Open a directory that contains a Git repository"
   static let notARepository = ›"That folder does not contain a Git repository."
@@ -45,6 +52,7 @@ struct UIString: RawRepresentable
   static let apply = ›"Apply"
   static let cancel = ›"Cancel"
   static let clear = ›"Clear"
+  static let clone = ›"Clone"
   static let commit = ›"Commit"
   static let create = ›"Create"
   static let createRemote = ›"Create Remote"
@@ -106,17 +114,17 @@ struct UIString: RawRepresentable
   static let confirmRevertMultiple = ›"Revert changes to the selected files?"
   
   // Format strings
-  static let authorFormat = "%@ (author)"
-  static let checkOutFormat = #"Check out "%@""#
-  static let committerFormat = "%@ (committer)"
-  static let confirmPushFormat = #"Push local branch "%1$@" to remote "%2$@"?"#
-  static let confirmPushAllFormat = "Push all branches that track %@?"
-  static let confirmRevertFormat = "Are you sure you want to revert changes to %@?"
-  static let confirmDeleteFormat = "Delete the %1$@ %2$@?"
-  static let createTrackingFormat = "Create local branch tracking %@"
-  static let mergeFormat = #"Merge "%1$@" into "%2$@""#
-  static let renamePromptFormat = #"Rename branch "%@" to:"#
-  static let trackingMissingInfoFormat = """
+  static private let authorFormat = "%@ (author)"
+  static private let checkOutFormat = #"Check out "%@""#
+  static private let committerFormat = "%@ (committer)"
+  static private let confirmPushFormat = #"Push local branch "%1$@" to remote "%2$@"?"#
+  static private let confirmPushAllFormat = "Push all branches that track %@?"
+  static private let confirmRevertFormat = "Are you sure you want to revert changes to %@?"
+  static private let confirmDeleteFormat = "Delete the %1$@ %2$@?"
+  static private let createTrackingFormat = "Create local branch tracking %@"
+  static private let mergeFormat = #"Merge "%1$@" into "%2$@""#
+  static private let renamePromptFormat = #"Rename branch "%@" to:"#
+  static private let trackingMissingInfoFormat = """
       The remote branch may have been merged and deleted. Do you want to \
       clear the tracking branch setting, or delete your local branch "%@"?
       """
@@ -143,27 +151,27 @@ struct UIString: RawRepresentable
       """
 
   static func author(_ name: String) -> UIString
-  { UIString(format: UIString.authorFormat, name) }
+  { .init(format: UIString.authorFormat, name) }
   static func checkOut(_ branch: String) -> UIString
-  { UIString(format: UIString.checkOutFormat, branch) }
+  { .init(format: UIString.checkOutFormat, branch) }
   static func committer(_ name: String) -> UIString
-  { UIString(format: UIString.committerFormat, name) }
+  { .init(format: UIString.committerFormat, name) }
   static func confirmPush(localBranch: String, remote: String) -> UIString
-  { UIString(format: UIString.confirmPushFormat, localBranch, remote) }
+  { .init(format: UIString.confirmPushFormat, localBranch, remote) }
   static func confirmPushAll(remote: String) -> UIString
-  { UIString(format: UIString.confirmPushAllFormat, remote) }
+  { .init(format: UIString.confirmPushAllFormat, remote) }
   static func confirmRevert(_ name: String) -> UIString
-  { UIString(format: UIString.confirmRevertFormat, name) }
+  { .init(format: UIString.confirmRevertFormat, name) }
   static func confirmDelete(kind: String, name: String) -> UIString
-  { UIString(format: UIString.confirmDeleteFormat, kind, name) }
+  { .init(format: UIString.confirmDeleteFormat, kind, name) }
   static func createTracking(_ remoteBranch: String) -> UIString
-  { UIString(format: UIString.createTrackingFormat, remoteBranch) }
+  { .init(format: UIString.createTrackingFormat, remoteBranch) }
   static func merge(_ source: String, _ target: String) -> UIString
-  { UIString(format: UIString.mergeFormat, source, target) }
+  { .init(format: UIString.mergeFormat, source, target) }
   static func renamePrompt(_ branch: String) -> UIString
-  { UIString(format: UIString.renamePromptFormat, branch) }
+  { .init(format: UIString.renamePromptFormat, branch) }
   static func trackingMissingInfo(_ branch: String) -> UIString
-  { UIString(format: UIString.trackingMissingInfoFormat, branch) }
+  { .init(format: UIString.trackingMissingInfoFormat, branch) }
 
   static let newFileDeleted = ›"The new file will be deleted."
   
@@ -193,15 +201,15 @@ struct UIString: RawRepresentable
   // Services
   static let prActionFailed = ›"Pull request action failed."
   
-  static let authFailedTemplate = "Signing in to the %1$@ account %2$@ failed."
-  static let buildStatusTemplate = "Builds for %@"
+  static private let authFailedFormat = "Signing in to the %1$@ account %2$@ failed."
+  static private let buildStatusFormat = "Builds for %@"
   
   static func authFailed(service: String, account: String) -> UIString
-  { UIString(format: UIString.authFailedTemplate, service, account) }
+  { .init(format: UIString.authFailedFormat, service, account) }
   static func buildStatus(_ branch: String) -> UIString
-  { UIString(format: UIString.buildStatusTemplate, branch) }
+  { .init(format: UIString.buildStatusFormat, branch) }
 
-  // Clone
+  // Clean
   static let untrackedOnly = ›"Untracked only"
   static let ignoredOnly = ›"Ignored only"
   static let all = ›"All"
@@ -217,13 +225,23 @@ struct UIString: RawRepresentable
   static let confirmCleanAll = ›"Are you sure you want to delete all listed files?"
   static let confirmCleanSelected = ›"Are you sure you want to delete the selected file(s)?"
 
-  static let itemsSelectedTemplate = "%d items selected"
-  static let itemsTotalTemplate = "%d item(s) total"
+  static private let itemsSelectedFormat = "%d items selected"
+  static private let itemsTotalFormat = "%d item(s) total"
 
   static func itemSelected(_ count: Int) -> UIString
-  { .init(format: UIString.itemsSelectedTemplate, count) }
+  { .init(format: UIString.itemsSelectedFormat, count) }
   static func itemsTotal(_ count: Int) -> UIString
-  { .init(format: itemsTotalTemplate, count) }
+  { .init(format: itemsTotalFormat, count) }
+
+  // Clone
+  static let checkOutBranch = ›"Check out branch"
+  static let cloneTitle = ›"Clone a Repository"
+  static let cloneTo = ›"Clone to"
+  static let cloning = ›"Cloning..."
+  static let fullPath = ›"Full path"
+  static let name = ›"Name"
+  static let sourceURL = ›"Source URL"
+  static let unavailable = ›"Unavailable"
 
   // Pull request status
   static let approved = ›"Approved"
@@ -238,12 +256,12 @@ struct UIString: RawRepresentable
   
   static let pushNew = ›"Push to new remote branch..."
 
-  static let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
-  static let fetchRemoteFormat = #"Fetch remote "%@""#
-  static let pushCurrentFormat = #"Push to "%2$@/%1$@""#
-  static let pushRemoteFormat = #"Push to any tracking branches on "%@""#
-  static let pullCurrentFormat = #"Pull from "%2$@/%1@""#
-  static let pullRemoteFormat = #"Pull tracking branches on "%@""#
+  static private let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
+  static private let fetchRemoteFormat = #"Fetch remote "%@""#
+  static private let pushCurrentFormat = #"Push to "%2$@/%1$@""#
+  static private let pushRemoteFormat = #"Push to any tracking branches on "%@""#
+  static private let pullCurrentFormat = #"Pull from "%2$@/%1@""#
+  static private let pullRemoteFormat = #"Pull tracking branches on "%@""#
 
   static func fetchCurrent(branch: String, remote: String) -> UIString
   { .init(format: fetchCurrentFormat, branch, remote) }
@@ -259,11 +277,11 @@ struct UIString: RawRepresentable
   { .init(format: pullRemoteFormat, remote) }
 
   // Repository errors
-  static let gitErrorFormat = "An internal git error (%d) occurred."
-  static let commitNotFoundFormat = "The commit %@ was not found."
-  static let fileNotFoundFormat = "The file %@ was not found."
-  static let invalidNameFormat = "The name %@ is not valid."
-  static let noRemoteBranchesFormat = #"No branches found on "%@" to push to."#
+  static private let gitErrorFormat = "An internal git error (%d) occurred."
+  static private let commitNotFoundFormat = "The commit %@ was not found."
+  static private let fileNotFoundFormat = "The file %@ was not found."
+  static private let invalidNameFormat = "The name %@ is not valid."
+  static private let noRemoteBranchesFormat = #"No branches found on "%@" to push to."#
 
   static func gitError(_ error: Int32) -> UIString
   { .init(format: UIString.gitErrorFormat, error) }
@@ -277,11 +295,11 @@ struct UIString: RawRepresentable
   { .init(format: UIString.noRemoteBranchesFormat, remote) }
 
   static let alreadyWriting = ›"A writing operation is already in progress."
+  static let invalidNameGiven = ›"The name is invalid"
   static let mergeInProgress = ›"A merge operation is already in progress."
   static let cherryPickInProgress = ›"A cherry-pick operation is already in progress."
   static let conflict = ›"""
-      The operation could not be completed because there were
-      conflicts.
+      The operation could not be completed because there were conflicts.
       """
   static let localConflict = ›"""
       There are conflicted files in the work tree or index.
@@ -290,8 +308,8 @@ struct UIString: RawRepresentable
   static let detachedHead = ›"This operation cannot be performed in a detached HEAD state."
   static let duplicateName = ›"That name is already in use."
   static let patchMismatch = ›"""
-      The patch could not be applied because it did not match
-      the file content.
+      The patch could not be applied because it did not match the
+      file content.
       """
   static let notFound = ›"The item was not found."
   static let unexpected = ›"An unexpected repository error occurred."
@@ -305,147 +323,4 @@ extension UIString: Comparable
   {
     return lhs.rawValue < rhs.rawValue
   }
-}
-
-extension NSAlert
-{
-  var messageString: UIString
-  {
-    get { UIString(rawValue: messageText) }
-    set { messageText = newValue.rawValue }
-  }
-  var informativeString: UIString
-  {
-    get { UIString(rawValue: informativeText) }
-    set { informativeText = newValue.rawValue }
-  }
-  
-  func addButton(withString title: UIString)
-  {
-    addButton(withTitle: title.rawValue)
-  }
-}
-
-extension NSButton
-{
-  var titleString: UIString
-  {
-    get { UIString(rawValue: title) }
-    set { title = newValue.rawValue }
-  }
-  
-  convenience init(titleString: UIString, target: AnyObject, action: Selector)
-  {
-    self.init(title: titleString.rawValue, target: target, action: action)
-  }
-}
-
-extension NSControl
-{
-  var uiStringValue: UIString
-  {
-    get { UIString(rawValue: stringValue) }
-    set { stringValue = newValue.rawValue }
-  }
-}
-
-extension NSMenu
-{
-  @discardableResult
-  func addItem(withTitleString title: UIString,
-               action: Selector?, keyEquivalent: String) -> NSMenuItem
-  {
-    return addItem(withTitle: title.rawValue,
-                   action: action, keyEquivalent: keyEquivalent)
-  }
-}
-
-extension NSMenuItem
-{
-  var titleString: UIString
-  {
-    get { UIString(rawValue: title) }
-    set { title = newValue.rawValue }
-  }
-
-  convenience init(titleString: UIString,
-                   action: Selector?,
-                   keyEquivalent: String)
-  {
-    self.init(title: titleString.rawValue,
-              action: action,
-              keyEquivalent: keyEquivalent)
-  }
-}
-
-extension NSPathControlItem
-{
-  var titleString: UIString
-  {
-    get { UIString(rawValue: title) }
-    set { title = newValue.rawValue }
-  }
-}
-
-extension NSSavePanel
-{
-  var messageString: UIString
-  {
-    get { UIString(rawValue: message) }
-    set { message = newValue.rawValue }
-  }
-  var promptString: UIString
-  {
-    get { UIString(rawValue: prompt) }
-    set { prompt = newValue.rawValue }
-  }
-}
-
-extension NSTextField
-{
-  convenience init(labelWithUIString uiString: UIString)
-  {
-    self.init(labelWithString: uiString.rawValue)
-  }
-}
-
-extension NSSegmentedControl
-{
-  convenience init(labelStrings: [UIString],
-                   trackingMode: NSSegmentedControl.SwitchTracking,
-                   target: AnyObject, action: Selector)
-  {
-    self.init(labels: labelStrings.map { $0.rawValue },
-              trackingMode: trackingMode,
-              target: target, action: action)
-  }
-}
-
-extension Button where Label == Text
-{
-  init(_ string: UIString, action: @escaping () -> Void)
-  {
-    self.init(string.rawValue, action: action)
-  }
-}
-
-extension Text
-{
-  init(_ string: UIString)
-  {
-    self.init(verbatim: string.rawValue)
-  }
-}
-
-extension TextField where Label == Text
-{
-  init(_ title: UIString,
-       text: Binding<String>,
-       onEditingChanged: @escaping (Bool) -> Void = { _ in },
-       onCommit: @escaping () -> Void = {})
-  {
-    self.init(title.rawValue, text: text,
-              onEditingChanged: onEditingChanged, onCommit: onCommit)
-  }
-
 }

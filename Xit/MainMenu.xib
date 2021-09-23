@@ -74,6 +74,12 @@
                                     <action selector="newDocument:" target="-1" id="371"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Clone..." id="bF5-qO-S8s">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="cloneRepository:" target="-1" id="ZI2-rs-7fz"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Open…" keyEquivalent="o" id="72">
                                 <connections>
                                     <action selector="openDocument:" target="530" id="533"/>

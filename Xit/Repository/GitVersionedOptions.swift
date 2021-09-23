@@ -43,6 +43,12 @@ extension git_checkout_options: GitVersionedOptions
   }
 }
 
+extension git_clone_options: GitVersionedOptions
+{
+  static var version: Int32 { GIT_CLONE_OPTIONS_VERSION }
+  static var initializer: Initializer { git_clone_init_options }
+}
+
 extension git_fetch_options: GitVersionedOptions
 {
   static var version: Int32 { GIT_FETCH_OPTIONS_VERSION }
@@ -77,4 +83,10 @@ extension git_status_options: GitVersionedOptions
 {
   static var version: Int32 { GIT_STATUS_OPTIONS_VERSION }
   static var initializer: Initializer { git_status_init_options }
+}
+
+extension git_submodule_update_options: GitVersionedOptions
+{
+  static var version: Int32 { GIT_SUBMODULE_UPDATE_OPTIONS_VERSION }
+  static var initializer: Initializer { git_submodule_update_init_options }
 }

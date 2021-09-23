@@ -410,5 +410,7 @@ class SubmoduleSidebarItem: SidebarItem
     var ignoreRule: SubmoduleIgnore = .none
     var updateStrategy: SubmoduleUpdate = .none
     var recurse: SubmoduleRecurse = .no
+
+    func update(initialize: Bool, callbacks: RemoteCallbacks) throws {}
   }
 }

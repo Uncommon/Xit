@@ -43,6 +43,14 @@ public protocol RepoConfiguring
   var config: Config { get }
 }
 
+public protocol Cloning
+{
+  func clone(from source: URL, to destination: URL,
+             branch: String,
+             recurseSubmodules: Bool,
+             publisher: RemoteProgressPublisher) throws -> Repository?
+}
+
 public protocol CommitStorage: AnyObject
 {
   func oid(forSHA sha: String) -> OID?
@@ -214,14 +222,39 @@ extension TransferProgress
   var progress: Float { Float(receivedObjects) / Float(totalObjects) }
 }
 
+struct MockTransferProgress: TransferProgress
+{
+  var totalObjects: UInt32
+  var indexedObjects: UInt32
+  var receivedObjects: UInt32
+  var localObjects: UInt32
+  var totalDeltas: UInt32
+  var indexedDeltas: UInt32
+  var receivedBytes: Int
+}
+
 public struct RemoteCallbacks
 {
-  /// Callback for getting the user and password
-  let passwordBlock: (() -> (String, String)?)?
+  /// Callback for getting the user and password when they could not be
+  /// discovered automatically
+  var passwordBlock: (() -> (String, String)?)?
   /// Fetch progress. Return false to stop the operation
-  let downloadProgress: ((TransferProgress) -> Bool)?
+  var downloadProgress: ((TransferProgress) -> Bool)?
   /// Push progress. Return false to stop the operation
-  let uploadProgress: ((PushTransferProgress) -> Bool)?
+  var uploadProgress: ((PushTransferProgress) -> Bool)?
+  /// Message from the server
+  var sidebandMessage: ((String) -> Bool)?
+  
+  init(passwordBlock: (() -> (String, String)?)? = nil,
+       downloadProgress: ((TransferProgress) -> Bool)? = nil,
+       uploadProgress: ((PushTransferProgress) -> Bool)? = nil,
+       sidebandMessage: ((String) -> Bool)? = nil)
+  {
+    self.passwordBlock = passwordBlock
+    self.downloadProgress = downloadProgress
+    self.uploadProgress = uploadProgress
+    self.sidebandMessage = sidebandMessage
+  }
 }
 
 public struct FetchOptions

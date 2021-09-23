@@ -44,9 +44,9 @@ public protocol Remote: AnyObject
   func updatePushURLString(_ URLString: String?) throws
   
   /// Calls the callback between opening and closing a connection to the remote.
-  func withConnection(direction: RemoteConnectionDirection,
-                      callbacks: RemoteCallbacks,
-                      action: () throws -> Void) throws
+  func withConnection<T>(direction: RemoteConnectionDirection,
+                         callbacks: RemoteCallbacks,
+                         action: (ConnectedRemote) throws -> T) throws -> T
 }
 
 extension Remote
@@ -63,6 +63,13 @@ extension Remote
   {
     try updatePushURLString(url.absoluteString)
   }
+}
+
+public protocol ConnectedRemote: AnyObject
+{
+  var defaultBranch: String? { get }
+  
+  func referenceAdvertisements() throws -> [RemoteHead]
 }
 
 class GitRemote: Remote
@@ -100,6 +107,16 @@ class GitRemote: Remote
   {
     guard let remote = try? OpaquePointer.from({
         git_remote_lookup(&$0, repository, name) })
+    else { return nil }
+    
+    self.remote = remote
+  }
+  
+  init?(url: URL)
+  {
+    guard let remote = try? OpaquePointer.from({
+      git_remote_create_detached(&$0, url.absoluteString)
+    })
     else { return nil }
     
     self.remote = remote
@@ -166,9 +183,9 @@ class GitRemote: Remote
     }
   }
   
-  func withConnection(direction: RemoteConnectionDirection,
-                      callbacks: RemoteCallbacks,
-                      action: () throws -> Void) throws
+  func withConnection<T>(direction: RemoteConnectionDirection,
+                         callbacks: RemoteCallbacks,
+                         action: (ConnectedRemote) throws -> T) throws -> T
   {
     var result: Int32
     
@@ -184,7 +201,7 @@ class GitRemote: Remote
     defer {
       git_remote_disconnect(remote)
     }
-    try action()
+    return try action(GitConnectedRemote(remote))
   }
 }
 
@@ -215,7 +232,7 @@ extension GitRemote
     }
   }
   
-  struct RefSpecIterator: IteratorProtocol
+  public struct RefSpecIterator: IteratorProtocol
   {
     var index: Int
     let remote: GitRemote
@@ -235,6 +252,59 @@ extension GitRemote
         index += 1
       }
       return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, index))
+    }
+  }
+}
+
+public struct RemoteHead
+{
+  let local: Bool
+  let oid: OID
+  let localOID: OID
+  let name: String
+  let symrefTarget: String
+  
+  init(_ head: git_remote_head)
+  {
+    self.local = head.local == 0 ? false : true
+    self.oid = GitOID(oid: head.oid)
+    self.localOID = GitOID(oid: head.loid)
+    self.name = String(cString: head.name)
+    self.symrefTarget = head.symref_target.map { String(cString: $0) } ?? ""
+  }
+}
+
+class GitConnectedRemote: ConnectedRemote
+{
+  let remote: OpaquePointer
+
+  var defaultBranch: String?
+  {
+    var buf = git_buf()
+    let result = git_remote_default_branch(&buf, remote)
+    guard result == GIT_OK.rawValue
+    else { return nil }
+    defer {
+      git_buf_free(&buf)
+    }
+    
+    return String(gitBuffer: buf)
+  }
+  
+  init(_ remote: OpaquePointer)
+  {
+    self.remote = remote
+  }
+  
+  func referenceAdvertisements() throws -> [RemoteHead]
+  {
+    var size: size_t = 0
+    let heads = try UnsafeMutablePointer.from {
+      git_remote_ls(&$0, &size, remote)
+    }
+    
+    return (0..<size).compactMap {
+      heads.advanced(by: $0).pointee.flatMap({ RemoteHead($0.pointee) })
     }
   }
 }

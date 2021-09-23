@@ -141,7 +141,7 @@ class FetchOpController: PasswordOpController
     else { return }
     
     if let url = remote.url {
-      setKeychainInfoURL(url)
+      setKeychainInfo(from: url)
     }
     
     tryRepoOperation {

@@ -142,6 +142,9 @@ extension String
   
   var pathExtension: String
   { (self as NSString).pathExtension }
+  
+  var deletingPathExtension: String
+  { (self as NSString).deletingPathExtension }
 
   var pathComponents: [String]
   { (self as NSString).pathComponents }
