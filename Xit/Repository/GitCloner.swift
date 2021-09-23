@@ -8,12 +8,12 @@ public class GitCloner: Cloning
                     recurseSubmodules: Bool,
                     publisher: RemoteProgressPublisher) throws -> Repository?
   {
-    var options = git_clone_options.defaultOptions()
-    
-    return try branch.withCString {
+    try branch.withCString {
       (cBranch) in
       try git_remote_callbacks.withCallbacks(publisher.callbacks) {
         (gitCallbacks) in
+        var options = git_clone_options.defaultOptions()
+        
         options.bare = 0
         options.checkout_branch = cBranch
         options.fetch_opts.callbacks = gitCallbacks
@@ -34,7 +34,7 @@ public class GitCloner: Cloning
           throw error
         }
         guard let repo = XTRepository(gitRepo: gitRepo)
-        else { return nil}
+        else { return nil }
 
         if recurseSubmodules {
           for sub in repo.submodules() {
