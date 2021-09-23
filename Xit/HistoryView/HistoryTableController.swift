@@ -30,19 +30,14 @@ public class HistoryTableController: NSViewController,
   {
     history.repository = repository
     
-    guard let table = view as? NSTableView
-    else { return }
-    var spacing = table.intercellSpacing
-    
-    spacing.height = 0
-    table.intercellSpacing = spacing
+    tableView.intercellSpacing.height = 0
     
     loadHistory()
     
     let center = NotificationCenter.default
     
     center.addObserver(forName: .XTRepositoryRefsChanged,
-                          object: repository, queue: .main) {
+                       object: repository, queue: .main) {
       [weak self] _ in
       // To do: dynamic updating
       // - new and changed refs: add if they're not already in the list
@@ -52,8 +47,8 @@ public class HistoryTableController: NSViewController,
       self?.reload()
     }
     center.addObserver(forName: .XTReselectModel,
-                          object: repository, queue: .main) {
-                            [weak self] _ in
+                       object: repository, queue: .main) {
+      [weak self] _ in
       guard let tableView = self?.view as? NSTableView,
             let selectedIndex = tableView.selectedRowIndexes.first
       else { return }
