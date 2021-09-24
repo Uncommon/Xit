@@ -30,6 +30,7 @@ public class HistoryTableController: NSViewController,
   {
     history.repository = repository
     
+    tableView.sizeFirstColumnToFit()
     tableView.intercellSpacing.height = 0
     
     loadHistory()
