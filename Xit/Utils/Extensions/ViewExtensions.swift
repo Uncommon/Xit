@@ -114,6 +114,23 @@ extension NSTabView
 
 extension NSTableView
 {
+  /// Resizes the first column so the table view fits exactly within its
+  /// enclosing clip view.
+  func sizeFirstColumnToFit()
+  {
+    guard let superview = self.superview,
+          let firstColumn = tableColumns.first
+    else { return }
+    let width = superview.frame.width
+    let totalColumnWidth = tableColumns.reduce(0) {
+      (total, column) in
+      total + (column.isHidden ? 0 : column.width)
+    }
+
+    tableColumns[0].width = max(firstColumn.minWidth,
+                                firstColumn.width + width - totalColumnWidth)
+  }
+
   /// Returns a set of all visible row indexes
   func visibleRows() -> IndexSet
   {
