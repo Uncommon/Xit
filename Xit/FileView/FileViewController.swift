@@ -80,7 +80,9 @@ class FileViewController: NSViewController, RepositoryWindowViewController
         let showAction = repoUIController?.selection is StagingSelection
         
         stagedListController.setActionColumnShown(showAction)
+        stagedListController.setWorkspaceControlsShown(showAction)
         workspaceListController.setActionColumnShown(showAction)
+        workspaceListController.setWorkspaceControlsShown(showAction)
       }
     }
   }

@@ -408,6 +408,20 @@ class StagingFileListController: FileListController
   {
     outlineView.columnObject(withIdentifier: ColumnID.action)?.isHidden = !shown
   }
+
+  func setWorkspaceControlsShown(_ shown: Bool)
+  {
+    for case let button as NSButton in toolbarStack.arrangedSubviews {
+      switch button.action {
+          case #selector(stageAll(_:)),
+               #selector(unstageAll(_:)),
+               #selector(revert(_:)):
+            button.isHidden = !shown
+          default:
+            break
+      }
+    }
+  }
   
   override func finishLoad(controller: RepositoryUIController)
   {
