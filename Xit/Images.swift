@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 // swiftlint:disable line_length
 

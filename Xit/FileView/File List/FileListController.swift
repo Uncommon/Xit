@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 import Combine
 
 class FileListController: NSViewController, RepositoryWindowViewController
