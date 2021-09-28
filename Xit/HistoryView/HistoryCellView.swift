@@ -16,14 +16,22 @@ class HistoryCellView: NSTableCellView
       NSColor(calibratedHue: 0.13, saturation: 0.08, brightness: 0.8, alpha: 1.0),
       .textColor, .lightGray,
       ]
-  
-  enum Widths
+
+  enum DisplayMode
+  {
+    case refsOnly, titleGraph, all
+
+    var showRefs: Bool { self != .titleGraph }
+    var showTitle: Bool { self != .refsOnly }
+  }
+
+  private enum Widths
   {
     static let line: CGFloat = 2.0
     static let column: CGFloat = 8.0
   }
   
-  enum Margins
+  private enum Margins
   {
     static let left: CGFloat = 4.0
     static let right: CGFloat = 4.0
@@ -33,9 +41,12 @@ class HistoryCellView: NSTableCellView
   
   // Don't use NSTableCellView.textField
   // because the system messes with the colors
-  @IBOutlet weak var labelField: NSTextField!
+  @IBOutlet weak var labelField: NSTextField?
   @IBOutlet weak var stackView: NSStackView!
   @IBOutlet var stackViewInset: NSLayoutConstraint!
+
+  var displayMode: DisplayMode = .all
+  { didSet { updateConstraints() } }
 
   var deemphasized: Bool = false
   { didSet { updateTextColor() } }
@@ -55,11 +66,14 @@ class HistoryCellView: NSTableCellView
       default:
         color = .textColor
     }
-    labelField.textColor = color
+    labelField?.textColor = color
   }
   
   private func setLabel(_ message: String)
   {
+    guard let labelField = self.labelField
+    else { return }
+
     if let returnRange = message.rangeOfCharacter(from: .newlines),
        returnRange.upperBound < message.endIndex {
       let ellipsis = "⋯"
@@ -87,18 +101,24 @@ class HistoryCellView: NSTableCellView
     setLabel(entry.commit.message ?? "(no message)")
     self.entry = entry
     
-    var views = refs.reversed().map {
-      (ref) -> NSView in
-      let view = RefTokenView()
-      
-      if let (_, name) = ref.splitRefName() {
-        view.text = name
-        view.type = RefType(refName: ref, currentBranch: currentBranch ?? "")
-      }
-      return view
+    var views: [NSView] = []
+
+    if displayMode.showRefs {
+      views.append(contentsOf: refs.reversed().map {
+        (ref) -> NSView in
+        let view = RefTokenView()
+
+        if let (_, name) = ref.splitRefName() {
+          view.text = name
+          view.type = RefType(refName: ref, currentBranch: currentBranch ?? "")
+        }
+        return view
+      })
     }
-    
-    views.append(labelField)
+    if displayMode.showTitle,
+       let labelField = self.labelField {
+      views.append(labelField)
+    }
     stackView.setViews(views, in: .leading)
     stackView.needsLayout = true
     needsUpdateConstraints = true
@@ -113,14 +133,19 @@ class HistoryCellView: NSTableCellView
   /// Moves the text field out of the way of the lines and refs.
   override func updateConstraints()
   {
-    lockObject?.withSync {
-      let totalColumns = entry.lines.reduce(0) {
-        (oldMax, line) -> UInt in
-        max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
-      }
-      let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
+    if displayMode == .refsOnly {
+      stackViewInset.constant = 0
+    }
+    else {
+      lockObject?.withSync {
+        let totalColumns = entry.lines.reduce(0) {
+          (oldMax, line) -> UInt in
+          max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
+        }
+        let linesMargin = Margins.left + CGFloat(totalColumns + 1) * Widths.column
 
-      stackViewInset.constant = linesMargin + Margins.text
+        stackViewInset.constant = linesMargin + Margins.text
+      }
     }
     super.updateConstraints()
   }
@@ -129,8 +154,10 @@ class HistoryCellView: NSTableCellView
   override func draw(_ dirtyRect: NSRect)
   {
     super.draw(dirtyRect)
-    
-    drawLines()
+
+    if displayMode != .refsOnly {
+      drawLines()
+    }
   }
   
   /// Calculates an offset for graph line corners to avoid awkward breaks

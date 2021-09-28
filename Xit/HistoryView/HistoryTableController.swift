@@ -17,6 +17,7 @@ public class HistoryTableController: NSViewController,
     static let committer = ¶"committer"
     static let committerDate = ¶"committerDate"
     static let sha = ¶"sha"
+    static let refs = ¶"refs"
   }
   
   @IBOutlet var contextMenu: NSMenu!
@@ -315,10 +316,13 @@ extension HistoryTableController: NSTableViewDelegate
       
       case ColumnID.commit:
         let historyCell = result as! HistoryCellView
-        
+        let refsColumnVisible =
+              !tableView.columnObject(withIdentifier: ColumnID.refs)!.isHidden
+
+        historyCell.displayMode = refsColumnVisible ? .titleGraph : .all
         historyCell.configure(
-              entry: entry,
-              repository: repository as! Branching & CommitReferencing)
+            entry: entry,
+            repository: repository as! Branching & CommitReferencing)
         historyCell.lockObject = history
 
       case ColumnID.author:
@@ -339,6 +343,15 @@ extension HistoryTableController: NSTableViewDelegate
 
       case ColumnID.sha:
         result.textField?.stringValue = entry.commit.sha.firstSix()
+
+      case ColumnID.refs:
+        let refsCell = result as! HistoryCellView
+
+        refsCell.displayMode = .refsOnly
+        refsCell.configure(
+            entry: entry,
+            repository: repository as! Branching & CommitReferencing)
+        refsCell.lockObject = history
 
       default:
         return nil

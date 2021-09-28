@@ -65,19 +65,6 @@ extension NSAlert
   }
 }
 
-extension NSOutlineView
-{
-  func columnObject(withIdentifier id: NSUserInterfaceItemIdentifier)
-    -> NSTableColumn?
-  {
-    let index = column(withIdentifier: id)
-    guard index >= 0
-    else { return nil }
-    
-    return tableColumns[index]
-  }
-}
-
 extension NSControl
 {
   /// The intValue property interpreted as a Bool.
@@ -115,6 +102,16 @@ extension NSTabView
 
 extension NSTableView
 {
+  func columnObject(withIdentifier id: NSUserInterfaceItemIdentifier)
+    -> NSTableColumn?
+  {
+    let index = column(withIdentifier: id)
+    guard index >= 0
+    else { return nil }
+
+    return tableColumns[index]
+  }
+
   /// Resizes the first column so the table view fits exactly within its
   /// enclosing clip view.
   func sizeFirstColumnToFit()

@@ -41,6 +41,8 @@ extension HistoryTableController: NSMenuItemValidation
         return checkColumnItem(item, columnID: ColumnID.committerDate)
       case #selector(showSHAColumn(_:)):
         return checkColumnItem(item, columnID: ColumnID.sha)
+      case #selector(showRefsColumn(_:)):
+        return checkColumnItem(item, columnID: ColumnID.refs)
 
       default:
         return false
@@ -102,5 +104,11 @@ extension HistoryTableController
   @IBAction func showSHAColumn(_ sender: Any)
   {
     toggleColumn(ColumnID.sha)
+  }
+
+  @IBAction func showRefsColumn(_ sender: Any)
+  {
+    toggleColumn(ColumnID.refs)
+    tableView.reloadData()
   }
 }
