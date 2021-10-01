@@ -1,11 +1,10 @@
 ## Building
 
-The repository uses several submodules, so you will need to clone the repository rather than downloading the source archive. To begin, get the submodules set up with `git submodule update --init --recursive` from the root of the project. You will also need [CMake] to build libgit2, and [Homebrew] for the other libraries used by Objective Git. If you hit any snags, please file an issue.
+The repository has a submodule, so you will need to clone the repository rather than downloading the source archive. To begin, get the submodule set up with `git submodule update --init --recursive` from the root of the project.
 
-[CMake]: http://cmake.org/
+Xit uses libgit2 (currently version 1.3.0) for most Git operations, which it expects to find in /usr/local. You can install it there with [Homebrew]: `brew install libgit2`.
+
 [Homebrew]: http://brew.sh
-
-Note that Objective Git needs the `objective-git/script/bootstrap` script to be run to configure everything. If Objective Git is later updated, you may need to re-run the script.
 
 **IMPORTANT:** If you do not have an Apple ID with a developer account for code signing Mac apps, the build  will fail with a code signing error. To work around this, you can delete the "Code Signing Identity" build setting of the "Application" target to work around the issue.
 
