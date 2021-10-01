@@ -132,7 +132,7 @@ extension XTRepository: Stashing
   {
     var applyOptions = git_stash_apply_options.defaultOptions()
     
-    applyOptions.flags = GIT_STASH_APPLY_REINSTATE_INDEX
+    applyOptions.flags = GIT_STASH_APPLY_REINSTATE_INDEX.rawValue
     applyOptions.checkout_options = git_checkout_options.defaultOptions()
     applyOptions.checkout_options.checkout_strategy = GIT_CHECKOUT_SAFE.rawValue
     

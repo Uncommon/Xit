@@ -12,7 +12,7 @@ public protocol DiffFile
 {
   var oid: OID { get }
   var filePath: String { get }
-  var size: Int64 { get }
+  var size: UInt64 { get }
   var diffFlags: DiffFlags { get }
 }
 
