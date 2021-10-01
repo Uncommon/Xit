@@ -142,7 +142,9 @@ public class GitSubmodule: Submodule
   
   /// Starts adding a new submodule. After this, clone the submodule, and then
   /// call `addFinalize()`.
-  static func add(to repo: OpaquePointer, url: String, path: String) throws -> GitSubmodule
+  static func add(to repo: OpaquePointer,
+                  url: String,
+                  path: String) throws -> GitSubmodule
   {
     let submodule = try OpaquePointer.from {
       git_submodule_add_setup(&$0, repo, url, path, 0)

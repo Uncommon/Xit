@@ -29,7 +29,7 @@ struct PathField: View
       else { return false }
       
       _ = provider.loadObject(ofClass: URL.self) {
-        (url, error) in
+        (url, _) in
         // It seems the only way to verify that the dropped item is a directory
         // is to examine the data asynchronously, so dropped files are ignored
         // instead of rejected.

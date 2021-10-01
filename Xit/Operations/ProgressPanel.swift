@@ -45,7 +45,10 @@ struct ProgressPanel: View
       }
     
   }
-  init(message: String, publisher: AnyPublisher<RemoteProgressMessage, RepoError>, stopAction: (() -> Void)? = nil)
+
+  init(message: String,
+       publisher: AnyPublisher<RemoteProgressMessage, RepoError>,
+       stopAction: (() -> Void)? = nil)
   {
     self.publisher = publisher
     self.stopAction = stopAction
@@ -91,7 +94,8 @@ struct ProgressPanel_Previews: PreviewProvider
 
   static var previews: some View
   {
-    let result1: Result<RemoteProgressMessage, RepoError> = .success(.download(EmptyProgress()))
+    let result1: Result<RemoteProgressMessage, RepoError> =
+      .success(.download(EmptyProgress()))
 
     Group {
       ProgressPanel(message: "Progressing",

@@ -73,6 +73,7 @@ struct ClonePanel_Previews: PreviewProvider
       ClonePanel(data: data, close: {}, clone: {})
     }
   }
+  
   static var previews: some View
   {
     Group {
