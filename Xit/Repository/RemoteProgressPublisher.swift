@@ -19,17 +19,20 @@ public class RemoteProgressPublisher
     callbacks = .init(
         passwordBlock: nil,
         downloadProgress: { [weak self] in
-          guard let self = self else { return false }
+          guard let self = self
+          else { return false }
           self.subject.send(.download($0))
           return !self.canceled
         },
         uploadProgress: { [weak self] in
-          guard let self = self else { return false }
+          guard let self = self
+          else { return false }
           self.subject.send(.upload($0))
           return !self.canceled
         },
         sidebandMessage: { [weak self] in
-          guard let self = self else { return false }
+          guard let self = self
+          else { return false }
           self.subject.send(.sideband($0))
           return !self.canceled
         })

@@ -164,6 +164,8 @@ public class GitSubmodule: Submodule
     
     try git_remote_callbacks.withCallbacks(callbacks) {
       (gitCallbacks) in
+      options.fetch_opts.callbacks = gitCallbacks
+      
       let result = git_submodule_update(submodule, initialize ? 1 : 0, &options)
       
       try RepoError.throwIfGitError(result)
