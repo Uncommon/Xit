@@ -40,9 +40,13 @@ class XTTest: XCTestCase
     }
     
     let repoURL = URL(fileURLWithPath: repoPath)
-    guard let repo = XTRepository(emptyURL: repoURL)
-    else {
-      XCTFail("initializeRepository '\(repoPath)' FAIL")
+    let repo: XTRepository
+
+    do {
+      repo = try .init(emptyURL: repoURL)
+    }
+    catch let error {
+      XCTFail("could not create repository at '\(repoPath)' - \(error.localizedDescription)")
       return nil
     }
     guard fileManager.fileExists(atPath: repoPath.appending(pathComponent: ".git"))
@@ -95,8 +99,8 @@ class XTTest: XCTestCase
   
   func waitForRepoQueue()
   {
-    wait(for: repository)
-  }
+      wait(for: repository)
+    }
   
   func wait(for repository: XTRepository)
   {

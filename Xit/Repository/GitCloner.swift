@@ -33,7 +33,7 @@ public class GitCloner: Cloning
           publisher.error(.unexpected)
           throw error
         }
-        guard let repo = XTRepository(gitRepo: gitRepo)
+        guard let repo = try? XTRepository(gitRepo: gitRepo)
         else { return nil }
 
         if recurseSubmodules {

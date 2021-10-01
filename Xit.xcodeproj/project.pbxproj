@@ -125,7 +125,6 @@
 		C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9416342213EF3E10015F1C0 /* WorkspaceFileListController.swift */; };
 		C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9416354213EF42E0015F1C0 /* StagedFileListController.swift */; };
 		C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9470B8323073A5B003895A9 /* GitRefLog.swift */; };
-		C94736741DEE1D7D000E3A05 /* ObjectiveGit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */; };
 		C94736781DEF5AAE000E3A05 /* GitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736771DEF5AAE000E3A05 /* GitExtensions.swift */; };
 		C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94736791DEF5CA8000E3A05 /* FileViewController.swift */; };
@@ -250,6 +249,7 @@
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
 		C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */; };
+		C9CDB8DB2707A45D007C2E77 /* libgit2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB8DA2707A45D007C2E77 /* libgit2.a */; };
 		C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */; };
 		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
@@ -293,7 +293,6 @@
 		DD00725613E76DFB003B4120 /* Xit.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD00725513E76DFB003B4120 /* Xit.icns */; };
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
-		DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD96C99A176976FE0003A30C /* ObjectiveGit.framework */; };
 		DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */ = {isa = PBXBuildFile; fileRef = DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */; };
 		DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileViewController.xib */; };
@@ -303,13 +302,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F879D8361B4B7F7C002D5C07;
-			remoteInfo = "ObjectiveGit-iOSTests";
-		};
 		C3FA472213D0F8E300AC4F9B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
@@ -408,34 +400,6 @@
 			remoteGlobalIDString = CDCCAF7A1E6A31DA00860D18;
 			remoteInfo = "SiestaTests tvOS";
 		};
-		DD96C999176976FE0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = ObjectiveGit;
-		};
-		DD96C99B176976FE0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 88F05A6B16011E5400B7AD1D;
-			remoteInfo = ObjectiveGitTests;
-		};
-		DD96C99D176976FE0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 04DB4645133AB57600D9C624;
-			remoteInfo = "ObjectiveGit-iOS";
-		};
-		DD96C9A41769772E0003A30C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = ObjectiveGit;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -445,7 +409,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C94736741DEE1D7D000E3A05 /* ObjectiveGit.framework in CopyFiles */,
 				C91F34761D306506005F9BDF /* Siesta.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -587,7 +550,7 @@
 		C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidatedSegment.swift; sourceTree = "<group>"; };
 		C94032F822EB5C6D001B5946 /* GitRefSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitRefSpec.swift; sourceTree = "<group>"; };
 		C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarDataSourceTest.swift; sourceTree = "<group>"; };
-		C94107C8236A3BD100D4B0D7 /* fixtures.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = fixtures.zip; path = "objective-git/ObjectiveGitTests/fixtures/fixtures.zip"; sourceTree = SOURCE_ROOT; };
+		C94107C8236A3BD100D4B0D7 /* fixtures.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = fixtures.zip; path = XitUITests/fixtures.zip; sourceTree = SOURCE_ROOT; };
 		C94107CA236B39C600D4B0D7 /* TemporaryDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryDirectory.swift; sourceTree = "<group>"; };
 		C94107CC236B427700D4B0D7 /* TestRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepo.swift; sourceTree = "<group>"; };
 		C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusViewController.swift; sourceTree = "<group>"; };
@@ -720,6 +683,7 @@
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
 		C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryTableController+Actions.swift"; sourceTree = "<group>"; };
+		C9CDB8DA2707A45D007C2E77 /* libgit2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgit2.a; path = ../../../../../usr/local/Cellar/libgit2/1.3.0/lib/libgit2.a; sourceTree = "<group>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -763,7 +727,6 @@
 		C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeLoader.swift; sourceTree = "<group>"; };
 		DD00725513E76DFB003B4120 /* Xit.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Xit.icns; sourceTree = "<group>"; };
 		DD858B2B1801325500264F7D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
-		DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjectiveGitFramework.xcodeproj; path = "objective-git/ObjectiveGitFramework.xcodeproj"; sourceTree = "<group>"; };
 		DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "CFRunLoop+Extensions.c"; path = "XitTests/CFRunLoop+Extensions.c"; sourceTree = SOURCE_ROOT; };
 		DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CFRunLoop+Extensions.h"; path = "XitTests/CFRunLoop+Extensions.h"; sourceTree = SOURCE_ROOT; };
 		DD997DF71746F40D00C7DF82 /* FileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FileViewController.xib; sourceTree = "<group>"; };
@@ -779,7 +742,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD96C9A6176977470003A30C /* ObjectiveGit.framework in Frameworks */,
+				C9CDB8DB2707A45D007C2E77 /* libgit2.a in Frameworks */,
 				C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
@@ -888,7 +851,6 @@
 			isa = PBXGroup;
 			children = (
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
-				DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */,
 				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C954C169237C6E56000D5339 /* git */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
@@ -915,6 +877,7 @@
 		C3FA46FF13D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C9CDB8DA2707A45D007C2E77 /* libgit2.a */,
 				DD858B2B1801325500264F7D /* CoreServices.framework */,
 				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
@@ -1327,17 +1290,6 @@
 			path = FileView;
 			sourceTree = "<group>";
 		};
-		DD96C990176976FC0003A30C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DD96C99A176976FE0003A30C /* ObjectiveGit.framework */,
-				DD96C99C176976FE0003A30C /* ObjectiveGit-MacTests.xctest */,
-				DD96C99E176976FE0003A30C /* ObjectiveGit.framework */,
-				89E6384D1C8651E400B7BB42 /* ObjectiveGit-iOSTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1354,10 +1306,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				DD96C9A51769772E0003A30C /* PBXTargetDependency */,
 				C91F34731D3064B2005F9BDF /* PBXTargetDependency */,
 			);
 			name = Xit;
+			packageProductDependencies = (
+			);
 			productName = Xit;
 			productReference = C3FA46FC13D0F8E200AC4F9B /* Xit.app */;
 			productType = "com.apple.product-type.application";
@@ -1436,10 +1389,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DD96C990176976FC0003A30C /* Products */;
-					ProjectRef = DD96C98F176976FC0003A30C /* ObjectiveGitFramework.xcodeproj */;
-				},
-				{
 					ProductGroup = C91F34641D30647D005F9BDF /* Products */;
 					ProjectRef = C91F34631D30647D005F9BDF /* Siesta.xcodeproj */;
 				},
@@ -1454,13 +1403,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		89E6384D1C8651E400B7BB42 /* ObjectiveGit-iOSTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "ObjectiveGit-iOSTests.xctest";
-			remoteRef = 89E6384C1C8651E400B7BB42 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		C91F346B1D30647E005F9BDF /* Siesta.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -1536,27 +1478,6 @@
 			fileType = wrapper.cfbundle;
 			path = SiestaTests.xctest;
 			remoteRef = C9D81E9520BF3B3E0038B25A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C99A176976FE0003A30C /* ObjectiveGit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ObjectiveGit.framework;
-			remoteRef = DD96C999176976FE0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C99C176976FE0003A30C /* ObjectiveGit-MacTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "ObjectiveGit-MacTests.xctest";
-			remoteRef = DD96C99B176976FE0003A30C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DD96C99E176976FE0003A30C /* ObjectiveGit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ObjectiveGit.framework;
-			remoteRef = DD96C99D176976FE0003A30C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1922,11 +1843,6 @@
 			name = "Siesta macOS";
 			targetProxy = C91F34721D3064B2005F9BDF /* PBXContainerItemProxy */;
 		};
-		DD96C9A51769772E0003A30C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ObjectiveGit;
-			targetProxy = DD96C9A41769772E0003A30C /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1978,7 +1894,6 @@
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1988,8 +1903,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2011,14 +1930,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2114,8 +2027,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2161,8 +2078,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
 					"$(inherited)",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				OTHER_LDFLAGS = "";
@@ -2183,14 +2104,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2220,13 +2135,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/objective-git/External/libgit2/include\"",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
