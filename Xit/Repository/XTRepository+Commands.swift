@@ -248,7 +248,7 @@ extension XTRepository: SubmoduleManagement
     
     var payload = Payload()
     let callback: git_submodule_cb = {
-      (submodule, name, payload) in
+      (submodule, _, payload) in
       guard let submodule = submodule,
             let repo = git_submodule_owner(submodule)
       else { return 0 }

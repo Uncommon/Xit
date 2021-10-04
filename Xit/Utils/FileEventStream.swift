@@ -37,7 +37,7 @@ public class FileEventStream
                                        release: nil,
                                        copyDescription: nil)
     let callback: FSEventStreamCallback = {
-      (streamRef, userData, eventCount, paths, flags, ids) in
+      (_, userData, eventCount, paths, flags, _) in
       guard let cfPaths = unsafeBitCast(paths, to: NSArray.self) as? [String]
       else { return }
       let contextSelf = unsafeBitCast(userData, to: FileEventStream.self)

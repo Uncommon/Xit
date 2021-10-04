@@ -52,15 +52,15 @@ extension Result: AbstractResult
   var succeeded: Bool
   {
     switch self {
-      case .success(_): return true
-      case .failure(_): return false
+      case .success: return true
+      case .failure: return false
     }
   }
   
   var error: Error?
   {
     switch self {
-      case .success(_): return nil
+      case .success: return nil
       case .failure(let error): return error
     }
   }

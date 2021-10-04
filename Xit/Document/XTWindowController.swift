@@ -67,6 +67,7 @@ class XTWindowController: NSWindowController,
 
   deinit
   {
+    currentOperation?.canceled = true
     splitObserver.map {
       NotificationCenter.default.removeObserver($0)
     }
@@ -140,11 +141,6 @@ class XTWindowController: NSWindowController,
     repoController.queue.shutDown()
     currentOperation?.abort()
     WaitForQueue(repoController.queue.queue)
-  }
-  
-  deinit
-  {
-    currentOperation?.canceled = true
   }
 
   func updateHistoryCollapse(wasStaging: Bool)

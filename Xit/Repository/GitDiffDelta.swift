@@ -15,7 +15,7 @@ extension git_diff_delta
   // Apparently you can't declare a function with @convention(c)
   // (something to do with name mangling?) so this has to be a block
   static let fileCallback: git_diff_file_cb = {
-    (delta, progress, payload) in
+    (delta, _, payload) in
     guard let delta = delta
     else { return GIT_ERROR.rawValue }
     let target = payload!.bindMemory(to: git_diff_delta.self, capacity: 1)
