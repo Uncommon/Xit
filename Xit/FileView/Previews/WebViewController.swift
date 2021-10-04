@@ -60,6 +60,9 @@ class WebViewController: NSViewController
   deinit
   {
     webView.navigationDelegate = nil
+    fontObserver.map {
+      NotificationCenter.default.removeObserver($0)
+    }
   }
   
   func updateFont()
@@ -88,13 +91,6 @@ class WebViewController: NSViewController
     let html = String(format: template, escapedText)
     
     load(html: html)
-  }
-  
-  func setDefaultTabWidth()
-  {
-    let defaultWidth = UInt(UserDefaults.standard.integer(forKey: "tabWidth"))
-    
-    tabWidth = (defaultWidth == 0) ? Default.tabWidth : defaultWidth
   }
   
   func setDocumentProperty(_ property: String, value: String)

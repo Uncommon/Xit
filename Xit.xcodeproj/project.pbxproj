@@ -6,6 +6,20 @@
 	objectVersion = 54;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C9CDB8F5270B673F007C2E77 /* Periphery */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C9CDB8F6270B673F007C2E77 /* Build configuration list for PBXAggregateTarget "Periphery" */;
+			buildPhases = (
+				C9CDB8FA270B6746007C2E77 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Periphery;
+			productName = Periphery;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
@@ -145,7 +159,6 @@
 		C94E4EDE22A989BC00D5B2B1 /* CLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94E4EDD22A989BC00D5B2B1 /* CLIRunner.swift */; };
 		C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */; };
 		C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */; };
-		C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355E91D93470400AEEF49 /* TitleStatusView.swift */; };
 		C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */; };
 		C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */; };
 		C954ABFD1D34455000302160 /* GitBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C954ABFC1D34455000302160 /* GitBranch.swift */; };
@@ -580,7 +593,6 @@
 		C94E4EDD22A989BC00D5B2B1 /* CLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIRunner.swift; sourceTree = "<group>"; };
 		C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTableCellView.swift; sourceTree = "<group>"; };
 		C951EB041DD636B900B99FBE /* SidebarCheckedRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarCheckedRowView.swift; sourceTree = "<group>"; };
-		C95355E91D93470400AEEF49 /* TitleStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleStatusView.swift; sourceTree = "<group>"; };
 		C95355FB1D9492EA00AEEF49 /* XTDocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTDocumentController.swift; sourceTree = "<group>"; };
 		C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensionsTest.swift; sourceTree = "<group>"; };
 		C954ABFC1D34455000302160 /* GitBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitBranch.swift; sourceTree = "<group>"; };
@@ -1147,7 +1159,6 @@
 				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
-				C95355E91D93470400AEEF49 /* TitleStatusView.swift */,
 				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
 			);
@@ -1374,6 +1385,9 @@
 						CreatedOnToolsVersion = 11.1;
 						TestTargetID = C3FA46FB13D0F8E200AC4F9B;
 					};
+					C9CDB8F5270B673F007C2E77 = {
+						CreatedOnToolsVersion = 13.0;
+					};
 				};
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
@@ -1398,6 +1412,7 @@
 				C3FA46FB13D0F8E200AC4F9B /* Xit */,
 				C3FA471F13D0F8E300AC4F9B /* XitTests */,
 				C91727B223689F500023DC57 /* XitUITests */,
+				C9CDB8F5270B673F007C2E77 /* Periphery */,
 			);
 		};
 /* End PBXProject section */
@@ -1536,6 +1551,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		C9CDB8FA270B6746007C2E77 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "periphery scan --format xcode\n";
+		};
 		C9E881461E9570D400BFA7E5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1685,7 +1717,6 @@
 				C90B4EB11FE86A9900277B13 /* GiRevWalk.swift in Sources */,
 				C90DA48B24212F0300FFBC26 /* XTWindowController+TitleBar.swift in Sources */,
 				C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */,
-				C95355EA1D93470400AEEF49 /* TitleStatusView.swift in Sources */,
 				C9063D0A2412B29700574A93 /* RepositoryController.swift in Sources */,
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
 				C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */,
@@ -2371,6 +2402,30 @@
 			};
 			name = Release;
 		};
+		C9CDB8F7270B673F007C2E77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C9CDB8F8270B673F007C2E77 /* coverage */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = coverage;
+		};
+		C9CDB8F9270B673F007C2E77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2410,6 +2465,16 @@
 				C91727BA23689F500023DC57 /* Debug */,
 				C91727BB23689F500023DC57 /* coverage */,
 				C91727BC23689F500023DC57 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9CDB8F6270B673F007C2E77 /* Build configuration list for PBXAggregateTarget "Periphery" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9CDB8F7270B673F007C2E77 /* Debug */,
+				C9CDB8F8270B673F007C2E77 /* coverage */,
+				C9CDB8F9270B673F007C2E77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

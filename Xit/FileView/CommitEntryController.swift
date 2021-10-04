@@ -71,6 +71,13 @@ class CommitEntryController: NSViewController, RepositoryWindowViewController
     self.config = config
     self.repo = repository
   }
+
+  deinit
+  {
+    stripObserver.map {
+      NotificationCenter.default.removeObserver($0)
+    }
+  }
   
   override func awakeFromNib()
   {

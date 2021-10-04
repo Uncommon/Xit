@@ -1,0 +1,8 @@
+disable_redundant_public_analysis: true
+project: Xit.xcodeproj
+retain_objc_accessible: true
+schemes:
+- Xit
+targets:
+- Xit
+verbose: true

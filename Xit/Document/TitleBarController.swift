@@ -140,6 +140,16 @@ class TitleBarController: NSObject
       self.spinner.needsDisplay = true
     }
   }
+
+  deinit
+  {
+    let observers = [progressObserver, becomeKeyObserver, resignKeyObserver]
+      .compactMap { $0 }
+
+    for observer in observers {
+      NotificationCenter.default.removeObserver(observer)
+    }
+  }
   
   @IBAction
   func navigate(_ sender: Any?)

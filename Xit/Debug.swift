@@ -62,16 +62,16 @@ enum Signpost
     switch code {
       case .generateConnections(let batchStart),
            .generateLines(let batchStart):
-        os_signpost(.begin, log: Signpost.logger, name: code.name,
+        os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id,
                     "batch start: %d", batchStart)
       default:
-        os_signpost(.begin, log: Signpost.logger, name: code.name)
+        os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id)
     }
   }
 
   static func intervalEnd(_ code: Interval, id: OSSignpostID = .exclusive)
   {
-    os_signpost(.end, log: Signpost.logger, name: code.name)
+    os_signpost(.end, log: Signpost.logger, name: code.name, signpostID: id)
   }
 
   static func intervalStart(_ code: Interval, object: AnyObject)

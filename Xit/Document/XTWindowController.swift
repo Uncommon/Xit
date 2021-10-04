@@ -65,6 +65,13 @@ class XTWindowController: NSWindowController,
   private var kvObservers: [NSKeyValueObservation] = []
   private var splitObserver: NSObjectProtocol?
 
+  deinit
+  {
+    splitObserver.map {
+      NotificationCenter.default.removeObserver($0)
+    }
+  }
+
   @objc
   func finalizeSetup()
   {
