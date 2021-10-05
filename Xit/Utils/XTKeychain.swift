@@ -116,10 +116,10 @@ final class XTKeychain: PasswordStorage
                                  port: UInt16,
                                  account: String?) -> [CFString: Any]
   {
-    var result: [CFString: Any] = [kSecClass: kSecClassInternetPassword,
-                                   kSecAttrServer: host,
-                                   //kSecAttrPort: port,
-                                   ]
+    var result: [CFString: Any] = [
+      kSecClass: kSecClassInternetPassword,
+      kSecAttrServer: host,
+    ]
     
     if let account = account {
       result[kSecAttrAccount] = account

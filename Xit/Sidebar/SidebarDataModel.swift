@@ -183,7 +183,6 @@ class SidebarDataModel
     newRoots[SidebarGroupIndex.submodules.rawValue].children = submoduleItems
     
     repo.rebuildRefsIndex()
-    //viewController.reloadFinished()
     return newRoots
   }
 }
