@@ -17,7 +17,7 @@ public class RemoteProgressPublisher
   init(passwordBlock: (() -> (String, String))? = nil)
   {
     callbacks = .init(
-        passwordBlock: nil,
+        passwordBlock: passwordBlock,
         downloadProgress: { [weak self] in
           guard let self = self
           else { return false }

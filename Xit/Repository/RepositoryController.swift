@@ -23,7 +23,6 @@ class GitRepositoryController: NSObject, RepositoryController
 
   @objc public let queue: TaskQueue
   let mutex = Mutex()
-  var refsIndex = [String: [String]]()
 
   fileprivate var repoWatcher: RepositoryWatcher?
   fileprivate let configWatcher: ConfigWatcher
@@ -57,10 +56,6 @@ class GitRepositoryController: NSObject, RepositoryController
     get { mutex.withLock { _cachedBranches } }
     set { mutex.withLock { _cachedBranches = newValue } }
   }
-  var cachedIgnored = false
-
-  let diffCache = Cache<String, Diff>(maxSize: 50)
-  
   
   static func taskQueueID(path: String) -> String
   {

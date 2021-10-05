@@ -22,6 +22,11 @@ class PasswordOpController: SimpleOperationController
       self.abort()
     }
   }
+
+  deinit
+  {
+    closeObserver.map { NotificationCenter.default.removeObserver($0) }
+  }
   
   override func abort()
   {

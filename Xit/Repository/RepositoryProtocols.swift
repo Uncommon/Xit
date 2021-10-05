@@ -1,6 +1,8 @@
+// periphery:ignore:all
 import Foundation
 import Combine
 
+/// A combination of all repository protocols
 public typealias Repository =
     BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
     FileContents & FileStaging & FileStatusDetection & Merging &

@@ -2,7 +2,6 @@ import Cocoa
 
 class NewBranchPanelController: SheetController
 {
-  var repository: Branching!
   var localBranchNames: [String] = []
   var remoteBranchNames: [String] = []
   var startingPointEditor = FullReplacementTextView()

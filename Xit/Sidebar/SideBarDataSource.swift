@@ -254,31 +254,6 @@ class SideBarDataSource: NSObject
   {
     reloadTimer?.invalidate()
   }
-  
-  func scheduleReload()
-  {
-    if let timer = reloadTimer, timer.isValid {
-      timer.fireDate = Date(timeIntervalSinceNow: Intervals.reloadDelay)
-    }
-    else {
-      reloadTimer = Timer.scheduledTimer(withTimeInterval: Intervals.reloadDelay,
-                                         repeats: false) {
-        [weak self] _ in
-        DispatchQueue.main.async {
-          guard let self = self,
-                let outline = self.outline
-          else { return }
-          let savedSelection = self.viewController.selectedItem
-          
-          outline.reloadData()
-          if savedSelection != nil {
-            self.viewController.selectedItem = savedSelection
-          }
-        }
-        self?.reloadTimer = nil
-      }
-    }
-  }
 }
 
 extension SideBarDataSource: RepositoryUIAccessor

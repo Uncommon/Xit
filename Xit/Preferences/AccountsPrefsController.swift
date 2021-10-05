@@ -1,14 +1,6 @@
 import Cocoa
 
 
-enum PasswordAction
-{
-  case save
-  case change
-  case useExisting
-}
-
-
 class AccountsPrefsController: NSViewController
 {
   // Not a weak reference because there are no other references to it.
@@ -29,6 +21,11 @@ class AccountsPrefsController: NSViewController
     else { return nil }
     
     return manager.accounts[selectedRow]
+  }
+
+  deinit
+  {
+    authStatusObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   override func viewDidLoad()

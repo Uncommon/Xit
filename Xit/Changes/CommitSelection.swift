@@ -26,8 +26,6 @@ class CommitSelection: RepositorySelection
 
 class CommitFileList: FileListModel
 {
-  var stagingType: StagingType { .none }
-  
   lazy var changes: [FileChange] =
       self.repository.changes(for: self.commit.oid.sha,
                               parent: self.commit.parentOIDs.first)

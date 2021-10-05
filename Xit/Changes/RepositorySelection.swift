@@ -62,8 +62,6 @@ protocol FileListModel: AnyObject
 {
   var selection: RepositorySelection { get }
   
-  var stagingType: StagingType { get }
-  
   /// Changes displayed in the file list
   var changes: [FileChange] { get }
   

@@ -1,8 +1,6 @@
 import Cocoa
 import Combine
 
-fileprivate let batchSize = 500
-
 public class HistoryTableController: NSViewController,
                                      RepositoryWindowViewController
 {

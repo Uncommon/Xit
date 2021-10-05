@@ -3,7 +3,6 @@ import Foundation
 class FileChangesDataSource: FileListDataSourceBase
 {
   var changes = [FileChange]()
-  var wasInStaging: Bool = false
   
   func doReload(_ newChanges: [FileChange])
   {

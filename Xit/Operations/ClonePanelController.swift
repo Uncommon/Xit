@@ -31,7 +31,6 @@ final class ClonePanelController: NSWindowController
 {
   let cloner: Cloning
   let data = CloneData(readURL: ClonePanelController.readURL(_:))
-  var progressShown = false
   let presentingModel = PresentingModel()
   let progressPublisher = RemoteProgressPublisher()
   var urlObserver: AnyCancellable?

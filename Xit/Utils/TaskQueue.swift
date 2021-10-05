@@ -3,7 +3,6 @@ import Foundation
 public class TaskQueue: NSObject
 {
   @objc let queue: DispatchQueue
-  let group = DispatchGroup()
   var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
   

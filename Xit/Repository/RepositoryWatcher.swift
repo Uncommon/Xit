@@ -1,12 +1,15 @@
 import Foundation
 import Combine
 
-let XTAddedRefsKey = "addedRefs"
-let XTDeletedRefsKey = "deletedRefs"
-let XTChangedRefsKey = "changedRefs"
-
 class RepositoryWatcher
 {
+  public enum RefKey
+  {
+    static let added = "addedRefs"
+    static let deleted = "deletedRefs"
+    static let changed = "changedRefs"
+  }
+
   weak var controller: RepositoryController?
   
   var repository: XTRepository? { controller?.repository as? XTRepository }
@@ -146,16 +149,6 @@ class RepositoryWatcher
     return false
   }
   
-  func post(_ name: NSNotification.Name)
-  {
-    DispatchQueue.main.async {
-      [weak self] in
-      self.map {
-        NotificationCenter.default.post(name: name, object: $0.repository)
-      }
-    }
-  }
-  
   func checkRefs(changedPaths: [String], repository: XTRepository)
   {
     mutex.withLock {
@@ -204,13 +197,13 @@ class RepositoryWatcher
     var refChanges = [String: Set<String>]()
     
     if !addedRefs.isEmpty {
-      refChanges[XTAddedRefsKey] = addedRefs
+      refChanges[RefKey.added] = addedRefs
     }
     if !deletedRefs.isEmpty {
-      refChanges[XTDeletedRefsKey] = deletedRefs
+      refChanges[RefKey.deleted] = deletedRefs
     }
     if !changedRefs.isEmpty {
-      refChanges[XTChangedRefsKey] = Set(changedRefs)
+      refChanges[RefKey.changed] = Set(changedRefs)
     }
     
     if !refChanges.isEmpty {

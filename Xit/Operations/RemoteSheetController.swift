@@ -9,7 +9,6 @@ protocol RemoteSheetDelegate: AnyObject
 class RemoteSheetController: SheetController
 {
   weak var delegate: RemoteSheetDelegate?
-  weak var repository: XTRepository?
   
   @IBOutlet weak var nameField: NSTextField!
   @IBOutlet weak var fetchField: NSTextField!

@@ -1,5 +1,8 @@
 disable_redundant_public_analysis: true
 project: Xit.xcodeproj
+retain_assign_only_property_types:
+- AnyCancellable
+- NSKeyValueObservation
 retain_objc_accessible: true
 schemes:
 - Xit

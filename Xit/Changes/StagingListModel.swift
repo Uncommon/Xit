@@ -14,8 +14,6 @@ class StagingListModel
 /// File list for staged files (the index)
 class IndexFileList: StagingListModel, FileListModel
 {
-  var stagingType: StagingType { .index }
-  
   var changes: [FileChange]
   {
     Signpost.interval(.loadIndex) {
@@ -89,7 +87,6 @@ class AmendingIndexFileList: IndexFileList
 /// File list for unstaged files (the workspace)
 class WorkspaceFileList: StagingListModel, FileListModel
 {
-  var stagingType: StagingType { .workspace }
   var showingIgnored = false
   
   var changes: [FileChange]

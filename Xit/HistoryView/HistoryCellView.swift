@@ -34,9 +34,7 @@ class HistoryCellView: NSTableCellView
   private enum Margins
   {
     static let left: CGFloat = 4.0
-    static let right: CGFloat = 4.0
     static let text: CGFloat = 4.0
-    static let token: CGFloat = 4.0
   }
   
   // Don't use NSTableCellView.textField
