@@ -2,6 +2,8 @@
 *.swp
 *~.nib
 
+libgit2-mac.a
+
 .idea/
 build/
 

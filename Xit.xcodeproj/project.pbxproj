@@ -18,6 +18,17 @@
 			name = Periphery;
 			productName = Periphery;
 		};
+		C9CDB900270D4DE7007C2E77 /* libgit2 */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C9CDB901270D4DE7007C2E77 /* Build configuration list for PBXAggregateTarget "libgit2" */;
+			buildPhases = (
+				C9CDB905270D4DEC007C2E77 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = libgit2;
+			productName = libgit2;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -262,7 +273,10 @@
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
 		C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */; };
-		C9CDB8DB2707A45D007C2E77 /* libgit2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB8DA2707A45D007C2E77 /* libgit2.a */; };
+		C9CDB91D270D4FD1007C2E77 /* libgit2-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB91C270D4FD1007C2E77 /* libgit2-mac.a */; };
+		C9CDB920270D50A1007C2E77 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB91F270D50A1007C2E77 /* libiconv.tbd */; };
+		C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB921270D50C1007C2E77 /* libz.tbd */; };
+		C9CDB924270D54F9007C2E77 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB923270D54F9007C2E77 /* libssh2.a */; };
 		C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */; };
 		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
@@ -391,6 +405,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = DA19D06E1D9ADC1800D15F3A;
 			remoteInfo = "SiestaPerformanceTests macOS";
+		};
+		C9CDB91A270D4FB0007C2E77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C3FA46F313D0F8E200AC4F9B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9CDB900270D4DE7007C2E77;
+			remoteInfo = libgit2;
 		};
 		C9D81E9120BF3B3E0038B25A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -695,7 +716,11 @@
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
 		C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryTableController+Actions.swift"; sourceTree = "<group>"; };
-		C9CDB8DA2707A45D007C2E77 /* libgit2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgit2.a; path = ../../../../../usr/local/Cellar/libgit2/1.3.0/lib/libgit2.a; sourceTree = "<group>"; };
+		C9CDB919270D4EA7007C2E77 /* build_libgit2.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_libgit2.sh; sourceTree = SOURCE_ROOT; };
+		C9CDB91C270D4FD1007C2E77 /* libgit2-mac.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libgit2-mac.a"; sourceTree = SOURCE_ROOT; };
+		C9CDB91F270D50A1007C2E77 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
+		C9CDB921270D50C1007C2E77 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		C9CDB923270D54F9007C2E77 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = /usr/local/lib/libssh2.a; sourceTree = "<absolute>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -754,13 +779,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9CDB8DB2707A45D007C2E77 /* libgit2.a in Frameworks */,
 				C91F34741D3064CC005F9BDF /* Siesta.framework in Frameworks */,
 				31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */,
 				C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */,
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
 				DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */,
 				DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */,
+				C9CDB91D270D4FD1007C2E77 /* libgit2-mac.a in Frameworks */,
+				C9CDB920270D50A1007C2E77 /* libiconv.tbd in Frameworks */,
+				C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */,
+				C9CDB924270D54F9007C2E77 /* libssh2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -889,7 +917,9 @@
 		C3FA46FF13D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C9CDB8DA2707A45D007C2E77 /* libgit2.a */,
+				C9CDB923270D54F9007C2E77 /* libssh2.a */,
+				C9CDB921270D50C1007C2E77 /* libz.tbd */,
+				C9CDB91F270D50A1007C2E77 /* libiconv.tbd */,
 				DD858B2B1801325500264F7D /* CoreServices.framework */,
 				31A8939F13E9DA5B008BE0C2 /* WebKit.framework */,
 				C3FA470013D0F8E200AC4F9B /* Cocoa.framework */,
@@ -940,6 +970,8 @@
 				89039F551703A9FC000949A8 /* html */,
 				C3FA470713D0F8E200AC4F9B /* Supporting Files */,
 				89880EEC20D17D1E007042F8 /* Media.xcassets */,
+				C9CDB919270D4EA7007C2E77 /* build_libgit2.sh */,
+				C9CDB91C270D4FD1007C2E77 /* libgit2-mac.a */,
 			);
 			path = Xit;
 			sourceTree = "<group>";
@@ -1317,6 +1349,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				C9CDB91B270D4FB0007C2E77 /* PBXTargetDependency */,
 				C91F34731D3064B2005F9BDF /* PBXTargetDependency */,
 			);
 			name = Xit;
@@ -1388,6 +1421,9 @@
 					C9CDB8F5270B673F007C2E77 = {
 						CreatedOnToolsVersion = 13.0;
 					};
+					C9CDB900270D4DE7007C2E77 = {
+						CreatedOnToolsVersion = 13.0;
+					};
 				};
 			};
 			buildConfigurationList = C3FA46F613D0F8E200AC4F9B /* Build configuration list for PBXProject "Xit" */;
@@ -1413,6 +1449,7 @@
 				C3FA471F13D0F8E300AC4F9B /* XitTests */,
 				C91727B223689F500023DC57 /* XitUITests */,
 				C9CDB8F5270B673F007C2E77 /* Periphery */,
+				C9CDB900270D4DE7007C2E77 /* libgit2 */,
 			);
 		};
 /* End PBXProject section */
@@ -1567,6 +1604,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "periphery scan --format xcode\n";
+		};
+		C9CDB905270D4DEC007C2E77 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./build_libgit2.sh\n";
 		};
 		C9E881461E9570D400BFA7E5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1874,6 +1928,11 @@
 			name = "Siesta macOS";
 			targetProxy = C91F34721D3064B2005F9BDF /* PBXContainerItemProxy */;
 		};
+		C9CDB91B270D4FB0007C2E77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9CDB900270D4DE7007C2E77 /* libgit2 */;
+			targetProxy = C9CDB91A270D4FB0007C2E77 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1935,7 +1994,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/include,
+					"$(PROJECT_DIR)/libgit2/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1967,6 +2026,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0b15;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
@@ -2059,7 +2122,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/include,
+					"$(PROJECT_DIR)/libgit2/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2110,7 +2173,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/include,
+					"$(PROJECT_DIR)/libgit2/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2142,6 +2205,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				MARKETING_VERSION = 1.0b15;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
@@ -2172,6 +2239,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 1.0b15;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
@@ -2426,6 +2497,30 @@
 			};
 			name = Release;
 		};
+		C9CDB902270D4DE7007C2E77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C9CDB903270D4DE7007C2E77 /* coverage */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = coverage;
+		};
+		C9CDB904270D4DE7007C2E77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2475,6 +2570,16 @@
 				C9CDB8F7270B673F007C2E77 /* Debug */,
 				C9CDB8F8270B673F007C2E77 /* coverage */,
 				C9CDB8F9270B673F007C2E77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C9CDB901270D4DE7007C2E77 /* Build configuration list for PBXAggregateTarget "libgit2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9CDB902270D4DE7007C2E77 /* Debug */,
+				C9CDB903270D4DE7007C2E77 /* coverage */,
+				C9CDB904270D4DE7007C2E77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
