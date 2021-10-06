@@ -721,6 +721,8 @@
 		C9CDB91F270D50A1007C2E77 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		C9CDB921270D50C1007C2E77 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		C9CDB923270D54F9007C2E77 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = /usr/local/lib/libssh2.a; sourceTree = "<absolute>"; };
+		C9CDB990270DDE0D007C2E77 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = libgit2/include/git2; sourceTree = "<group>"; };
+		C9CDB99B270DDEDF007C2E77 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = libgit2/src; sourceTree = "<group>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -890,6 +892,8 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				C9CDB99B270DDEDF007C2E77 /* src */,
+				C9CDB990270DDE0D007C2E77 /* git2 */,
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
 				C91F34631D30647D005F9BDF /* Siesta.xcodeproj */,
 				C954C169237C6E56000D5339 /* git */,
