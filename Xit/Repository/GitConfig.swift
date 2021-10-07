@@ -114,13 +114,48 @@ class GitConfig: Config
     else { return nil }
     
     self.config = config
+    do {
+      try addAppConfig()
+    }
+    catch {
+      return nil
+    }
     loadSnapshot()
   }
   
-  init(config: OpaquePointer)
+  init?(config: OpaquePointer)
   {
     self.config = config
+    do {
+      try addAppConfig()
+    }
+    catch {
+      return nil
+    }
     loadSnapshot()
+  }
+
+  /// Adds an app-level config file for settings changed by Xit.
+  ///
+  /// Among other things, having a separate file guards against corrupting
+  /// the user's config file in case there are bugs (like not preserving
+  /// multiline values).
+  private func addAppConfig() throws
+  {
+    guard let appSupport = FileManager.default
+                                      .urls(for: .applicationSupportDirectory,
+                                            in: .userDomainMask).first
+    else { throw RepoError.unexpected }
+    let configURL = appSupport.appendingPathComponent("xit.gitconfig")
+
+    try configURL.withUnsafeFileSystemRepresentation {
+      guard let path = $0
+      else { throw RepoError.unexpected }
+      let result = git_config_add_file_ondisk(config, path, GIT_CONFIG_LEVEL_APP,
+                                              nil, 1)
+
+      try RepoError.throwIfGitError(result)
+    }
   }
   
   static var `default`: GitConfig?
