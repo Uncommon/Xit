@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 extension ResetMode
 {
@@ -14,15 +15,18 @@ extension ResetMode
 
 extension XTRepository: Branching
 {
-  @objc public var currentBranch: String?
+  public var currentBranch: String?
   {
-    mutex.lock()
-    defer { mutex.unlock() }
-    if cachedBranch == nil {
-      refsChanged()
+    mutex.withLock {
+      if currentBranchSubject.value == nil {
+        refsChanged()
+      }
+      return currentBranchSubject.value
     }
-    return cachedBranch
   }
+
+  public var currentBranchPublisher: AnyPublisher<String?, Never>
+  { currentBranchSubject.eraseToAnyPublisher() }
   
   public var localBranches: AnySequence<LocalBranch>
   { AnySequence { LocalBranchIterator(repo: self) } }

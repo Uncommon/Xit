@@ -9,6 +9,7 @@ public protocol RepositoryController: AnyObject
   var cachedStagedChanges: [FileChange]? { get set }
   var cachedAmendChanges: [FileChange]? { get set }
   var cachedUnstagedChanges: [FileChange]? { get set }
+  var cachedBranches: [String: GitBranch] { get set }
 
   func invalidateIndex()
 }
@@ -28,8 +29,6 @@ class GitRepositoryController: NSObject, RepositoryController
   fileprivate let configWatcher: ConfigWatcher
   fileprivate var workspaceWatcher: WorkspaceWatcher?
   private var workspaceSink: AnyCancellable?
-
-  fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
   
   // Named with an underscore because the public accessors use the mutex
   private var _cachedStagedChanges, _cachedAmendChanges,
@@ -135,49 +134,13 @@ extension GitRepositoryController: RepositoryPublishing
 // Caching
 extension GitRepositoryController
 {
-  @objc public var currentBranch: String?
-  {
-    mutex.lock()
-    defer { mutex.unlock() }
-    if cachedBranch == nil {
-      resetCachedBranch()
-    }
-    return cachedBranch
-  }
-
   func addCachedBranch(_ branch: GitBranch)
   {
     mutex.withLock {
       _cachedBranches[branch.name] = branch
     }
   }
-  
-  func clearCachedBranch()
-  {
-    mutex.withLock {
-      cachedBranch = nil
-    }
-  }
-  
-  func resetCachedBranch()
-  {
-    cachedBranches = [:]
-    
-    // In theory the two separate locks could result in cachedBranch being wrong
-    // but that would only happen if this function was called on two different
-    // threads and one of them found that the branch had just changed again.
-    // Not likely.
-    guard let newBranch = xtRepo.calculateCurrentBranch(),
-          mutex.withLock({ newBranch != cachedBranch })
-    else { return }
-    
-    changingValue(forKey: #keyPath(currentBranch)) {
-      mutex.withLock {
-        cachedBranch = newBranch
-      }
-    }
-  }
-  
+
   func invalidateIndex()
   {
     mutex.withLock {

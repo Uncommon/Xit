@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
@@ -13,13 +14,14 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   let gitRunner: CLIRunner
   let mutex = Mutex()
   var refsIndex = [String: [String]]()
+
+  let currentBranchSubject = CurrentValueSubject<String?, Never>(nil)
   
   public var controller: RepositoryController? = nil
   
   fileprivate(set) public var isWriting = false
 
-  fileprivate(set) var cachedHeadRef, cachedHeadSHA, cachedBranch: String?
-  private var _cachedBranches: [String: GitBranch] = [:]
+  fileprivate(set) var cachedHeadRef, cachedHeadSHA: String?
   var cachedStagedChanges: [FileChange]?
   {
     get { controller?.cachedStagedChanges }
@@ -37,8 +39,8 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   }
   var cachedBranches: [String: GitBranch]
   {
-    get { mutex.withLock { _cachedBranches } }
-    set { mutex.withLock { _cachedBranches = newValue } }
+    get { controller?.cachedBranches ?? [:] }
+    set { controller?.cachedBranches = newValue }
   }
   var cachedIgnored = false
 
@@ -73,8 +75,6 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     self.gitRunner = CLIRunner(toolPath: gitCmd,
                                workingDir: url.path)
     self.config = config
-    
-    super.init()
   }
   
   @objc(initWithURL:)
@@ -106,9 +106,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   
   func addCachedBranch(_ branch: GitBranch)
   {
-    mutex.withLock {
-      _cachedBranches[branch.name] = branch
-    }
+    controller?.cachedBranches[branch.name] = branch
   }
   
   func updateIsWriting(_ writing: Bool)
@@ -124,7 +122,7 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
   func clearCachedBranch()
   {
     mutex.withLock {
-      cachedBranch = nil
+      currentBranchSubject.value = nil
     }
   }
   
@@ -137,14 +135,10 @@ public class XTRepository: NSObject, BasicRepository, RepoConfiguring
     // threads and one of them found that the branch had just changed again.
     // Not likely.
     guard let newBranch = calculateCurrentBranch(),
-          mutex.withLock({ newBranch != cachedBranch })
+          mutex.withLock({ newBranch != currentBranchSubject.value })
     else { return }
-    
-    changingValue(forKey: #keyPath(currentBranch)) {
-      mutex.withLock {
-        cachedBranch = newBranch
-      }
-    }
+
+    currentBranchSubject.value = newBranch
   }
   
   func recalculateHead()

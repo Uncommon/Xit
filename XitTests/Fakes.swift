@@ -161,6 +161,7 @@ class FakeRepoController: RepositoryController
   var cachedStagedChanges: [FileChange]? = nil
   var cachedAmendChanges: [FileChange]? = nil
   var cachedUnstagedChanges: [FileChange]? = nil
+  var cachedBranches: [String : GitBranch] = [:]
 
   func invalidateIndex() {}
 

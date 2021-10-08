@@ -76,7 +76,8 @@ class XTWindowController: NSWindowController,
   @objc
   func finalizeSetup()
   {
-    guard document != nil
+    guard document != nil,
+          let window = self.window
     else { return }
     
     xtDocument = document as! XTDocument?
@@ -95,20 +96,23 @@ class XTWindowController: NSWindowController,
         [weak self] _ in
         self?.updateTabStatus()
       })
-    kvObservers.append(repo.observe(\.currentBranch) {
-      [weak self] (_, _) in
-      self?.titleBarController?.selectedBranch = repo.currentBranch
+    sinks.append(repo.currentBranchPublisher.sink {
+      [weak self] in
+      self?.titleBarController?.selectedBranch = $0
       self?.updateMiniwindowTitle()
     })
-    kvObservers.append(window!.observe(\.tabbedWindows) {
-      [weak self] (window, _) in
-      self?.updateWindowStyle(window)
+    sinks.append(window.publisher(for: \.tabbedWindows).sink {
+      [weak self] _ in
+      if let self = self,
+         let window = self.window {
+        self.updateWindowStyle(window)
+      }
     })
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
     updateTabStatus()
-    updateWindowStyle(window!)
+    updateWindowStyle(window)
   }
   
   func updateWindowStyle(_ window: NSWindow)
