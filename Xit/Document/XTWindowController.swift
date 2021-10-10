@@ -59,7 +59,6 @@ class XTWindowController: NSWindowController,
   var savedSidebarWidth: CGFloat = 180
   var historyAutoCollapsed = false
   
-  @objc
   var currentOperation: OperationController?
   
   private var kvObservers: [NSKeyValueObservation] = []

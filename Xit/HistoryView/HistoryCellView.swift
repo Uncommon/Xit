@@ -7,7 +7,7 @@ class HistoryCellView: NSTableCellView
   private var currentBranch: String?
   private var refs = [String]()
 
-  var lockObject: NSObject!
+  var mutex: Mutex!
   
   static let lineColors: [NSColor] = [
       .systemBlue, .systemGreen, .systemRed, .systemBrown, .cyan,
@@ -135,7 +135,7 @@ class HistoryCellView: NSTableCellView
       stackViewInset.constant = 0
     }
     else {
-      lockObject?.withSync {
+      mutex?.withLock {
         let totalColumns = entry.lines.reduce(0) {
           (oldMax, line) -> UInt in
           max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
@@ -212,9 +212,9 @@ class HistoryCellView: NSTableCellView
   
   func drawLines()
   {
-    let dotValues = lockObject.withSync(block: {
+    let dotValues = mutex.withLock {
       (entry.dotOffset, entry.dotColorIndex)
-    })
+    }
     guard let dotOffset = dotValues.0,
           let dotColorIndex = dotValues.1
     else { return }

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class WorkspaceWatcher: NSObject
+class WorkspaceWatcher
 {
   weak var controller: RepositoryController?
   private(set) var stream: FileEventStream! = nil
@@ -13,7 +13,6 @@ class WorkspaceWatcher: NSObject
   init?(controller: RepositoryController)
   {
     self.controller = controller
-    super.init()
     
     guard let repository = controller.repository as? XTRepository,
           let stream = FileEventStream(

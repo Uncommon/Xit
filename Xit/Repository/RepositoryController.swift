@@ -17,12 +17,12 @@ public protocol RepositoryController: AnyObject
 /// Manages tasks and data related to working with a repository, such as cached
 /// data and things not directly related to repository operations, such as
 /// the task queue and tracking file changes.
-class GitRepositoryController: NSObject, RepositoryController
+class GitRepositoryController: RepositoryController
 {
   let xtRepo: XTRepository
   var repository: BasicRepository { xtRepo }
 
-  @objc public let queue: TaskQueue
+  public let queue: TaskQueue
   let mutex = Mutex()
 
   fileprivate var repoWatcher: RepositoryWatcher?
@@ -66,15 +66,11 @@ class GitRepositoryController: NSObject, RepositoryController
   init(repository: XTRepository)
   {
     self.xtRepo = repository
-    
     self.queue = TaskQueue(id: Self.taskQueueID(path: repository.repoURL.path))
-    
     self.configWatcher = ConfigWatcher(repository: repository)
-    
-    super.init()
-    
-    self.repoWatcher = RepositoryWatcher(controller: self)
-    self.workspaceWatcher = WorkspaceWatcher(controller: self)
+
+    repoWatcher = RepositoryWatcher(controller: self)
+    workspaceWatcher = WorkspaceWatcher(controller: self)
 
     workspaceSink = workspaceWatcher?.publisher
       .sinkOnMainQueue { // main queue might not be necessary

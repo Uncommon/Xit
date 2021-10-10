@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Takes charge of executing a command
-class OperationController: NSObject
+class OperationController
 {
   enum OperationResult
   {
@@ -29,7 +29,6 @@ class OperationController: NSObject
   /// Initiates the operation.
   func start() throws {}
   
-  @objc
   func abort() {}
   
   func ended(result: OperationResult = .success)

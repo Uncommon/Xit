@@ -57,7 +57,7 @@ extension XTWindowController
   /// Called by the operation controller when it's done.
   func operationEnded(_ operation: OperationController)
   {
-    if currentOperation == operation {
+    if currentOperation === operation {
       currentOperation = nil
     }
   }

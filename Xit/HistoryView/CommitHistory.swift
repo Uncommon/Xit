@@ -64,7 +64,7 @@ extension String
 public typealias GitCommitHistory = CommitHistory<GitOID>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class CommitHistory<ID: OID & Hashable>: NSObject
+public class CommitHistory<ID: OID & Hashable>
 {
   public typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>
@@ -75,6 +75,7 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   var entries = [Entry]()
   private var abortFlag = false
   private var abortMutex = Mutex()
+  public var syncMutex = Mutex()
   
   // start, end
   var postProgress: ((Int, Int) -> Void)?
@@ -83,6 +84,11 @@ public class CommitHistory<ID: OID & Hashable>: NSObject
   func appendCommit(_ commit: Commit)
   {
     entries.append(Entry(commit: commit))
+  }
+
+  func withSync<T>(_ callback: () throws -> T) rethrows -> T
+  {
+    try syncMutex.withLock(callback)
   }
   
   /// Clears the history list.

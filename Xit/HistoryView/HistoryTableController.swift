@@ -321,7 +321,7 @@ extension HistoryTableController: NSTableViewDelegate
         historyCell.configure(
             entry: entry,
             repository: repository as! Branching & CommitReferencing)
-        historyCell.lockObject = history
+        historyCell.mutex = history.syncMutex
 
       case ColumnID.author:
         result.textField?.stringValue =
@@ -349,7 +349,7 @@ extension HistoryTableController: NSTableViewDelegate
         refsCell.configure(
             entry: entry,
             repository: repository as! Branching & CommitReferencing)
-        refsCell.lockObject = history
+        refsCell.mutex = history.syncMutex
 
       default:
         return nil
