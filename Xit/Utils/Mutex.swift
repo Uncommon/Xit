@@ -1,7 +1,7 @@
 import Foundation
 
 /// Simple pthread mutex wrapper
-class Mutex
+public class Mutex
 {
   private var mutex: UnsafeMutablePointer<pthread_mutex_t>
   
@@ -24,17 +24,17 @@ class Mutex
     mutex.deallocate()
   }
   
-  func lock()
+  public func lock()
   {
     pthread_mutex_lock(mutex)
   }
   
-  func unlock()
+  public func unlock()
   {
     pthread_mutex_unlock(mutex)
   }
   
-  func withLock<T>(_ callback: () throws -> T) rethrows -> T
+  public func withLock<T>(_ callback: () throws -> T) rethrows -> T
   {
     lock()
     defer { unlock() }

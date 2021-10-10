@@ -44,7 +44,12 @@ extension XTRepository
   
   func renameRemote(old: String, new: String) throws
   {
-    _ = try executeGit(args: ["remote", "rename", old, new], writes: true)
+    try performWriting {
+      guard let remote = remote(named: old)
+      else { throw RepoError.notFound }
+
+      try remote.rename(new)
+    }
   }
 }
 
