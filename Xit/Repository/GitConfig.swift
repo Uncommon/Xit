@@ -114,24 +114,12 @@ class GitConfig: Config
     else { return nil }
     
     self.config = config
-    do {
-      try addAppConfig()
-    }
-    catch {
-      return nil
-    }
     loadSnapshot()
   }
   
   init?(config: OpaquePointer)
   {
     self.config = config
-    do {
-      try addAppConfig()
-    }
-    catch {
-      return nil
-    }
     loadSnapshot()
   }
 
@@ -165,7 +153,15 @@ class GitConfig: Config
     })
     else { return nil }
     
-    return GitConfig(config: config)
+    let result = GitConfig(config: config)
+
+    do {
+      try result?.addAppConfig()
+    }
+    catch {
+      return nil
+    }
+    return result
   }
   
   deinit

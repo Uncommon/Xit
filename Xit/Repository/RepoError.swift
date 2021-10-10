@@ -74,6 +74,8 @@ public enum RepoError: Swift.Error
     switch gitCode {
       case GIT_ECONFLICT, GIT_EMERGECONFLICT:
         self = .conflict
+      case GIT_EEXISTS:
+        self = .duplicateName
       case GIT_ELOCKED:
         self = .alreadyWriting
       case GIT_ENOTFOUND:
