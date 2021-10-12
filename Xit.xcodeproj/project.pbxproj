@@ -834,15 +834,15 @@
 				C919B9D326B09F4D007952FA /* LabeledField.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
+				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
+				8983E1A6266596BD0075370C /* PathField.swift */,
+				891C5F7226715C8A0099695D /* PrioritizedResults.swift */,
 				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				C957B8651D2D8D500040F858 /* XTKeychain.swift */,
-				8983E1A6266596BD0075370C /* PathField.swift */,
-				891C5F7226715C8A0099695D /* PrioritizedResults.swift */,
-				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";

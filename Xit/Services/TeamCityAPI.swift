@@ -11,12 +11,14 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   @Published fileprivate(set) var buildTypesStatus = Services.Status.notStarted
 
   /// Maps VCS root ID to repository URL.
-  fileprivate(set) var vcsRootMap = [String: String]()
+  fileprivate(set) var vcsRootMap = [String: URL]()
   /// Maps VCS root ID to branch specification.
   fileprivate(set) var vcsBranchSpecs = [String: BranchSpec]()
   /// Maps built type IDs to lists of repository URLs.
-  fileprivate(set) var buildTypeURLs = [String: [String]]()
+  fileprivate(set) var buildTypeURLs = [String: [URL]]()
   fileprivate(set) var cachedBuildTypes = [BuildType]()
+  /// Cached results for `buildTypesForRemote`
+  private var buildTypesCache: [String: [String]] = [:]
   
   init?(account: Account, password: String)
   {
@@ -126,16 +128,20 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
   
   override func didAuthenticate(responseResource: Resource)
   {
+    Signpost.intervalStart(.teamCityQuery)
     // Get VCS roots, build repo URL -> vcs-root id map.
     vcsRoots.useData(owner: self) {
       (data) in
+      Signpost.intervalEnd(.teamCityQuery)
       guard let xml = data.content as? XMLDocument
       else {
         NSLog("Couldn't parse vcs-roots xml")
         self.buildTypesStatus = .failed(nil)  // TODO: ParseError type
         return
       }
-      self.parseVCSRoots(xml)
+      Signpost.interval(.teamCityProcess) {
+        self.parseVCSRoots(xml)
+      }
     }
   }
 
@@ -143,21 +149,30 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
 
   // Calling this buildTypes(forRemote:) would conflict with the buildTypes var.
   /// Returns all the build types that use the given remote.
-  func buildTypesForRemote(_ remoteURL: String) -> [String]
+  func buildTypesForRemote(_ remoteURLString: String) -> [String]
   {
-    guard let remoteURL = URL(string: remoteURL)
-    else { return [] }
-    func matchHostPath(_ url: String) -> Bool
-    {
-      guard let otherURL = URL(string: url)
-      else { return false }
-      return remoteURL.host == otherURL.host &&
-             remoteURL.path == otherURL.path
+    if let cached = buildTypesCache[remoteURLString] {
+      return cached
     }
 
-    return buildTypeURLs.keys.filter {
-      buildTypeURLs[$0].map { $0.contains { matchHostPath($0) } } ?? false
+    guard let remoteURL = URL(string: remoteURLString)
+    else { return [] }
+    func matchHostPath(_ url: URL) -> Bool
+    {
+      return remoteURL.host == url.host &&
+             remoteURL.path == url.path
     }
+
+    let result = buildTypeURLs.keys.filter {
+      key in
+      buildTypeURLs[key].map {
+        urls in
+        urls.contains { matchHostPath($0) }
+      } ?? false
+    }
+
+    buildTypesCache[remoteURLString] = result
+    return result
   }
 
 
@@ -192,7 +207,8 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
     }
     
     var waitingRootCount = vcsIDs.count
-    
+
+    buildTypesCache.removeAll()
     vcsRootMap.removeAll()
     vcsBranchSpecs.removeAll()
     for rootID in vcsIDs {
@@ -227,7 +243,7 @@ class TeamCityAPI: BasicAuthService, ServiceAPI
       
       switch name {
         case "url":
-          vcsRootMap[vcsRootID] = value
+          vcsRootMap[vcsRootID] = URL(string: value)
         case "teamcity:branchSpec":
           let specLines = value.components(separatedBy: .whitespacesAndNewlines)
         
