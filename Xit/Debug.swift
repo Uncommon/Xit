@@ -4,7 +4,7 @@ import os
 enum Signpost
 {
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
-                            category: "Xit: loading")
+                            category: .pointsOfInterest)
 
   enum Event
   {
@@ -34,6 +34,9 @@ enum Signpost
     case loadTags
     case refreshPullRequests
     case refreshBuildStatus
+    case teamCityQuery
+    case teamCityProcess
+    case buildStatusUpdate(String)
     
     var name: StaticString
     {
@@ -48,6 +51,9 @@ enum Signpost
         case .loadTags: return "load tags"
         case .refreshPullRequests: return "refresh pull requests"
         case .refreshBuildStatus: return "refresh build status"
+        case .teamCityQuery: return "query TeamCity"
+        case .teamCityProcess: return "process TeamCity response"
+        case .buildStatusUpdate: return "build status update"
       }
     }
   }
@@ -64,6 +70,9 @@ enum Signpost
            .generateLines(let batchStart):
         os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id,
                     "batch start: %d", batchStart)
+      case .buildStatusUpdate(let buildType):
+        os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id,
+                    "build type: %s", buildType)
       default:
         os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id)
     }
