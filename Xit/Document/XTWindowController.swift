@@ -77,7 +77,9 @@ class XTWindowController: NSWindowController,
   {
     guard document != nil,
           let window = self.window
-    else { return }
+    else {
+      preconditionFailure("XTWindowController not configured")
+    }
     
     xtDocument = document as! XTDocument?
     
@@ -85,28 +87,28 @@ class XTWindowController: NSWindowController,
     else { return }
     
     repoController = GitRepositoryController(repository: repo)
-    sinks.append(repoController.refsPublisher
-      .sinkOnMainQueue {
+    sinks.append(contentsOf: [
+      repoController.refsPublisher.sinkOnMainQueue {
         [weak self] in
         self?.updateBranchList()
-      })
-    sinks.append(repoController.workspacePublisher
-      .sinkOnMainQueue {
+      },
+      repoController.workspacePublisher.sinkOnMainQueue {
         [weak self] _ in
         self?.updateTabStatus()
-      })
-    sinks.append(repo.currentBranchPublisher.sink {
-      [weak self] in
-      self?.titleBarController?.selectedBranch = $0
-      self?.updateMiniwindowTitle()
-    })
-    sinks.append(window.publisher(for: \.tabbedWindows).sink {
-      [weak self] _ in
-      if let self = self,
-         let window = self.window {
-        self.updateWindowStyle(window)
-      }
-    })
+      },
+      repo.currentBranchPublisher.sink {
+        [weak self] in
+        self?.titleBarController?.selectedBranch = $0
+        self?.updateMiniwindowTitle()
+      },
+      window.publisher(for: \.tabbedWindows).sink {
+        [weak self] _ in
+        if let self = self,
+           let window = self.window {
+          self.updateWindowStyle(window)
+        }
+      },
+    ])
     sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
@@ -117,7 +119,10 @@ class XTWindowController: NSWindowController,
   func updateWindowStyle(_ window: NSWindow)
   {
     guard let toolbar = window.toolbar
-    else { return }
+    else {
+      assertionFailure("no toolbar")
+      return
+    }
     var style = window.styleMask
     let findSeparator: (NSToolbarItem) -> Bool = {
       $0.itemIdentifier == .sidebarTrackingSeparator
@@ -149,7 +154,10 @@ class XTWindowController: NSWindowController,
   func updateHistoryCollapse(wasStaging: Bool)
   {
     guard let repo = xtDocument?.repository
-    else { return }
+    else {
+      assertionFailure("no repository")
+      return
+    }
 
     if selection is StagingSelection {
       if isAmending != (selection is AmendingSelection) {
@@ -409,9 +417,8 @@ extension XTWindowController: NSMenuDelegate
   {
     guard let type = RemoteMenuType.of(menu)
     else { return }
-    let matchAction: (NSMenuItem) -> Bool = { $0.action == type.selector }
 
-    for item in menu.items.lazy.filter(matchAction) {
+    for item in menu.items where item.action == type.selector {
       menu.removeItem(item)
     }
 
