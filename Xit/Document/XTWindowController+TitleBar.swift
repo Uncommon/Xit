@@ -4,7 +4,7 @@ extension XTWindowController
 {
   func updateBranchList()
   {
-    guard let repo = xtDocument?.repository
+    guard let repo = repoDocument?.repository
     else { return }
 
     titleBarController?.updateBranchList(
@@ -56,7 +56,7 @@ extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
-    try? xtDocument!.repository!.checkOut(branch: branch)
+    try? repoDocument!.repository.checkOut(branch: branch)
   }
 
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)

@@ -21,20 +21,24 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>NSDocumentClass</key>
-			<string>XTDocument</string>
+			<string>RepoDocument</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>folder</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.directory</string>
 			</array>
 			<key>NSDocumentClass</key>
-			<string>XTDocument</string>
+			<string>RepoDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

@@ -30,7 +30,7 @@ public class FetchPanelController: SheetController
     {
       guard let menu = remotesPopup?.menu
       else { return }
-      guard let repo = parentController?.xtDocument?.repository
+      guard let repo = parentController?.repoDocument?.repository
         else { return }
       
       let names = repo.remoteNames()

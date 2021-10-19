@@ -31,10 +31,10 @@ class XTWindowController: NSWindowController,
   
   var historyController: HistoryViewController!
   var historySplitController: HistorySplitController!
-  weak var xtDocument: XTDocument?
+  weak var repoDocument: RepoDocument?
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
-  var repository: Repository { (xtDocument?.repository as Repository?)! }
+  var repository: Repository { (repoDocument?.repository as Repository?)! }
 
   @objc dynamic var isAmending = false
   {
@@ -79,9 +79,9 @@ class XTWindowController: NSWindowController,
           let window = self.window
     else { return }
     
-    xtDocument = document as! XTDocument?
+    repoDocument = document as! RepoDocument?
     
-    guard let repo = xtDocument?.repository
+    guard let repo = repoDocument?.repository
     else { return }
     
     repoController = GitRepositoryController(repository: repo)
@@ -148,7 +148,7 @@ class XTWindowController: NSWindowController,
 
   func updateHistoryCollapse(wasStaging: Bool)
   {
-    guard let repo = xtDocument?.repository
+    guard let repo = repoDocument?.repository
     else { return }
 
     if selection is StagingSelection {
@@ -205,7 +205,7 @@ class XTWindowController: NSWindowController,
   
   func select(oid: GitOID)
   {
-    guard let repo = xtDocument?.repository,
+    guard let repo = repoDocument?.repository,
           let commit = repo.commit(forOID: oid)
     else { return }
   
@@ -228,7 +228,7 @@ class XTWindowController: NSWindowController,
   {
     DispatchQueue.main.async {
       guard let window = self.window,
-            let repo = self.xtDocument?.repository
+            let repo = self.repoDocument?.repository
       else { return }
       
       var newTitle: String!
