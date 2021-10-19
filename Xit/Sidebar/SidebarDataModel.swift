@@ -1,7 +1,7 @@
 import Foundation
 
 /// Contains the items listed in the sidebar
-class SidebarDataModel
+final class SidebarDataModel
 {
   typealias Repository = FileChangesRepo & // For creating selection objects
                          CommitStorage & // also for selections

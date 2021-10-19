@@ -1,6 +1,6 @@
 import Foundation
 
-class GitBuffer
+final class GitBuffer
 {
   var buffer: git_buf
   private let pointer: UnsafeMutablePointer<Int8>

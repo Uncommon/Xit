@@ -1,6 +1,6 @@
 import Cocoa
 
-class PullOpController: FetchOpController
+final class PullOpController: FetchOpController
 {
   override func start() throws
   {

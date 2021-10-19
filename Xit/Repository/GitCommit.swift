@@ -54,7 +54,7 @@ extension Commit
   { sha.firstSix() }
 }
 
-public class GitCommit: Commit
+public final class GitCommit: Commit
 {
   let commit: OpaquePointer
   let mutex = Mutex()

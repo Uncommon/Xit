@@ -1,7 +1,7 @@
 import Foundation
 import Cocoa
 
-class BlameViewController: WebViewController, RepositoryWindowViewController
+final class BlameViewController: WebViewController, RepositoryWindowViewController
 {
   @IBOutlet var spinner: NSProgressIndicator!
   var isLoaded: Bool = false

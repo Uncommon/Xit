@@ -1,6 +1,6 @@
 import Cocoa
 
-class BuildStatusViewController: NSViewController, TeamCityAccessor
+final class BuildStatusViewController: NSViewController, TeamCityAccessor
 {
   weak var repository: (RemoteManagement & Branching)!
   let branch: Branch

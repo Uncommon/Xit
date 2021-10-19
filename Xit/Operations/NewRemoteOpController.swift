@@ -1,7 +1,7 @@
 import Foundation
 
 /// Operation for adding a new remote
-class NewRemoteOpController: OperationController
+final class NewRemoteOpController: OperationController
 {
   let sheetController = RemoteSheetController.controller()
 

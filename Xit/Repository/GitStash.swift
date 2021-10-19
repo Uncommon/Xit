@@ -14,7 +14,7 @@ public protocol Stash: AnyObject
 }
 
 /// Wraps a stash to preset a unified list of file changes.
-public class GitStash: Stash
+public final class GitStash: Stash
 {
   typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
   

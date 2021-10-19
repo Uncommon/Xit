@@ -1,7 +1,7 @@
 import Foundation
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-class StashSelection: StagedUnstagedSelection
+final class StashSelection: StagedUnstagedSelection
 {
   unowned var repository: FileChangesRepo
   let stash: Stash
@@ -105,7 +105,7 @@ class StashStagedList: StashFileList, FileListModel
 }
 
 /// File list for the unstaged portion of a stash
-class StashUnstagedList: StashFileList, FileListModel
+final class StashUnstagedList: StashFileList, FileListModel
 {
   var changes: [FileChange] { stash.workspaceChanges() }
   

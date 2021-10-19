@@ -1,6 +1,6 @@
 import Cocoa
 
-class RenameBranchPanelController: SheetController
+final class RenameBranchPanelController: SheetController
 {
   @IBOutlet weak var promptLabel: NSTextField!
   @IBOutlet weak var textField: NSTextField!

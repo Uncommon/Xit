@@ -1,6 +1,6 @@
 import Cocoa
 
-class NewTagOpController: OperationController
+final class NewTagOpController: OperationController
 {
   override func start() throws
   {

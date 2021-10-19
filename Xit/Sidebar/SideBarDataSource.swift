@@ -3,7 +3,7 @@ import Combine
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
-class SideBarDataSource: NSObject
+final class SideBarDataSource: NSObject
 {
   enum Intervals
   {

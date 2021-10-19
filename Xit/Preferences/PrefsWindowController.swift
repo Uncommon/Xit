@@ -1,7 +1,7 @@
 import Cocoa
 
 
-class PrefsWindowController: NSWindowController
+final class PrefsWindowController: NSWindowController
 {
   enum Tab: String
   {

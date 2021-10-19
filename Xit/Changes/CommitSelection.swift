@@ -1,7 +1,7 @@
 import Foundation
 
 /// Changes for a selected commit in the history
-class CommitSelection: RepositorySelection
+final class CommitSelection: RepositorySelection
 {
   unowned var repository: FileChangesRepo
   let commit: Commit
@@ -24,7 +24,7 @@ class CommitSelection: RepositorySelection
   }
 }
 
-class CommitFileList: FileListModel
+final class CommitFileList: FileListModel
 {
   lazy var changes: [FileChange] =
       self.repository.changes(for: self.commit.oid.sha,

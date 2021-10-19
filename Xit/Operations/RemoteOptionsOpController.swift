@@ -1,6 +1,6 @@
 import Cocoa
 
-class RemoteOptionsOpController: OperationController
+final class RemoteOptionsOpController: OperationController
 {
   let remoteName: String
   let sheetController = RemoteSheetController.controller()

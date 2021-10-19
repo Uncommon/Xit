@@ -143,7 +143,7 @@ enum BitbucketServer
   typealias PagedPullRequest = PagedResponse<PullRequest>
 }
 
-class BitbucketServerAPI: BasicAuthService, ServiceAPI
+final class BitbucketServerAPI: BasicAuthService, ServiceAPI
 {
   var type: AccountType { .bitbucketServer }
   var user: BitbucketServer.User?

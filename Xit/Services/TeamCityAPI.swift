@@ -3,7 +3,7 @@ import Siesta
 import Combine
 
 /// API for getting TeamCity build information.
-class TeamCityAPI: BasicAuthService, ServiceAPI
+final class TeamCityAPI: BasicAuthService, ServiceAPI
 {
   var type: AccountType { .teamCity }
   static let rootPath = "/httpAuth/app/rest"

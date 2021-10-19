@@ -4,7 +4,7 @@ import Cocoa
 /// Stores information about an account for an online service.
 /// Passwords are stored in the keychain.
 /// This would have been a `struct` but we need it to be `NSObject` compatible.
-class Account: NSObject
+final class Account: NSObject
 {
   var type: AccountType
   var user: String
@@ -65,7 +65,7 @@ func == (left: Account, right: Account) -> Bool
 }
 
 
-class AccountsManager: NSObject
+final class AccountsManager: NSObject
 {
   static let manager = AccountsManager()
   

@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 /// Watches all files used to determine repository config settings.
-class ConfigWatcher
+final class ConfigWatcher
 {
   weak var repository: XTRepository?
   private(set) var repoConfigStream: FileEventStream! = nil

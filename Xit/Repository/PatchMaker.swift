@@ -2,7 +2,7 @@ import Cocoa
 
 /// An object that can generate file patches, and re-generate them with
 /// different options.
-public class PatchMaker
+public final class PatchMaker
 {
   public enum SourceType
   {

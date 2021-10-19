@@ -7,7 +7,7 @@ protocol XTOutlineViewDelegate: AnyObject
 }
 
 @objc(XTSideBarOutlineView)
-class SideBarOutlineView: ContextMenuOutlineView
+final class SideBarOutlineView: ContextMenuOutlineView
 {
   @IBOutlet public weak var controller: SidebarController!
   

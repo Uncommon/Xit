@@ -1,6 +1,6 @@
 import Cocoa
 
-class StashPanelController: SheetController
+final class StashPanelController: SheetController
 {
   @IBOutlet weak var messageField: NSTextField!
   @IBOutlet weak var keepStagedCheck: NSButton!

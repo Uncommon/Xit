@@ -1,6 +1,6 @@
 import Cocoa
 
-class PasswordPanelController: SheetController
+final class PasswordPanelController: SheetController
 {
   @ControlStringValue var userName: String
   @ControlStringValue var password: String

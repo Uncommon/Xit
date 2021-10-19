@@ -31,7 +31,7 @@ class StagingSelection: StagedUnstagedSelection
 }
 
 /// Staging selection with Amend turned on
-class AmendingSelection: StagingSelection
+final class AmendingSelection: StagingSelection
 {
   override func setFileLists()
   {

@@ -1,6 +1,6 @@
 import Foundation
 
-class RefTokenView: NSView
+final class RefTokenView: NSView
 {
   var text: String = ""
   var type: RefType = .unknown

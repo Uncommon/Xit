@@ -1,6 +1,6 @@
 import Foundation
 
-class SidebarPRManager
+final class SidebarPRManager
 {
   let refreshInterval: TimeInterval = 5 * .minutes
   

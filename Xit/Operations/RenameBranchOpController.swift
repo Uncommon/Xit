@@ -1,6 +1,6 @@
 import Cocoa
 
-class RenameBranchOpController: OperationController
+final class RenameBranchOpController: OperationController
 {
   let branchName: String
   

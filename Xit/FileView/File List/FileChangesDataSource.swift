@@ -1,6 +1,6 @@
 import Foundation
 
-class FileChangesDataSource: FileListDataSourceBase
+final class FileChangesDataSource: FileListDataSourceBase
 {
   var changes = [FileChange]()
   

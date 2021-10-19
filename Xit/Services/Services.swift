@@ -29,7 +29,7 @@ protocol AccountService
 }
 
 /// Manages and provides access to all service API instances.
-class Services
+final class Services
 {
   /// Status of server operations such as authentication.
   enum Status

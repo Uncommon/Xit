@@ -17,7 +17,7 @@ public protocol RepositoryController: AnyObject
 /// Manages tasks and data related to working with a repository, such as cached
 /// data and things not directly related to repository operations, such as
 /// the task queue and tracking file changes.
-class GitRepositoryController: RepositoryController
+final class GitRepositoryController: RepositoryController
 {
   let xtRepo: XTRepository
   var repository: BasicRepository { xtRepo }

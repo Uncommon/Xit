@@ -1,6 +1,6 @@
 import Cocoa
 
-class FileListView: ContextMenuOutlineView
+final class FileListView: ContextMenuOutlineView
 {
   @IBOutlet var stagingMenu: NSMenu!
   @IBOutlet var commitMenu: NSMenu!

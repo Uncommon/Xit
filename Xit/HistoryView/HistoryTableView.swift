@@ -9,7 +9,7 @@ protocol XTTableViewDelegate: AnyObject
   func menu(forRow row: Int, column: Int) -> NSMenu?
 }
 
-class HistoryTableView: ContextMenuTableView
+final class HistoryTableView: ContextMenuTableView
 {
   override func mouseDown(with event: NSEvent)
   {

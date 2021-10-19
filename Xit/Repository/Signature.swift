@@ -95,7 +95,7 @@ extension Date
   }
 }
 
-class GitSignature
+final class GitSignature
 {
   // Use a pointer, instead of the struct directly, to let libgit2 handle
   // allocating and deallocating.

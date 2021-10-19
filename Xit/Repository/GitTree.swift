@@ -31,7 +31,7 @@ struct NullEntry: TreeEntry
   { nil }
 }
 
-class GitTree: Tree
+final class GitTree: Tree
 {
   struct EntryCollection: Collection
   {

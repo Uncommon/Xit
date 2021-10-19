@@ -1,6 +1,6 @@
 import Cocoa
 
-public class FetchPanelController: SheetController
+final class FetchPanelController: SheetController
 {
   @IBOutlet var remotesPopup: NSPopUpButton?
   @IBOutlet var tagCheck: NSButton?

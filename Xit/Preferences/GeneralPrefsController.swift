@@ -1,6 +1,6 @@
 import Foundation
 
-class GeneralPrefsConroller: NSViewController
+final class GeneralPrefsConroller: NSViewController
 {
   @IBOutlet weak var collapsHistoryCheck: NSButton!
   @IBOutlet weak var deemphasizeCheck: NSButton!

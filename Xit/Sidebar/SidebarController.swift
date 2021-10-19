@@ -2,8 +2,8 @@ import Cocoa
 import Combine
 
 /// Manages the main window sidebar.
-class SidebarController: NSViewController, SidebarCommandHandler,
-                         RepositoryWindowViewController
+final class SidebarController: NSViewController, SidebarCommandHandler,
+                               RepositoryWindowViewController
 {
   @IBOutlet weak var sidebarOutline: SideBarOutlineView!
   @IBOutlet weak var sidebarDS: SideBarDataSource!

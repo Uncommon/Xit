@@ -72,7 +72,7 @@ public protocol ConnectedRemote: AnyObject
   func referenceAdvertisements() throws -> [RemoteHead]
 }
 
-class GitRemote: Remote
+final class GitRemote: Remote
 {
   let remote: OpaquePointer
   

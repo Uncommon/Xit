@@ -1,6 +1,6 @@
 import Cocoa
 
-class WorkspaceStatusIndicator: NSButton
+final class WorkspaceStatusIndicator: NSButton
 {
   init()
   {

@@ -1,6 +1,6 @@
 import Cocoa
 
-class BuildStatusCellView: NSTableCellView
+final class BuildStatusCellView: NSTableCellView
 {
   @IBOutlet var projectNameField: NSTextField!
   @IBOutlet var buildNumberField: NSTextField!

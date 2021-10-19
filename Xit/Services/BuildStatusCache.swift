@@ -5,7 +5,7 @@ protocol BuildStatusClient: AnyObject
   func buildStatusUpdated(branch: String, buildType: String)
 }
 
-class BuildStatusCache: TeamCityAccessor
+final class BuildStatusCache: TeamCityAccessor
 {
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build

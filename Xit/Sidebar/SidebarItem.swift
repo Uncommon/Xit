@@ -113,7 +113,7 @@ extension SidebarItem
 }
 
 
-class SideBarGroupItem: SidebarItem
+final class SideBarGroupItem: SidebarItem
 {
   init(titleString: UIString)
   {
@@ -132,7 +132,7 @@ class SideBarGroupItem: SidebarItem
 }
 
 
-class StagingSidebarItem: SidebarItem
+final class StagingSidebarItem: SidebarItem
 {
   init(titleString: UIString)
   {
@@ -146,7 +146,7 @@ class StagingSidebarItem: SidebarItem
 }
 
 
-class StashSidebarItem: SidebarItem
+final class StashSidebarItem: SidebarItem
 {
   override var icon: NSImage?
   { .xtStash }
@@ -178,7 +178,7 @@ class BranchSidebarItem: SidebarItem
 }
 
 
-class LocalBranchSidebarItem: BranchSidebarItem
+final class LocalBranchSidebarItem: BranchSidebarItem
 {
   override var refType: RefType { isCurrent ? .activeBranch : .branch }
   override var isCurrent: Bool
@@ -220,7 +220,7 @@ extension LocalBranchSidebarItem: RefSidebarItem
 }
 
 
-class RemoteBranchSidebarItem: BranchSidebarItem
+final class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remoteName: String
   override var remote: Remote?
@@ -263,7 +263,7 @@ extension RemoteBranchSidebarItem: RefSidebarItem
 }
 
 
-class BranchFolderSidebarItem: SidebarItem
+final class BranchFolderSidebarItem: SidebarItem
 {
   override var icon: NSImage? { .xtBranchFolder }
   override var isSelectable: Bool { false }
@@ -271,7 +271,7 @@ class BranchFolderSidebarItem: SidebarItem
 }
 
 
-class RemoteSidebarItem: SidebarItem
+final class RemoteSidebarItem: SidebarItem
 {
   let remote: Remote?
   
@@ -325,7 +325,7 @@ class RemoteSidebarItem: SidebarItem
 }
 
 
-class TagSidebarItem: SidebarItem
+final class TagSidebarItem: SidebarItem
 {
   let tag: Tag
 

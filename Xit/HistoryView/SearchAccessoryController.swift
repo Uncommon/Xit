@@ -8,7 +8,7 @@ protocol HistorySearchDelegate: AnyObject
               direction: SearchAccessoryController.SearchDirection)
 }
 
-class SearchAccessoryController: NSTitlebarAccessoryViewController
+final class SearchAccessoryController: NSTitlebarAccessoryViewController
 {
   enum SearchType: Int
   {

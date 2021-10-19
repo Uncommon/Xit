@@ -1,6 +1,6 @@
 import Cocoa
 
-class PrefsTabViewController: NSTabViewController
+final class PrefsTabViewController: NSTabViewController
 {
   @IBOutlet weak var previewsTab: NSTabViewItem!
   var observer: NSObjectProtocol?

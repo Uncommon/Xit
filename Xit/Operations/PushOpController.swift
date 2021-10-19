@@ -1,6 +1,6 @@
 import Cocoa
 
-class PushOpController: PasswordOpController
+final class PushOpController: PasswordOpController
 {
   let remoteOption: RemoteOperationOption?
 

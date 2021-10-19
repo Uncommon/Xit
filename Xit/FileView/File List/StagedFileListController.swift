@@ -1,7 +1,7 @@
 import Foundation
 import Cocoa
 
-class StagedFileListController: StagingFileListController
+final class StagedFileListController: StagingFileListController
 {
   override var actionImage: NSImage?
   { .xtUnstageButtonHover }

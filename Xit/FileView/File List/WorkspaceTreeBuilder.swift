@@ -1,6 +1,6 @@
 import Cocoa
 
-class WorkspaceTreeBuilder
+final class WorkspaceTreeBuilder
 {
   // Path parsing is easier if the root name is not just "/". I'm not sure
   // it matters what the root name is, but it's an unusual string just in case.

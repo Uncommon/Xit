@@ -2,7 +2,7 @@ import Foundation
 
 /// View controller for history view, with the history list on top and
 /// detail views below.
-class HistoryViewController: NSViewController
+final class HistoryViewController: NSViewController
 {
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!

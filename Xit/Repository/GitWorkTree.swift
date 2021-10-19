@@ -34,7 +34,7 @@ public protocol WorkTree
   func prune(options: WorkTreePruneOptions) throws
 }
 
-class GitWorkTree: WorkTree
+final class GitWorkTree: WorkTree
 {
   let workTree: OpaquePointer
   

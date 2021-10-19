@@ -6,7 +6,7 @@ protocol BuildStatusDisplay: AnyObject
   func updateStatusImage(item: SidebarItem)
 }
 
-class BuildStatusController: NSObject
+final class BuildStatusController: NSObject
 {
   // The TeamCity server data has succeeded/failed and running/finished as
   // separate states, but we combine them for display

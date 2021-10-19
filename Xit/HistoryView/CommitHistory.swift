@@ -6,7 +6,7 @@ struct HistoryLine
   let colorIndex: UInt
 }
 
-public class CommitEntry: CustomStringConvertible
+final class CommitEntry: CustomStringConvertible
 {
   let commit: Commit
   fileprivate(set) var lines = [HistoryLine]()
@@ -22,7 +22,7 @@ public class CommitEntry: CustomStringConvertible
   }
 }
 
-public func == (left: CommitEntry, right: CommitEntry) -> Bool
+func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
   // TODO: Make OID equatable to compare commit.oid
   return left.commit.sha == right.commit.sha
@@ -61,12 +61,12 @@ extension String
 }
 
 
-public typealias GitCommitHistory = CommitHistory<GitOID>
+typealias GitCommitHistory = CommitHistory<GitOID>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-public class CommitHistory<ID: OID & Hashable>
+final class CommitHistory<ID: OID & Hashable>
 {
-  public typealias Entry = CommitEntry
+  typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>
 
   weak var repository: CommitStorage!

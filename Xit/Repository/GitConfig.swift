@@ -97,7 +97,7 @@ extension Config
   }
 }
 
-class GitConfig: Config
+final class GitConfig: Config
 {
   let config: OpaquePointer
   var snapshot: OpaquePointer?

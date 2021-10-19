@@ -1,6 +1,6 @@
 import Foundation
 
-class ResetOpController: OperationController
+final class ResetOpController: OperationController
 {
   var targetCommit: Commit!
   

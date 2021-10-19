@@ -8,9 +8,9 @@ protocol HunkStaging: AnyObject
 }
 
 /// Manages a WebView for displaying text file diffs.
-class FileDiffController: WebViewController,
-                          WhitespaceVariable,
-                          ContextVariable
+final class FileDiffController: WebViewController,
+                                WhitespaceVariable,
+                                ContextVariable
 {
   weak var stagingDelegate: HunkStaging?
   weak var repo: (FileContents & CommitReferencing)?

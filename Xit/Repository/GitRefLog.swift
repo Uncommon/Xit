@@ -57,7 +57,7 @@ struct GitRefLogEntry: RefLogEntry
   var message: String { .init(cString: git_reflog_entry_message(entry)) }
 }
 
-class GitRefLog
+final class GitRefLog
 {
   let refLog: OpaquePointer
   

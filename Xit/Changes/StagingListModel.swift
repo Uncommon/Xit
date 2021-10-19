@@ -67,7 +67,7 @@ class IndexFileList: StagingListModel, FileListModel
 }
 
 /// Index file list with Amend turned on
-class AmendingIndexFileList: IndexFileList
+final class AmendingIndexFileList: IndexFileList
 {
   override var changes: [FileChange]
   { repository.amendingStagedChanges() }
@@ -85,7 +85,7 @@ class AmendingIndexFileList: IndexFileList
 }
 
 /// File list for unstaged files (the workspace)
-class WorkspaceFileList: StagingListModel, FileListModel
+final class WorkspaceFileList: StagingListModel, FileListModel
 {
   var showingIgnored = false
   

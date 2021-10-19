@@ -10,7 +10,7 @@ public protocol Tag
   var message: String? { get }
 }
 
-public class GitTag: Tag
+public final class GitTag: Tag
 {
   // TODO: Move this out because it's used by other classes
   static let tagPrefix = "refs/tags/"

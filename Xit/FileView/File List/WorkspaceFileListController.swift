@@ -1,6 +1,6 @@
 import Foundation
 
-class WorkspaceFileListController: StagingFileListController
+final class WorkspaceFileListController: StagingFileListController
 {
   var showingIgnored = false
   

@@ -6,7 +6,7 @@ protocol PullRequestClient: AnyObject
   func pullRequestUpdated(branch: String, requests: [PullRequest])
 }
 
-class PullRequestCache
+final class PullRequestCache
 {
   // This can't be made generic because `protocol X : AnyObject` isn't enough
   // to convince the compiler that all instances will be class objects.

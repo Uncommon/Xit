@@ -8,7 +8,8 @@ extension NSTouchBarItem.Identifier
 }
 
 /// Handles the commit message entry area.
-class CommitEntryController: NSViewController, RepositoryWindowViewController
+final class CommitEntryController: NSViewController,
+                                   RepositoryWindowViewController
 {
   typealias Repository = CommitStorage & CommitReferencing
 

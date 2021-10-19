@@ -1,6 +1,6 @@
 import Cocoa
 
-class HistorySplitController: NSSplitViewController
+final class HistorySplitController: NSSplitViewController
 {
   var historyController: HistoryViewController!
 

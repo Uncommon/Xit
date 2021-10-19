@@ -10,7 +10,7 @@ public protocol Patch
 }
 
 
-class GitPatch: Patch
+final class GitPatch: Patch
 {
   let patch: OpaquePointer // git_patch
   

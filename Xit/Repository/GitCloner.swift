@@ -1,6 +1,6 @@
 import Foundation
 
-public class GitCloner: Cloning
+public final class GitCloner: Cloning
 {
   @discardableResult
   public func clone(from source: URL, to destination: URL,

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class WorkspaceWatcher
+final class WorkspaceWatcher
 {
   weak var controller: RepositoryController?
   private(set) var stream: FileEventStream! = nil

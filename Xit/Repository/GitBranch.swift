@@ -107,7 +107,7 @@ public class GitBranch
   }
 }
 
-public class GitLocalBranch: GitBranch, LocalBranch
+public final class GitLocalBranch: GitBranch, LocalBranch
 {
   public var shortName: String { strippedName }
   
@@ -180,7 +180,7 @@ public class GitLocalBranch: GitBranch, LocalBranch
   { trackingBranch?.remoteName }
 }
 
-public class GitRemoteBranch: GitBranch, RemoteBranch
+public final class GitRemoteBranch: GitBranch, RemoteBranch
 {
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }

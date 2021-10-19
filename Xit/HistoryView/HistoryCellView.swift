@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Cell view that draws the graph lines next to the text.
-class HistoryCellView: NSTableCellView
+final class HistoryCellView: NSTableCellView
 {
   private var entry: CommitEntry!
   private var currentBranch: String?

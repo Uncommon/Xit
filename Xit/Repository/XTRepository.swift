@@ -7,7 +7,7 @@ struct CallbackPayload { let repo: XTRepository }
 let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 let XTPathsKey = "paths"
 
-public class XTRepository: BasicRepository, RepoConfiguring
+public final class XTRepository: BasicRepository, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL

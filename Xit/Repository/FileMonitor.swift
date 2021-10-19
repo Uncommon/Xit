@@ -1,6 +1,6 @@
 import Foundation
 
-class FileMonitor
+final class FileMonitor
 {
   let path: String
   private var sourceMutex = Mutex()

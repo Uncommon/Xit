@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class RepositoryWatcher
+final class RepositoryWatcher
 {
   public enum RefKey
   {

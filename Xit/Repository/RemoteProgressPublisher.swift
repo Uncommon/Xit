@@ -8,7 +8,7 @@ public enum RemoteProgressMessage
     case sideband(String)
 }
 
-public class RemoteProgressPublisher
+public final class RemoteProgressPublisher
 {
   let subject = PassthroughSubject<RemoteProgressMessage, RepoError>()
   private(set) var callbacks = RemoteCallbacks()

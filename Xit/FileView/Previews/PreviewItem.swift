@@ -3,7 +3,7 @@ import Quartz
 
 // QLPreviewItem requires NSObjectProtocol, so it's best to just inherit
 // from NSObject.
-class PreviewItem: NSObject
+final class PreviewItem: NSObject
 {
   var fileList: FileListModel!
   var path: String?

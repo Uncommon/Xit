@@ -77,7 +77,7 @@ extension SubmoduleRecurse
   }
 }
 
-public class GitSubmodule: Submodule
+public final class GitSubmodule: Submodule
 {
   var submodule: OpaquePointer
   

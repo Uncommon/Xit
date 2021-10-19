@@ -8,7 +8,7 @@ import Cocoa
   func newTag()
 }
 
-class SidebarBottomController: NSViewController
+final class SidebarBottomController: NSViewController
 {
   @IBOutlet weak var addButton: NSPopUpButton!
   @IBOutlet weak var settingsButton: NSPopUpButton!

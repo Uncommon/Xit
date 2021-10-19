@@ -350,7 +350,7 @@ extension FileListController: NSOutlineViewDelegate
   }
 }
 
-class CommitFileListController: FileListController
+final class CommitFileListController: FileListController
 {
   override func loadView()
   {

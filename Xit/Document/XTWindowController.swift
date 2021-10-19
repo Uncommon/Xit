@@ -21,9 +21,9 @@ extension RepositoryUIController
   var queue: TaskQueue { repoController.queue }
 }
 
-/// XTDocument's main window controller.
-class XTWindowController: NSWindowController,
-                          RepositoryUIController
+/// RepoDocument's main window controller.
+final class XTWindowController: NSWindowController,
+                                RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
   @IBOutlet var sidebarController: SidebarController!

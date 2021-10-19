@@ -1,7 +1,7 @@
 import Cocoa
 import Combine
 
-class ResetPanelController: SheetController
+final class ResetPanelController: SheetController
 {
   enum ResetStatus
   {

@@ -1,6 +1,6 @@
 import Cocoa
 
-class PushNewPanelController: SheetController
+final class PushNewPanelController: SheetController
 {
   @IBOutlet weak var remotePopup: NSPopUpButton!
   @IBOutlet weak var setTrackingCheck: NSButton!

@@ -1,8 +1,8 @@
 import Cocoa
 import Combine
 
-public class HistoryTableController: NSViewController,
-                                     RepositoryWindowViewController
+final class HistoryTableController: NSViewController,
+                                    RepositoryWindowViewController
 {
   typealias Repository = BasicRepository & FileChangesRepo &
                          CommitStorage & FileContents

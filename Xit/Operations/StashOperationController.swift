@@ -1,6 +1,6 @@
 import Cocoa
 
-class StashOperationController: SimpleOperationController
+final class StashOperationController: SimpleOperationController
 {
   override func start() throws
   {

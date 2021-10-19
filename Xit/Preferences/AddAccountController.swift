@@ -1,7 +1,7 @@
 import Cocoa
 
 /// Controller for the "new account" sheet
-class AddAccountController: SheetController
+final class AddAccountController: SheetController
 {
   @IBOutlet private weak var servicePopup: NSPopUpButton!
   @IBOutlet private weak var userField: NSTextField!

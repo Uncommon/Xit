@@ -23,7 +23,7 @@ struct FakePullRequest: PullRequest
   }
 }
 
-class FakePRService: Service, PullRequestService, AccountService
+final class FakePRService: Service, PullRequestService, AccountService
 {
   init()
   {

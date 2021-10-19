@@ -1,6 +1,6 @@
 import Cocoa
 
-class SidebarDelegate: NSObject
+final class SidebarDelegate: NSObject
 {
   enum CellID
   {

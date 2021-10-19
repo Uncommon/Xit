@@ -1,7 +1,7 @@
 import Cocoa
 
 
-class AccountsPrefsController: NSViewController
+final class AccountsPrefsController: NSViewController
 {
   // Not a weak reference because there are no other references to it.
   @IBOutlet var addController: AddAccountController!

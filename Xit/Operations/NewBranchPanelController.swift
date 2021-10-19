@@ -1,6 +1,6 @@
 import Cocoa
 
-class NewBranchPanelController: SheetController
+final class NewBranchPanelController: SheetController
 {
   var localBranchNames: [String] = []
   var remoteBranchNames: [String] = []

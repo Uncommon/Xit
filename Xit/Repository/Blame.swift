@@ -31,7 +31,7 @@ public class BlameHunk
 }
 
 /// Blame data from the git command line because libgit2 is slow
-public class GitBlame: Blame
+public final class GitBlame: Blame
 {
   public var hunks = [BlameHunk]()
   

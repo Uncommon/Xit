@@ -1,6 +1,6 @@
 import Foundation
 
-class NewBranchOpController: OperationController
+final class NewBranchOpController: OperationController
 {
   override func start() throws
   {

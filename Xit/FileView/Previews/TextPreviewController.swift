@@ -1,6 +1,6 @@
 import Foundation
 
-class TextPreviewController: WebViewController
+final class TextPreviewController: WebViewController
 {
   var isLoaded: Bool = false
   

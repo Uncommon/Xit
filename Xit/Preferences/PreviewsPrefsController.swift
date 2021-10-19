@@ -14,7 +14,7 @@ enum WhitespaceSetting: String
   static let allValues: [WhitespaceSetting] = [.showAll, .ignoreEOL, .ignoreAll]
 }
 
-class PreviewsPrefsController: NSViewController
+final class PreviewsPrefsController: NSViewController
 {
   @IBOutlet weak var whitespacePopup: NSPopUpButton!
   @IBOutlet weak var tabPopup: NSPopUpButton!

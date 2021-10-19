@@ -6,7 +6,7 @@ protocol RemoteSheetDelegate: AnyObject
   func acceptSettings(from sheetController: RemoteSheetController) -> Bool
 }
 
-class RemoteSheetController: SheetController
+final class RemoteSheetController: SheetController
 {
   weak var delegate: RemoteSheetDelegate?
   

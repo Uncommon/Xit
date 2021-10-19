@@ -3,7 +3,7 @@ import Combine
 import Quartz
 
 /// View controller for the file list and detail view.
-class FileViewController: NSViewController, RepositoryWindowViewController
+final class FileViewController: NSViewController, RepositoryWindowViewController
 {
   /// Preview tab identifiers
   enum TabID

@@ -1,6 +1,6 @@
 import Foundation
 
-class FileTreeDataSource: FileListDataSourceBase
+final class FileTreeDataSource: FileListDataSourceBase
 {
   fileprivate var root: NSTreeNode
   

@@ -46,7 +46,7 @@ extension git_diff_options
 }
 
 
-class GitDiff: Diff
+final class GitDiff: Diff
 {
   let diff: OpaquePointer  // git_diff
   

@@ -2,7 +2,7 @@ import Foundation
 import Quartz
 
 /// Controller for the QuickLook preview tab.
-class PreviewController: NSViewController
+final class PreviewController: NSViewController
 {
   var isLoaded: Bool = false
   

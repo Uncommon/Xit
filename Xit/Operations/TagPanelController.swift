@@ -1,6 +1,6 @@
 import Cocoa
 
-class TagPanelController: SheetController
+final class TagPanelController: SheetController
 {
   @IBOutlet weak var commitMessageLabel: NSTextField!
   @IBOutlet weak var tagNameField: NSTextField!

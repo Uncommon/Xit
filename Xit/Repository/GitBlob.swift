@@ -31,7 +31,7 @@ enum BlobError: Swift.Error
   case cantLoadData
 }
 
-public class GitBlob: Blob, OIDObject
+public final class GitBlob: Blob, OIDObject
 {
   let blob: OpaquePointer
   

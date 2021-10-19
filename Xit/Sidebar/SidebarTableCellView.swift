@@ -8,7 +8,7 @@ protocol PullRequestActionDelegate: AnyObject
   func prNeedsWork(item: SidebarItem)
 }
 
-class SidebarTableCellView: NSTableCellView
+final class SidebarTableCellView: NSTableCellView
 {
   @IBOutlet weak var statusText: WorkspaceStatusIndicator!
   @IBOutlet weak var prContanier: NSView!

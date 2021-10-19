@@ -2,7 +2,7 @@ import Foundation
 
 // No protocol here because GitStatusList is only used directly by XTRepository
 
-class GitStatusList: RandomAccessCollection
+final class GitStatusList: RandomAccessCollection
 {
   let statusList: OpaquePointer
   
