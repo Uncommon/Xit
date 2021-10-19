@@ -54,6 +54,7 @@
 		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
 		89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefTokenView.swift */; };
 		89880EED20D17D1E007042F8 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89880EEC20D17D1E007042F8 /* Media.xcassets */; };
+		898A381827136881002639CC /* RepoDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898A381727136881002639CC /* RepoDocument.swift */; };
 		8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992E23E26BF45F500DD5357 /* MiscExtensions.swift */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
@@ -82,7 +83,6 @@
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
-		C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FA471313D0F8E200AC4F9B /* XTDocument.m */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
 		C900463C21120F3200706029 /* BitbucketServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900463B21120F3200706029 /* BitbucketServerAPI.swift */; };
 		C9004650211501CB00706029 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C900464F211501CB00706029 /* Colors.swift */; };
@@ -90,7 +90,7 @@
 		C9063D0A2412B29700574A93 /* RepositoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9063D092412B29700574A93 /* RepositoryController.swift */; };
 		C9063D1C24169DAF00574A93 /* RepositoryUIAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */; };
 		C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9065F4D20FCFA8B00C01110 /* RefType.swift */; };
-		C90703752326C944002DF393 /* XTDocument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90703742326C944002DF393 /* XTDocument.storyboard */; };
+		C90703752326C944002DF393 /* XTWindowController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C90703742326C944002DF393 /* XTWindowController.storyboard */; };
 		C907037723280239002DF393 /* SidebarBottomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C907037623280239002DF393 /* SidebarBottomController.swift */; };
 		C90839A623E4C646008C2787 /* WorkspaceStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */; };
 		C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */; };
@@ -486,6 +486,7 @@
 		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
 		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
 		89880EEC20D17D1E007042F8 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		898A381727136881002639CC /* RepoDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoDocument.swift; sourceTree = "<group>"; };
 		8992E23E26BF45F500DD5357 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* CommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitEntryController.swift; sourceTree = "<group>"; };
@@ -521,8 +522,6 @@
 		C3FA470513D0F8E200AC4F9B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C3FA470813D0F8E200AC4F9B /* Xit-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Xit-Info.plist"; sourceTree = "<group>"; };
 		C3FA470C13D0F8E200AC4F9B /* Xit-Prefix.pch */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = "Xit-Prefix.pch"; sourceTree = "<group>"; tabWidth = 4; };
-		C3FA471213D0F8E200AC4F9B /* XTDocument.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTDocument.h; sourceTree = "<group>"; tabWidth = 2; };
-		C3FA471313D0F8E200AC4F9B /* XTDocument.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTDocument.m; sourceTree = "<group>"; tabWidth = 2; };
 		C3FA472013D0F8E300AC4F9B /* XitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA472613D0F8E300AC4F9B /* XitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XitTests-Info.plist"; sourceTree = "<group>"; };
 		C3FA472813D0F8E300AC4F9B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -533,7 +532,7 @@
 		C9063D092412B29700574A93 /* RepositoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryController.swift; sourceTree = "<group>"; };
 		C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryUIAccessor.swift; sourceTree = "<group>"; };
 		C9065F4D20FCFA8B00C01110 /* RefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefType.swift; sourceTree = "<group>"; };
-		C90703742326C944002DF393 /* XTDocument.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = XTDocument.storyboard; sourceTree = "<group>"; };
+		C90703742326C944002DF393 /* XTWindowController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = XTWindowController.storyboard; sourceTree = "<group>"; };
 		C907037623280239002DF393 /* SidebarBottomController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarBottomController.swift; sourceTree = "<group>"; };
 		C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceStatusIndicator.swift; sourceTree = "<group>"; };
 		C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildStatusControllerTest.swift; sourceTree = "<group>"; };
@@ -1186,9 +1185,7 @@
 		C9790D0820EED4B10024D3EA /* Document */ = {
 			isa = PBXGroup;
 			children = (
-				C3FA471213D0F8E200AC4F9B /* XTDocument.h */,
-				C3FA471313D0F8E200AC4F9B /* XTDocument.m */,
-				C90703742326C944002DF393 /* XTDocument.storyboard */,
+				C90703742326C944002DF393 /* XTWindowController.storyboard */,
 				C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */,
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
 				C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */,
@@ -1197,6 +1194,7 @@
 				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
 				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
+				898A381727136881002639CC /* RepoDocument.swift */,
 			);
 			path = Document;
 			sourceTree = "<group>";
@@ -1549,7 +1547,7 @@
 				C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */,
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
-				C90703752326C944002DF393 /* XTDocument.storyboard in Resources */,
+				C90703752326C944002DF393 /* XTWindowController.storyboard in Resources */,
 				C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */,
 				C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
@@ -1647,7 +1645,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */,
-				C3FA471413D0F8E200AC4F9B /* XTDocument.m in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C90839A623E4C646008C2787 /* WorkspaceStatusIndicator.swift in Sources */,
 				891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */,
@@ -1695,6 +1692,7 @@
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				891C5F90267C2A830099695D /* GitCloner.swift in Sources */,
 				C957B8661D2D8D500040F858 /* XTKeychain.swift in Sources */,
+				898A381827136881002639CC /* RepoDocument.swift in Sources */,
 				C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */,
 				C90B4EC51FEDB1D600277B13 /* GitStatusList.swift in Sources */,
 				C90DA47924212B7400FFBC26 /* XTWindowController+Operations.swift in Sources */,

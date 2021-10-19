@@ -277,7 +277,7 @@ extension XTWindowController: NSMenuItemValidation
         result = !navForwardStack.isEmpty
 
       case #selector(self.refresh(_:)):
-        result = !xtDocument!.repository.isWriting
+        result = !repoDocument!.repository.isWriting
 
       case #selector(self.showHideSidebar(_:)):
         result = true
