@@ -20,7 +20,7 @@ class RepoDocument: NSDocument
 
   override func makeWindowControllers()
   {
-    let storyboard = NSStoryboard(name: "XTDocument", bundle: nil)
+    let storyboard = NSStoryboard(name: "XTWindowController", bundle: nil)
 
     if let controller = storyboard.instantiateInitialController()
         as? XTWindowController {

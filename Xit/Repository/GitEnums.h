@@ -2,6 +2,7 @@
 #import <git2/diff.h>
 #import <git2/status.h>
 #import <git2/types.h>
+#import <Cocoa/Cocoa.h>
 
 // Swift requires that raw values be literals, but the values need to match
 // the values from libgit2, so using C enums is a workaround.
