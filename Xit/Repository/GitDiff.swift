@@ -6,6 +6,8 @@ public protocol Diff: AnyObject
   
   func delta(at index: Int) -> DiffDelta?
   func patch(at index: Int) -> Patch?
+
+  func stats() -> DiffStats?
 }
 
 public protocol DiffFile
@@ -131,6 +133,16 @@ final class GitDiff: Diff
     else { return nil }
     
     return GitPatch(gitPatch: patch)
+  }
+
+  func stats() -> DiffStats?
+  {
+    guard let stats = try? OpaquePointer.from({
+      git_diff_get_stats(&$0, diff)
+    })
+    else { return nil }
+
+    return GitDiffStats(stats: stats)
   }
   
   struct Deltas: Collection

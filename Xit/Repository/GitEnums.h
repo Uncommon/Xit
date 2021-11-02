@@ -73,6 +73,15 @@ typedef NS_OPTIONS(unsigned int, DiffOptionFlags)
   DiffOptionFlagsShowBinary = GIT_DIFF_SHOW_BINARY,
 };
 
+typedef NS_OPTIONS(unsigned int, DiffStats)
+{
+  DiffStatsNone = GIT_DIFF_STATS_NONE,
+  DiffStatsFull = GIT_DIFF_STATS_FULL,
+  DiffStatsShort = GIT_DIFF_STATS_SHORT,
+  DiffStatsNumber = GIT_DIFF_STATS_NUMBER,
+  DiffStatsIncludeSummary = GIT_DIFF_STATS_INCLUDE_SUMMARY,
+};
+
 typedef NS_ENUM(int, ReferenceType)
 {
   ReferenceTypeInvalid = GIT_REFERENCE_INVALID,

@@ -277,6 +277,7 @@
 		C9CDB920270D50A1007C2E77 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB91F270D50A1007C2E77 /* libiconv.tbd */; };
 		C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB921270D50C1007C2E77 /* libz.tbd */; };
 		C9CDB924270D54F9007C2E77 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9CDB923270D54F9007C2E77 /* libssh2.a */; };
+		C9CDB9D927207A80007C2E77 /* GitDiffStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CDB9D827207A7F007C2E77 /* GitDiffStats.swift */; };
 		C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */; };
 		C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D896951FAB6CD300E431FE /* XTTest.swift */; };
 		C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */; };
@@ -722,6 +723,7 @@
 		C9CDB923270D54F9007C2E77 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = /usr/local/lib/libssh2.a; sourceTree = "<absolute>"; };
 		C9CDB990270DDE0D007C2E77 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = libgit2/include/git2; sourceTree = "<group>"; };
 		C9CDB99B270DDEDF007C2E77 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = libgit2/src; sourceTree = "<group>"; };
+		C9CDB9D827207A7F007C2E77 /* GitDiffStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitDiffStats.swift; sourceTree = "<group>"; };
 		C9D3EA1120CB2D1B0087C958 /* StagingListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingListModel.swift; sourceTree = "<group>"; };
 		C9D896951FAB6CD300E431FE /* XTTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTTest.swift; sourceTree = "<group>"; };
 		C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIndex.swift; sourceTree = "<group>"; };
@@ -1166,6 +1168,7 @@
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
+				C9CDB9D827207A7F007C2E77 /* GitDiffStats.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1665,6 +1668,7 @@
 				895CD52E265379450073F15A /* CommitPanel.swift in Sources */,
 				C9C30137269E09EF00EBBBC8 /* PathControl.swift in Sources */,
 				C9C3013B269E4A7100EBBBC8 /* Environment.swift in Sources */,
+				C9CDB9D927207A80007C2E77 /* GitDiffStats.swift in Sources */,
 				C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */,
 				C957B8541D2D533C0040F858 /* AddAccountController.swift in Sources */,
 				C9DB64451EA534A0003015D6 /* XTRepository+Iterators.swift in Sources */,
