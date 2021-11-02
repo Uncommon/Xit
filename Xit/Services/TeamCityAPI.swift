@@ -19,6 +19,8 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   fileprivate(set) var cachedBuildTypes = [BuildType]()
   /// Cached results for `buildTypesForRemote`
   private var buildTypesCache: [String: [String]] = [:]
+  /// Cached results for `vcsRootsForBuildType`
+  private var vcsRootsCache: [String: [String]] = [:]
   
   init?(account: Account, password: String)
   {
@@ -186,13 +188,19 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Returns the VCS root IDs that use the given build type.
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   {
+    if let cached = vcsRootsCache[buildType] {
+      return cached
+    }
+
     guard let urls = buildTypeURLs[buildType]
     else { return [] }
-    
-    return vcsRootMap.compactMap {
+    let result = vcsRootMap.compactMap {
       (vcsRoot, rootURL) in
       urls.contains(rootURL) ? vcsRoot : nil
     }
+
+    vcsRootsCache[buildType] = result
+    return result
   }
   
   /// Parses the list of VCS roots, collecting their repository URLs.
@@ -210,6 +218,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
 
     buildTypesCache.removeAll()
     vcsRootMap.removeAll()
+    vcsRootsCache.removeAll()
     vcsBranchSpecs.removeAll()
     for rootID in vcsIDs {
       let rootResource = vcsRoot(id: rootID)
