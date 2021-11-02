@@ -20,16 +20,16 @@ final class CommitEntryController: NSViewController,
     didSet
     {
       if let controller = repoUIController?.repoController {
-        sinks.append(controller.headPublisher
-          .sinkOnMainQueue {
+        sinks.append(contentsOf: [
+          controller.indexPublisher.sinkOnMainQueue {
             [weak self] in
             self?.updateStagedStatus()
-          })
-        sinks.append(controller.headPublisher
-          .sinkOnMainQueue {
+          },
+          controller.headPublisher.sinkOnMainQueue {
             [weak self] _ in
             self?.resetAmend()
-          })
+          },
+        ])
       }
       resetMessage()
     }

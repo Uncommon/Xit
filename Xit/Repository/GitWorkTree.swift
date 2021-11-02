@@ -51,12 +51,10 @@ final class GitWorkTree: WorkTree
     switch git_worktree_is_locked(reasonBuffer, workTree) {
       case 0:
         return .unlocked
-      case let error where error < 0:
-        return .error(error)
       case 1...:
         return .locked(reason: String(gitBuffer: reasonBuffer.pointee) ?? "")
-      default:
-        fatalError("this should be unreachable")
+      case let error: // error < 0
+        return .error(error)
     }
   }
   
