@@ -509,6 +509,9 @@
                                                                     <subviews>
                                                                         <imageView wantsLayer="YES" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="QQY-9C-K8R">
                                                                             <rect key="frame" x="0.0" y="2" width="15" height="15"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" constant="15" id="N30-iL-d8A"/>
+                                                                            </constraints>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="i1N-nc-K8e"/>
                                                                         </imageView>
                                                                         <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFw-7i-MXo" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
