@@ -1,22 +1,6 @@
 import Foundation
 
 
-protocol OptionBits
-{
-  func test(_ flag: Self) -> Bool
-}
-
-extension OptionBits where Self: RawRepresentable, RawValue: BinaryInteger
-{
-  func test(_ flag: Self) -> Bool
-  {
-    return (rawValue & flag.rawValue) != 0
-  }
-}
-
-extension git_status_t: OptionBits {}
-extension git_credential_t: OptionBits {}
-
 extension git_fetch_options
 {
   public static func withOptions<T>(_ fetchOptions: FetchOptions,
@@ -98,7 +82,7 @@ extension git_remote_callbacks
       else { return -1 }
       let allowed = git_credential_t(allowed)
       
-      if allowed.test(GIT_CREDENTIAL_SSH_KEY) {
+      if allowed.contains(GIT_CREDENTIAL_SSH_KEY) {
         var result: Int32 = 1
         
         for path in sshKeyPaths() {
@@ -118,7 +102,7 @@ extension git_remote_callbacks
           return 0
         }
       }
-      if allowed.test(GIT_CREDENTIAL_USERPASS_PLAINTEXT) {
+      if allowed.contains(GIT_CREDENTIAL_USERPASS_PLAINTEXT) {
         let keychain = XTKeychain.shared
         let urlString = urlCString.flatMap { String(cString: $0) }
         let urlObject = urlString.flatMap { URL(string: $0) }

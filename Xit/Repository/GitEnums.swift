@@ -1,5 +1,11 @@
 import Foundation
 
+extension git_checkout_strategy_t: OptionSet {}
+extension git_credential_t: OptionSet {}
+extension git_diff_option_t: OptionSet {}
+extension git_status_t: OptionSet {}
+extension git_submodule_status_t: OptionSet {}
+
 extension DeltaStatus
 {
   init(gitDelta: git_delta_t)
@@ -18,19 +24,19 @@ extension DeltaStatus
     switch indexStatus {
       case GIT_STATUS_CURRENT:
         self = .unmodified
-      case let status where status.test(GIT_STATUS_INDEX_MODIFIED):
+      case let status where status.contains(GIT_STATUS_INDEX_MODIFIED):
         self = .modified
-      case let status where status.test(GIT_STATUS_INDEX_NEW):
+      case let status where status.contains(GIT_STATUS_INDEX_NEW):
         self = .added
-      case let status where status.test(GIT_STATUS_INDEX_DELETED):
+      case let status where status.contains(GIT_STATUS_INDEX_DELETED):
         self = .deleted
-      case let status where status.test(GIT_STATUS_INDEX_RENAMED):
+      case let status where status.contains(GIT_STATUS_INDEX_RENAMED):
         self = .renamed
-      case let status where status.test(GIT_STATUS_INDEX_TYPECHANGE):
+      case let status where status.contains(GIT_STATUS_INDEX_TYPECHANGE):
         self = .typeChange
-      case let status where status.test(GIT_STATUS_IGNORED):
+      case let status where status.contains(GIT_STATUS_IGNORED):
         self = .ignored
-      case let status where status.test(GIT_STATUS_CONFLICTED):
+      case let status where status.contains(GIT_STATUS_CONFLICTED):
         self = .conflict
       default:
         self = .unmodified
@@ -42,15 +48,15 @@ extension DeltaStatus
     switch worktreeStatus {
       case GIT_STATUS_CURRENT:
         self = .unmodified
-      case let status where status.test(GIT_STATUS_WT_MODIFIED):
+      case let status where status.contains(GIT_STATUS_WT_MODIFIED):
         self = .modified
-      case let status where status.test(GIT_STATUS_WT_NEW):
+      case let status where status.contains(GIT_STATUS_WT_NEW):
         self = .added
-      case let status where status.test(GIT_STATUS_WT_DELETED):
+      case let status where status.contains(GIT_STATUS_WT_DELETED):
         self = .deleted
-      case let status where status.test(GIT_STATUS_WT_RENAMED):
+      case let status where status.contains(GIT_STATUS_WT_RENAMED):
         self = .renamed
-      case let status where status.test(GIT_STATUS_WT_TYPECHANGE):
+      case let status where status.contains(GIT_STATUS_WT_TYPECHANGE):
         self = .typeChange
       case GIT_STATUS_CONFLICTED:
         self = .conflict

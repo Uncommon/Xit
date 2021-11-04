@@ -255,18 +255,18 @@ extension XTRepository
     var stagedChange = DeltaStatus.unmodified
     
     switch flags {
-      case _ where flags.test(GIT_STATUS_WT_NEW):
+      case _ where flags.contains(GIT_STATUS_WT_NEW):
         unstagedChange = .untracked
-      case _ where flags.test(GIT_STATUS_WT_MODIFIED),
-           _ where flags.test(GIT_STATUS_WT_TYPECHANGE):
+      case _ where flags.contains(GIT_STATUS_WT_MODIFIED),
+           _ where flags.contains(GIT_STATUS_WT_TYPECHANGE):
         unstagedChange = .modified
-      case _ where flags.test(GIT_STATUS_WT_DELETED):
+      case _ where flags.contains(GIT_STATUS_WT_DELETED):
         unstagedChange = .deleted
-      case _ where flags.test(GIT_STATUS_WT_RENAMED):
+      case _ where flags.contains(GIT_STATUS_WT_RENAMED):
         unstagedChange = .renamed
-      case _ where flags.test(GIT_STATUS_IGNORED):
+      case _ where flags.contains(GIT_STATUS_IGNORED):
         unstagedChange = .ignored
-      case _ where flags.test(GIT_STATUS_CONFLICTED):
+      case _ where flags.contains(GIT_STATUS_CONFLICTED):
         unstagedChange = .conflict
       // ignoring GIT_STATUS_WT_UNREADABLE
       default:
@@ -274,14 +274,14 @@ extension XTRepository
     }
     
     switch flags {
-      case _ where flags.test(GIT_STATUS_INDEX_NEW):
+      case _ where flags.contains(GIT_STATUS_INDEX_NEW):
         stagedChange = .added
-      case _ where flags.test(GIT_STATUS_INDEX_MODIFIED),
-           _ where flags.test(GIT_STATUS_WT_TYPECHANGE):
+      case _ where flags.contains(GIT_STATUS_INDEX_MODIFIED),
+           _ where flags.contains(GIT_STATUS_WT_TYPECHANGE):
         stagedChange = .modified
-      case _ where flags.test(GIT_STATUS_INDEX_DELETED):
+      case _ where flags.contains(GIT_STATUS_INDEX_DELETED):
         stagedChange = .deleted
-      case _ where flags.test(GIT_STATUS_INDEX_RENAMED):
+      case _ where flags.contains(GIT_STATUS_INDEX_RENAMED):
         stagedChange = .renamed
       default:
         break
