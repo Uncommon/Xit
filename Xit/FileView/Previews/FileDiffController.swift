@@ -156,10 +156,10 @@ final class FileDiffController: WebViewController,
     var lines: [String]?
     
     if let blob = diffTargetBlob() {
-      _ = try? blob.withData {
-        (data) in
+      blob.withUnsafeBytes {
+        (bytes) in
         var encoding = String.Encoding.utf8
-        let text = String(data: data, usedEncoding: &encoding)
+        let text = String(data: bytes, usedEncoding: &encoding)
         
         lines = text?.components(separatedBy: .newlines)
       }

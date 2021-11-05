@@ -35,8 +35,11 @@ public protocol RepositoryPublishing
 
 public protocol WritingManagement
 {
+  /// True if the repository is currently performing a writing operation.
   var isWriting: Bool { get }
 
+  /// Performs `block` with `isWriting` set to true. Throws an exception if
+  /// `isWriting` is already true.
   func performWriting(_ block: (() throws -> Void)) throws
 }
 

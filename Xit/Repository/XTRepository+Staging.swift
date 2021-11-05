@@ -397,8 +397,8 @@ extension XTRepository: FileStaging
           throw RepoError.fileNotFound(path: file)
         }
         
-        try blob.withData {
-          try index.add(data: $0, path: file)
+        try blob.withUnsafeBytes {
+          try index.add(data: $0, count: Int(blob.dataSize), path: file)
         }
       
       default:

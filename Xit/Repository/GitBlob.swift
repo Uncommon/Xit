@@ -1,43 +1,17 @@
 import Foundation
 
-public protocol Blob
+public protocol Blob: ContiguousBytes
 {
   var dataSize: UInt { get }
-  var blobPtr: OpaquePointer? { get }
   var isBinary: Bool { get }
 
-  /// Calls `callback` with a data object, or throws `BlobError.cantLoadData`
-  /// if the data can't be loaded.
-  func withData<T>(_ callback: (Data) throws -> T) throws -> T
-
-  /// Consumers should use `withData` instead, since the buffer may have a
-  /// limited lifespan.
   func makeData() -> Data?
 }
 
-extension Blob
-{
-  public func withData<T>(_ callback: (Data) throws -> T) throws -> T
-  {
-    guard let data = makeData()
-    else { throw BlobError.cantLoadData }
-    
-    return try callback(data)
-  }
-}
-
-enum BlobError: Swift.Error
-{
-  case cantLoadData
-}
-
-public final class GitBlob: Blob, OIDObject
+public final class GitBlob
 {
   let blob: OpaquePointer
-  
-  public var oid: OID
-  { GitOID(oidPtr: git_blob_id(blob)) }
-  
+
   init(blob: OpaquePointer)
   {
     self.blob = blob
@@ -54,38 +28,38 @@ public final class GitBlob: Blob, OIDObject
     
     self.blob = blob
   }
-  
-  public var blobPtr: OpaquePointer? { blob }
-  
-  public var dataSize: UInt
-  { UInt(git_blob_rawsize(blob)) }
-  
-  public var isBinary: Bool
-  { git_blob_is_binary(blob) != 0 }
-  
-  public func makeData() -> Data?
-  {
-    // TODO: Fix the immutableBytes costructor to avoid unneeded copying
-    return Data(bytes: git_blob_rawcontent(blob),
-                count: Int(git_blob_rawsize(blob)))
-  }
-  
+
   deinit
   {
     git_blob_free(blob)
   }
 }
 
-extension Data
+extension GitBlob: Blob
 {
-  // There is no Data constructor that treats the buffer as immutable
-  init?(immutableBytes: UnsafeRawPointer, count: Int)
+  public var dataSize: UInt
+  { UInt(git_blob_rawsize(blob)) }
+
+  public var isBinary: Bool
+  { git_blob_is_binary(blob) != 0 }
+
+  // for ContiguousBytes
+  public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R)
+    rethrows -> R
   {
-    guard let data = CFDataCreateWithBytesNoCopy(
-        kCFAllocatorDefault, immutableBytes.assumingMemoryBound(to: UInt8.self),
-        count, kCFAllocatorNull)
-    else { return nil }
-    
-    self.init(referencing: data as NSData)
+    try body(.init(start: git_blob_rawcontent(blob),
+                   count: Int(git_blob_rawsize(blob))))
   }
+
+  public func makeData() -> Data?
+  {
+    return Data(bytes: git_blob_rawcontent(blob),
+                count: Int(git_blob_rawsize(blob)))
+  }
+}
+
+extension GitBlob: OIDObject
+{
+  public var oid: OID
+  { GitOID(oidPtr: git_blob_id(blob)) }
 }

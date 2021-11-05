@@ -559,7 +559,7 @@ class XTRepositoryTest: XTTest
     let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: TestFileName.file1.rawValue))
     var blobString: String? = nil
     
-    try blob.withData({ blobString = String(data: $0, encoding: .utf8) })
+    blob.withUnsafeBytes({ blobString = String(bytes: $0, encoding: .utf8) })
     XCTAssertEqual(blobString, "some text")
   }
   

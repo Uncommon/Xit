@@ -2,18 +2,23 @@ import Foundation
 
 extension String
 {
-  init?(data: Data, usedEncoding: inout String.Encoding)
+  init?<D>(data: D, usedEncoding: inout String.Encoding) where D: DataProtocol
   {
     let encodings: [String.Encoding] = [.utf8, .utf16, .isoLatin1, .isoLatin2,
                                         .macOSRoman, .windowsCP1252]
     
     for encoding in encodings {
-      if let string = String(data: data, encoding: encoding) {
+      if let string = String(bytes: data, encoding: encoding) {
         self = string
         return
       }
     }
     return nil
+  }
+
+  init?<D>(data: D, encoding: String.Encoding = .utf8) where D: DataProtocol
+  {
+    self.init(bytes: data, encoding: encoding)
   }
 
   var trimmingWhitespace: String

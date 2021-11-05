@@ -26,8 +26,8 @@ final class GitPatch: Patch
   
   init?(oldBlob: Blob, newBlob: Blob, options: DiffOptions? = nil)
   {
-    guard let oldGitBlob = oldBlob.blobPtr,
-          let newGitBlob = newBlob.blobPtr,
+    guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
+          let newGitBlob = (newBlob as? GitBlob)?.blob,
           let patch = try? OpaquePointer.from({
             (patch) in
             GitDiff.unwrappingOptions(options) {
@@ -44,7 +44,7 @@ final class GitPatch: Patch
   
   init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
   {
-    guard let oldGitBlob = oldBlob.blobPtr,
+    guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
           let patch = try? OpaquePointer.from({
             (patch) in
             GitDiff.unwrappingOptions(options) {

@@ -26,8 +26,8 @@ extension git_diff_delta
   
   init?(oldBlob: Blob, newBlob: Blob)
   {
-    guard let oldGitBlob = oldBlob.blobPtr,
-          let newGitBlob = newBlob.blobPtr
+    guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
+          let newGitBlob = (newBlob as? GitBlob)?.blob
     else { return nil }
     
     // Must be initialized before taking its address
@@ -42,7 +42,7 @@ extension git_diff_delta
   
   init?(oldBlob: Blob, newData: Data)
   {
-    guard let oldGitBlob = oldBlob.blobPtr
+    guard let oldGitBlob = (oldBlob as? GitBlob)?.blob
     else { return nil }
     
     self = git_diff_delta()

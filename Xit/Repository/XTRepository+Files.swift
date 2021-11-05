@@ -77,13 +77,9 @@ extension XTRepository: FileContents
   
   public func contentsOfStagedFile(path: String) -> Data?
   {
-    var result: Data?
-    
-    _ = try? stagedBlob(file: path)?.withData {
-      (data) in
-      result = (data as NSData).copy() as? Data
+    stagedBlob(file: path)?.withUnsafeBytes {
+      Data($0)
     }
-    return result
   }
   
   public func stagedBlob(file: String) -> Blob?
@@ -317,9 +313,9 @@ extension XTRepository
                                oid: entry.oid)
       else { throw RepoError.unexpected }
       
-      try blob.withData {
-        (data) in
-        guard let text = String(data: data, encoding: .utf8),
+      try blob.withUnsafeBytes {
+        (bytes) in
+        guard let text = String(bytes: bytes, encoding: .utf8),
               let patchedText = hunk.applied(to: text, reversed: !stage)
         else { throw RepoError.patchMismatch }
         

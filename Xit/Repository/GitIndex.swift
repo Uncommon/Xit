@@ -10,7 +10,7 @@ public protocol StagingIndex
   /// Adds a local file to the index
   func add(path: String) throws
   /// Adds or updates a file with the given data
-  func add(data: Data, path: String) throws
+  func add(data: ContiguousBytes, count: Int, path: String) throws
   /// Reads the tree into the index
   func read(tree: Tree) throws
   /// Removes a file from the index
@@ -40,6 +40,11 @@ extension StagingIndex
   /// A collection for accessing or iterating through index entries.
   var entries: EntryCollection
   { EntryCollection(index: self) }
+
+  func add(data: Data, path: String) throws
+  {
+    try add(data: data, count: data.count, path: path)
+  }
 }
 
 class EntryCollection: RandomAccessCollection
@@ -148,7 +153,7 @@ class GitIndex: StagingIndex
     try RepoError.throwIfGitError(git_index_add_bypath(index, path))
   }
   
-  func add(data: Data, path: String) throws
+  func add(data: ContiguousBytes, count: Int, path: String) throws
   {
     let result = data.withUnsafeBytes {
       (bytes: UnsafeRawBufferPointer) -> Int32 in
@@ -159,13 +164,13 @@ class GitIndex: StagingIndex
         entry.path = path
         entry.mode = GIT_FILEMODE_BLOB.rawValue
         return git_index_add_frombuffer(index, &entry,
-                                        bytes.baseAddress, data.count)
+                                        bytes.baseAddress, count)
       }
     }
     
     try RepoError.throwIfGitError(result)
   }
-  
+
   func remove(path: String) throws
   {
     try RepoError.throwIfGitError(git_index_remove_bypath(index, path))

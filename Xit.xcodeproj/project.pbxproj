@@ -1138,6 +1138,7 @@
 				C95BD4041F8FF8C8000A2E2D /* GitDiff.swift */,
 				C98CAD951F952173005DB419 /* GitDiffDelta.swift */,
 				C98CAD831F9520D0005DB419 /* GitDiffHunk.swift */,
+				C9CDB9D827207A7F007C2E77 /* GitDiffStats.swift */,
 				DDDA447015B0E97000DF407B /* GitEnums.h */,
 				C95BD4021F8FD611000A2E2D /* GitEnums.swift */,
 				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
@@ -1168,7 +1169,6 @@
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
-				C9CDB9D827207A7F007C2E77 /* GitDiffStats.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
