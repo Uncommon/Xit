@@ -5,6 +5,9 @@ import Quartz
 /// View controller for the file list and detail view.
 final class FileViewController: NSViewController, RepositoryWindowViewController
 {
+  typealias Repository = CommitStorage & CommitReferencing & FileContents &
+                         FileStaging & FileStatusDetection & RepoConfiguring
+
   /// Preview tab identifiers
   enum TabID
   {
@@ -130,7 +133,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   var selectedChanges: [FileChange]
   { activeFileListController.selectedChanges }
   
-  weak var repo: XTRepository?
+  weak var repo: Repository?
   {
     didSet
     {
@@ -183,7 +186,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     headerTabView.tabViewItem(at: 0).view = commitHeader
   }
   
-  func finishLoad(repository: XTRepository)
+  func finishLoad(repository: Repository)
   {
     repo = repository
     diffController.repo = repository
@@ -454,11 +457,11 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   func revert(path: String)
   {
     let confirmAlert = NSAlert()
-    let status = try? repo!.status(file: path)
+    let status = try? repo!.unstagedStatus(for: path)
     let name = (path as NSString).lastPathComponent
     
     confirmAlert.messageString = .confirmRevert(name)
-    if status?.0 == .untracked {
+    if status == .untracked {
       confirmAlert.informativeString = .newFileDeleted
     }
     confirmAlert.addButton(withString: .revert)

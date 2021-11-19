@@ -3,7 +3,7 @@ import Combine
 
 protocol RepositoryUIController: AnyObject
 {
-  var repository: Repository { get }
+  var repository: FullRepository { get }
   var repoController: GitRepositoryController! { get }
   var selection: RepositorySelection? { get set }
   var selectionPublisher: AnyPublisher<RepositorySelection?, Never> { get }
@@ -34,7 +34,7 @@ final class XTWindowController: NSWindowController,
   weak var repoDocument: RepoDocument?
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
-  var repository: Repository { (repoDocument?.repository as Repository?)! }
+  var repository: FullRepository { (repoDocument?.repository as FullRepository?)! }
 
   @objc dynamic var isAmending = false
   {

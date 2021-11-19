@@ -10,13 +10,13 @@ class FakeRepoUIController: RepositoryUIController
   { Just(nil).eraseToAnyPublisher() }
 
   var repoController: GitRepositoryController!
-  var repository: Repository
+  var repository: FullRepository
 
   var selectedCommitSHA: String = ""
   var selection: RepositorySelection? = nil
   var isAmending = false
 
-  init(repository: Repository)
+  init(repository: FullRepository)
   {
     self.repository = repository
   }

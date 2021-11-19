@@ -52,7 +52,7 @@ struct Write: StageableAction
     self.file = name.rawValue
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     let url = repository.fileURL(file)
 
@@ -84,7 +84,7 @@ struct CopyFile: StageableAction
     self.file = destination
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     guard let sourceURL = sourceURL ?? source.map({ repository.fileURL($0) })
     else { throw UnreachableError() }
@@ -106,7 +106,7 @@ struct WriteData: StageableAction
     self.file = file
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try data.write(to: repository.fileURL(file))
   }
@@ -120,7 +120,7 @@ struct MakeTiffFile: StageableAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     let tiffURL = repository.fileURL(file)
 
@@ -137,7 +137,7 @@ struct Delete: StageableAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     let url = repository.fileURL(file)
 
@@ -153,7 +153,7 @@ struct Stage: RepoAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.stage(file: file)
   }
@@ -167,7 +167,7 @@ struct Unstage: RepoAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.unstage(file: file)
   }
@@ -198,7 +198,7 @@ struct CommitFiles: RepoAction
     self.actions = actions()
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     for action in actions {
       try executeAndStage(action, in: repository)
@@ -207,7 +207,7 @@ struct CommitFiles: RepoAction
   }
 
   private func executeAndStage(_ action: RepoAction,
-                               in repository: Repository) throws
+                               in repository: FullRepository) throws
   {
     try action.execute(in: repository)
     if let stageable = action as? StageableAction {
@@ -222,7 +222,7 @@ struct SaveStash: RepoAction
 
   init(_ message: String = "") { self.message = message }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.saveStash(name: message, keepIndex: false,
                              includeUntracked: true, includeIgnored: true)
@@ -235,7 +235,7 @@ struct ApplyStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.applyStash(index: index)
   }
@@ -247,7 +247,7 @@ struct PopStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.popStash(index: index)
   }
@@ -259,7 +259,7 @@ struct DropStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     try repository.dropStash(index: index)
   }
@@ -282,7 +282,7 @@ struct CheckOut: RepoAction
     self.sha = sha
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     if sha.isEmpty {
       try repository.checkOut(branch: branch)
@@ -304,7 +304,7 @@ struct CreateBranch: RepoAction
     self.checkOut = checkOut
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     guard let currentBranch = repository.currentBranch
     else { throw UnreachableError() }
@@ -334,7 +334,7 @@ struct Merge: RepoAction
     self.branchName = branch
   }
 
-  func execute(in repository: Repository) throws
+  func execute(in repository: FullRepository) throws
   {
     guard let branch = sourceBranch ??
                        branchName.flatMap({ repository.localBranch(named: $0) })

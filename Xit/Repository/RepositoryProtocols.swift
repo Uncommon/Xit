@@ -3,7 +3,7 @@ import Foundation
 import Combine
 
 /// A combination of all repository protocols
-public typealias Repository =
+public typealias FullRepository =
     BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
     FileContents & FileStaging & FileStatusDetection & Merging &
     RemoteCommunication & RemoteManagement & RepoConfiguring & Stashing &
@@ -53,7 +53,7 @@ public protocol Cloning
   func clone(from source: URL, to destination: URL,
              branch: String,
              recurseSubmodules: Bool,
-             publisher: RemoteProgressPublisher) throws -> Repository?
+             publisher: RemoteProgressPublisher) throws -> FullRepository?
 }
 
 public protocol CommitStorage: AnyObject
