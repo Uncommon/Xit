@@ -56,7 +56,6 @@ final class XTWindowController: NSWindowController,
   var navForwardStack = [RepositorySelection]()
   var navigating = false
   var sidebarHidden: Bool { splitViewController.splitViewItems[0].isCollapsed }
-  var savedSidebarWidth: CGFloat = 180
   var historyAutoCollapsed = false
   
   var currentOperation: OperationController?

@@ -4,13 +4,6 @@ import AppKit
 class RepoDocument: NSDocument
 {
   private(set) var repository: XTRepository! = nil
-  private(set) var repoURL: URL! = nil
-
-  enum Error: Swift.Error
-  {
-    case notAllowed
-    case failed
-  }
 
   // Don't allow creating an untitled document
   convenience init(type typeName: String) throws
@@ -46,7 +39,6 @@ class RepoDocument: NSDocument
                     code: NSFileReadNoSuchFileError)
     }
 
-    self.repoURL = url
     self.repository = repository
 
     (NSApp.delegate as? AppDelegate)?.dismissOpenPanel()

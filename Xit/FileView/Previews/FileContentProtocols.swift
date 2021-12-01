@@ -43,7 +43,7 @@ protocol ContextVariable: AnyObject
   var contextLines: UInt { get set }
 }
 
-enum TextWrapping
+enum TextWrapping: RawRepresentable
 {
   case windowWidth
   case columns(Int)

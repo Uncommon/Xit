@@ -48,7 +48,6 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   var contentController: XTFileContentController!
   
   var fileWatcher: FileEventStream?
-  weak var lastClickedButton: NSButton?
   var indexTimer: Timer?
   var sinks: [AnyCancellable] = []
   
