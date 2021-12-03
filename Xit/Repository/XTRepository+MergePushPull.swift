@@ -88,6 +88,23 @@ extension XTRepository: Merging
 {
   private func fastForwardMerge(branch: GitBranch, remoteBranch: GitBranch) throws
   {
+    let branchName: String
+
+    switch remoteBranch {
+      case let localBranch as LocalBranch:
+        branchName = localBranch.name
+      case let remoteBranch as RemoteBranch:
+        branchName = remoteBranch.shortName
+      default:
+        assertionFailure("unexpected branch type: \(remoteBranch)")
+        throw RepoError.unexpected
+    }
+    // This actually does write, but the flag is already set
+    _ = try executeGit(args: ["merge", "--ff-only", branchName], writes: false)
+
+    // In some cases, fast-forward merging with libgit2 can clobber unrelated
+    // workspace changes, so CLI is used instead for now.
+    #if false
     guard let remoteCommit = remoteBranch.targetCommit as? GitCommit
     else { throw RepoError.unexpected }
     
@@ -107,8 +124,8 @@ extension XTRepository: Merging
         GIT_EMERGECONFLICT.rawValue
       }
 
-      checkoutOptions.checkout_strategy = GIT_CHECKOUT_FORCE.rawValue |
-                                          GIT_CHECKOUT_ALLOW_CONFLICTS.rawValue
+      checkoutOptions.checkout_strategy = [GIT_CHECKOUT_FORCE,
+                                           GIT_CHECKOUT_ALLOW_CONFLICTS]
       checkoutOptions.notify_flags = GIT_CHECKOUT_NOTIFY_CONFLICT.rawValue
       checkoutOptions.notify_cb = notifyCallback
       
@@ -119,6 +136,7 @@ extension XTRepository: Merging
       result = git_repository_set_head(gitRepo, branch.name)
       try RepoError.throwIfGitError(result)
     }
+    #endif
   }
   
   private func normalMerge(fromBranch: GitBranch, fromCommit: GitCommit,
@@ -353,10 +371,8 @@ extension XTRepository: Merging
     let result = withUnsafeMutablePointer(to: &annotated) {
       git_merge_analysis(analysis, preference, gitRepo, $0, 1)
     }
-    
-    guard result == GIT_OK.rawValue
-    else { throw RepoError.gitError(result) }
-    
+
+    try RepoError.throwIfGitError(result)
     return MergeAnalysis(rawValue: analysis.pointee.rawValue)
   }
 }

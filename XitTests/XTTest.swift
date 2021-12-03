@@ -128,15 +128,13 @@ class XTTest: XCTestCase
   func assertContent(_ text: String, file: String,
                      line: UInt = #line, sourceFile: StaticString = #file)
   {
-    guard let content = try? String(contentsOfFile: repoPath +/ file)
-    else {
-      XCTFail("can't load file", file: sourceFile, line: line)
-      return
+    do {
+      let content = try String(contentsOfFile: repoPath +/ file)
+
+      XCTAssertEqual(content, text, file: sourceFile, line: line)
     }
-    guard content == text
-    else {
-      XCTFail("content mismatch", file: sourceFile, line: line)
-      return
+    catch let error {
+      XCTFail(error.localizedDescription, file: sourceFile, line: line)
     }
   }
   
@@ -144,6 +142,30 @@ class XTTest: XCTestCase
                       line: UInt = #line, sourceFile: StaticString = #file)
   {
     assertContent(text, file: file.rawValue, line: line, sourceFile: sourceFile)
+  }
+
+  func assertStagedContent(_ text: String, file: String,
+                           line: UInt = #line, sourceFile: StaticString = #file)
+    throws
+  {
+    guard let blob = repository.stagedBlob(file: file)
+    else {
+      XCTFail("could not get blob", file: sourceFile, line: line)
+      return
+    }
+    let content = blob.withUnsafeBytes {
+      String(bytes: $0, encoding: .utf8)
+    }
+
+    XCTAssertEqual(content, text, file: sourceFile, line: line)
+  }
+
+  func assertStagedContent(_ text: String, file: TestFileName,
+                           line: UInt = #line, sourceFile: StaticString = #file)
+    throws
+  {
+    try assertStagedContent(text, file: file.rawValue,
+                            line: line, sourceFile: sourceFile)
   }
 
   func makeStash() throws

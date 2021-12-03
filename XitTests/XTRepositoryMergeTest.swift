@@ -91,17 +91,47 @@ class XTRepositoryMergeTest: XTTest
     XCTAssertEqual(selection.unstagedFileList.changes.map { $0.path }, unstaged,
                    "unstaged", file: file, line: line)
   }
+
+  func mergeC0C1(useCLI: Bool) throws
+  {
+    guard let c1OID = repository.localBranch(named: "c1")?.oid
+    else {
+      XCTFail("c1 branch missing")
+      return
+    }
+
+    if useCLI {
+      _ = try repository.executeGit(args: ["merge", "c1"], writes: true)
+    }
+    else {
+      try execute(in: repository) {
+        Merge(branch: "c1")
+      }
+    }
+    assertContent(result1, file: fileName)
+    try assertStagedContent(result1, file: fileName)
+    assertWorkspaceContent(staged: [], unstaged: [])
+
+    guard let headOID = repository.headReference?.targetOID
+    else {
+      XCTFail("no head")
+      return
+    }
+
+    XCTAssertTrue(c1OID.equals(headOID))
+  }
   
   // Fast-forward case. This could also have a ff-only variant.
   func testMergeC0C1() throws
   {
-    try execute(in: repository) {
-      Merge(branch: "c1")
-    }
-    XCTAssertEqual(try String(contentsOf: repository.fileURL(fileName)), result1)
-    assertWorkspaceContent(staged: [], unstaged: [])
+    try mergeC0C1(useCLI: false)
   }
-  
+
+  func testMergeC0C1CLI() throws
+  {
+    try mergeC0C1(useCLI: true)
+  }
+
   // Actually merging changes.
   func testMergeC1C2() throws
   {
@@ -147,17 +177,89 @@ class XTRepositoryMergeTest: XTTest
           FileManager.default.fileExists(atPath: repository.mergeHeadPath))
     }
   }
-  
+
+  /// Merge with an untracked file
   func testDirtyFFNoConflict() throws
   {
     let content = "blah"
+    let file = TestFileName.file2
 
-    try execute(in: repository, actions: { () -> [RepoAction] in
+    try execute(in: repository) {
       CheckOut(branch: "c0")
-      Write(content, to: .file2)
+      Write(content, to: file)
       Merge(branch: "c3")
-    })
-    assertContent(content, file: .file2)
+    }
+    assertContent(content, file: file)
+  }
+
+  /// Merge with a new staged file
+  func testDirtyFFStagedNew() throws
+  {
+    let content = "blah"
+    let file = TestFileName.file2
+
+    try XCTContext.runActivity(named: "Set up for merge") {
+      _ in
+      try execute(in: repository) {
+        CheckOut(branch: "c0")
+        Write(content, to: file)
+        Stage(file)
+      }
+      assertContent(content, file: file)
+      try assertStagedContent(content, file: file)
+    }
+
+    try XCTContext.runActivity(named: "Perform merge") {
+      _ in
+      try execute(in: repository) {
+        Merge(branch: "c3")
+      }
+      assertContent(content, file: file)
+      try assertStagedContent(content, file: file)
+    }
+  }
+
+  /// Merge with a new staged file using command line
+  func testDirtyFFStagedNewCLI() throws
+  {
+    let content = "blah"
+    let file = TestFileName.file2
+
+    try XCTContext.runActivity(named: "Set up for merge") {
+      _ in
+      try execute(in: repository) {
+        CheckOut(branch: "c0")
+        Write(content, to: file)
+        Stage(file)
+      }
+      assertContent(content, file: file)
+      try assertStagedContent(content, file: file)
+    }
+
+    try XCTContext.runActivity(named: "Perform merge") {
+      _ in
+      _ = try repository.executeGit(args: ["merge", "c3"], writes: true)
+      assertContent(content, file: file)
+      try assertStagedContent(content, file: file)
+    }
+  }
+
+  /// Merge with staged changes that do not conflict
+  func testDirtyFFStagedModified() throws
+  {
+    let content = "blah"
+    let file = TestFileName.file3
+
+    try execute(in: repository) {
+      CheckOut(branch: "c0")
+      CommitFiles {
+        Write(content, to: file)
+      }
+      Stage(file)
+      Merge(branch: "c3")
+    }
+    assertContent(content, file: file)
+    try assertStagedContent(content, file: file)
   }
 
   // Same as testDirtyFFNoConflict except make a commit after switching to c0
