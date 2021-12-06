@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire",
+        "state": {
+          "branch": null,
+          "revision": "d120af1e8638c7da36c8481fd61a66c0c08dc4fc",
+          "version": "5.4.4"
+        }
+      },
+      {
+        "package": "Siesta",
+        "repositoryURL": "https://github.com/bustoutsolutions/siesta",
+        "state": {
+          "branch": null,
+          "revision": "43f34046ebb5beb6802200353c473af303bbc31e",
+          "version": "1.5.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
