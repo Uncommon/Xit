@@ -25,7 +25,9 @@ final class GitReference: Reference
   
   static func isValidName(_ name: String) -> Bool
   {
-    return git_reference_is_valid_name(name) != 0
+    var valid: Int32 = 0
+
+    return git_reference_name_is_valid(&valid, name) == 0 && valid != 0
   }
   
   init(reference: OpaquePointer)
