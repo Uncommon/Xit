@@ -61,7 +61,14 @@ class FileListController: NSViewController, RepositoryWindowViewController
   
   var repository: BasicRepository & FileStaging & FileContents
   { repoController?.repository as! BasicRepository & FileStaging & FileContents }
-  
+
+  var optionsCancellable: AnyCancellable?
+
+  func observeOptions(_ source: AnyPublisher<FileViewOptions, Never>)
+  {
+    optionsCancellable = source.assign(to: \.options, on: fileListDataSource)
+  }
+
   required init(isWorkspace: Bool)
   {
     self.fileListDataSource = FileChangesDataSource(useWorkspaceList: isWorkspace)
@@ -81,6 +88,15 @@ class FileListController: NSViewController, RepositoryWindowViewController
   {
     super.loadView()
     updateButtons()
+
+    // The FileViewController isn't available as a target in the nib
+    if let sortByItem = actionButton.menu?.item(withIdentifier: ◊"sortBy" ),
+       let sortMenu = sortByItem.submenu {
+      for item in sortMenu.items {
+        item.target = parent
+        item.action = #selector(FileViewController.sortFilesBy(_:))
+      }
+    }
   }
 
   // The controller must be passed in because at this point the window isn't
@@ -267,6 +283,13 @@ extension FileListController: NSUserInterfaceValidations
       case #selector(showInFinder(_:)),
            #selector(open(_:)):
         return selectedChange != nil
+      case #selector(FileViewController.sortFilesBy(_:)):
+        if let parent = self.parent as? NSUserInterfaceValidations {
+          return parent.validateUserInterfaceItem(item)
+        }
+        else {
+          return false
+        }
       default:
         return false
     }

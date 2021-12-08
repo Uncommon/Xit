@@ -44,6 +44,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
 
   var resizeRecursing: Bool = false
   var savedSplit: CGFloat = 0
+  var options: CurrentValueSubject<FileViewOptions, Never> = .init(.default)
 
   var contentController: XTFileContentController!
   
@@ -144,6 +145,11 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
                                workspaceListController]
     
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+
+    for controller in allListControllers {
+      addChild(controller)
+      controller.observeOptions(options.eraseToAnyPublisher())
+    }
   }
   
   required init?(coder: NSCoder)

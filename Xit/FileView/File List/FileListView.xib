@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -217,6 +218,32 @@
                                                 <menuItem image="NSActionTemplate" hidden="YES" id="cjU-tH-Zw9">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                 </menuItem>
+                                                <menuItem title="Sort By" identifier="sortBy" id="hoQ-ce-CWn">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                    <menu key="submenu" title="Sort By" id="Exo-MC-75a">
+                                                        <items>
+                                                            <menuItem title="Full Path" id="3UL-Ou-6lD">
+                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                <connections>
+                                                                    <action selector="sortFilesBy:" target="-2" id="4rt-dD-Rfj"/>
+                                                                </connections>
+                                                            </menuItem>
+                                                            <menuItem title="File Name" tag="1" id="QRo-j6-OpG">
+                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                <connections>
+                                                                    <action selector="sortFilesBy:" target="-2" id="mEJ-cL-Y2M"/>
+                                                                </connections>
+                                                            </menuItem>
+                                                            <menuItem title="Status" tag="2" id="TQV-un-T7v">
+                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                <connections>
+                                                                    <action selector="sortFilesBy:" target="-2" id="MkA-Mj-N6j"/>
+                                                                </connections>
+                                                            </menuItem>
+                                                        </items>
+                                                    </menu>
+                                                </menuItem>
+                                                <menuItem isSeparatorItem="YES" id="LIG-q1-ez7"/>
                                                 <menuItem title="Stage All" id="RWJ-Cl-NhJ">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>

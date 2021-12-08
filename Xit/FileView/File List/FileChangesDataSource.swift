@@ -3,7 +3,15 @@ import Foundation
 final class FileChangesDataSource: FileListDataSourceBase
 {
   var changes = [FileChange]()
-  
+  var options: FileViewOptions = .default
+  {
+    didSet
+    {
+      options.sort(changes: &changes)
+      outlineView?.reloadData()
+    }
+  }
+
   func doReload(_ newChanges: [FileChange])
   {
     let newChanges = newChanges.sorted { $0.gitPath < $1.gitPath }
@@ -41,7 +49,7 @@ final class FileChangesDataSource: FileListDataSourceBase
       }
       changes.removeObjects(at: deleteIndexes)
       changes.append(contentsOf: newChanges.objects(at: addIndexes))
-      changes.sort { $0.gitPath < $1.gitPath }
+      options.sort(changes: &changes)
     }
     
     DispatchQueue.main.async {

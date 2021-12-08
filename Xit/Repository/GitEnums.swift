@@ -120,3 +120,39 @@ extension DeltaStatus // CustomStringConvertible
     }
   }
 }
+
+extension DeltaStatus: Comparable
+{
+  private var order: Int
+  {
+    switch self {
+      case .conflict:
+        return 0
+      case .added:
+        return 1
+      case .deleted:
+        return 2
+      case .modified:
+        return 3
+      case .renamed:
+        return 4
+      case .copied:
+        return 5
+      case .typeChange:
+        return 6
+      case .mixed:
+        return 7
+      case .ignored:
+        return 8
+      case .untracked:
+        return 9
+      case .unmodified:
+        return 10
+    }
+  }
+
+  public static func < (lhs: DeltaStatus, rhs: DeltaStatus) -> Bool
+  {
+    return lhs.order < rhs.order
+  }
+}

@@ -9,6 +9,15 @@ extension FileViewController: NSUserInterfaceValidations
     else { return false }
     
     switch action {
+
+      case #selector(self.sortFilesBy(_:)):
+        guard let menuItem = item as? NSMenuItem,
+              let itemSort = FileViewOptions.Sort(rawValue: menuItem.tag)
+        else { return false }
+
+        menuItem.state = itemSort == options.value.sort ? .on : .off
+        return true
+
       case #selector(self.stageAll(_:)):
         guard let selection = repoUIController?.selection as? StagingSelection
         else { return false }
@@ -132,6 +141,15 @@ extension FileViewController
     previewTabView.selectTabViewItem(withIdentifier: TabID.allIDs[selection])
     contentController = contentControllers[selection]
     loadSelectedPreview()
+  }
+
+  @IBAction
+  func sortFilesBy(_ sender: Any?)
+  {
+    if let item = sender as? NSMenuItem,
+       let sort = FileViewOptions.Sort(rawValue: item.tag) {
+      options.value.sort = sort
+    }
   }
   
   @IBAction

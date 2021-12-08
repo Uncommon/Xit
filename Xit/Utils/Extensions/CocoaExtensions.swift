@@ -109,6 +109,15 @@ extension NSImage
   }
 }
 
+extension NSMenu
+{
+  func item(withIdentifier identifier: NSUserInterfaceItemIdentifier)
+    -> NSMenuItem?
+  {
+    items.first { $0.identifier == identifier }
+  }
+}
+
 extension NSTreeNode
 {
   /// Inserts a child node in sorted order based on the given key extractor
