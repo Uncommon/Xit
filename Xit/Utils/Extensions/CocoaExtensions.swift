@@ -116,12 +116,50 @@ extension NSMenu
   {
     items.first { $0.identifier == identifier }
   }
-  
+
   func item(withTarget target: Any?, andAction action: Selector?) -> NSMenuItem?
   {
     let index = indexOfItem(withTarget: target, andAction: action)
 
     return index == -1 ? nil : items[index]
+  }
+}
+
+extension NSMenuItem
+{
+  typealias ActionBlock = (NSMenuItem) -> Void
+
+  /// Constructs a menu item using a callback block instead of a target
+  /// and action.
+  convenience init(_ title: String,
+                   keyEquivalent: String = "",
+                   _ block: @escaping ActionBlock)
+  {
+    self.init(title: title,
+              action: #selector(GlobalTarget.shared.action(_:)),
+              keyEquivalent: keyEquivalent)
+
+    target = GlobalTarget.shared
+    representedObject = block
+  }
+
+  convenience init(_ titleString: UIString,
+                   keyEquivalent: String = "",
+                   _ block: @escaping ActionBlock)
+  {
+    self.init(titleString.rawValue, keyEquivalent: keyEquivalent, block)
+  }
+
+  /// A singleton used as the target for menu items with callback blocks.
+  private class GlobalTarget: NSObject
+  {
+    static let shared = GlobalTarget()
+
+    @objc
+    func action(_ item: NSMenuItem)
+    {
+      (item.representedObject as? ActionBlock)?(item)
+    }
   }
 }
 
