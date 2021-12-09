@@ -126,6 +126,7 @@
 		C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E3C0122F1FB09004306C1 /* ConfigWatcher.swift */; };
 		C931A0E1275AE340007F441C /* Siesta in Frameworks */ = {isa = PBXBuildFile; productRef = C931A0E0275AE340007F441C /* Siesta */; };
 		C931A0E5275EBE21007F441C /* FileViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E4275EBE21007F441C /* FileViewOptions.swift */; };
+		C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E627627E84007F441C /* MenuBuilder.swift */; };
 		C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */; };
 		C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* FileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */; };
@@ -322,7 +323,6 @@
 		DD592093156EEE64005FBB0F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD858B2B1801325500264F7D /* CoreServices.framework */; };
 		DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */ = {isa = PBXBuildFile; fileRef = DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */; };
-		DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */; };
 		DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD997DF71746F40D00C7DF82 /* FileViewController.xib */; };
 		DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708416F96F7E00CA76FF /* QuickLook.framework */; };
 		DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDD4708616F9701600CA76FF /* Quartz.framework */; };
@@ -485,6 +485,7 @@
 		C92E3C0122F1FB09004306C1 /* ConfigWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigWatcher.swift; sourceTree = "<group>"; };
 		C931A0E2275E7426007F441C /* Xit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Xit.entitlements; sourceTree = "<group>"; };
 		C931A0E4275EBE21007F441C /* FileViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewOptions.swift; sourceTree = "<group>"; };
+		C931A0E627627E84007F441C /* MenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBuilder.swift; sourceTree = "<group>"; };
 		C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTreeDataSource.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* FileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryWatcher.swift; sourceTree = "<group>"; };
@@ -614,7 +615,6 @@
 		C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileEventStream.swift; sourceTree = "<group>"; };
 		C9BD02FA226A275600172C0B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		C9BD02FC226A278900172C0B /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		C9BD02FF226A282700172C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Sidebar Menus.xib"; sourceTree = "<group>"; };
 		C9BDF4C01D99A70F0034841F /* RenameBranchOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchOpController.swift; sourceTree = "<group>"; };
 		C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchPanelController.swift; sourceTree = "<group>"; };
 		C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RenameBranchPanelController.xib; sourceTree = "<group>"; };
@@ -749,6 +749,7 @@
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
 				C919B9D326B09F4D007952FA /* LabeledField.swift */,
+				C931A0E627627E84007F441C /* MenuBuilder.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
@@ -1177,7 +1178,6 @@
 				C986846F2334389A0026E70B /* SidebarItemFilter.swift */,
 				C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */,
 				C951EAE01DD11BDD00B99FBE /* SidebarTableCellView.swift */,
-				DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */,
 				C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */,
 				C959CDE81F859D3D00C1E282 /* BuildStatusController.swift */,
 				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
@@ -1378,7 +1378,6 @@
 				8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
 				C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */,
-				DD997DDA173B409500C7DF82 /* Sidebar Menus.xib in Resources */,
 				89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
@@ -1604,6 +1603,7 @@
 				C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */,
 				C9C3014126A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
+				C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */,
 				C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */,
 				8983E1A7266596BD0075370C /* PathField.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
@@ -1760,14 +1760,6 @@
 				C3FA472813D0F8E300AC4F9B /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		DD997DD8173B409500C7DF82 /* Sidebar Menus.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C9BD02FF226A282700172C0B /* Base */,
-			);
-			name = "Sidebar Menus.xib";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

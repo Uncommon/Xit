@@ -9,12 +9,12 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   @IBOutlet weak var sidebarDS: SideBarDataSource!
   @IBOutlet weak var sidebarDelegate: SidebarDelegate!
   
-  @IBOutlet var branchContextMenu: NSMenu!
-  @IBOutlet var remoteBranchContextMenu: NSMenu!
-  @IBOutlet var remoteContextMenu: NSMenu!
-  @IBOutlet var tagContextMenu: NSMenu!
-  @IBOutlet var stashContextMenu: NSMenu!
-  @IBOutlet var submoduleContextMenu: NSMenu!
+  var branchContextMenu: NSMenu!
+  var remoteBranchContextMenu: NSMenu!
+  var remoteContextMenu: NSMenu!
+  var tagContextMenu: NSMenu!
+  var stashContextMenu: NSMenu!
+  var submoduleContextMenu: NSMenu!
   
   private(set) var model: SidebarDataModel!
   private(set) var pullRequestManager: SidebarPRManager! = nil
@@ -100,15 +100,47 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
     sidebarDS?.stopTimers()
     pullRequestManager?.stopCacheRefresh()
   }
+
+  func makeMenus()
+  {
+    branchContextMenu = NSMenu {
+      NSMenuItem(.checkOut, checkOutBranch(_:))
+      NSMenuItem(.rename, renameBranch(_:))
+      NSMenuItem(.merge, mergeBranch(_:))
+      NSMenuItem.separator()
+      NSMenuItem(.delete, deleteBranch(_:))
+    }
+    remoteBranchContextMenu = NSMenu {
+      NSMenuItem(.createTrackingBranch, createTrackingBranch(_:))
+      NSMenuItem(.rename, renameBranch(_:))
+      NSMenuItem(.merge, mergeBranch(_:))
+      NSMenuItem.separator()
+      NSMenuItem(.delete, deleteBranch(_:))
+    }
+    remoteContextMenu = NSMenu {
+      NSMenuItem(.rename, renameRemote(_:))
+      NSMenuItem(.edit, editRemote(_:))
+      NSMenuItem(.delete, deleteRemote(_:))
+      NSMenuItem(.copyURL, copyRemoteURL(_:))
+    }
+    stashContextMenu = NSMenu {
+      NSMenuItem(.pop, popStash(_:))
+      NSMenuItem(.apply, applyStash(_:))
+      NSMenuItem(.drop, dropStash(_:))
+    }
+    submoduleContextMenu = NSMenu {
+      NSMenuItem(.showInFinder, showSubmodule(_:))
+      NSMenuItem(.update, updateSubmodule(_:))
+    }
+    tagContextMenu = NSMenu {
+      NSMenuItem(.delete, deleteTag(_:))
+    }
+  }
   
   override func viewDidLoad()
   {
     sidebarOutline.floatsGroupRows = false
-  
-    if branchContextMenu == nil,
-       let menuNib = NSNib(nibNamed: "Sidebar Menus", bundle: nil) {
-      menuNib.instantiate(withOwner: self, topLevelObjects: nil)
-    }
+    makeMenus()
   }
   
   override func viewWillAppear()
