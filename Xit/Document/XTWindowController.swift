@@ -283,13 +283,8 @@ final class XTWindowController: NSWindowController,
   func updateRemotesMenu(_ menu: NSMenu)
   {
     let remoteNames = repository.remoteNames()
-    
-    menu.removeAllItems()
-    for name in remoteNames {
-      menu.addItem(NSMenuItem(title: name,
-                              action: #selector(self.remoteSettings(_:)),
-                              keyEquivalent: ""))
-    }
+
+    menu.items = remoteNames.map { NSMenuItem($0, remoteSettings(_:)) }
   }
   
   func redrawAllHistoryLists()

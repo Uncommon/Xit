@@ -4,14 +4,12 @@ import Foundation
 struct MenuBuilder
 {
   static func buildExpression(_ expression: NSMenuItem) -> [NSMenuItem]
-  {
-    [expression]
-  }
+  { [expression] }
+  static func buildExpression(_ expression: [NSMenuItem]) -> [NSMenuItem]
+  { expression }
 
   static func buildBlock(_ components: [NSMenuItem]...) -> [NSMenuItem]
-  {
-    components.flatMap { $0 }
-  }
+  { components.flatMap { $0 } }
 
 
   static func buildOptional(_ component: [NSMenuItem]?) -> [NSMenuItem]
@@ -33,6 +31,11 @@ extension NSMenu
   {
     self.init(title: title)
 
+    setItems(builder: builder)
+  }
+
+  func setItems(@MenuBuilder builder: () -> [NSMenuItem])
+  {
     items = builder()
   }
 }

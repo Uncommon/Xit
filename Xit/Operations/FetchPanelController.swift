@@ -28,16 +28,12 @@ final class FetchPanelController: SheetController
   {
     didSet
     {
-      guard let menu = remotesPopup?.menu
+      guard let menu = remotesPopup?.menu,
+            let repo = parentController?.repoDocument?.repository
       else { return }
-      guard let repo = parentController?.repoDocument?.repository
-        else { return }
       
-      let names = repo.remoteNames()
-
-      menu.removeAllItems()
-      for name in names {
-        menu.addItem(NSMenuItem(title: name, action: nil, keyEquivalent: ""))
+      menu.items = repo.remoteNames().map {
+        NSMenuItem(title: $0, action: nil, keyEquivalent: "")
       }
     }
   }

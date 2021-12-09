@@ -116,6 +116,13 @@ extension NSMenu
   {
     items.first { $0.identifier == identifier }
   }
+  
+  func item(withTarget target: Any?, andAction action: Selector?) -> NSMenuItem?
+  {
+    let index = indexOfItem(withTarget: target, andAction: action)
+
+    return index == -1 ? nil : items[index]
+  }
 }
 
 extension NSTreeNode
