@@ -304,12 +304,12 @@ extension TimeInterval
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 
-extension UInt
+extension Strideable where Stride == Int
 {
-  static postfix func ++ (i: inout UInt) -> UInt
+  static postfix func ++ (i: inout Self) -> Self
   {
     let result = i
-    i += 1
+    i = i.advanced(by: 1)
     return result
   }
 }
