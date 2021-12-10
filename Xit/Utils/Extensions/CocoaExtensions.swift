@@ -150,6 +150,17 @@ extension NSMenuItem
     self.init(titleString.rawValue, keyEquivalent: keyEquivalent, block)
   }
 
+  convenience init(_ titleString: UIString, action: Selector? = nil)
+  {
+    self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
+  }
+
+  func with(identifier: NSUserInterfaceItemIdentifier) -> NSMenuItem
+  {
+    self.identifier = identifier
+    return self
+  }
+
   /// A singleton used as the target for menu items with callback blocks.
   private class GlobalTarget: NSObject
   {

@@ -16,6 +16,14 @@ public struct AXID: RawRepresentable
   }
 }
 
+extension NSMenu
+{
+  func setAccessibilityIdentifier(_ id: AXID)
+  {
+    setAccessibilityIdentifier(id.rawValue)
+  }
+}
+
 extension NSView
 {
   func setAccessibilityIdentifier(_ id: AXID)

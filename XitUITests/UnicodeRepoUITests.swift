@@ -100,7 +100,7 @@ class PushTests: UnicodeRepoUITests
   func testPushAnyTracking()
   {
     Window.pushButton.press(forDuration: 0.5)
-    Window.pushMenu.menuItems["Push to any tracking branches on \"\(remoteName)\""].click()
+    Window.pushMenu.menuItems["Push to Any Tracking Branches on \"\(remoteName)\""].click()
     
     Window.window.sheets.buttons["Push"].click()
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
@@ -132,7 +132,7 @@ class PushNewTests: UnicodeRepoUITests
     XCTAssertFalse(indicator.exists)
     
     Window.pushButton.press(forDuration: 0.5)
-    Window.pushMenu.menuItems["Push to new remote branch..."].click()
+    Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
     
     let trackingButton = PushNewSheet.setTrackingCheck
     

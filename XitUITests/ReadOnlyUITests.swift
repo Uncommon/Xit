@@ -240,17 +240,17 @@ class ReadOnlyUITests: XCTestCase
   {
     checkPopup("Fetch menu",
                button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
-      "Fetch all remotes",
+      "Fetch All Remotes",
       "Fetch \"origin/master\"",
       "",
-      "Fetch remote \"origin\"",
+      "Fetch Remote \"origin\"",
     ])
     
     checkPopup("Push menu",
                button: Window.pushButton, menu: Window.pushMenu, itemTitles: [
       "Push to \"origin/master\"",
       "",
-      "Push to any tracking branches on \"origin\"",
+      "Push to Any Tracking Branches on \"origin\"",
     ])
     
     checkPopup("Pull menu",

@@ -56,12 +56,12 @@ class TitleBarController: NSObject
   @IBOutlet weak var branchPopup: NSPopUpButton!
   @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
-  @IBOutlet var stashMenu: NSMenu!
-  @IBOutlet var fetchMenu: NSMenu!
-  @IBOutlet var pushMenu: NSMenu!
-  @IBOutlet var pullMenu: NSMenu!
-  @IBOutlet var remoteOpsMenu: NSMenu!
-  @IBOutlet var viewMenu: NSMenu!
+  var stashMenu: NSMenu!
+  var fetchMenu: NSMenu!
+  var pushMenu: NSMenu!
+  var pullMenu: NSMenu!
+  var remoteOpsMenu: NSMenu!
+  var viewMenu: NSMenu!
   @IBOutlet var splitView: NSSplitView!
 
   weak var delegate: TitleBarDelegate?
@@ -96,6 +96,73 @@ class TitleBarController: NSObject
   enum ViewSegment: Int
   {
     case sidebar, history, details
+  }
+
+  override func awakeFromNib()
+  {
+    super.awakeFromNib()
+    makeMenus()
+  }
+
+  private func makeMenus()
+  {
+    fetchMenu = NSMenu {
+      NSMenuItem(.fetchAllRemotes,
+                 action: #selector(XTWindowController.fetchAllRemotes(_:)))
+      NSMenuItem(.fetchCurrentUnavailable,
+                 action: #selector(XTWindowController.fetchCurrentBranch(_:)))
+      NSMenuItem.separator()
+        .with(identifier: XTWindowController.RemoteMenuType.fetch.identifier)
+      NSMenuItem(.fetchRemote("unknown"),
+                 action: #selector(XTWindowController.fetchRemote(_:)))
+    }
+    fetchMenu.setAccessibilityIdentifier(AXID.PopupMenu.fetch)
+    pullMenu = NSMenu {
+      NSMenuItem(.pull,
+                 action: #selector(XTWindowController.pullCurrentBranch(_:)))
+    }
+    pullMenu.setAccessibilityIdentifier(AXID.PopupMenu.pull)
+    pushMenu = NSMenu {
+      NSMenuItem(.pushNew,
+                 action: #selector(XTWindowController.push(_:)))
+      NSMenuItem.separator()
+        .with(identifier: XTWindowController.RemoteMenuType.push.identifier)
+      NSMenuItem(.pushToRemote,
+                 action: #selector(XTWindowController.pushToRemote(_:)))
+    }
+    pushMenu.setAccessibilityIdentifier(AXID.PopupMenu.push)
+    stashMenu = NSMenu {
+      NSMenuItem(.saveStash, action: #selector(XTWindowController.stash(_:)))
+      NSMenuItem.separator()
+      NSMenuItem(.pop, action: #selector(XTWindowController.popStash(_:)))
+      NSMenuItem(.apply, action: #selector(XTWindowController.applyStash(_:)))
+      NSMenuItem(.drop, action: #selector(XTWindowController.dropStash(_:)))
+    }
+    remoteOpsMenu = NSMenu {
+      NSMenuItem(.pull, action: #selector(XTWindowController.pull(_:)))
+      NSMenuItem(.push, action: #selector(XTWindowController.push(_:)))
+      NSMenuItem(.fetch, action: #selector(XTWindowController.fetch(_:)))
+    }
+    viewMenu = NSMenu {
+      NSMenuItem(.sidebar,
+                 action: #selector(XTWindowController.showHideSidebar(_:)))
+      NSMenuItem(.history,
+                 action: #selector(XTWindowController.showHideHistory(_:)))
+      NSMenuItem(.files,
+                 action: #selector(XTWindowController.showHideDetails(_:)))
+    }
+
+    guard let controller = window.windowController as? XTWindowController
+    else {
+      assertionFailure("can't get window controller")
+      return
+    }
+    let menus = [fetchMenu, pullMenu, pushMenu,
+                 stashMenu, remoteOpsMenu, viewMenu]
+
+    for menu in menus {
+      menu?.delegate = controller
+    }
   }
   
   func finishSetup()
@@ -329,6 +396,10 @@ extension TitleBarController: NSToolbarDelegate
   {
     guard let item = notification.userInfo?["item"] as? NSToolbarItem
     else { return }
+
+    if fetchMenu == nil {
+      makeMenus()
+    }
     
     switch item.itemIdentifier {
       case .navigation:

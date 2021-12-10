@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -194,150 +194,9 @@
                 <customObject id="2em-8b-shT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="uko-xc-GwC" customClass="TitleBarController" customModule="Xit" customModuleProvider="target">
                     <connections>
-                        <outlet property="fetchMenu" destination="5np-7R-fbC" id="w7X-oo-HMk"/>
-                        <outlet property="pullMenu" destination="x4n-CH-bN6" id="WkA-2r-C1Z"/>
-                        <outlet property="pushMenu" destination="Chk-z8-G67" id="OLO-Ry-ggH"/>
-                        <outlet property="remoteOpsMenu" destination="1gA-08-EwL" id="FjH-h0-6vz"/>
-                        <outlet property="stashMenu" destination="7yp-7v-W3Z" id="seh-aS-fzh"/>
-                        <outlet property="viewMenu" destination="PF3-z3-2pC" id="7t1-Mj-ADl"/>
                         <outlet property="window" destination="czE-Rb-YiB" id="bTP-lf-Tjb"/>
                     </connections>
                 </customObject>
-                <menu title="Remote Operations" id="1gA-08-EwL" userLabel="Remote Operations">
-                    <items>
-                        <menuItem title="Pull" id="Xqm-ub-GX0">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="pull:" target="2em-8b-shT" id="W9W-cm-COX"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Push" id="LZf-pS-j3S">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="push:" target="2em-8b-shT" id="2NH-Ti-1Ku"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Fetch" id="wle-0v-0XG">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="fetch:" target="2em-8b-shT" id="Xst-T9-XQf"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="stashPopup"/>
-                </menu>
-                <menu title="View" id="PF3-z3-2pC" userLabel="View">
-                    <items>
-                        <menuItem title="Sidebar" id="aKK-dl-tR9" userLabel="Sidebar">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="viewSidebar:" target="uko-xc-GwC" id="OgD-yJ-Fsn"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="History" id="pX0-kT-sh2">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="viewHistory:" target="uko-xc-GwC" id="IOM-yr-zdw"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Files" id="IqY-ka-a8M">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="viewFiles:" target="uko-xc-GwC" id="5Ss-D6-bJh"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="stashPopup"/>
-                </menu>
-                <menu title="Stash" id="7yp-7v-W3Z" userLabel="Stash">
-                    <items>
-                        <menuItem title="Save Stash..." id="q9W-AO-IGH">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                        </menuItem>
-                        <menuItem isSeparatorItem="YES" id="h6b-JU-1wz"/>
-                        <menuItem title="Pop" id="aq6-FW-b5p">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="popStash:" target="uko-xc-GwC" id="5CF-bA-0mh"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Apply" id="LTZ-dr-t1y">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="applyStash:" target="uko-xc-GwC" id="Zwd-z8-HMk"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Drop" id="7Rg-0K-tDL">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="dropStash:" target="uko-xc-GwC" id="MCx-LN-aA5"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="stashPopup"/>
-                </menu>
-                <menu id="5np-7R-fbC" userLabel="Fetch">
-                    <items>
-                        <menuItem title="Fetch all remotes" id="LoQ-UF-Mph">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="fetchAllRemotes:" target="l6G-3P-2hY" id="jX4-SH-fYO"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Fetch current branch" id="iHo-tH-OZY">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="fetchCurrentBranch:" target="l6G-3P-2hY" id="cxC-EO-bg3"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem isSeparatorItem="YES" identifier="fetchRemote" id="eux-3Z-YmU"/>
-                        <menuItem title="Fetch remote x" id="HAe-Av-Yaj">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="fetchRemote:" target="l6G-3P-2hY" id="gtX-Zk-hJE"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="fetchPopup"/>
-                    <connections>
-                        <outlet property="delegate" destination="l6G-3P-2hY" id="8eE-Nw-2yU"/>
-                    </connections>
-                </menu>
-                <menu id="x4n-CH-bN6" userLabel="Pull">
-                    <items>
-                        <menuItem title="Pull current branch" id="ALb-5l-jCE">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="pullCurrentBranch:" target="l6G-3P-2hY" id="Xxs-ym-x6e"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="pullPopup"/>
-                    <connections>
-                        <outlet property="delegate" destination="l6G-3P-2hY" id="309-l7-ecC"/>
-                    </connections>
-                </menu>
-                <menu id="Chk-z8-G67" userLabel="Push">
-                    <items>
-                        <menuItem title="No tracking branch" id="9W0-QC-ldj">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="push:" target="l6G-3P-2hY" id="KSD-pE-TlS"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem isSeparatorItem="YES" identifier="pushRemote" id="2pV-28-Uff"/>
-                        <menuItem title="Push to remote..." id="n3H-V0-Ner">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="pushToRemote:" target="l6G-3P-2hY" id="dfv-jH-jiD"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <accessibility identifier="pushPopup"/>
-                    <connections>
-                        <outlet property="delegate" destination="l6G-3P-2hY" id="6Fk-ZX-1CX"/>
-                    </connections>
-                </menu>
             </objects>
             <point key="canvasLocation" x="201.5" y="-138"/>
         </scene>

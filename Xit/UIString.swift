@@ -66,18 +66,23 @@ struct UIString: RawRepresentable
   static let discard = ›"Discard"
   static let drop = ›"Drop"
   static let edit = ›"Edit"
+  static let fetch = ›"Fetch"
+  static let fetchAllRemotes = ›"Fetch All Remotes"
   static let hideSidebar = ›"Hide Sidebar"
   static let merge = ›"Merge"
   static let ok = ›"OK"
   static let openPrefs = ›"Open Preferences"
   static let pop = ›"Pop"
+  static let pull = ›"Pull"
   static let push = ›"Push"
+  static let pushToRemote = ›"Push to Remote..."
   static let refresh = ›"Refresh"
   static let rename = ›"Rename"
   static let replace = ›"Replace"
   static let retry = ›"Retry"
   static let revert = ›"Revert"
   static let save = ›"Save"
+  static let saveStash = ›"Save Stash..."
   static let showInFinder = ›"Show in Finder"
   static let showSidebar = ›"Show Sidebar"
   static let stage = ›"Stage"
@@ -86,6 +91,11 @@ struct UIString: RawRepresentable
   static let unstage = ›"Unstage"
   static let unstageAll = ›"Unstage All"
   static let update = ›"Update"
+
+  // Titles
+  static let sidebar = ›"Sidebar"
+  static let history = ›"History"
+  static let files = ›"Files"
 
   // Sidebar roots
   static let workspace = ›"Workspace"
@@ -100,7 +110,6 @@ struct UIString: RawRepresentable
   static let blameNotAvailable = ›"Blame not available"
   static let cantApplyHunk = ›"This hunk cannot be applied"
   static let confirmDiscardHunk = ›"Are you sure you want to discard this hunk?"
-  static let files = ›"Files"
   static let multipleItemsSelected = ›"Multiple items selected"
   static let multipleSelection = ›"Multiple selection"
   static let noChanges = ›"No changes for this selection"
@@ -242,7 +251,7 @@ struct UIString: RawRepresentable
   { .init(format: itemsTotalFormat, count) }
 
   // Clone
-  static let checkOutBranch = ›"Check out branch"
+  static let checkOutBranch = ›"Check Out Branch"
   static let cloneTitle = ›"Clone a Repository"
   static let cloneTo = ›"Clone to"
   static let cloning = ›"Cloning..."
@@ -258,18 +267,18 @@ struct UIString: RawRepresentable
   static let closed = ›"Closed"
 
   // Fetch/push/pull commands
-  static let fetchCurrentUnavailable = ›"Fetch current branch"
-  static let pushCurrentUnavailable = ›"No tracking branch to push"
-  static let pullCurrentUnavailable = ›"No tracking branch to pull"
+  static let fetchCurrentUnavailable = ›"Fetch Current Branch"
+  static let pushCurrentUnavailable = ›"No Tracking Branch to Push"
+  static let pullCurrentUnavailable = ›"No Tracking Branch to Pull"
   
-  static let pushNew = ›"Push to new remote branch..."
+  static let pushNew = ›"Push to New Remote Branch..."
 
   static private let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
-  static private let fetchRemoteFormat = #"Fetch remote "%@""#
+  static private let fetchRemoteFormat = #"Fetch Remote "%@""#
   static private let pushCurrentFormat = #"Push to "%2$@/%1$@""#
-  static private let pushRemoteFormat = #"Push to any tracking branches on "%@""#
+  static private let pushRemoteFormat = #"Push to Any Tracking Branches on "%@""#
   static private let pullCurrentFormat = #"Pull from "%2$@/%1@""#
-  static private let pullRemoteFormat = #"Pull tracking branches on "%@""#
+  static private let pullRemoteFormat = #"Pull Tracking Branches on "%@""#
 
   static func fetchCurrent(branch: String, remote: String) -> UIString
   { .init(format: fetchCurrentFormat, branch, remote) }
