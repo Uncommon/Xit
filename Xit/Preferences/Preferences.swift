@@ -9,6 +9,7 @@ enum PreferenceKeys
   static let accounts = "accounts"
   static let statusInTabs = "statusInTabs"
   static let stripComments = "stripComments"
+  static let showColumns = "showColumns"
 }
 
 extension UserDefaults
@@ -63,5 +64,20 @@ extension UserDefaults
   {
     get { bool(forKey: PreferenceKeys.stripComments) }
     set { set(newValue, forKey: PreferenceKeys.stripComments) }
+  }
+  @objc dynamic var showColumns: [String]
+  {
+    get { value(forKey: PreferenceKeys.showColumns) as? [String] ?? [] }
+    set { set(newValue, forKey: PreferenceKeys.showColumns) }
+  }
+
+  func setShowColumn(_ identifier: String, show: Bool)
+  {
+    if show {
+      showColumns += [identifier]
+    }
+    else {
+      showColumns = showColumns.filter { $0 != identifier }
+    }
   }
 }

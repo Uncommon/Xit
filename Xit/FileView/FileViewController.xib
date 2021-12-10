@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="18122"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="19455"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -25,17 +26,17 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <splitView identifier="fileViewSplit" dividerStyle="thin" id="68">
-            <rect key="frame" x="0.0" y="0.0" width="703" height="320"/>
+            <rect key="frame" x="0.0" y="0.0" width="846" height="320"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tabView identifier="infoTab" fixedFrame="YES" type="noTabsNoBorder" initialItem="9dv-tr-LeJ" id="krT-Kf-MrD">
-                    <rect key="frame" x="0.0" y="0.0" width="703" height="109"/>
+                    <rect key="frame" x="0.0" y="0.0" width="846" height="109"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <font key="font" metaFont="system"/>
                     <tabViewItems>
                         <tabViewItem label="Display" identifier="display" id="9dv-tr-LeJ">
                             <view key="view" id="dFn-2I-XuO">
-                                <rect key="frame" x="0.0" y="0.0" width="703" height="109"/>
+                                <rect key="frame" x="0.0" y="0.0" width="846" height="109"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </view>
                         </tabViewItem>
@@ -48,17 +49,17 @@
                     </tabViewItems>
                 </tabView>
                 <splitView identifier="filePreviewSplit" fixedFrame="YES" dividerStyle="thin" vertical="YES" id="PgV-aZ-kTu">
-                    <rect key="frame" x="0.0" y="110" width="703" height="210"/>
+                    <rect key="frame" x="0.0" y="110" width="846" height="210"/>
                     <autoresizingMask key="autoresizingMask"/>
                     <subviews>
                         <tabView identifier="fileListTab" fixedFrame="YES" type="noTabsNoBorder" id="mLX-BC-uMS">
-                            <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
+                            <rect key="frame" x="0.0" y="0.0" width="305" height="210"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <font key="font" metaFont="system"/>
                             <tabViewItems>
                                 <tabViewItem label="Commit" identifier="commit" id="uug-us-47g">
                                     <view key="view" id="VIN-8s-IFB">
-                                        <rect key="frame" x="0.0" y="0.0" width="235" height="210"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="305" height="210"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
@@ -82,10 +83,10 @@
                             </tabViewItems>
                         </tabView>
                         <customView identifier="previewContent" translatesAutoresizingMaskIntoConstraints="NO" id="LHY-c4-rvq" userLabel="Content Pane">
-                            <rect key="frame" x="236" y="0.0" width="467" height="210"/>
+                            <rect key="frame" x="306" y="0.0" width="540" height="210"/>
                             <subviews>
                                 <button identifier="previewHeader" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e4E-MC-bxy">
-                                    <rect key="frame" x="-1" y="188" width="469" height="23"/>
+                                    <rect key="frame" x="-1" y="188" width="542" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="u7f-zG-hqv"/>
                                     </constraints>
@@ -95,7 +96,7 @@
                                     </buttonCell>
                                 </button>
                                 <segmentedControl identifier="previewSegments" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="155" y="188" width="157" height="23"/>
+                                    <rect key="frame" x="192" y="188" width="157" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -119,17 +120,17 @@
                                     </connections>
                                 </segmentedControl>
                                 <tabView identifier="previewTabs" fixedFrame="YES" type="noTabsNoBorder" initialItem="A2f-Wf-RNT" translatesAutoresizingMaskIntoConstraints="NO" id="52">
-                                    <rect key="frame" x="0.0" y="20" width="467" height="169"/>
+                                    <rect key="frame" x="0.0" y="20" width="540" height="169"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <tabViewItems>
                                         <tabViewItem label="Diff" identifier="diff" id="A2f-Wf-RNT">
                                             <view key="view" id="uQh-Df-4fp">
-                                                <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="540" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <wkWebView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uiN-xv-wXq">
-                                                        <rect key="frame" x="0.0" y="0.0" width="467" height="169"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="540" height="169"/>
                                                         <wkWebViewConfiguration key="configuration">
                                                             <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                                             <wkPreferences key="preferences"/>
@@ -213,7 +214,7 @@
                                     </tabViewItems>
                                 </tabView>
                                 <button identifier="previewFooter" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pgg-q8-kWG">
-                                    <rect key="frame" x="-1" y="-1" width="469" height="23"/>
+                                    <rect key="frame" x="-1" y="-1" width="542" height="23"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="lKP-mc-zqo"/>
                                     </constraints>
@@ -231,7 +232,7 @@
                                     <accessibility identifier="path"/>
                                 </pathControl>
                                 <popUpButton identifier="previewAction" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W46-9p-Zh1" userLabel="Action Button">
-                                    <rect key="frame" x="431" y="190" width="36" height="22"/>
+                                    <rect key="frame" x="504" y="190" width="36" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="q3g-By-2Hk">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -371,7 +372,7 @@
             <connections>
                 <outlet property="delegate" destination="-2" id="xV9-zt-6Oh"/>
             </connections>
-            <point key="canvasLocation" x="140.5" y="169"/>
+            <point key="canvasLocation" x="212" y="169"/>
         </splitView>
         <customObject id="58" customClass="TextPreviewController" customModule="Xit" customModuleProvider="target">
             <connections>

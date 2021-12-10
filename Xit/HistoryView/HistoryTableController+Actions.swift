@@ -78,7 +78,12 @@ extension HistoryTableController
 
   func toggleColumn(_ columnID: NSUserInterfaceItemIdentifier)
   {
-    tableView.tableColumn(withIdentifier: columnID)?.isHidden.toggle()
+    guard let column = tableView.tableColumn(withIdentifier: columnID)
+    else { return }
+
+    column.isHidden.toggle()
+    UserDefaults.standard.setShowColumn(columnID.rawValue,
+                                        show: !column.isHidden)
   }
 
   @IBAction func showAuthorColumn(_ sender: Any)

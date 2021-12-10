@@ -183,7 +183,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <visualEffectView blendingMode="withinWindow" material="headerView" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="UPU-52-JWg">
+                <visualEffectView wantsLayer="YES" blendingMode="withinWindow" material="headerView" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="UPU-52-JWg">
                     <rect key="frame" x="0.0" y="220" width="404" height="21"/>
                     <subviews>
                         <imageView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7CW-AS-mzV">
@@ -225,19 +225,19 @@
                                                             <menuItem title="Full Path" id="3UL-Ou-6lD">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
-                                                                    <action selector="sortFilesBy:" target="-2" id="4rt-dD-Rfj"/>
+                                                                    <action selector="sortFilesBy:" target="-1" id="eaj-Rr-5Ih"/>
                                                                 </connections>
                                                             </menuItem>
                                                             <menuItem title="File Name" tag="1" id="QRo-j6-OpG">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
-                                                                    <action selector="sortFilesBy:" target="-2" id="mEJ-cL-Y2M"/>
+                                                                    <action selector="sortFilesBy:" target="-1" id="B3K-up-uBk"/>
                                                                 </connections>
                                                             </menuItem>
                                                             <menuItem title="Status" tag="2" id="TQV-un-T7v">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
-                                                                    <action selector="sortFilesBy:" target="-2" id="MkA-Mj-N6j"/>
+                                                                    <action selector="sortFilesBy:" target="-1" id="u9R-KM-DzX"/>
                                                                 </connections>
                                                             </menuItem>
                                                         </items>

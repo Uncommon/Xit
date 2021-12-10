@@ -70,6 +70,12 @@ final class HistoryTableController: NSViewController,
   public override func viewDidLoad()
   {
     super.viewDidLoad()
+
+    let showColumns = UserDefaults.standard.showColumns
+
+    for column in tableView.tableColumns {
+      column.isHidden = !showColumns.contains(column.identifier.rawValue)
+    }
   
     tableView.setAccessibilityIdentifier("history")
 
