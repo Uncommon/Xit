@@ -2,16 +2,6 @@ import Foundation
 
 extension HistoryTableController: NSMenuItemValidation
 {
-  public func checkColumnItem(_ item: NSMenuItem,
-                              columnID: NSUserInterfaceItemIdentifier) -> Bool
-  {
-    guard let column = tableView.tableColumn(withIdentifier: columnID)
-    else { return false }
-
-    item.state = column.isHidden ? .off : .on
-    return true
-  }
-
   public func validateMenuItem(_ item: NSMenuItem) -> Bool
   {
     switch item.action {
@@ -30,19 +20,6 @@ extension HistoryTableController: NSMenuItemValidation
         else {
           return false
         }
-
-      case #selector(showAuthorColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.author)
-      case #selector(showAuthorDateColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.authorDate)
-      case #selector(showCommitterColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.committer)
-      case #selector(showCommitterDateColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.committerDate)
-      case #selector(showSHAColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.sha)
-      case #selector(showRefsColumn(_:)):
-        return checkColumnItem(item, columnID: ColumnID.refs)
 
       default:
         return false
@@ -85,35 +62,34 @@ extension HistoryTableController
     UserDefaults.standard.setShowColumn(columnID.rawValue,
                                         show: !column.isHidden)
   }
+}
 
-  @IBAction func showAuthorColumn(_ sender: Any)
+extension HistoryTableController: NSMenuDelegate
+{
+  func menuWillOpen(_ menu: NSMenu)
   {
-    toggleColumn(ColumnID.author)
-  }
+    if menu === columnsMenu {
+      let menuData: [(UIString, NSUserInterfaceItemIdentifier)] = [
+        (.commit, ColumnID.commit),
+        (.refs, ColumnID.refs),
+        (.author, ColumnID.author),
+        (.authorDate, ColumnID.authorDate),
+        (.committer, ColumnID.committer),
+        (.committerDate, ColumnID.committerDate),
+        (.sha, ColumnID.sha),
+      ]
 
-  @IBAction func showAuthorDateColumn(_ sender: Any)
-  {
-    toggleColumn(ColumnID.authorDate)
-  }
-
-  @IBAction func showCommitterColumn(_ sender: Any)
-  {
-    toggleColumn(ColumnID.committer)
-  }
-
-  @IBAction func showCommitterDateColumn(_ sender: Any)
-  {
-    toggleColumn(ColumnID.committerDate)
-  }
-
-  @IBAction func showSHAColumn(_ sender: Any)
-  {
-    toggleColumn(ColumnID.sha)
-  }
-
-  @IBAction func showRefsColumn(_ sender: Any)
-  {
-    toggleColumn(ColumnID.refs)
-    tableView.reloadData()
+      menu.setItems {
+        for item in menuData {
+          NSMenuItem(item.0) { _ in
+            self.toggleColumn(item.1)
+            if item.1 == ColumnID.refs {
+              self.tableView.reloadData()
+            }
+          }.with(state: tableView.tableColumn(withIdentifier: item.1)?.isHidden
+                 ?? true ? .off : .on)
+        }
+      }
+    }
   }
 }

@@ -97,6 +97,14 @@ struct UIString: RawRepresentable
   static let history = ›"History"
   static let files = ›"Files"
 
+  // Columns
+  static let refs = ›"Refs"
+  static let author = ›"Author"
+  static let authorDate = ›"Author Date"
+  static let committer = ›"Committer"
+  static let committerDate = ›"Committer Date"
+  static let sha = ›"SHA"
+
   // Sidebar roots
   static let workspace = ›"Workspace"
   static let branches = ›"Branches"

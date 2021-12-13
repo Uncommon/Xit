@@ -161,6 +161,12 @@ extension NSMenuItem
     return self
   }
 
+  func with(state: NSControl.StateValue) -> NSMenuItem
+  {
+    self.state = state
+    return self
+  }
+
   /// A singleton used as the target for menu items with callback blocks.
   private class GlobalTarget: NSObject
   {

@@ -328,9 +328,6 @@
                                 <tableHeaderView key="headerView" wantsLayer="YES" id="0g9-O5-s8m">
                                     <rect key="frame" x="0.0" y="0.0" width="1285" height="25"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <connections>
-                                        <outlet property="menu" destination="0kw-8x-EHb" id="tdS-nO-DQO"/>
-                                    </connections>
                                 </tableHeaderView>
                             </scrollView>
                         </subviews>
@@ -342,7 +339,6 @@
                         </customSpacing>
                     </stackView>
                     <connections>
-                        <outlet property="columnsMenu" destination="0kw-8x-EHb" id="4qz-xi-OJ9"/>
                         <outlet property="historyTable" destination="dvr-AT-5yL" id="DN5-pL-sDB"/>
                         <outlet property="tableController" destination="7EN-zW-9Gz" id="eFW-Wl-KEs"/>
                     </connections>
@@ -371,46 +367,6 @@
                         </menuItem>
                     </items>
                     <accessibility identifier="HistoryMenu"/>
-                </menu>
-                <menu id="0kw-8x-EHb">
-                    <items>
-                        <menuItem title="Refs" id="cYt-Ew-ljO">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showRefsColumn:" target="7EN-zW-9Gz" id="HA2-rf-Enb"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Author" id="A8I-55-Rzj">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showAuthorColumn:" target="7EN-zW-9Gz" id="hr3-Mg-mxg"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Author date" id="bxe-7M-sG5">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showAuthorDateColumn:" target="7EN-zW-9Gz" id="wrL-Em-4MV"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Committer" id="av6-lE-god">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showCommitterColumn:" target="7EN-zW-9Gz" id="Cae-nC-ByT"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Committer date" id="8ia-4j-pGP">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showCommitterDateColumn:" target="7EN-zW-9Gz" id="8DV-UL-8LH"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="SHA" id="cNW-mE-oK9">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="showSHAColumn:" target="7EN-zW-9Gz" id="0Jc-7a-VaH"/>
-                            </connections>
-                        </menuItem>
-                    </items>
                 </menu>
             </objects>
             <point key="canvasLocation" x="19.5" y="-28.5"/>

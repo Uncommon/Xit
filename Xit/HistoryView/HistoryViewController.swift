@@ -6,7 +6,6 @@ final class HistoryViewController: NSViewController
 {
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!
-  @IBOutlet var columnsMenu: NSMenu!
 
   var searchController: SearchAccessoryController!
   weak var splitController: NSSplitViewController!

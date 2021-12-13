@@ -18,6 +18,7 @@ final class HistoryTableController: NSViewController,
     static let refs = ¶"refs"
   }
   
+  let columnsMenu = NSMenu()
   @IBOutlet var contextMenu: NSMenu!
   
   var tableView: HistoryTableView { view as! HistoryTableView }
@@ -28,7 +29,9 @@ final class HistoryTableController: NSViewController,
   func finishLoad(repository: Repository)
   {
     history.repository = repository
-    
+
+    tableView.headerView?.menu = columnsMenu
+    columnsMenu.delegate = self
     tableView.sizeFirstColumnToFit()
     tableView.intercellSpacing.height = 0
     
