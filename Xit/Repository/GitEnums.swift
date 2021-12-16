@@ -74,31 +74,6 @@ extension DeltaStatus
         return true
     }
   }
-
-  var changeImage: NSImage?
-  {
-    let info: (String, NSColor)
-    
-    switch self {
-      case .added, .untracked:
-        info = ("plus.circle", .systemGreen)
-      case .copied:
-        info = ("circlebadge.2.fill", .systemGreen)
-      case .deleted:
-        info = ("minus.circle", .systemRed)
-      case .modified:
-        info = ("pencil.circle", .systemBlue)
-      case .renamed:
-        info = ("a.circle.fill", .systemTeal)
-      case .mixed:
-        info = ("ellipsis.circle.fill", .systemGray)
-      default:
-        return nil
-    }
-    return NSImage(systemSymbolName: info.0)!
-      .withSymbolConfiguration(.init(pointSize: 11, weight: .bold))!
-      .image(coloredWith: info.1)
-  }
 }
 
 extension DeltaStatus // CustomStringConvertible
