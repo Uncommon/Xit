@@ -128,6 +128,8 @@
 		C931A0E5275EBE21007F441C /* FileViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E4275EBE21007F441C /* FileViewOptions.swift */; };
 		C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E627627E84007F441C /* MenuBuilder.swift */; };
 		C931A0E92762B8AA007F441C /* ArrayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E82762B8A9007F441C /* ArrayBuilder.swift */; };
+		C931A0ED276BA65E007F441C /* StagingFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0EC276BA65E007F441C /* StagingFileListController.swift */; };
+		C931A0EF276BA6C0007F441C /* CommitFileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0EE276BA6C0007F441C /* CommitFileListController.swift */; };
 		C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */; };
 		C9328B121D77303200EFF7F7 /* FileMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B111D77303200EFF7F7 /* FileMonitor.swift */; };
 		C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */; };
@@ -488,6 +490,8 @@
 		C931A0E4275EBE21007F441C /* FileViewOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileViewOptions.swift; sourceTree = "<group>"; };
 		C931A0E627627E84007F441C /* MenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBuilder.swift; sourceTree = "<group>"; };
 		C931A0E82762B8A9007F441C /* ArrayBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayBuilder.swift; sourceTree = "<group>"; };
+		C931A0EC276BA65E007F441C /* StagingFileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingFileListController.swift; sourceTree = "<group>"; };
+		C931A0EE276BA6C0007F441C /* CommitFileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitFileListController.swift; sourceTree = "<group>"; };
 		C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTreeDataSource.swift; sourceTree = "<group>"; };
 		C9328B111D77303200EFF7F7 /* FileMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMonitor.swift; sourceTree = "<group>"; };
 		C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryWatcher.swift; sourceTree = "<group>"; };
@@ -1003,6 +1007,7 @@
 		C935BD7C1E8AB16F00BE51F0 /* File List */ = {
 			isa = PBXGroup;
 			children = (
+				C931A0EE276BA6C0007F441C /* CommitFileListController.swift */,
 				C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */,
 				C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */,
 				C9800D7C2017FEB80045B05D /* FileListController.swift */,
@@ -1010,6 +1015,7 @@
 				C932110B1E48E92C00232B61 /* FileTreeDataSource.swift */,
 				89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */,
 				C9416354213EF42E0015F1C0 /* StagedFileListController.swift */,
+				C931A0EC276BA65E007F441C /* StagingFileListController.swift */,
 				C9416342213EF3E10015F1C0 /* WorkspaceFileListController.swift */,
 				899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */,
 				C9FE06C620178A8C0001EB2B /* FileListView.xib */,
@@ -1579,6 +1585,7 @@
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
 				C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */,
 				89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */,
+				C931A0EF276BA6C0007F441C /* CommitFileListController.swift in Sources */,
 				C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,
 				C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */,
@@ -1629,6 +1636,7 @@
 				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
 				89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
+				C931A0ED276BA65E007F441C /* StagingFileListController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */,
 				C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */,
 				C9EA18F7234F8DB000DDAA25 /* ControlValueWrappers.swift in Sources */,
