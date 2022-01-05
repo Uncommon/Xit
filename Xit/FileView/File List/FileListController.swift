@@ -386,10 +386,12 @@ extension DeltaStatus
         info = ("circlebadge.2.fill", .systemGreen)
       case .deleted:
         info = ("minus.circle", .systemRed)
-      case .modified:
+      case .modified, .typeChange:
         info = ("pencil.circle", .systemBlue)
       case .renamed:
         info = ("r.circle", .systemTeal)
+      case .conflict:
+        info = ("exclamationmark.triangle.fill", .systemYellow)
       case .mixed:
         info = ("ellipsis.circle.fill", .systemGray)
       default:
