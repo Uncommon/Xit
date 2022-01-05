@@ -117,10 +117,6 @@ final class PullRequestCache
   
   private func forEachClient(_ action: (PullRequestClient) -> Void)
   {
-    for clientWrapper in clients {
-      if let client = clientWrapper.client {
-        action(client)
-      }
-    }
+    clients.compactMap { $0.client }.forEach(action)
   }
 }
