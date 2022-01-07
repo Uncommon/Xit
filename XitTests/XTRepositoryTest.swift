@@ -678,6 +678,40 @@ class XTRepositoryTest: XTTest
                           expectedResult: [gitignore, subFile1, subFile2])
   }
 
+  func testRename() throws
+  {
+    let newName = "renamed"
+    let change = FileChange(path: newName,
+                            oldPath: TestFileName.file1.rawValue,
+                            change: .renamed)
+
+    try XCTContext.runActivity(named: "Detect unstaged rename") { _ in
+      try execute(in: repository) {
+        RenameFile(.file1, to: newName)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [change])
+    }
+
+    try XCTContext.runActivity(named: "Stage renamed file") { _ in
+      try execute(in: repository) {
+        Stage(change)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [])
+      XCTAssertEqual(repository.stagedChanges(), [change])
+    }
+
+    try XCTContext.runActivity(named: "Unstage renamed file") { _ in
+      try execute(in: repository) {
+        Unstage(change)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [change])
+      XCTAssertEqual(repository.stagedChanges(), [])
+    }
+  }
+
   func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?,
                         file: StaticString = #file, line: UInt = #line) throws
   {

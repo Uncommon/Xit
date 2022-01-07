@@ -39,7 +39,7 @@ final class WorkspaceFileListController: StagingFileListController
     else { return }
     
     for change in changes {
-      _ = try? repository.stage(file: change.gitPath)
+      _ = try? repository.stage(change: change)
     }
     repoUIController?.repoController.indexChanged()
   }

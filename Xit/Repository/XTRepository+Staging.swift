@@ -4,15 +4,17 @@ import Foundation
 public class FileChange: NSObject
 {
   @objc var path: String
+  let oldPath: String
   var status: DeltaStatus
   
   /// Repository-relative path to use for git operations
   var gitPath: String
   { path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/") }
   
-  init(path: String, change: DeltaStatus = .unmodified)
+  init(path: String, oldPath: String = "", change: DeltaStatus = .unmodified)
   {
     self.path = path
+    self.oldPath = oldPath
     self.status = change
   }
   
@@ -66,19 +68,12 @@ extension XTRepository: FileStatusDetection
     let parentOID = parentOID ?? commit.parentOIDs.first
     guard let diff = self.diff(forOID: commit.id, parent: parentOID)
     else { return [] }
-    var result = [FileChange]()
-    
-    for index in 0..<diff.deltaCount {
-      guard let delta = diff.delta(at: index)
-      else { continue }
-      
-      if delta.deltaStatus != .unmodified {
-        let change = FileChange(path: delta.newFile.filePath,
-                                change: delta.deltaStatus)
-        
-        result.append(change)
-      }
-    }
+    let result = diff.deltas
+      .filter { $0.deltaStatus != .unmodified }
+      .map { FileChange(path: $0.newFile.filePath,
+                        oldPath: $0.oldFile.filePath,
+                        change: $0.deltaStatus) }
+
     return result
   }
   
@@ -188,7 +183,11 @@ extension XTRepository: FileStatusDetection
                      recurse: Bool = true,
                      amend: Bool = false) -> [FileChange]
   {
-    var options: StatusOptions = [.includeUntracked]
+    var options: StatusOptions = [
+      .includeUntracked,
+      .renamesHeadToIndex,
+      .renamesIndexToWorkdir,
+    ]
     
     if showIgnored {
       options.formUnion([.includeIgnored])
@@ -327,7 +326,7 @@ extension XTRepository: FileStaging
     _ = try executeGit(args: args, writes: true)
     invalidateIndex()
   }
-  
+
   /// Reverts the given workspace file to the contents at HEAD.
   public func revert(file: String) throws
   {

@@ -94,6 +94,34 @@ struct CopyFile: StageableAction
   }
 }
 
+/// Renames an existing file
+struct RenameFile: StageableAction
+{
+  // TODO: StageableAction needs to work with FileChanges
+  let file: String
+  let newName: String
+
+  init(_ file: String, to newName: String)
+  {
+    self.file = file
+    self.newName = newName
+  }
+
+  init(_ file: TestFileName, to newName: String)
+  {
+    self.file = file.rawValue
+    self.newName = newName
+  }
+
+  func execute(in repository: Repository) throws
+  {
+    let fileURL = repository.fileURL(file)
+    let newURL = repository.fileURL(newName)
+
+    try FileManager.default.moveItem(at: fileURL, to: newURL)
+  }
+}
+
 /// Writes data to a repository file
 struct WriteData: StageableAction
 {
@@ -145,31 +173,48 @@ struct Delete: StageableAction
   }
 }
 
+enum StageFileRef {
+  case path(String)
+  case change(FileChange)
+}
+
 /// Stages a file (copies it to the index)
 struct Stage: RepoAction
 {
-  let file: String
+  let ref: StageFileRef
 
-  init(_ file: String) { self.file = file }
-  init(_ name: TestFileName) { self.file = name.rawValue }
+  init(_ file: String) { self.ref = .path(file) }
+  init(_ name: TestFileName) { self.ref = .path(name.rawValue) }
+  init(_ change: FileChange) { self.ref = .change(change) }
 
   func execute(in repository: any FullRepository) throws
   {
-    try repository.stage(file: file)
+    switch ref {
+      case .path(let path):
+        try repository.stage(file: path)
+      case .change(let change):
+        try repository.stage(change: change)
+    }
   }
 }
 
 /// Unstages a file (resets the file in the index)
 struct Unstage: RepoAction
 {
-  let file: String
+  let ref: StageFileRef
 
-  init(_ file: String) { self.file = file }
-  init(_ name: TestFileName) { self.file = name.rawValue }
+  init(_ file: String) { self.ref = .path(file) }
+  init(_ name: TestFileName) { self.ref = .path(name.rawValue) }
+  init(_ change: FileChange) { self.ref = .change(change) }
 
   func execute(in repository: any FullRepository) throws
   {
-    try repository.unstage(file: file)
+    switch ref {
+      case .path(let path):
+        try repository.unstage(file: path)
+      case .change(let change):
+        try repository.unstage(change: change)
+    }
   }
 }
 
