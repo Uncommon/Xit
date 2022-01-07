@@ -185,11 +185,21 @@ enum StagedFileList: FileList
   static let list = XitApp.outlines["stagedFiles"]
   
   static let refreshButton = Window.window.buttons["WorkspaceRefresh"]
+
+  static func unstage(item: Int)
+  {
+    list.outlineRows.element(boundBy: item).buttons["action"].click()
+  }
 }
 
 enum WorkspaceFileList: FileList
 {
   static let list = XitApp.outlines["workspaceFiles"]
+
+  static func stage(item: Int)
+  {
+    list.outlineRows.element(boundBy: item).buttons["action"].click()
+  }
 }
 
 enum HistoryList

@@ -307,4 +307,39 @@ class ModifyingUITests: XCTestCase
       XCTAssertFalse(CleanSheet.cleanAllButton.isEnabled)
     }
   }
+
+  func testRenameFile() throws
+  {
+    env.open()
+
+    let oldName = "README1.txt"
+    let newName = "RENAMED.txt"
+    let oldURL = env.repoURL.appendingPathComponent(oldName)
+    let newURL = env.repoURL.appendingPathComponent(newName)
+
+
+    try XCTContext.runActivity(named: "Rename") { _ in
+      try FileManager.default.moveItem(at: oldURL, to: newURL)
+
+      Sidebar.stagingCell.click()
+      StagedFileList.assertFiles([])
+      WorkspaceFileList.assertFiles([newName, "UntrackedImage.png"])
+    }
+
+    XCTContext.runActivity(named: "Stage") { _ in
+      WorkspaceFileList.stage(item: 0)
+
+      Thread.sleep(forTimeInterval: 0.5)
+      StagedFileList.assertFiles([newName])
+      WorkspaceFileList.assertFiles(["UntrackedImage.png"])
+    }
+
+    XCTContext.runActivity(named: "Unstage") { _ in
+      StagedFileList.unstage(item: 0)
+
+      Thread.sleep(forTimeInterval: 0.5)
+      StagedFileList.assertFiles([])
+      WorkspaceFileList.assertFiles([newName, "UntrackedImage.png"])
+    }
+  }
 }
