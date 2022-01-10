@@ -211,6 +211,7 @@ extension XTRepository: FileStatusDetection
       let delta = (show == .indexOnly) ? entry.headToIndex : entry.indexToWorkdir
       
       return delta.map { FileChange(path: $0.newFile.filePath,
+                                    oldPath: $0.oldFile.filePath,
                                     change: $0.deltaStatus) }
     }
   }

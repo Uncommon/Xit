@@ -222,7 +222,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
     }
   }
   
-  /// If `sender` is a button in a file list row, retuns the file change for
+  /// If `sender` is a button in a file list row, returns the file change for
   /// that row.
   func buttonChange(sender: Any?) -> FileChange?
   {
