@@ -281,7 +281,7 @@ extension XTRepository
   /// (the patch should be reversed)
   /// - throws: `Error.patchMismatch` if the patch can't be applied, or any
   /// errors from resultings stage/unstage actions.
-  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
+  public func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
   {
     guard let index = GitIndex(repository: gitRepo)
     else { throw RepoError.unexpected }

@@ -155,7 +155,7 @@ extension FileViewController
   @IBAction
   func refreshStaging(_: Any?)
   {
-    repo?.invalidateIndex()
+    repoController?.invalidateIndex()
     stagedListController.reload()
     workspaceListController.reload()
   }

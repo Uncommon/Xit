@@ -241,55 +241,7 @@ extension XTRepository: WritingManagement
 }
 
 extension XTRepository
-{
-  /// Returns the unstaged and staged status of the given file.
-  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
-  {
-    var statusFlags: UInt32 = 0
-    let result = git_status_file(&statusFlags, gitRepo, file)
-    
-    try RepoError.throwIfGitError(result)
-    
-    let flags = git_status_t(statusFlags)
-    var unstagedChange = DeltaStatus.unmodified
-    var stagedChange = DeltaStatus.unmodified
-    
-    switch flags {
-      case _ where flags.contains(GIT_STATUS_WT_NEW):
-        unstagedChange = .untracked
-      case _ where flags.contains(GIT_STATUS_WT_MODIFIED),
-           _ where flags.contains(GIT_STATUS_WT_TYPECHANGE):
-        unstagedChange = .modified
-      case _ where flags.contains(GIT_STATUS_WT_DELETED):
-        unstagedChange = .deleted
-      case _ where flags.contains(GIT_STATUS_WT_RENAMED):
-        unstagedChange = .renamed
-      case _ where flags.contains(GIT_STATUS_IGNORED):
-        unstagedChange = .ignored
-      case _ where flags.contains(GIT_STATUS_CONFLICTED):
-        unstagedChange = .conflict
-      // ignoring GIT_STATUS_WT_UNREADABLE
-      default:
-        break
-    }
-    
-    switch flags {
-      case _ where flags.contains(GIT_STATUS_INDEX_NEW):
-        stagedChange = .added
-      case _ where flags.contains(GIT_STATUS_INDEX_MODIFIED),
-           _ where flags.contains(GIT_STATUS_WT_TYPECHANGE):
-        stagedChange = .modified
-      case _ where flags.contains(GIT_STATUS_INDEX_DELETED):
-        stagedChange = .deleted
-      case _ where flags.contains(GIT_STATUS_INDEX_RENAMED):
-        stagedChange = .renamed
-      default:
-        break
-    }
-    
-    return (unstagedChange, stagedChange)
-  }
-  
+{  
   func graphBetween(local: OID, upstream: OID) -> (ahead: Int,
                                                    behind: Int)?
   {

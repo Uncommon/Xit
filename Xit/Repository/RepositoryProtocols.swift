@@ -112,6 +112,7 @@ public protocol FileStatusDetection: AnyObject
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
   func stagedStatus(for path: String) throws -> DeltaStatus
   func unstagedStatus(for path: String) throws -> DeltaStatus
+  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   func isIgnored(path: String) -> Bool
 }
 
@@ -144,7 +145,7 @@ public protocol FileDiffing: AnyObject
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
-  
+
   func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
   func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
 }
@@ -172,6 +173,7 @@ public protocol FileStaging: AnyObject
   func revert(file: String) throws
   func stageAllFiles() throws
   func unstageAllFiles() throws
+  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
 }
 
 public protocol Stashing: AnyObject
