@@ -171,6 +171,8 @@ struct CommitHeader_Previews: PreviewProvider
     let committerSig: Signature? = Signature(name: "Committer Person",
                                              email: "commit@example.com",
                                              when: Date())
+
+    var isSigned: Bool { false }
   }
   
   static var parents: [String: String] = ["A": "First parent",

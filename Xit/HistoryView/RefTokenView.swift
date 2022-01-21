@@ -12,6 +12,13 @@ final class RefTokenView: NSView
     
     return NSSize(width: size.width + 12, height: 17)
   }
+
+  override var firstBaselineOffsetFromTop: CGFloat
+  {
+    // Not exactly where the baseline is, but it does line things up
+    // as desired in the history list
+    NSFont.refLabelFont.capHeight + 4
+  }
   
   override func contentHuggingPriority(
       for orientation: NSLayoutConstraint.Orientation)

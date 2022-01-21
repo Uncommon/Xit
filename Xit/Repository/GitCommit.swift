@@ -19,6 +19,8 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var commitDate: Date { get }
   
   var tree: Tree? { get }
+
+  var isSigned: Bool { get }
 }
 
 extension Commit
@@ -145,6 +147,37 @@ public final class GitCommit: Commit
     else { return nil }
     
     return GitTree(tree: tree)
+  }
+
+  public var isSigned: Bool
+  {
+    // Immitate git_commit_extract_signature() but just check that it exists
+    do {
+      let odb = try OpaquePointer.from {
+        git_repository_odb(&$0, repository)
+      }
+      defer {
+        git_odb_free(odb)
+      }
+      let obj = try OpaquePointer.from { obj in
+        (oid as! GitOID).withUnsafeOID { oid in
+          git_odb_read(&obj, odb, oid)
+        }
+      }
+      guard let buf = git_odb_object_data(obj)
+      else { return false }
+      let text = String(cString: buf.assumingMemoryBound(to: CChar.self))
+      var found = false
+
+      text.enumerateLines { line, stop in
+        found = line.hasPrefix("gpgsig")
+        stop = found
+      }
+      return found
+    }
+    catch {
+      return false
+    }
   }
 
   init?(gitCommit: OpaquePointer)

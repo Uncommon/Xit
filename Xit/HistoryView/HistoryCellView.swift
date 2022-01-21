@@ -115,6 +115,11 @@ final class HistoryCellView: NSTableCellView
     }
     if displayMode.showTitle,
        let labelField = self.labelField {
+      if entry.commit.isSigned {
+        views.append(NSImageView(image:
+            NSImage(systemSymbolName: "checkmark.seal.fill")!
+                .withSymbolConfiguration(.init(scale: .small))!))
+      }
       views.append(labelField)
     }
     stackView.setViews(views, in: .leading)
