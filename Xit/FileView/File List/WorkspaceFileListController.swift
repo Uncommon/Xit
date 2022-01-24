@@ -14,8 +14,12 @@ final class WorkspaceFileListController: StagingFileListController
   override func loadView()
   {
     super.loadView()
-    
-    outlineView.setAccessibilityIdentifier("workspaceFiles")
+
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier(.FileList.Workspace.group)
+    view.setAccessibilityRole(.group)
+    outlineView.setAccessibilityIdentifier(.FileList.Workspace.list)
+
     fileListDataSource.delegate = self
     fileTreeDataSource.delegate = self
     

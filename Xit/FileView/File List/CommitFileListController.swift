@@ -6,6 +6,10 @@ final class CommitFileListController: FileListController
   {
     super.loadView()
 
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier(.FileList.Commit.group)
+    view.setAccessibilityRole(.group)
+
     let index = outlineView.column(withIdentifier: ColumnID.action)
 
     outlineView.tableColumns[index].isHidden = true

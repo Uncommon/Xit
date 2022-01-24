@@ -49,6 +49,31 @@ extension AXID
     static let pruneCheck = AXID("pruneBranches")
   }
 
+  public enum FileList
+  {
+    public enum Commit
+    {
+      static let group = AXID("commitFiles")
+      static let list = AXID("commitList")
+    }
+
+    public enum Staged
+    {
+      static let group = AXID("staged")
+      static let list = AXID("stagedList")
+    }
+
+    public enum Workspace
+    {
+      static let group = AXID("workspace")
+      static let list = AXID("workspaceList")
+    }
+
+    static let stagedGroup = AXID("staged")
+    static let workspaceGroup = AXID("workspace")
+    static let viewSelector = AXID("viewSelector")
+  }
+
   enum Menu
   {
     static let branch = AXID("branchPopup")

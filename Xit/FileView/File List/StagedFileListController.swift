@@ -14,7 +14,11 @@ final class StagedFileListController: StagingFileListController
   {
     super.loadView()
     
-    outlineView.setAccessibilityIdentifier("stagedFiles")
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier(.FileList.Staged.group)
+    view.setAccessibilityRole(.group)
+    outlineView.setAccessibilityIdentifier(.FileList.Staged.list)
+
     listTypeIcon.image = .xtStaged
     listTypeLabel.uiStringValue = .staged
     

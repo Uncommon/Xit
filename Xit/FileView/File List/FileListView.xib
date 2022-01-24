@@ -304,6 +304,7 @@
                                     <segment toolTip="Outline view" image="list.bullet.indent" catalog="system" width="32" tag="1"/>
                                 </segments>
                             </segmentedCell>
+                            <accessibility identifier="viewSelector"/>
                             <connections>
                                 <action selector="viewSwitched:" target="-2" id="ju5-gE-Lr7"/>
                             </connections>
