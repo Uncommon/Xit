@@ -112,6 +112,8 @@ extension FileChangesDataSource: FileListDataSource
 {
   func reload()
   {
+    guard let repoUIController = self.repoUIController
+    else { return }
     let model = repoUIController.selection.flatMap { self.model(for: $0) }
     
     if let delegate = self.delegate,

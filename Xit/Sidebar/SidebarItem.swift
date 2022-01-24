@@ -331,7 +331,7 @@ final class TagSidebarItem: SidebarItem
 
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
-  override var icon: NSImage? { .xtTag }
+  override var icon: NSImage? { tag.type == .annotated ? .xtTag : .xtTagLight }
   override var refType: RefType { .tag }
 
   required init(tag: Tag)
@@ -367,6 +367,7 @@ final class TagSidebarItem: SidebarItem
     let targetOID: OID? = nil
     let commit: Commit? = nil
     let message: String? = nil
+    let type: TagType = .annotated
   }
 }
 

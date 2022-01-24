@@ -42,7 +42,8 @@ extension NSImage
   static var xtStaging: NSImage { .init(systemSymbolName: "arrow.up.and.down.circle")! }
   static var xtStash: NSImage { .init(systemSymbolName: "tray")! }
   static var xtSubmodule: NSImage { .init(systemSymbolName: "square.split.bottomrightquarter")! }
-  static var xtTag: NSImage { .init(systemSymbolName: "tag")! }
+  static var xtTagLight: NSImage { .init(systemSymbolName: "tag")! }
+  static var xtTag: NSImage { .init(systemSymbolName: "tag.fill")! }
   static var xtUndo: NSImage { .init(systemSymbolName: "arrow.uturn.backward.circle")! }
   static var xtUnstageAll: NSImage { .init(named: .xtUnstageAllTemplate)! }
   static var xtUnstageButtonHover: NSImage { .init(systemSymbolName: "chevron.down.circle")! }

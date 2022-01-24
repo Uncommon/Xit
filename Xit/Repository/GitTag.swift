@@ -8,6 +8,12 @@ public protocol Tag
   var commit: Commit? { get }
   /// Tag message; will be nil for lightweight tags.
   var message: String? { get }
+  var type: TagType { get }
+}
+
+public enum TagType
+{
+  case lightweight, annotated
 }
 
 public final class GitTag: Tag
@@ -23,6 +29,8 @@ public final class GitTag: Tag
   public lazy var message: String? = self.calculateMessage()
   public var commit: Commit?
   { targetOID.flatMap { repository.commit(forOID: $0) } }
+  public var type: TagType
+  { tag == nil ? .lightweight : .annotated }
   
   /// Initialize with the given tag name.
   /// - parameter name: Can be either fully qualified with `refs/tags/`
