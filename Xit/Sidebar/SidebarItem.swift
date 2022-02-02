@@ -331,7 +331,15 @@ final class TagSidebarItem: SidebarItem
 
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
-  override var icon: NSImage? { tag.type == .annotated ? .xtTag : .xtTagLight }
+  override var icon: NSImage?
+  {
+    switch tag.type {
+      case .lightweight:
+        return .xtTagLight
+      case .annotated:
+        return tag.isSigned ? NSImage(systemSymbolName: "seal.fill")! : .xtTag
+    }
+  }
   override var refType: RefType { .tag }
 
   required init(tag: Tag)
@@ -368,6 +376,7 @@ final class TagSidebarItem: SidebarItem
     let commit: Commit? = nil
     let message: String? = nil
     let type: TagType = .annotated
+    let isSigned: Bool = false
   }
 }
 
