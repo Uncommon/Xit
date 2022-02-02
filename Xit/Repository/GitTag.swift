@@ -49,6 +49,9 @@ public final class GitTag: Tag
       let obj = try OpaquePointer.from { obj in
         git_odb_read(&obj, odb, git_tag_id(tag))
       }
+      defer {
+        git_odb_object_free(obj)
+      }
       guard let buf = git_odb_object_data(obj)
       else { return false }
       let text = String(cString: buf.assumingMemoryBound(to: CChar.self))

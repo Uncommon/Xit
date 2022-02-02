@@ -164,6 +164,9 @@ public final class GitCommit: Commit
           git_odb_read(&obj, odb, oid)
         }
       }
+      defer {
+        git_odb_object_free(obj)
+      }
       guard let buf = git_odb_object_data(obj)
       else { return false }
       let text = String(cString: buf.assumingMemoryBound(to: CChar.self))
