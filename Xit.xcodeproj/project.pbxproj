@@ -248,8 +248,10 @@
 		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9ACC3432512699300C4FE4F /* SidebarCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */; };
+		C9AEE087279F4AEC008BA92C /* TagInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AEE086279F4AEC008BA92C /* TagInfoView.swift */; };
 		C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B023511F61A06900896EA9 /* LibGitExtensions.m */; };
 		C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */; };
+		C9B68A5E27B425BC00EE4C3A /* GitODB.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B68A5D27B425BC00EE4C3A /* GitODB.swift */; };
 		C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */; };
 		C9BAE6141D3039C500A87F13 /* OperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE6131D3039C500A87F13 /* OperationController.swift */; };
 		C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */; };
@@ -1077,6 +1079,7 @@
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
+				C9B68A5D27B425BC00EE4C3A /* GitODB.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1615,6 +1618,7 @@
 				C9C3014126A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */,
 				C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */,
+				C9B68A5E27B425BC00EE4C3A /* GitODB.swift in Sources */,
 				C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */,
 				8983E1A7266596BD0075370C /* PathField.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,

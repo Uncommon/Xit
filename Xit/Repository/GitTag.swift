@@ -37,35 +37,19 @@ public final class GitTag: Tag
   {
     // Similar to GitCommit.isSigned, except the signature isn't marked
     // with "gpgsig".
-    do {
-      guard let tag = self.tag
-      else { return false }
-      let odb = try OpaquePointer.from {
-        git_repository_odb(&$0, repository.gitRepo)
-      }
-      defer {
-        git_odb_free(odb)
-      }
-      let obj = try OpaquePointer.from { obj in
-        git_odb_read(&obj, odb, git_tag_id(tag))
-      }
-      defer {
-        git_odb_object_free(obj)
-      }
-      guard let buf = git_odb_object_data(obj)
-      else { return false }
-      let text = String(cString: buf.assumingMemoryBound(to: CChar.self))
-      var found = false
+    guard let tag = self.tag,
+          let oid = git_tag_id(tag),
+          let odb = GitODB(repository: repository.gitRepo),
+          let object = odb[oid.pointee]
+    else { return false }
+    let text = object.text
+    var found = false
 
-      text.enumerateLines { line, stop in
-        found = line.hasPrefix("-----BEGIN PGP SIGNATURE-----")
-        stop = found
-      }
-      return found
+    text.enumerateLines { line, stop in
+      found = line.hasPrefix("-----BEGIN PGP SIGNATURE-----")
+      stop = found
     }
-    catch {
-      return false
-    }
+    return found
   }
   
   /// Initialize with the given tag name.

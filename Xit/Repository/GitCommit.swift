@@ -152,35 +152,17 @@ public final class GitCommit: Commit
   public var isSigned: Bool
   {
     // Immitate git_commit_extract_signature() but just check that it exists
-    do {
-      let odb = try OpaquePointer.from {
-        git_repository_odb(&$0, repository)
-      }
-      defer {
-        git_odb_free(odb)
-      }
-      let obj = try OpaquePointer.from { obj in
-        (oid as! GitOID).withUnsafeOID { oid in
-          git_odb_read(&obj, odb, oid)
-        }
-      }
-      defer {
-        git_odb_object_free(obj)
-      }
-      guard let buf = git_odb_object_data(obj)
-      else { return false }
-      let text = String(cString: buf.assumingMemoryBound(to: CChar.self))
-      var found = false
+    guard let odb = GitODB(repository: repository),
+          let object = odb[oid]
+    else { return false }
+    let text = object.text
+    var found = false
 
-      text.enumerateLines { line, stop in
-        found = line.hasPrefix("gpgsig")
-        stop = found
-      }
-      return found
+    text.enumerateLines { line, stop in
+      found = line.hasPrefix("gpgsig")
+      stop = found
     }
-    catch {
-      return false
-    }
+    return found
   }
 
   init?(gitCommit: OpaquePointer)
