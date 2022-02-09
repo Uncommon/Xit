@@ -11,6 +11,7 @@ struct FakeCommit: Commit
   var email: String?
   var tree: Tree?
   var oid: OID
+  var isSigned: Bool { false }
 }
 
 extension FakeCommit
@@ -231,7 +232,10 @@ class FakeFileChangesRepo: FileChangesRepo
   func revert(file: String) throws {}
   func stageAllFiles() throws {}
   func unstageAllFiles() throws {}
-  
+  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws {}
+  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
+  { (.unmodified, .unmodified) }
+
   func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
   { [] }
   func stagedChanges() -> [FileChange] { return [] }

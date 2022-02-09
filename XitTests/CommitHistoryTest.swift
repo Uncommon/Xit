@@ -13,7 +13,8 @@ class GenericCommit: Commit
   var committerSig: Signature? = nil
   var email: String? = nil
   var tree: Tree? = nil
-  
+  var isSigned: Bool { false }
+
   init(sha: String?, oid: OID, parentOIDs: [OID])
   {
     self.sha = sha
