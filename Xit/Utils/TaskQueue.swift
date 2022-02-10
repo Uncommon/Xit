@@ -2,6 +2,12 @@ import Foundation
 
 public class TaskQueue: NSObject
 {
+  enum Error: Swift.Error
+  {
+    /// Attempt to operate on a queue that is shut down
+    case queueShutDown
+  }
+
   @objc let queue: DispatchQueue
   var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
@@ -34,7 +40,6 @@ public class TaskQueue: NSObject
     updateQueueCount(-1)
   }
   
-  @objc
   func executeOffMainThread(_ block: @escaping () -> Void)
   {
     if Thread.isMainThread {
@@ -47,6 +52,23 @@ public class TaskQueue: NSObject
     }
     else {
       executeTask(block)
+    }
+  }
+
+  /// Runs the block synchronously on the task queue when called from the main
+  /// thread, or inline otherwise.
+  func syncOffMainThread<T>(_ block: () throws -> T) throws -> T
+  {
+    if Thread.isMainThread {
+      if isShutDown {
+        throw Error.queueShutDown
+      }
+      else {
+        return try queue.sync(execute: block)
+      }
+    }
+    else {
+      return try block()
     }
   }
   

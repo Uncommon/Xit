@@ -612,9 +612,11 @@
 		C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsController.swift; sourceTree = "<group>"; };
 		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
 		C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCommandHandler.swift; sourceTree = "<group>"; };
+		C9AEE086279F4AEC008BA92C /* TagInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagInfoView.swift; sourceTree = "<group>"; };
 		C9B023511F61A06900896EA9 /* LibGitExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LibGitExtensions.m; sourceTree = "<group>"; };
 		C9B023521F61A06900896EA9 /* LibGitExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LibGitExtensions.h; sourceTree = "<group>"; };
 		C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeRepoUITests.swift; sourceTree = "<group>"; };
+		C9B68A5D27B425BC00EE4C3A /* GitODB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitODB.swift; sourceTree = "<group>"; };
 		C9B6DFB51FDB4A6500B5E3AA /* GitConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitConfig.swift; sourceTree = "<group>"; };
 		C9BAE6131D3039C500A87F13 /* OperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationController.swift; sourceTree = "<group>"; };
 		C9BAE61D1D303A8100A87F13 /* RemoteOptionsOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteOptionsOpController.swift; sourceTree = "<group>"; };
@@ -1196,8 +1198,9 @@
 				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
 				C9790D0F20F537E10024D3EA /* CheckOutRemote.xib */,
 				C9790D2120F53A030024D3EA /* CheckOutRemote.swift */,
-				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
+				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
+				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1672,6 +1675,7 @@
 				C9C30139269E2D8100EBBBC8 /* CleanPanelController.swift in Sources */,
 				891261B01F867FCC00C292B7 /* GitTree.swift in Sources */,
 				C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */,
+				C9AEE087279F4AEC008BA92C /* TagInfoView.swift in Sources */,
 				8983E19126641BC20075370C /* ClonePanel.swift in Sources */,
 				C98AFFB22502CF6700AD20EC /* GitBuffer.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,

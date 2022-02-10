@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -80,7 +80,7 @@
                                 <toolbarItem implicitItemIdentifier="A9A90CF1-BC19-45AA-9D55-91919296D09F" explicitItemIdentifier="xit.search" label="Search" paletteLabel="Search" image="magnifyingglass" catalog="system" sizingBehavior="auto" id="gxy-S3-Tn6">
                                     <nil key="toolTip"/>
                                     <button key="view" toolTip="Search" verticalHuggingPriority="750" id="IAU-CO-X1z">
-                                        <rect key="frame" x="9" y="14" width="27" height="23"/>
+                                        <rect key="frame" x="8" y="14" width="28" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="magnifyingglass" catalog="system" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wiN-5E-HDy">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -120,7 +120,7 @@
                                 <toolbarItem implicitItemIdentifier="57B6D0DE-D2B5-44C1-938C-77D30E8DA6A3" explicitItemIdentifier="xit.branches" label="Branches" paletteLabel="Branches" image="scm.branch" title="main" sizingBehavior="auto" id="9Jc-2J-e8T">
                                     <nil key="toolTip"/>
                                     <popUpButton key="view" verticalHuggingPriority="750" id="Fas-Ux-hUh">
-                                        <rect key="frame" x="0.0" y="14" width="83" height="25"/>
+                                        <rect key="frame" x="0.0" y="14" width="80" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="branchTemplate" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -229,8 +229,8 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="WdE-eB-CPt">
-                        <rect key="frame" x="0.0" y="0.0" width="329" height="608"/>
+                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
+                        <rect key="frame" x="0.0" y="0.0" width="329" height="640"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="3" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9x-1p-ZQB">
@@ -317,13 +317,13 @@
                                 </customSpacing>
                             </stackView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3P-kt-fG5">
-                                <rect key="frame" x="0.0" y="23" width="330" height="586"/>
+                                <rect key="frame" x="0.0" y="23" width="330" height="618"/>
                                 <clipView key="contentView" drawsBackground="NO" id="CgF-So-1Oa">
-                                    <rect key="frame" x="1" y="1" width="328" height="584"/>
+                                    <rect key="frame" x="1" y="1" width="328" height="616"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="Miy-P7-Lu7" id="8QW-fq-72y" customClass="XTSideBarOutlineView">
-                                            <rect key="frame" x="0.0" y="0.0" width="328" height="584"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="328" height="616"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -381,6 +381,13 @@
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
+                                                                        <button hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zLr-U9-RcJ">
+                                                                            <rect key="frame" x="0.0" y="6" width="15" height="15"/>
+                                                                            <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="info.circle" catalog="system" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="QXi-Ve-eld">
+                                                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                                <font key="font" metaFont="system"/>
+                                                                            </buttonCell>
+                                                                        </button>
                                                                         <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="OVa-tM-guC" customClass="WorkspaceStatusIndicator" customModule="Xit" customModuleProvider="target">
                                                                             <rect key="frame" x="197" y="0.0" width="42" height="18"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Wzv-az-NTA">
@@ -484,8 +491,10 @@
                                                                         <integer value="1000"/>
                                                                         <integer value="1000"/>
                                                                         <integer value="1000"/>
+                                                                        <integer value="1000"/>
                                                                     </visibilityPriorities>
                                                                     <customSpacing>
+                                                                        <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
                                                                         <real value="3.4028234663852886e+38"/>
@@ -503,6 +512,7 @@
                                                             <connections>
                                                                 <outlet property="buttonContainer" destination="pmL-2l-XbP" id="KzI-MS-nIL"/>
                                                                 <outlet property="imageView" destination="QQY-9C-K8R" id="JDx-5N-ccp"/>
+                                                                <outlet property="infoButton" destination="zLr-U9-RcJ" id="Vct-Du-t08"/>
                                                                 <outlet property="missingImage" destination="p1J-Ca-IpB" id="DwH-jM-rPK"/>
                                                                 <outlet property="prContanier" destination="WL1-iS-eJT" id="tu1-3o-LXA"/>
                                                                 <outlet property="prStatusImage" destination="z9i-pY-egu" id="6FK-9R-FgA"/>
@@ -594,12 +604,13 @@
         <image name="buildSucceeded" width="14" height="14"/>
         <image name="checkmark.circle.fill" catalog="system" width="15" height="15"/>
         <image name="exclamationmark.triangle.fill" catalog="system" width="17" height="15"/>
-        <image name="magnifyingglass" catalog="system" width="15" height="15"/>
+        <image name="info.circle" catalog="system" width="15" height="15"/>
+        <image name="magnifyingglass" catalog="system" width="16" height="15"/>
         <image name="pullRequestTemplate" width="14" height="16"/>
         <image name="rectangle.bottomthird.inset.fill" catalog="system" width="18" height="14"/>
         <image name="rectangle.leftthird.inset.fill" catalog="system" width="18" height="14"/>
         <image name="rectangle.topthird.inset.fill" catalog="system" width="18" height="14"/>
-        <image name="scm.branch" width="15" height="18"/>
+        <image name="scm.branch" width="12" height="14"/>
         <image name="square.and.arrow.down" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.up.fill" catalog="system" width="15" height="17"/>

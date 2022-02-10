@@ -4,6 +4,7 @@ public protocol Tag
 {
   /// Tag name (without "refs/tags/")
   var name: String { get }
+  var signature: Signature? { get }
   var targetOID: OID? { get }
   var commit: Commit? { get }
   /// Tag message; will be nil for lightweight tags.
@@ -26,6 +27,13 @@ public final class GitTag: Tag
   private let ref: OpaquePointer
   private let tag: OpaquePointer?
   public let name: String
+  public var signature: Signature?
+  {
+    guard let tag = self.tag,
+          let sig = git_tag_tagger(tag)
+    else { return nil }
+    return Signature(gitSignature: sig.pointee)
+  }
   public lazy var targetOID: OID? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
   public var commit: Commit?

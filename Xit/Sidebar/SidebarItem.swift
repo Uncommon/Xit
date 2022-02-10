@@ -369,9 +369,13 @@ final class TagSidebarItem: SidebarItem
     super.init(title: title)
   }
 
-  private struct MockTag: Tag
+  internal struct MockTag: Tag
   {
     let name = ""
+    let signature: Signature? = .init(
+      name: "Mock",
+      email: "mock@example.com",
+      when: .init(timeIntervalSinceReferenceDate: 0))
     let targetOID: OID? = nil
     let commit: Commit? = nil
     let message: String? = nil

@@ -103,14 +103,13 @@ final class HistoryTableController: NSViewController,
   func loadHistory()
   {
     let history = self.history
+    let repository = self.repository
     weak var tableView = view as? NSTableView
     
     history.withSync {
       history.reset()
     }
     repoUIController?.queue.executeOffMainThread {
-      let repository = self.repository
-
       Signpost.intervalStart(.historyWalking, object: self)
       defer {
         Signpost.intervalEnd(.historyWalking, object: self)

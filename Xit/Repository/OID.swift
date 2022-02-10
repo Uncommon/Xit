@@ -39,7 +39,7 @@ public protocol OIDObject
 
 public struct GitOID: OID, Hashable, Equatable
 {
-  let oid: git_oid
+  var oid: git_oid
   
   static let shaLength = 40
   
@@ -70,9 +70,8 @@ public struct GitOID: OID, Hashable, Equatable
   
   init?(sha: String)
   {
-    if sha.lengthOfBytes(using: .ascii) != GitOID.shaLength {
-      return nil
-    }
+    guard sha.lengthOfBytes(using: .ascii) == GitOID.shaLength
+    else { return nil }
     
     var oid = git_oid()
     guard git_oid_fromstr(&oid, sha) == 0
@@ -133,7 +132,13 @@ public struct GitOID: OID, Hashable, Equatable
   func withUnsafeOID<T>(_ block: (UnsafePointer<git_oid>) throws -> T) rethrows
     -> T
   {
-    return try withUnsafePointer(to: oid, block)
+    try withUnsafePointer(to: oid, block)
+  }
+
+  mutating func withUnsafeMutableOID<T>(
+      _ block: (UnsafeMutablePointer<git_oid>) throws -> T) rethrows -> T
+  {
+    try withUnsafeMutablePointer(to: &oid, block)
   }
 }
 

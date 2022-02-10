@@ -1,4 +1,5 @@
 import Cocoa
+import SwiftUI
 
 final class SidebarDelegate: NSObject
 {
@@ -251,7 +252,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         
         headerView.textField?.stringValue = groupItem.title.uppercased()
         return headerView
-    
+
       case let sidebarItem as SidebarItem:
         guard let dataView = outlineView.makeView(withIdentifier: CellID.data,
                                                   owner: nil)
@@ -271,6 +272,15 @@ extension SidebarDelegate: NSOutlineViewDelegate
           textField.target = nil
           textField.action = nil
           textField.isSelectable = false
+        }
+        if let tagItem = sidebarItem as? TagSidebarItem,
+           tagItem.tag.type == .annotated {
+          dataView.infoAction = {
+            dataView.showInfoPopover(TagInfoView(tag: tagItem.tag))
+          }
+        }
+        else {
+          dataView.infoAction = nil
         }
         update(cell: dataView, item: sidebarItem)
         return dataView
