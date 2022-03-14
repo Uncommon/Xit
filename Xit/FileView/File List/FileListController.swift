@@ -244,11 +244,11 @@ class FileListController: NSViewController, RepositoryWindowViewController
 
   func addToolbarButton(image: NSImage,
                         toolTip: UIString,
-                        target: Any? = self,
+                        target: Any? = nil,
                         action: Selector,
                         accessibilityID: String? = nil)
   {
-    let button = NSButton(image: image, target: target, action: action)
+    let button = NSButton(image: image, target: target ?? self, action: action)
   
     button.toolTip = toolTip.rawValue
     button.setFrameSize(NSSize(width: 26, height: 18))

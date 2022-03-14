@@ -57,7 +57,7 @@ final class PasswordPanelController: SheetController
       }
       
       parentWindow.beginSheet(window!) {
-        (response) in
+        [self] (response) in
         if response == .OK {
           result = (userName, password)
           if storeInKeychain {

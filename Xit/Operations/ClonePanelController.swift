@@ -131,7 +131,7 @@ final class ClonePanelController: NSWindowController
       })
       
       DispatchQueue.main.async {
-        presentingModel.showSheet = false
+        self.presentingModel.showSheet = false
         switch result {
           case .success(let repository):
             guard repository != nil
@@ -139,7 +139,7 @@ final class ClonePanelController: NSWindowController
             XTDocumentController.shared
                 .openDocument(withContentsOf: destURL, display: true,
                               completionHandler: { (_, _, _) in })
-            close()
+            self.close()
           case .failure(let error):
             guard let window = self.window
             else { break }
