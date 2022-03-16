@@ -29,7 +29,7 @@ final class SearchAccessoryController: NSTitlebarAccessoryViewController
   override var layoutAttribute: NSLayoutConstraint.Attribute
   {
     get { .bottom }
-    set {} // swiftlint:disable:this unused_setter_value
+    set {}
   }
   
   var searchType: SearchType
