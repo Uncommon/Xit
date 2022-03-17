@@ -300,14 +300,13 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
   
   override func didAuthenticate(responseResource: Resource)
   {
-    responseResource.useData(owner: self) {
-      (entity: Entity<Any>) in
-      guard let user = entity.content as? BitbucketServer.User
+    Task.detached {
+      let content = try await responseResource.data.content
+      guard let user = content as? BitbucketServer.User
       else {
         self.authenticationStatus = .failed(nil)
         return
       }
-      
       self.user = user
     }
   }
@@ -353,25 +352,28 @@ extension BitbucketServerAPI: PullRequestService
 {
   var userID: String { user?.slug ?? "" }
   
-  func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
+  func getPullRequests() async -> [Xit.PullRequest]
   {
-    pullRequests().useData(owner: self) {
-      (entity: Entity<Any>) in
-      guard let requests = entity.content as? BitbucketServer.PagedPullRequest
+    do {
+      let pullRequests = await MainActor.run { self.pullRequests() }
+      let data = try await pullRequests.data
+      guard let requests = data.content as? BitbucketServer.PagedPullRequest
       else {
-        callback([])
-        return
+        return []
       }
-      
+
       let result = requests.values.map { PullRequest(request: $0,
                                                      bitbucketService: self) }
-      
+
       #if DEBUG
       for request in result {
         print("\(request.status): \(request.sourceBranch)")
       }
       #endif
-      callback(result)
+      return result
+    }
+    catch {
+      return []
     }
   }
   
@@ -384,10 +386,9 @@ extension BitbucketServerAPI: PullRequestService
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
   
-  func update(request: PullRequest, approved: Bool,
-              status: BitbucketServer.ReviewerStatus,
-              onSuccess: @escaping () -> Void,
-              onFailure: @escaping (RequestError) -> Void)
+  func update(request: PullRequest,
+              approved: Bool,
+              status: BitbucketServer.ReviewerStatus) async throws
   {
     guard let userSlug = user?.slug
     else {
@@ -400,63 +401,41 @@ extension BitbucketServerAPI: PullRequestService
     let data: [String: Any] = ["user": ["slug": userSlug],
                                "approved": approved,
                                "status": status.rawValue]
+    let request = resource.request(.put, json: data)
 
-    resource.request(.put, json: data).onCompletion {
-      (info) in
-      switch info.response {
-        case .success:
-          onSuccess()
-        case .failure(let error):
-          onFailure(error)
-      }
+    try await request.complete()
+  }
+
+  func approve(request: Xit.PullRequest) async throws
+  {
+    if let request = request as? PullRequest {
+      try await update(request: request, approved: true, status: .approved)
     }
   }
-  
-  func approve(request: Xit.PullRequest,
-               onSuccess: @escaping () -> Void,
-               onFailure: @escaping (RequestError) -> Void)
+
+  func unapprove(request: Xit.PullRequest) async throws
   {
-    guard let bbRequest = request as? PullRequest
-    else { return }
-    
-    update(request: bbRequest, approved: true, status: .approved,
-           onSuccess: onSuccess, onFailure: onFailure)
+    if let request = request as? PullRequest {
+      try await update(request: request, approved: false, status: .unapproved)
+    }
   }
-  
-  func unapprove(request: Xit.PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
+
+  func needsWork(request: Xit.PullRequest) async throws
   {
-    guard let bbRequest = request as? PullRequest
-    else { return }
-    
-    update(request: bbRequest, approved: false, status: .unapproved,
-           onSuccess: onSuccess, onFailure: onFailure)
+    if let request = request as? PullRequest {
+      try await update(request: request, approved: false, status: .needsWork)
+    }
   }
-  
-  func needsWork(request: Xit.PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
-  {
-    guard let bbRequest = request as? PullRequest
-    else { return }
-    
-    update(request: bbRequest, approved: false, status: .needsWork,
-           onSuccess: onSuccess, onFailure: onFailure)
-  }
-  
-  func merge(request: Xit.PullRequest)
+
+  func merge(request: Xit.PullRequest) async throws
   {
     guard let request = request as? PullRequest
-    else {
-      // error
-      return
-    }
-    let resource = self.resource(pullRequestPath(request) + "merge")
-    
-    resource.request(.post).onCompletion {
-      (_) in
-      // to be implemented
-    }
+    else { return }
+
+    try await self.resource(pullRequestPath(request) + "merge")
+                  .request(.post)
+                  .complete()
+
+    // anything else?
   }
 }

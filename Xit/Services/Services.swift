@@ -1,6 +1,12 @@
 import Cocoa
 import Siesta
 
+enum ServiceError: Swift.Error
+{
+  case unexpected
+  case canceled
+}
+
 extension Siesta.Resource
 {
   /// Either executes the closure with the resource's data, or schedules it
@@ -19,6 +25,65 @@ extension Siesta.Resource
         }
       }
       loadIfNeeded()
+    }
+  }
+
+  /// Returns the latest data, or waits for data to arrive.
+  var data: Entity<Any>
+  {
+    get async throws
+    {
+      if await MainActor.run(body: { self.isUpToDate }), let data = latestData {
+        return data
+      }
+      else {
+        return try await withCheckedThrowingContinuation { continuation in
+          addObserver(owner: self) {
+            (resource, event) in
+            switch event {
+              case .newData:
+                if let data = resource.latestData {
+                  continuation.resume(returning: data)
+                  return
+                }
+              case .error:
+                if let error = resource.latestError {
+                  continuation.resume(throwing: error)
+                  return
+                }
+              case .notModified, .observerAdded, .requested:
+                return
+              case .requestCancelled:
+                continuation.resume(throwing: ServiceError.canceled)
+                return
+            }
+            continuation.resume(throwing: ServiceError.unexpected)
+          }
+          DispatchQueue.main.async {
+            self.loadIfNeeded()
+          }
+        }
+      }
+    }
+  }
+}
+
+extension Siesta.Request
+{
+  func complete() async throws
+  {
+    try await withCheckedThrowingContinuation {
+      (continuation: CheckedContinuation<Void, Error>) in
+      onCompletion {
+        (info) in
+        switch info.response {
+          case .success:
+            continuation.resume(returning: ())
+          case .failure(let error):
+            continuation.resume(throwing: error)
+        }
+      }
+      return
     }
   }
 }

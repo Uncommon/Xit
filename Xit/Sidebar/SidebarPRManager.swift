@@ -192,47 +192,45 @@ extension SidebarPRManager: PullRequestActionDelegate
     
     NSWorkspace.shared.open(url)
   }
-  
-  func approvePR(item: SidebarItem)
+
+  private func tryPRTask(item: SidebarItem,
+                         approval: PullRequestApproval,
+                         block: @escaping (PullRequest) async throws -> Void)
   {
     guard let pullRequest = pullRequest(for: item)
     else { return }
-    
-    pullRequest.service.approve(
-        request: pullRequest,
-        onSuccess: { self.approvalSucceeded(item: item, approval: .approved) },
-        onFailure: { error in self.prActionFailed(item: item, error: error) })
+
+    Task.detached {
+      do {
+        try await block(pullRequest)
+        self.pullRequestCache.update(pullRequestID: pullRequest.id,
+                                     approval: approval)
+      }
+      catch let error {
+        self.prActionFailed(item: item, error: error)
+      }
+    }
+  }
+
+  func approvePR(item: SidebarItem)
+  {
+    tryPRTask(item: item, approval: .approved) {
+      try await $0.service.approve(request: $0)
+    }
   }
   
   func unapprovePR(item: SidebarItem)
   {
-    guard let pullRequest = pullRequest(for: item)
-    else { return }
-    
-    pullRequest.service.unapprove(
-        request: pullRequest,
-        onSuccess: { self.approvalSucceeded(item: item, approval: .unreviewed) },
-        onFailure: { error in self.prActionFailed(item: item, error: error) })
+    tryPRTask(item: item, approval: .unreviewed) {
+      try await $0.service.unapprove(request: $0)
+    }
   }
   
   func prNeedsWork(item: SidebarItem)
   {
-    guard let pullRequest = pullRequest(for: item)
-    else { return }
-    
-    pullRequest.service.needsWork(
-        request: pullRequest,
-        onSuccess: { self.approvalSucceeded(item: item, approval: .needsWork) },
-        onFailure: { error in self.prActionFailed(item: item, error: error) })
-  }
-  
-  private func approvalSucceeded(item: SidebarItem,
-                                 approval: PullRequestApproval)
-  {
-    guard let request = pullRequest(for: item)
-    else { return }
-    
-    pullRequestCache.update(pullRequestID: request.id, approval: approval)
+    tryPRTask(item: item, approval: .needsWork) {
+      try await $0.service.needsWork(request: $0)
+    }
   }
   
   private func prActionFailed(item: SidebarItem, error: Error)
