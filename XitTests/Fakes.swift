@@ -90,29 +90,10 @@ class FakePRService : PullRequestService
 {
   init() {}
   
-  func getPullRequests(callback: @escaping ([PullRequest]) -> Void)
-  {
-    callback([])
-  }
-  
-  func approve(request: PullRequest, onSuccess: @escaping () -> Void,
-               onFailure: @escaping (Siesta.RequestError) -> Void)
-  {
-    onSuccess()
-  }
-  
-  func unapprove(request: PullRequest, onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (Siesta.RequestError) -> Void)
-  {
-    onSuccess()
-  }
-  
-  func needsWork(request: PullRequest, onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (Siesta.RequestError) -> Void)
-  {
-    onSuccess()
-  }
-  
+  func getPullRequests() -> [any PullRequest] { [] }
+  func approve(request: PullRequest) {}
+  func unapprove(request: PullRequest) {}
+  func needsWork(request: PullRequest) {}
   func merge(request: PullRequest) {}
   
   func match(remote: Remote) -> Bool { return true }
