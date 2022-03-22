@@ -53,13 +53,13 @@ class StagingFileListController: FileListController
 
   func addModifyingToolbarButton(image: NSImage,
                                  toolTip: UIString,
-                                 target: Any? = self,
+                                 target: Any? = nil,
                                  action: Selector,
                                  accessibilityID: String? = nil)
   {
     modifyActions.append(action)
     addToolbarButton(image: image, toolTip: toolTip,
-                     target: target, action: action,
+                     target: target ?? self, action: action,
                      accessibilityID: accessibilityID)
   }
 
