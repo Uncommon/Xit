@@ -14,7 +14,7 @@ final class SidebarBottomController: NSViewController
   @IBOutlet weak var settingsButton: NSPopUpButton!
   @IBOutlet weak var searchField: NSSearchField!
   
-  @IBOutlet weak var delegate: SidebarBottomDelegate?
+  @IBOutlet weak var delegate: (any SidebarBottomDelegate)?
   
   func updateSearh()
   {

@@ -46,7 +46,7 @@ public protocol Remote: AnyObject
   /// Calls the callback between opening and closing a connection to the remote.
   func withConnection<T>(direction: RemoteConnectionDirection,
                          callbacks: RemoteCallbacks,
-                         action: (ConnectedRemote) throws -> T) throws -> T
+                         action: (any ConnectedRemote) throws -> T) throws -> T
 }
 
 extension Remote
@@ -185,7 +185,7 @@ final class GitRemote: Remote
   
   func withConnection<T>(direction: RemoteConnectionDirection,
                          callbacks: RemoteCallbacks,
-                         action: (ConnectedRemote) throws -> T) throws -> T
+                         action: (any ConnectedRemote) throws -> T) throws -> T
   {
     var result: Int32
     

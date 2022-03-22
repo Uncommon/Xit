@@ -64,12 +64,12 @@ class CheckOutRemoteWindowController: NSWindowController
   @ControlStringValue var branchName: String
   @ControlBoolValue var checkOutBranch: Bool
   
-  private let repo: Branching
+  private let repo: any Branching
   private unowned let operation: CheckOutRemoteOperationController
   
   override var windowNibName: NSNib.Name? { "CheckOutRemote" }
   
-  init(repo: Branching, operation: CheckOutRemoteOperationController)
+  init(repo: any Branching, operation: CheckOutRemoteOperationController)
   {
     self.repo = repo
     self.operation = operation

@@ -15,7 +15,7 @@ final class CommitEntryController: NSViewController,
 
   private var sinks: [AnyCancellable] = []
 
-  private weak var repo: Repository!
+  private weak var repo: (any Repository)!
   {
     didSet
     {

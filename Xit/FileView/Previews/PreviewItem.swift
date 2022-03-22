@@ -5,7 +5,7 @@ import Quartz
 // from NSObject.
 final class PreviewItem: NSObject
 {
-  var fileList: FileListModel!
+  var fileList: (any FileListModel)!
   var path: String?
   var tempFolderPath: String?
 
@@ -37,7 +37,7 @@ final class PreviewItem: NSObject
     }
   }
   
-  func load(fileList: FileListModel, path: String)
+  func load(fileList: any FileListModel, path: String)
   {
     self.fileList = fileList
     self.path = path

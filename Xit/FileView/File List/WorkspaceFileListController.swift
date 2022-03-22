@@ -82,7 +82,7 @@ extension WorkspaceFileListController
 
 extension WorkspaceFileListController: FileListDelegate
 {
-  func configure(model: FileListModel)
+  func configure(model: any FileListModel)
   {
     (model as? WorkspaceFileList)?.showingIgnored = showingIgnored
   }

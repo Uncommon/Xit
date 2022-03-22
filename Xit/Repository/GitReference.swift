@@ -3,9 +3,9 @@ import Foundation
 public protocol Reference
 {
   /// For a direct reference, the target OID
-  var targetOID: OID? { get }
+  var targetOID: (any OID)? { get }
   /// Peels a tag reference
-  var peeledTargetOID: OID? { get }
+  var peeledTargetOID: (any OID)? { get }
   /// For a symbolic reference, the name of the target
   var symbolicTargetName: String? { get }
   /// Type of reference: oid (direct) or symbolic
@@ -14,7 +14,7 @@ public protocol Reference
   var name: String { get }
   
   /// Peels a symbolic reference until a direct reference is reached
-  func resolve() -> Reference?
+  func resolve() -> (any Reference)?
   /// Changes the ref to point to a different object
   func setTarget(_ newOID: OID, logMessage: String)
 }
@@ -71,7 +71,7 @@ final class GitReference: Reference
     return GitReference(reference: ref)
   }
   
-  public var targetOID: OID?
+  public var targetOID: (any OID)?
   {
     guard let oid = git_reference_target(ref)
     else { return nil }
@@ -79,7 +79,7 @@ final class GitReference: Reference
     return GitOID(oid: oid.pointee)
   }
   
-  public var peeledTargetOID: OID?
+  public var peeledTargetOID: (any OID)?
   {
     guard let oid = git_reference_target_peel(ref)
     else { return nil }
@@ -108,7 +108,7 @@ final class GitReference: Reference
     return String(cString: name)
   }
   
-  public func resolve() -> Reference?
+  public func resolve() -> (any Reference)?
   {
     guard let ref = try? OpaquePointer.from({
       git_reference_resolve(&$0, self.ref)

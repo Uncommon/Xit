@@ -24,7 +24,7 @@ extension SidebarCommandHandler
   typealias Repository =
       BasicRepository & WritingManagement & Branching & Stashing
   
-  var repository: Repository { repoUIController!.repository }
+  var repository: any Repository { repoUIController!.repository }
   
   func validate(sidebarCommand: NSMenuItem) -> Bool
   {

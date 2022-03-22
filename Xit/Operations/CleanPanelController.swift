@@ -6,12 +6,12 @@ final class CleanPanelController: NSWindowController
 {
   typealias Repository = FileStatusDetection & FileContents
 
-  let repository: Repository
+  let repository: any Repository
   let model = CleanData()
 
   private var folderSubscriber: AnyCancellable?
 
-  init(repository: Repository)
+  init(repository: any Repository)
   {
     let panel = CleanPanel(model: model)
     let viewController = NSHostingController(rootView: panel)

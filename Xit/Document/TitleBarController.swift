@@ -64,7 +64,7 @@ class TitleBarController: NSObject
   var viewMenu: NSMenu!
   @IBOutlet var splitView: NSSplitView!
 
-  weak var delegate: TitleBarDelegate?
+  weak var delegate: (any TitleBarDelegate)?
   
   var progressObserver: NSObjectProtocol?
   var becomeKeyObserver: NSObjectProtocol?

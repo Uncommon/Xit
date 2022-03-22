@@ -42,7 +42,7 @@ final class SidebarTableCellView: NSTableCellView
       }
     }
   }
-  weak var prDelegate: PullRequestActionDelegate?
+  weak var prDelegate: (any PullRequestActionDelegate)?
   var rolloverArea: NSTrackingArea?
   var infoPopover: NSPopover?
   var infoAction: (() -> Void)?

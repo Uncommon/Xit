@@ -4,8 +4,8 @@ public protocol DiffDelta
 {
   var deltaStatus: DeltaStatus { get }
   var diffFlags: DiffFlags { get }
-  var oldFile: DiffFile { get }
-  var newFile: DiffFile { get }
+  var oldFile: any DiffFile { get }
+  var newFile: any DiffFile { get }
 }
 
 typealias GitDiffDelta = git_diff_delta
@@ -24,7 +24,7 @@ extension git_diff_delta
     return GIT_OK.rawValue
   }
   
-  init?(oldBlob: Blob, newBlob: Blob)
+  init?(oldBlob: any Blob, newBlob: any Blob)
   {
     guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
           let newGitBlob = (newBlob as? GitBlob)?.blob
@@ -40,7 +40,7 @@ extension git_diff_delta
     else { return nil }
   }
   
-  init?(oldBlob: Blob, newData: Data)
+  init?(oldBlob: any Blob, newData: Data)
   {
     guard let oldGitBlob = (oldBlob as? GitBlob)?.blob
     else { return nil }

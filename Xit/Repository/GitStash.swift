@@ -18,13 +18,13 @@ public final class GitStash: Stash
 {
   typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
   
-  unowned var repo: Repo
+  unowned var repo: any Repo
   public var message: String?
-  public var mainCommit: Commit?
-  public var indexCommit, untrackedCommit: Commit?
+  public var mainCommit: (any Commit)?
+  public var indexCommit, untrackedCommit: (any Commit)?
   private var cachedIndexChanges, cachedWorkspaceChanges: [FileChange]?
 
-  init(repo: Repo, index: UInt, message: String?)
+  init(repo: any Repo, index: UInt, message: String?)
   {
     self.repo = repo
     self.message = message

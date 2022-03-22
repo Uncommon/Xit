@@ -18,12 +18,12 @@ public struct TreeLoader
   }
   
   /// Constructs a new tree root, copying identical subtrees from an old tree
-  public func treeRoot(tree: Tree, oldTree: NSTreeNode?) -> NSTreeNode
+  public func treeRoot(tree: any Tree, oldTree: NSTreeNode?) -> NSTreeNode
   {
     return treeNode(path: "", tree: tree, oldTree: oldTree)
   }
   
-  func treeNode(path: String, tree: Tree, oldTree: NSTreeNode?) -> NSTreeNode
+  func treeNode(path: String, tree: any Tree, oldTree: NSTreeNode?) -> NSTreeNode
   {
     let result = NSTreeNode(representedObject: CommitTreeItem(path: path,
                                                               oid: tree.oid))

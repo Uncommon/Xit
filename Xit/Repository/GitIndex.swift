@@ -10,9 +10,9 @@ public protocol StagingIndex
   /// Adds a local file to the index
   func add(path: String) throws
   /// Adds or updates a file with the given data
-  func add(data: ContiguousBytes, count: Int, path: String) throws
+  func add(data: any ContiguousBytes, count: Int, path: String) throws
   /// Reads the tree into the index
-  func read(tree: Tree) throws
+  func read(tree: any Tree) throws
   /// Removes a file from the index
   func remove(path: String) throws
   /// Removes all files
@@ -32,7 +32,7 @@ public protocol StagingIndex
 
   /// Creates a tree object from the index contents, and writes it to the
   /// repository so it can be referenced by a commit.
-  func writeTree() throws -> Tree
+  func writeTree() throws -> any Tree
 }
 
 extension StagingIndex
@@ -61,7 +61,7 @@ class EntryCollection: RandomAccessCollection
     self.index = index
   }
 
-  subscript(position: Int) -> IndexEntry
+  subscript(position: Int) -> any IndexEntry
   {
     return index.entry(atIndex: position)
   }
@@ -70,16 +70,16 @@ class EntryCollection: RandomAccessCollection
 /// An individual file entry in an index.
 public protocol IndexEntry
 {
-  var oid: OID { get }
+  var oid: any OID { get }
   var path: String { get }
   var conflicted: Bool { get }
 }
 
 public protocol ConflictEntry
 {
-  var ancestor: IndexEntry { get }
-  var ours: IndexEntry { get }
-  var theirs: IndexEntry { get }
+  var ancestor: any IndexEntry { get }
+  var ours: any IndexEntry { get }
+  var theirs: any IndexEntry { get }
 }
 
 /// Staging index implemented with libgit2
@@ -93,7 +93,7 @@ class GitIndex: StagingIndex
   var hasConflicts: Bool
   { git_index_has_conflicts(index) != 0 }
   
-  var conflicts: AnySequence<Xit.ConflictEntry>
+  var conflicts: AnySequence<any Xit.ConflictEntry>
   { AnySequence { ConflictIterator(index: self.index) } }
 
   init?(repository: OpaquePointer)
@@ -107,7 +107,7 @@ class GitIndex: StagingIndex
     self.index = index
   }
   
-  func entry(atIndex index: Int) -> IndexEntry!
+  func entry(atIndex index: Int) -> (any IndexEntry)!
   {
     switch index {
       case 0..<entryCount:
@@ -120,7 +120,7 @@ class GitIndex: StagingIndex
     }
   }
   
-  func entry(at path: String) -> IndexEntry?
+  func entry(at path: String) -> (any IndexEntry)?
   {
     var position: Int = 0
     guard git_index_find(&position, index, path) == 0,
@@ -140,7 +140,7 @@ class GitIndex: StagingIndex
     try RepoError.throwIfGitError(git_index_write(index))
   }
   
-  func read(tree: Tree) throws
+  func read(tree: any Tree) throws
   {
     guard let gitTree = tree as? GitTree
     else { throw RepoError.unexpected }
@@ -181,7 +181,7 @@ class GitIndex: StagingIndex
     try RepoError.throwIfGitError(git_index_clear(index))
   }
   
-  func writeTree() throws -> Tree
+  func writeTree() throws -> any Tree
   {
     var treeOID = git_oid()
     let result = git_index_write_tree(&treeOID, index)
@@ -216,7 +216,7 @@ extension GitIndex
   
   struct ConflictEntry: Xit.ConflictEntry
   {
-    let ancestor, ours, theirs: IndexEntry
+    let ancestor, ours, theirs: any IndexEntry
   }
   
   class ConflictIterator: IteratorProtocol
@@ -243,7 +243,7 @@ extension GitIndex
       }
     }
     
-    func next() -> Xit.ConflictEntry?
+    func next() -> (any Xit.ConflictEntry)?
     {
       guard let iterator = self.iterator
       else { return nil }

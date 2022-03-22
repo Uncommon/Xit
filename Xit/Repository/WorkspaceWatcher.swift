@@ -3,14 +3,14 @@ import Combine
 
 final class WorkspaceWatcher
 {
-  weak var controller: RepositoryController?
+  weak var controller: (any RepositoryController)?
   private(set) var stream: FileEventStream! = nil
   var skipIgnored = true
 
   private let subject = PassthroughSubject<[String], Never>()
   var publisher: AnyPublisher<[String], Never> { subject.eraseToAnyPublisher() }
   
-  init?(controller: RepositoryController)
+  init?(controller: any RepositoryController)
   {
     self.controller = controller
     

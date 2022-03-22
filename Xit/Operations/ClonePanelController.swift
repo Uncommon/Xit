@@ -29,7 +29,7 @@ extension PathValidationError: LocalizedError
 
 final class ClonePanelController: NSWindowController
 {
-  let cloner: Cloning
+  let cloner: any Cloning
   let data = CloneData(readURL: ClonePanelController.readURL(_:))
   let presentingModel = PresentingModel()
   let progressPublisher = RemoteProgressPublisher()
@@ -54,7 +54,7 @@ final class ClonePanelController: NSWindowController
     }
   }
   
-  init(cloner: Cloning)
+  init(cloner: any Cloning)
   {
     self.cloner = cloner
 

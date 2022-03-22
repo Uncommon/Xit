@@ -7,8 +7,8 @@ final class StashSelection: StagedUnstagedSelection
   let stash: Stash
   var canCommit: Bool { false }
   var shaToSelect: String? { stash.mainCommit?.parentSHAs[0] }
-  var fileList: FileListModel { stagedList }
-  var unstagedFileList: FileListModel { unstagedList }
+  var fileList: any FileListModel { stagedList }
+  var unstagedFileList: any FileListModel { unstagedList }
   
   // Initialization requires a reference to self
   private(set) var stagedList: StashStagedList! = nil
@@ -34,7 +34,7 @@ final class StashSelection: StagedUnstagedSelection
 class StashFileList
 {
   weak var stashSelection: StashSelection!
-  var selection: RepositorySelection { stashSelection }
+  var selection: any RepositorySelection { stashSelection }
   
   let mainSelection: CommitSelection?
   let mainList: CommitFileList?
@@ -90,7 +90,7 @@ class StashStagedList: StashFileList, FileListModel
     return repository.contentsOfFile(path: path, at: indexCommit)
   }
 
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   {
     guard let indexCommit = stash.indexCommit
     else { return nil }

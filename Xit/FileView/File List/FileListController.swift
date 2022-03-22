@@ -59,7 +59,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
   var pressedImage: NSImage? { nil }
   var actionButtonSelector: Selector? { nil }
   
-  var repository: BasicRepository & FileStaging & FileContents
+  var repository: any BasicRepository & FileStaging & FileContents
   { repoController?.repository as! BasicRepository & FileStaging & FileContents }
 
   var optionsCancellable: AnyCancellable?
@@ -101,7 +101,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
 
   // The controller must be passed in because at this point the window isn't
   // set yet.
-  func finishLoad(controller: RepositoryUIController)
+  func finishLoad(controller: any RepositoryUIController)
   {
     fileListDataSource.repoUIController = controller
     fileTreeDataSource.repoUIController = controller

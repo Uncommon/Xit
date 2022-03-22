@@ -5,8 +5,8 @@ public protocol Tag
   /// Tag name (without "refs/tags/")
   var name: String { get }
   var signature: Signature? { get }
-  var targetOID: OID? { get }
-  var commit: Commit? { get }
+  var targetOID: (any OID)? { get }
+  var commit: (any Commit)? { get }
   /// Tag message; will be nil for lightweight tags.
   var message: String? { get }
   var type: TagType { get }
@@ -34,9 +34,9 @@ public final class GitTag: Tag
     else { return nil }
     return Signature(gitSignature: sig.pointee)
   }
-  public lazy var targetOID: OID? = self.calculateOID()
+  public lazy var targetOID: (any OID)? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
-  public var commit: Commit?
+  public var commit: (any Commit)?
   { targetOID.flatMap { repository.commit(forOID: $0) } }
   public var type: TagType
   { tag == nil ? .lightweight : .annotated }

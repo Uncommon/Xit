@@ -78,8 +78,8 @@ final class ResetPanelController: SheetController
   
   /// Starts observing the given repository for status changes and updates
   /// informational text accordingly.
-  public func observe(repository: FileStatusDetection,
-                      controller: RepositoryPublishing)
+  public func observe(repository: any FileStatusDetection,
+                      controller: any RepositoryPublishing)
   {
     self.repository = repository
     

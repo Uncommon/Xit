@@ -12,32 +12,32 @@ final class PullRequestCache
   // to convince the compiler that all instances will be class objects.
   class WeakClientRef
   {
-    private(set) weak var client: PullRequestClient?
+    private(set) weak var client: (any PullRequestClient)?
     
-    init(client: PullRequestClient)
+    init(client: any PullRequestClient)
     {
       self.client = client
     }
   }
   
   private var clients = [WeakClientRef]()
-  private let repository: RemoteManagement
+  private let repository: any RemoteManagement
   
-  var requests: [PullRequest] = []
+  var requests: [any PullRequest] = []
   
-  init(repository: RemoteManagement)
+  init(repository: any RemoteManagement)
   {
     self.repository = repository
   }
   
-  func add(client: PullRequestClient)
+  func add(client: any PullRequestClient)
   {
     if !clients.contains(where: { $0.client === client }) {
       clients.append(WeakClientRef(client: client))
     }
   }
   
-  func remove(client: PullRequestClient)
+  func remove(client: any PullRequestClient)
   {
     clients.firstIndex { $0.client === client }
            .map { _ = clients.remove(at: $0) }
@@ -60,7 +60,7 @@ final class PullRequestCache
       
       service.getPullRequests {
         (requests) in
-        var branchMap: [String: [PullRequest]] = [:]
+        var branchMap: [String: [any PullRequest]] = [:]
         
         self.requests.append(contentsOf: requests)
         
@@ -106,7 +106,7 @@ final class PullRequestCache
     notifyChange(request: request)
   }
   
-  private func notifyChange(request: PullRequest)
+  private func notifyChange(request: any PullRequest)
   {
     forEachClient {
       (client) in
@@ -115,7 +115,7 @@ final class PullRequestCache
     }
   }
   
-  private func forEachClient(_ action: (PullRequestClient) -> Void)
+  private func forEachClient(_ action: (any PullRequestClient) -> Void)
   {
     clients.compactMap { $0.client }.forEach(action)
   }

@@ -1,8 +1,10 @@
 import Cocoa
 
-final class BuildStatusViewController: NSViewController, TeamCityAccessor
+final class BuildStatusViewController: NSViewController
 {
-  weak var repository: (RemoteManagement & Branching)!
+  typealias Repository = RemoteManagement & Branching
+
+  weak var repository: (any Repository)!
   let branch: Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
@@ -11,8 +13,6 @@ final class BuildStatusViewController: NSViewController, TeamCityAccessor
   @IBOutlet weak var refreshButton: NSButton!
   @IBOutlet weak var refreshSpinner: NSProgressIndicator!
 
-  var remoteMgr: RemoteManagement! { repository }
-  
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
   
@@ -21,8 +21,7 @@ final class BuildStatusViewController: NSViewController, TeamCityAccessor
     static let build = ¶"BuildCell"
   }
 
-  init(repository: (RemoteManagement & Branching), branch: Branch,
-       cache: BuildStatusCache)
+  init(repository: any Repository, branch: any Branch, cache: BuildStatusCache)
   {
     self.repository = repository
     self.branch = branch
@@ -136,6 +135,11 @@ final class BuildStatusViewController: NSViewController, TeamCityAccessor
     
     NSWorkspace.shared.open(url)
   }
+}
+
+extension BuildStatusViewController: TeamCityAccessor
+{
+  var remoteMgr: (any RemoteManagement)! { repository }
 }
 
 extension BuildStatusViewController: BuildStatusClient

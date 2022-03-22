@@ -30,7 +30,7 @@ final class SidebarPRManager
     refreshTimer?.invalidate()
   }
   
-  func remoteItem(for pullRequest: PullRequest) -> RemoteBranchSidebarItem?
+  func remoteItem(for pullRequest: any PullRequest) -> RemoteBranchSidebarItem?
   {
     guard let sourceURL = pullRequest.sourceRepo,
           let remote = model.rootItem(.remotes).children.first(where: {
@@ -46,7 +46,7 @@ final class SidebarPRManager
     } as? RemoteBranchSidebarItem
   }
   
-  func pullRequest(for item: SidebarItem?) -> PullRequest?
+  func pullRequest(for item: SidebarItem?) -> (any PullRequest)?
   {
     guard let branchItem = item as? BranchSidebarItem,
           let remote = branchItem.remote,
@@ -123,7 +123,7 @@ final class SidebarPRManager
     }
   }
   
-  func updatePullRequestMenu(popup: NSPopUpButton, pullRequest: PullRequest)
+  func updatePullRequestMenu(popup: NSPopUpButton, pullRequest: any PullRequest)
   {
     let actions = pullRequest.availableActions
 
@@ -169,7 +169,7 @@ final class SidebarPRManager
 
 extension SidebarPRManager: PullRequestClient
 {
-  func pullRequestUpdated(branch: String, requests: [PullRequest])
+  func pullRequestUpdated(branch: String, requests: [any PullRequest])
   {
     DispatchQueue.main.async {
       for request in requests {

@@ -13,11 +13,11 @@ protocol XTFileContentController
 
 struct FileSelection: Equatable
 {
-  let repoSelection: RepositorySelection
+  let repoSelection: any RepositorySelection
   let path: String
   let staging: StagingType
   
-  var fileList: FileListModel
+  var fileList: any FileListModel
   { repoSelection.list(staged: staging == .index) }
 
   static func == (lhs: FileSelection, rhs: FileSelection) -> Bool

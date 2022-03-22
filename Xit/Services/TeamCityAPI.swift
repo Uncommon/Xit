@@ -354,7 +354,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
 
 protocol TeamCityAccessor: AnyObject
 {
-  var remoteMgr: RemoteManagement! { get }
+  var remoteMgr: (any RemoteManagement)! { get }
 }
 
 extension TeamCityAccessor

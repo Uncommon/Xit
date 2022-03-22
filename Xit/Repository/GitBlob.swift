@@ -17,7 +17,7 @@ public final class GitBlob
     self.blob = blob
   }
   
-  init?(repository: OpaquePointer, oid: OID)
+  init?(repository: OpaquePointer, oid: any OID)
   {
     guard let oid = oid as? GitOID,
           let blob = try? OpaquePointer.from({
@@ -60,6 +60,6 @@ extension GitBlob: Blob
 
 extension GitBlob: OIDObject
 {
-  public var oid: OID
+  public var oid: any OID
   { GitOID(oidPtr: git_blob_id(blob)) }
 }

@@ -9,7 +9,7 @@ public class BlameHunk
 {
   struct LineInfo
   {
-    let oid: OID // OIDs are zero for local changes
+    let oid: any OID // OIDs are zero for local changes
     let start: Int
     let signature: Signature
   }
@@ -99,7 +99,7 @@ public final class GitBlame: Blame
   }
   
   init?(repository: XTRepository, path: String,
-        from startOID: OID?, to endOID: OID?)
+        from startOID: (any OID)?, to endOID: (any OID)?)
   {
     var args = ["blame", "-p", path]
     
@@ -113,7 +113,7 @@ public final class GitBlame: Blame
   }
   
   init?(repository: XTRepository, path: String,
-        data: Data, to endOID: OID?)
+        data: Data, to endOID: (any OID)?)
   {
     let args = ["blame", "-p", "--contents", "-", path]
     

@@ -2,7 +2,7 @@ import Foundation
 
 protocol ObjectDatabase
 {
-  subscript(oid: OID) -> ODBObject? { get }
+  subscript(oid: any OID) -> ODBObject? { get }
 }
 
 protocol ODBObject
@@ -31,7 +31,7 @@ class GitODB: ObjectDatabase
     git_odb_free(odb)
   }
 
-  subscript(oid: OID) -> ODBObject?
+  subscript(oid: any OID) -> (any ODBObject)?
   {
     guard let gitOID = oid as? GitOID,
           let object = try? OpaquePointer.from({ item in

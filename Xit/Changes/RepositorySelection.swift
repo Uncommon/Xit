@@ -15,14 +15,14 @@ protocol RepositorySelection: AnyObject
   /// and stash changes, which both have unstaged lists.
   var canCommit: Bool { get }
   /// The primary or staged file list.
-  var fileList: FileListModel { get }
+  var fileList: any FileListModel { get }
 }
 
 /// A selection that also has an unstaged file list
 protocol StagedUnstagedSelection: RepositorySelection
 {
   /// The unstaged file list
-  var unstagedFileList: FileListModel { get }
+  var unstagedFileList: any FileListModel { get }
 }
 
 extension StagedUnstagedSelection
@@ -41,7 +41,7 @@ extension StagedUnstagedSelection
 
 extension RepositorySelection
 {
-  func list(staged: Bool) -> FileListModel
+  func list(staged: Bool) -> any FileListModel
   {
     return staged ? fileList :
         (self as? StagedUnstagedSelection)?.unstagedFileList ?? fileList
@@ -98,13 +98,13 @@ func != (a: RepositorySelection, b: RepositorySelection) -> Bool
   return !(a == b)
 }
 
-func == (a: FileListModel, b: FileListModel) -> Bool
+func == (a: any FileListModel, b: any FileListModel) -> Bool
 {
   return type(of: a) == type(of: b) &&
          a.selection == b.selection
 }
 
-func != (a: FileListModel, b: FileListModel) -> Bool
+func != (a: any FileListModel, b: any FileListModel) -> Bool
 {
   return !(a == b)
 }

@@ -133,7 +133,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   var selectedChanges: [FileChange]
   { activeFileListController.selectedChanges }
   
-  weak var repo: Repository?
+  weak var repo: (any Repository)?
   {
     didSet
     {
@@ -186,7 +186,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     headerTabView.tabViewItem(at: 0).view = commitHeader
   }
   
-  func finishLoad(repository: Repository)
+  func finishLoad(repository: any Repository)
   {
     repo = repository
     diffController.repo = repository

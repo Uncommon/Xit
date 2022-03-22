@@ -3,9 +3,9 @@ import Combine
 
 protocol RepositoryUIController: AnyObject
 {
-  var repository: FullRepository { get }
+  var repository: any FullRepository { get }
   var repoController: GitRepositoryController! { get }
-  var selection: RepositorySelection? { get set }
+  var selection: (any RepositorySelection)? { get set }
   var selectionPublisher: AnyPublisher<RepositorySelection?, Never> { get }
   var reselectPublisher: AnyPublisher<Void, Never> { get }
   var isAmending: Bool { get set }
@@ -34,13 +34,14 @@ final class XTWindowController: NSWindowController,
   weak var repoDocument: RepoDocument?
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
-  var repository: FullRepository { (repoDocument?.repository as FullRepository?)! }
+  var repository: any FullRepository
+  { (repoDocument?.repository as FullRepository?)! }
 
   @objc dynamic var isAmending = false
   {
     didSet { selectionChanged(oldValue: selection) }
   }
-  var selection: RepositorySelection?
+  var selection: (any RepositorySelection)?
   {
     didSet { selectionChanged(oldValue: oldValue) }
   }
@@ -52,8 +53,8 @@ final class XTWindowController: NSWindowController,
   public var reselectPublisher: AnyPublisher<Void, Never>
   { reselectSubject.eraseToAnyPublisher() }
 
-  var navBackStack = [RepositorySelection]()
-  var navForwardStack = [RepositorySelection]()
+  var navBackStack = [any RepositorySelection]()
+  var navForwardStack = [any RepositorySelection]()
   var navigating = false
   var sidebarHidden: Bool { splitViewController.splitViewItems[0].isCollapsed }
   var historyAutoCollapsed = false
@@ -182,7 +183,7 @@ final class XTWindowController: NSWindowController,
     }
   }
 
-  func selectionChanged(oldValue: RepositorySelection?)
+  func selectionChanged(oldValue: (any RepositorySelection)?)
   {
     updateHistoryCollapse(wasStaging: oldValue is StagingSelection)
     if let newSelection = selection,

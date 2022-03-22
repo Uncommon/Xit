@@ -105,7 +105,7 @@ class CleanData: ObservableObject
 
 struct CleanPanel: View
 {
-  weak var delegate: CleanPanelDelegate?
+  weak var delegate: (any CleanPanelDelegate)?
 
   struct CleanError: Error, Identifiable
   {

@@ -9,9 +9,9 @@ class FileListDataSourceBase: NSObject
   let useWorkspaceList: Bool
   private var sinks: [AnyCancellable] = []
 
-  weak var delegate: FileListDelegate?
+  weak var delegate: (any FileListDelegate)?
 
-  weak var repoUIController: RepositoryUIController!
+  weak var repoUIController: (any RepositoryUIController)!
   {
     didSet
     {
@@ -80,7 +80,7 @@ protocol FileListDataSource: FileListDataSourceBase
 
 protocol FileListDelegate: AnyObject
 {
-  func configure(model: FileListModel)
+  func configure(model: any FileListModel)
 }
 
 

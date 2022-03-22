@@ -23,10 +23,10 @@ final class HistoryTableController: NSViewController,
   
   var tableView: HistoryTableView { view as! HistoryTableView }
   let history = GitCommitHistory()
-  var repository: Repository { repoController?.repository as! Repository }
+  var repository: any Repository { repoController?.repository as! Repository }
   var sinks: [AnyCancellable] = []
   
-  func finishLoad(repository: Repository)
+  func finishLoad(repository: any Repository)
   {
     history.repository = repository
 

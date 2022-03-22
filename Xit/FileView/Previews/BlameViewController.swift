@@ -95,7 +95,8 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
   }
   
   func loadBlame(text: String, path: String,
-                 selection: RepositorySelection, fileList: FileListModel)
+                 selection: any RepositorySelection,
+                 fileList: any FileListModel)
   {
     defer {
       DispatchQueue.main.async {

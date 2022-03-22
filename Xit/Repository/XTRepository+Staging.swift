@@ -47,7 +47,8 @@ class FileStagingChange: FileChange
 extension XTRepository: FileStatusDetection
 {
   /// Returns the changes for the given commit.
-  public func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  public func changes(for sha: String,
+                      parent parentOID: (any OID)?) -> [FileChange]
   {
     guard sha != XTStagingSHA
     else {
@@ -130,8 +131,9 @@ extension XTRepository: FileStatusDetection
   }
 
   // Re-implementation of git_status_file with a given head commit
-  func fileStatus(_ path: String, show: StatusShow = .indexAndWorkdir,
-                  baseCommit: Commit?)
+  func fileStatus(_ path: String,
+                  show: StatusShow = .indexAndWorkdir,
+                  baseCommit: (any Commit)?)
     -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
     struct CallbackData
@@ -312,7 +314,7 @@ extension XTRepository: FileStatusDetection
 
 extension XTRepository: FileStaging
 {
-  public var index: StagingIndex? { GitIndex(repository: gitRepo) }
+  public var index: (any StagingIndex)? { GitIndex(repository: gitRepo) }
 
   /// Stages the given file to the index.
   public func stage(file: String) throws

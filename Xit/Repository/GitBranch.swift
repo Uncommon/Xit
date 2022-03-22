@@ -11,9 +11,9 @@ public protocol Branch: AnyObject
   /// Text that is not part of the specific branch name
   var prefix: String { get }
   /// OID of the branch's head commit
-  var oid: OID? { get }
+  var oid: (any OID)? { get }
   /// The branch's head commit
-  var targetCommit: Commit? { get }
+  var targetCommit: (any Commit)? { get }
 }
 
 extension Branch
@@ -26,7 +26,7 @@ extension Branch
 public protocol LocalBranch: Branch
 {
   var trackingBranchName: String? { get set }
-  var trackingBranch: RemoteBranch? { get }
+  var trackingBranch: (any RemoteBranch)? { get }
 }
 
 extension LocalBranch
@@ -62,9 +62,9 @@ public enum RefPrefixes
 public class GitBranch
 {
   let branchRef: OpaquePointer
-  let config: Config
+  let config: any Config
   
-  required public init(branch: OpaquePointer, config: Config)
+  required public init(branch: OpaquePointer, config: any Config)
   {
     self.branchRef = branch
     self.config = config
@@ -78,7 +78,7 @@ public class GitBranch
     return String(cString: name)
   }
   
-  public var oid: OID?
+  public var oid: (any OID)?
   {
     guard let oid = git_reference_target(branchRef)
     else { return nil }
@@ -87,7 +87,7 @@ public class GitBranch
   }
 
   var sha: String? { oid?.sha }
-  public var targetCommit: Commit?
+  public var targetCommit: (any Commit)?
   {
     guard let oid = oid,
           let repo = git_reference_owner(branchRef)
@@ -97,7 +97,8 @@ public class GitBranch
   }
   var remoteName: String? { nil }
   
-  fileprivate static func lookUpBranch(name: String, repository: OpaquePointer,
+  fileprivate static func lookUpBranch(name: String,
+                                       repository: OpaquePointer,
                                        branchType: git_branch_t)
     -> OpaquePointer?
   {
@@ -166,7 +167,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   /// Returns a branch object for this branch's remote tracking branch,
   /// or `nil` if no tracking branch is set or if it references a non-existent
   /// branch.
-  public var trackingBranch: RemoteBranch?
+  public var trackingBranch: (any RemoteBranch)?
   {
     guard let upstream = try? OpaquePointer.from({
       git_branch_upstream(&$0, branchRef)

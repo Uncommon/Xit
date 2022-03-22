@@ -4,7 +4,8 @@ import Cocoa
 public protocol Commit: OIDObject, CustomStringConvertible
 {
   var sha: String { get }
-  var parentOIDs: [OID] { get }
+  // Strictly speaking these should probably all be the same OID type
+  var parentOIDs: [any OID] { get }
   
   var message: String? { get }
   
@@ -18,7 +19,7 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var committerEmail: String? { get }
   var commitDate: Date { get }
   
-  var tree: Tree? { get }
+  var tree: (any Tree)? { get }
 
   var isSigned: Bool { get }
 }
@@ -76,8 +77,8 @@ public final class GitCommit: Commit
       }
     }
   }
-  public let oid: OID
-  public let parentOIDs: [OID]
+  public let oid: any OID
+  public let parentOIDs: [any OID]
   
   public var repository: OpaquePointer
   { git_commit_owner(commit) }

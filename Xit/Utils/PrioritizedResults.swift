@@ -6,7 +6,7 @@ import Foundation
 struct ProritizedResults<E>
   where E: CaseIterable & RawRepresentable & Hashable, E.RawValue == String
 {
-  var results: [E: AbstractResult] = [:]
+  var results: [E: any AbstractResult] = [:]
   
   /// Evaluates the results in order, and returns the first error found provided
   /// all previous results were successful.
@@ -33,7 +33,7 @@ struct ProritizedResults<E>
   /// reason for requiring `E.RawValue == String`.
   /// - Note: Ideally, this would take a keypath for the enum, but that would
   /// require static keypaths which are not currently supported in Swift.
-  subscript(dynamicMember name: String) -> AbstractResult?
+  subscript(dynamicMember name: String) -> (any AbstractResult)?
   {
     get { E(rawValue: name).flatMap { results[$0] } }
     set { E(rawValue: name).map { results[$0] = newValue } }

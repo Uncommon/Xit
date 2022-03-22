@@ -33,7 +33,7 @@ final class NewBranchPanelController: SheetController
   
   func configure(branchName: String,
                  startingPoint: String,
-                 repository: Branching)
+                 repository: any Branching)
   {
     self.branchName = branchName
     self.startingPoint = startingPoint

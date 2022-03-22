@@ -70,11 +70,12 @@ final class AccountsManager: NSObject
   static let manager = AccountsManager()
   
   let defaults: UserDefaults
-  let passwordStorage: PasswordStorage
+  let passwordStorage: any PasswordStorage
   
   var accounts: [Account] = []
   
-  init(defaults: UserDefaults? = nil, passwordStorage: PasswordStorage? = nil)
+  init(defaults: UserDefaults? = nil,
+       passwordStorage: (any PasswordStorage)? = nil)
   {
     self.defaults = defaults ?? .standard
     self.passwordStorage = passwordStorage ?? XTKeychain.shared

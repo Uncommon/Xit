@@ -4,30 +4,30 @@ public protocol Tree: OIDObject
 {
   var count: Int { get }
   
-  func entry(named: String) -> TreeEntry?
-  func entry(path: String) -> TreeEntry?
-  func entry(at index: Int) -> TreeEntry?
-  func walkEntries(callback: (TreeEntry, String) -> Void)
+  func entry(named: String) -> (any TreeEntry)?
+  func entry(path: String) -> (any TreeEntry)?
+  func entry(at index: Int) -> (any TreeEntry)?
+  func walkEntries(callback: (any TreeEntry, String) -> Void)
 }
 
 public protocol TreeEntry: OIDObject
 {
   var type: GitObjectType { get }
   var name: String { get }
-  var object: OIDObject? { get }
+  var object: (any OIDObject)? { get }
 }
 
 
 /// Used as a return value when an entry can't be returned for a given subscript
 struct NullEntry: TreeEntry
 {
-  var oid: OID
+  var oid: any OID
   { GitOID.zero() }
   var type: GitObjectType
   { .invalid }
   var name: String
   { "" }
-  var object: OIDObject?
+  var object: (any OIDObject)?
   { nil }
 }
 
@@ -45,7 +45,7 @@ final class GitTree: Tree
       return i + 1
     }
     
-    subscript(position: Int) -> TreeEntry
+    subscript(position: Int) -> any TreeEntry
     {
       guard let result = git_tree_entry_byindex(tree.tree, position),
             let owner = git_tree_owner(tree.tree)
@@ -62,7 +62,7 @@ final class GitTree: Tree
   
   let tree: OpaquePointer
   
-  var oid: OID
+  var oid: any OID
   {
     guard let result = git_tree_id(tree)
     else { return GitOID.zero() }
@@ -94,7 +94,7 @@ final class GitTree: Tree
     git_tree_free(tree)
   }
   
-  func entry(named name: String) -> TreeEntry?
+  func entry(named name: String) -> (any TreeEntry)?
   {
     guard let result = git_tree_entry_byname(tree, name),
           let owner = git_tree_owner(tree)
@@ -103,7 +103,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: result, owner: owner)
   }
   
-  func entry(path: String) -> TreeEntry?
+  func entry(path: String) -> (any TreeEntry)?
   {
     guard let owner = git_tree_owner(tree),
           let entry = try? OpaquePointer.from({
@@ -114,7 +114,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: entry, owner: owner)
   }
   
-  func entry(at index: Int) -> TreeEntry?
+  func entry(at index: Int) -> (any TreeEntry)?
   {
     switch index {
       case 0..<count:
@@ -124,12 +124,13 @@ final class GitTree: Tree
     }
   }
   
-  func walkEntries(callback: (TreeEntry, String) -> Void)
+  func walkEntries(callback: (any TreeEntry, String) -> Void)
   {
     walkEntries(root: "", callback: callback)
   }
   
-  private func walkEntries(root: String, callback: (TreeEntry, String) -> Void)
+  private func walkEntries(root: String,
+                           callback: (any TreeEntry, String) -> Void)
   {
     for entry in entries {
       callback(entry, root)
@@ -146,7 +147,7 @@ class GitTreeEntry: TreeEntry
   let entry: OpaquePointer
   let owner: OpaquePointer
   
-  var oid: OID
+  var oid: any OID
   {
     guard let gitOID = git_tree_entry_id(entry)
     else { return GitOID.zero() }
@@ -168,7 +169,7 @@ class GitTreeEntry: TreeEntry
     return name.map { String(cString: $0) } ?? ""
   }
   
-  var object: OIDObject?
+  var object: (any OIDObject)?
   {
     guard let gitObject = try? OpaquePointer.from({
       git_tree_entry_to_object(&$0, owner, entry)

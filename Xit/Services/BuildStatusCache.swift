@@ -10,35 +10,35 @@ final class BuildStatusCache: TeamCityAccessor
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
-  weak var remoteMgr: RemoteManagement!
-  weak var branchLister: Branching?
+  weak var remoteMgr: (any RemoteManagement)!
+  weak var branchLister: (any Branching)?
   var statuses = [String: BranchStatuses]() // Build type to branch builds
   private var clients = [WeakClientRef]()
   
   class WeakClientRef
   {
-    weak var client: BuildStatusClient?
+    weak var client: (any BuildStatusClient)?
     
-    init(client: BuildStatusClient)
+    init(client: any BuildStatusClient)
     {
       self.client = client
     }
   }
   
-  init(branchLister: Branching, remoteMgr: RemoteManagement)
+  init(branchLister: any Branching, remoteMgr: any RemoteManagement)
   {
     self.remoteMgr = remoteMgr
     self.branchLister = branchLister
   }
   
-  func add(client: BuildStatusClient)
+  func add(client: any BuildStatusClient)
   {
     if !clients.contains(where: { $0.client === client }) {
       clients.append(WeakClientRef(client: client))
     }
   }
   
-  func remove(client: BuildStatusClient)
+  func remove(client: any BuildStatusClient)
   {
     clients.removeAll { $0.client === client }
   }
@@ -56,7 +56,7 @@ final class BuildStatusCache: TeamCityAccessor
     }
   }
   
-  func refresh(branch: LocalBranch, onFailure: (() -> Void)? = nil)
+  func refresh(branch: any LocalBranch, onFailure: (() -> Void)? = nil)
   {
     guard let tracked = branch.trackingBranch,
           let remoteName = tracked.remoteName,

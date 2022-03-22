@@ -2,17 +2,17 @@ import Foundation
 
 extension XTRepository: CommitStorage
 {
-  public func oid(forSHA sha: String) -> OID?
+  public func oid(forSHA sha: String) -> (any OID)?
   {
     return GitOID(sha: sha)
   }
   
-  public func commit(forSHA sha: String) -> Commit?
+  public func commit(forSHA sha: String) -> (any Commit)?
   {
     return GitCommit(sha: sha, repository: gitRepo)
   }
   
-  public func commit(forOID oid: OID) -> Commit?
+  public func commit(forOID oid: any OID) -> (any Commit)?
   {
     return GitCommit(oid: oid, repository: gitRepo)
   }
@@ -26,7 +26,7 @@ extension XTRepository: CommitStorage
     invalidateIndex()
   }
   
-  public func walker() -> RevWalk?
+  public func walker() -> (any RevWalk)?
   {
     return GitRevWalk(repository: gitRepo)
   }
@@ -34,7 +34,7 @@ extension XTRepository: CommitStorage
 
 extension XTRepository: CommitReferencing
 {
-  var headReference: Reference?
+  var headReference: (any Reference)?
   { GitReference(headForRepo: gitRepo) }
   
   /// Reloads the cached map of OIDs to refs.
@@ -133,7 +133,7 @@ extension XTRepository: CommitReferencing
     return oid(forRef: ref)?.sha
   }
   
-  public func oid(forRef ref: String) -> OID?
+  public func oid(forRef ref: String) -> (any OID)?
   {
     guard let object = try? OpaquePointer.from({
             git_revparse_single(&$0, gitRepo, ref)
@@ -155,7 +155,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns the list of tags, or throws if libgit2 hit an error.
-  public func tags() throws -> [Tag]
+  public func tags() throws -> [any Tag]
   {
     var tagNames = git_strarray()
     let result = git_tag_list(&tagNames, gitRepo)
@@ -168,19 +168,20 @@ extension XTRepository: CommitReferencing
     }
   }
   
-  public func reference(named name: String) -> Reference?
+  public func reference(named name: String) -> (any Reference)?
   {
     return GitReference(name: name, repository: gitRepo)
   }
   
-  public func createCommit(with tree: Tree, message: String, parents: [Commit],
-                           updatingReference refName: String) throws -> OID
+  public func createCommit(with tree: Tree, message: String,
+                           parents: [any Commit],
+                           updatingReference refName: String) throws -> any OID
   {
     var commitPtrs: [OpaquePointer?] =
       parents.compactMap { ($0 as? GitCommit)?.commit }
     guard commitPtrs.count == parents.count,
-      let gitTree = tree as? GitTree
-      else { throw RepoError.unexpected }
+          let gitTree = tree as? GitTree
+    else { throw RepoError.unexpected }
     
     let signature = GitSignature(defaultFromRepo: gitRepo)
     var newOID = git_oid()

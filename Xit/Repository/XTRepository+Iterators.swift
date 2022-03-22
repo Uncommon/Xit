@@ -44,9 +44,9 @@ extension XTRepository
       super.init(repo: repo, flags: GIT_BRANCH_LOCAL)
     }
     
-    public func next() -> LocalBranch?
+    public func next() -> (any LocalBranch)?
     {
-      return nextBranch().map { GitLocalBranch(branch: $0, config: repo.config) }
+      nextBranch().map { GitLocalBranch(branch: $0, config: repo.config) }
     }
   }
   
@@ -58,10 +58,9 @@ extension XTRepository
       super.init(repo: repo, flags: GIT_BRANCH_REMOTE)
     }
     
-    public func next() -> RemoteBranch?
+    public func next() -> (any RemoteBranch)?
     {
-      return nextBranch().map { GitRemoteBranch(branch: $0,
-                                                config: repo.config) }
+      nextBranch().map { GitRemoteBranch(branch: $0, config: repo.config) }
     }
   }
   
@@ -100,10 +99,10 @@ extension XTRepository
     
     public func makeIterator() -> StashIterator
     {
-      return StashIterator(stashes: self)
+      .init(stashes: self)
     }
     
-    public subscript(position: Int) -> Stash
+    public subscript(position: Int) -> any Stash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
@@ -116,14 +115,12 @@ extension XTRepository
     
     public func index(after i: Int) -> Int
     {
-      return i + 1
+      i + 1
     }
   }
   
   public class StashIterator: IteratorProtocol
   {
-    public typealias Element = Stash
-    
     let stashes: StashCollection
     var index: Int
     
@@ -133,10 +130,12 @@ extension XTRepository
       self.index = 0
     }
     
-    public func next() -> Stash?
+    public func next() -> (any Stash)?
     {
       guard index < stashes.count
-      else { return nil }
+      else {
+        return nil
+      }
       let result = stashes[index]
       
       index += 1

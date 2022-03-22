@@ -11,7 +11,7 @@ public typealias FullRepository =
 
 public protocol BasicRepository
 {
-  var controller: RepositoryController? { get set }
+  var controller: (any RepositoryController)? { get set }
 }
 
 public protocol RepositoryPublishing
@@ -45,7 +45,7 @@ public protocol WritingManagement
 
 public protocol RepoConfiguring
 {
-  var config: Config { get }
+  var config: any Config { get }
 }
 
 public protocol Cloning
@@ -58,9 +58,9 @@ public protocol Cloning
 
 public protocol CommitStorage: AnyObject
 {
-  func oid(forSHA sha: String) -> OID?
-  func commit(forSHA sha: String) -> Commit?
-  func commit(forOID oid: OID) -> Commit?
+  func oid(forSHA sha: String) -> (any OID)?
+  func commit(forSHA sha: String) -> (any Commit)?
+  func commit(forOID oid: any OID) -> (any Commit)?
   
   func commit(message: String, amend: Bool) throws
   
@@ -72,16 +72,17 @@ public protocol CommitReferencing: AnyObject
   var headRef: String? { get }
   var currentBranch: String? { get }
   
-  func oid(forRef: String) -> OID?
+  func oid(forRef: String) -> (any OID)?
   func sha(forRef: String) -> String?
   func tags() throws -> [Tag]
-  func graphBetween(localBranch: LocalBranch,
-                    upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
+  func graphBetween(localBranch: any LocalBranch,
+                    upstreamBranch: any RemoteBranch) -> (ahead: Int,
+                                                          behind: Int)?
   
-  func localBranch(named name: String) -> LocalBranch?
-  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  func localBranch(named name: String) -> (any LocalBranch)?
+  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   
-  func reference(named name: String) -> Reference?
+  func reference(named name: String) -> (any Reference)?
   func refs(at sha: String) -> [String]
   func allRefs() -> [String]
   
@@ -89,8 +90,10 @@ public protocol CommitReferencing: AnyObject
   
   /// Creates a commit with the given content.
   /// - returns: The OID of the new commit.
-  func createCommit(with tree: Tree, message: String, parents: [Commit],
-                    updatingReference refName: String) throws -> OID
+  func createCommit(with tree: any Tree,
+                    message: String,
+                    parents: [any Commit],
+                    updatingReference refName: String) throws -> any OID
 }
 
 extension CommitReferencing
@@ -101,7 +104,7 @@ extension CommitReferencing
 
 public protocol FileStatusDetection: AnyObject
 {
-  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  func changes(for sha: String, parent parentOID: (any OID)?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
   func amendingStagedChanges() -> [FileChange]
@@ -137,17 +140,21 @@ extension FileStatusDetection
 public protocol FileDiffing: AnyObject
 {
   func diffMaker(forFile file: String,
-                 commitOID: OID,
-                 parentOID: OID?) -> PatchMaker.PatchResult?
+                 commitOID: any OID,
+                 parentOID: (any OID)?) -> PatchMaker.PatchResult?
   func diff(for path: String,
             commitSHA sha: String,
-            parentOID: OID?) -> DiffDelta?
+            parentOID: (any OID)?) -> DiffDelta?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
 
-  func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
-  func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
+  func blame(for path: String,
+             from startOID: (any OID)?,
+             to endOID: (any OID)?) -> (any Blame)?
+  func blame(for path: String,
+             data fromData: Data?,
+             to endOID: (any OID)?) -> Blame?
 }
 
 public protocol FileContents: AnyObject
@@ -155,8 +162,8 @@ public protocol FileContents: AnyObject
   var repoURL: URL { get }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool
-  func fileBlob(ref: String, path: String) -> Blob?
-  func stagedBlob(file: String) -> Blob?
+  func fileBlob(ref: String, path: String) -> (any Blob)?
+  func stagedBlob(file: String) -> (any Blob)?
   func contentsOfFile(path: String, at commit: Commit) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
   func fileURL(_ file: String) -> URL
@@ -164,7 +171,7 @@ public protocol FileContents: AnyObject
 
 public protocol FileStaging: AnyObject
 {
-  var index: StagingIndex? { get }
+  var index: (any StagingIndex)? { get }
   
   func stage(file: String) throws
   func unstage(file: String) throws
@@ -173,18 +180,18 @@ public protocol FileStaging: AnyObject
   func revert(file: String) throws
   func stageAllFiles() throws
   func unstageAllFiles() throws
-  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
+  func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws
 }
 
 public protocol Stashing: AnyObject
 {
-  var stashes: AnyCollection<Stash> { get }
+  var stashes: AnyCollection<any Stash> { get }
   
-  func stash(index: UInt, message: String?) -> Stash
+  func stash(index: UInt, message: String?) -> any Stash
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws
   func dropStash(index: UInt) throws
-  func commitForStash(at index: UInt) -> Commit?
+  func commitForStash(at index: UInt) -> (any Commit)?
   
   /// Make a new stash entry
   /// - parameter name: Name of the stash entry
@@ -200,7 +207,7 @@ public protocol Stashing: AnyObject
 public protocol RemoteManagement: AnyObject
 {
   func remoteNames() -> [String]
-  func remote(named name: String) -> Remote?
+  func remote(named name: String) -> (any Remote)?
   func addRemote(named name: String, url: URL) throws
   func deleteRemote(named name: String) throws
 }
@@ -286,19 +293,19 @@ public protocol RemoteCommunication: AnyObject
   /// - parameter branches: Local branches to push; must have a tracking branch set
   /// - parameter remote: Target remote to push to
   /// - parameter callbacks: Password and progress callbacks
-  func push(branches: [LocalBranch],
-            remote: Remote,
+  func push(branches: [any LocalBranch],
+            remote: any Remote,
             callbacks: RemoteCallbacks) throws
   
   /// Dowloads updated refs and commits from the remote.
-  func fetch(remote: Remote, options: FetchOptions) throws
+  func fetch(remote: any Remote, options: FetchOptions) throws
   
   /// Initiates pulling (fetching and merging) the given branch.
   /// - parameter branch: Either the local branch or the remote tracking branch.
   /// - parameter remote: The remote to pull from.
   /// - parameter options: Options for the fetch operation.
-  func pull(branch: Branch,
-            remote: Remote,
+  func pull(branch: any Branch,
+            remote: any Remote,
             options: FetchOptions) throws
 }
 
@@ -329,7 +336,7 @@ public protocol Branching: AnyObject
 
 public protocol Merging: AnyObject
 {
-  func merge(branch: Branch) throws
+  func merge(branch: any Branch) throws
   // In the future, expose more merge analysis and options
 }
 
@@ -381,8 +388,8 @@ extension Branching
 
 public protocol Tagging: AnyObject
 {
-  func createTag(name: String, targetOID: OID, message: String?) throws
-  func createLightweightTag(name: String, targetOID: OID) throws
+  func createTag(name: String, targetOID: any OID, message: String?) throws
+  func createLightweightTag(name: String, targetOID: any OID) throws
   func deleteTag(name: String) throws
 }
 

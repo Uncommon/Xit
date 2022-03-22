@@ -258,7 +258,7 @@ final class SideBarDataSource: NSObject
 
 extension SideBarDataSource: RepositoryUIAccessor
 {
-  var repoUIController: RepositoryUIController?
+  var repoUIController: (any RepositoryUIController)?
   {
     Thread.syncOnMain {
       outline.window?.windowController as? RepositoryUIController

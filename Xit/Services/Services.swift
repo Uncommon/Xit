@@ -48,11 +48,11 @@ final class Services
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
-  var allServices: [RepositoryService]
+  var allServices: [any RepositoryService]
   {
-    let tcServices: [RepositoryService] = Array(teamCityServices.values)
-    let bbServices: [RepositoryService] = Array(bitbucketServices.values)
-    let result: [RepositoryService] = tcServices + bbServices
+    let tcServices: [any RepositoryService] = Array(teamCityServices.values)
+    let bbServices: [any RepositoryService] = Array(bitbucketServices.values)
+    let result: [any RepositoryService] = tcServices + bbServices
     // for testing
     //  + [FakePRService()]
     

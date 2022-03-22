@@ -4,10 +4,10 @@ public protocol Diff: AnyObject
 {
   var deltaCount: Int { get }
   
-  func delta(at index: Int) -> DiffDelta?
-  func patch(at index: Int) -> Patch?
+  func delta(at index: Int) -> (any DiffDelta)?
+  func patch(at index: Int) -> (any Patch)?
 
-  func stats() -> DiffStats?
+  func stats() -> (any DiffStats)?
 }
 
 public protocol DiffFile
@@ -67,7 +67,7 @@ final class GitDiff: Diff
   }
   
   /// Tree to tree
-  init?(oldTree: Tree?, newTree: Tree?, repository: OpaquePointer,
+  init?(oldTree: (any Tree)?, newTree: (any Tree)?, repository: OpaquePointer,
         options: DiffOptions? = nil)
   {
     guard let diff = try? OpaquePointer.from({
@@ -115,7 +115,7 @@ final class GitDiff: Diff
   
   var deltaCount: Int { git_diff_num_deltas(diff) }
   
-  func delta(at index: Int) -> DiffDelta?
+  func delta(at index: Int) -> (any DiffDelta)?
   {
     switch index {
       case 0..<deltaCount:
@@ -125,7 +125,7 @@ final class GitDiff: Diff
     }
   }
   
-  func patch(at index: Int) -> Patch?
+  func patch(at index: Int) -> (any Patch)?
   {
     guard let patch = try? OpaquePointer.from({
       git_patch_from_diff(&$0, diff, index)
@@ -135,7 +135,7 @@ final class GitDiff: Diff
     return GitPatch(gitPatch: patch)
   }
 
-  func stats() -> DiffStats?
+  func stats() -> (any DiffStats)?
   {
     guard let stats = try? OpaquePointer.from({
       git_diff_get_stats(&$0, diff)
@@ -179,7 +179,7 @@ final class GitDiff: Diff
 
 extension Diff
 {
-  func delta(forNewPath path: String) -> DiffDelta?
+  func delta(forNewPath path: String) -> (any DiffDelta)?
   {
     for index in 0..<deltaCount {
       if let delta = delta(at: index), delta.newFile.filePath == path {
@@ -189,7 +189,7 @@ extension Diff
     return nil
   }
   
-  func delta(forOldPath path: String) -> DiffDelta?
+  func delta(forOldPath path: String) -> (any DiffDelta)?
   {
     for index in 0..<deltaCount {
       if let delta = delta(at: index), delta.oldFile.filePath == path {
@@ -203,7 +203,7 @@ extension Diff
 
 extension git_diff_file: DiffFile
 {
-  public var oid: OID { GitOID(oid: id) }
+  public var oid: any OID { GitOID(oid: id) }
   public var filePath: String
   {
     if let path = self.path {

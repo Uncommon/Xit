@@ -63,7 +63,7 @@ extension XTRepository: FileContents
     return false
   }
   
-  public func contentsOfFile(path: String, at commit: Commit) -> Data?
+  public func contentsOfFile(path: String, at commit: any Commit) -> Data?
   {
     // TODO: make a Tree protocol to eliminate this cast
     guard let commit = commit as? GitCommit,
@@ -93,23 +93,23 @@ extension XTRepository: FileContents
     return blob
   }
   
-  func commitBlob(commit: Commit?, path: String) -> Blob?
+  func commitBlob(commit: (any Commit)?, path: String) -> (any Blob)?
   {
     return commit?.tree?.entry(path: path)?.object as? Blob
   }
   
-  public func fileBlob(ref: String, path: String) -> Blob?
+  public func fileBlob(ref: String, path: String) -> (any Blob)?
   {
     return commitBlob(commit: sha(forRef: ref).flatMap { commit(forSHA: $0) },
                       path: path)
   }
   
-  public func fileBlob(sha: String, path: String) -> Blob?
+  public func fileBlob(sha: String, path: String) -> (any Blob)?
   {
     return commitBlob(commit: commit(forSHA: sha), path: path)
   }
   
-  public func fileBlob(oid: OID, path: String) -> Blob?
+  public func fileBlob(oid: any OID, path: String) -> (any Blob)?
   {
     return commitBlob(commit: commit(forOID: oid), path: path)
   }
@@ -127,8 +127,8 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file at the specified commit, compared to the
   /// parent commit.
   public func diffMaker(forFile file: String,
-                        commitOID: OID,
-                        parentOID: OID?) -> PatchMaker.PatchResult?
+                        commitOID: any OID,
+                        parentOID: (any OID)?) -> PatchMaker.PatchResult?
   {
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? GitCommit
     else { return nil }
@@ -159,7 +159,7 @@ extension XTRepository: FileDiffing
   // Returns a file diff for a given commit.
   public func diff(for path: String,
                    commitSHA sha: String,
-                   parentOID: OID?) -> DiffDelta?
+                   parentOID: (any OID)?) -> (any DiffDelta)?
   {
     let diff = self.diff(forSHA: sha, parent: parentOID)
     
@@ -230,16 +230,18 @@ extension XTRepository: FileDiffing
   }
   
   public func blame(for path: String,
-                    from startOID: OID?, to endOID: OID?) -> Blame?
+                    from startOID: (any OID)?,
+                    to endOID: (any OID)?) -> Blame?
   {
-    return GitBlame(repository: self, path: path, from: startOID, to: endOID)
+    GitBlame(repository: self, path: path, from: startOID, to: endOID)
   }
   
   public func blame(for path: String,
-                    data fromData: Data?, to endOID: OID?) -> Blame?
+                    data fromData: Data?,
+                    to endOID: (any OID)?) -> Blame?
   {
-    return GitBlame(repository: self, path: path,
-                    data: fromData ?? Data(), to: endOID)
+    GitBlame(repository: self, path: path,
+             data: fromData ?? Data(), to: endOID)
   }
 }
 
@@ -247,7 +249,7 @@ extension XTRepository
 {
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentOID: OID?) -> Diff?
+  func diff(forSHA sha: String, parent parentOID: (any OID)?) -> (any Diff)?
   {
     let parentSHA = parentOID?.sha ?? ""
     let key = sha.appending(parentSHA)
@@ -281,7 +283,7 @@ extension XTRepository
   /// (the patch should be reversed)
   /// - throws: `Error.patchMismatch` if the patch can't be applied, or any
   /// errors from resultings stage/unstage actions.
-  public func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws
+  public func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws
   {
     guard let index = GitIndex(repository: gitRepo)
     else { throw RepoError.unexpected }
@@ -348,7 +350,7 @@ extension XTRepository
     let statusList: OpaquePointer?
     var tree: OpaquePointer?
   
-    init(repo: XTRepository, head: Commit?)
+    init(repo: XTRepository, head: (any Commit)?)
     {
       let headTree = (head?.tree as? GitTree)?.tree
       var options = git_status_options()
@@ -391,14 +393,14 @@ extension XTRepository
       guard let statusList = self.statusList,
             let entry = git_status_byindex(statusList, position)?.pointee,
             let delta = entry.head_to_index ?? entry.index_to_workdir
-      else { return FileStagingChange(path: "", destinationPath: "") }
+      else { return .init(path: "", destinationPath: "") }
       
       let path = String(cString: delta.pointee.old_file.path)
       let newPath = String(cString: delta.pointee.new_file.path)
       let stagedChange = (entry.head_to_index?.pointee.status)
             .map { DeltaStatus(gitDelta: $0) } ?? .unmodified
       
-      return FileStagingChange(
+      return .init(
           path: path,
           destinationPath: newPath,
           change: stagedChange)
@@ -419,10 +421,10 @@ extension XTRepository
   }
   
   var stagingChanges: StatusCollection
-  { StatusCollection(repo: self) }
+  { .init(repo: self) }
   
-  func amendingChanges(parent: Commit?) -> StatusCollection
+  func amendingChanges(parent: (any Commit)?) -> StatusCollection
   {
-    return StatusCollection(repo: self, head: parent)
+    .init(repo: self, head: parent)
   }
 }

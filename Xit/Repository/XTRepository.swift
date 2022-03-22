@@ -265,9 +265,9 @@ extension XTRepository
     }
   }
   
-  public func graphBetween(localBranch: LocalBranch,
-                           upstreamBranch: RemoteBranch) ->(ahead: Int,
-                                                            behind: Int)?
+  public func graphBetween(localBranch: any LocalBranch,
+                           upstreamBranch: any RemoteBranch) ->(ahead: Int,
+                                                                behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {

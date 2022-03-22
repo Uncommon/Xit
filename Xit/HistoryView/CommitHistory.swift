@@ -69,7 +69,7 @@ final class CommitHistory<ID: OID & Hashable>
   typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>
 
-  weak var repository: CommitStorage!
+  weak var repository: (any CommitStorage)!
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
@@ -81,7 +81,7 @@ final class CommitHistory<ID: OID & Hashable>
   var postProgress: ((Int, Int) -> Void)?
   
   /// Manually appends a commit.
-  func appendCommit(_ commit: Commit)
+  func appendCommit(_ commit: any Commit)
   {
     entries.append(Entry(commit: commit))
   }
@@ -132,7 +132,7 @@ final class CommitHistory<ID: OID & Hashable>
   
   /// Processes the next batch of connections in the list. Should not be
   /// called on the main thread.
-  public func processNextConnectionBatch()
+  func processNextConnectionBatch()
   {
     let batchSize = min(self.batchSize, entries.count - batchStart)
     let (connections, newConnections) =
@@ -318,7 +318,7 @@ struct BranchResult
   /// The commit entries collected for this segment.
   let entries: [CommitEntry]
   /// Other branches queued for processing.
-  let queue: [(commit: Commit, after: Commit)]
+  let queue: [(commit: any Commit, after: any Commit)]
 }
 
 extension BranchResult: CustomStringConvertible
@@ -339,7 +339,7 @@ extension BranchResult: CustomStringConvertible
 extension CommitHistory
 {
   /// Adds new commits to the list.
-  public func process(_ startCommit: Commit, afterCommit: Commit? = nil)
+  public func process(_ startCommit: any Commit, afterCommit: (any Commit)? = nil)
   {
     let startOID = startCommit.oid as! ID
     guard commitLookup[startOID] == nil
@@ -374,7 +374,7 @@ extension CommitHistory
   }
   
   private func processBranchResult(_ result: BranchResult,
-                                   after afterCommit: Commit?)
+                                   after afterCommit: (any Commit)?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.oid as! ID] = branchEntry
@@ -434,11 +434,11 @@ extension CommitHistory
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  private func branchEntries(startCommit: Commit) -> BranchResult
+  private func branchEntries(startCommit: any Commit) -> BranchResult
   {
     var commit = startCommit
     var result = [Entry(commit: startCommit)]
-    var queue = [(commit: Commit, after: Commit)]()
+    var queue = [(commit: any Commit, after: any Commit)]()
     
     while let firstParentOID = commit.parentOIDs.first as? ID {
       for parentOID in commit.parentOIDs.dropFirst() {

@@ -49,7 +49,7 @@ enum PullRequestApproval
 protocol RemoteService
 {
   /// True if the remote URL would be hosted on this service
-  func match(remote: Remote) -> Bool
+  func match(remote: any Remote) -> Bool
 }
 
 /// A service with an identifier for the logged-in user
@@ -61,18 +61,18 @@ protocol UserIDService
 /// A service that manages pull requests
 protocol PullRequestService: RemoteService, UserIDService
 {
-  func getPullRequests(callback: @escaping ([Xit.PullRequest]) -> Void)
+  func getPullRequests(callback: @escaping ([any Xit.PullRequest]) -> Void)
   
-  func approve(request: PullRequest,
+  func approve(request: any PullRequest,
                onSuccess: @escaping () -> Void,
                onFailure: @escaping (RequestError) -> Void)
-  func unapprove(request: PullRequest,
+  func unapprove(request: any PullRequest,
                  onSuccess: @escaping () -> Void,
                  onFailure: @escaping (RequestError) -> Void)
-  func needsWork(request: PullRequest,
+  func needsWork(request: any PullRequest,
                  onSuccess: @escaping () -> Void,
                  onFailure: @escaping (RequestError) -> Void)
-  func merge(request: PullRequest)
+  func merge(request: any PullRequest)
 }
 
 /// The pull request actions that a particular service implements.

@@ -64,10 +64,10 @@ final class BuildStatusController: NSObject
   let buildStatusCache: BuildStatusCache
   var statusSink: AnyCancellable?
   var popover: NSPopover?
-  weak var display: BuildStatusDisplay?
+  weak var display: (any BuildStatusDisplay)?
   var refreshTimer: Timer! = nil
 
-  init(model: SidebarDataModel, display: BuildStatusDisplay)
+  init(model: SidebarDataModel, display: any BuildStatusDisplay)
   {
     self.model = model
     self.display = display
@@ -180,5 +180,5 @@ extension BuildStatusController: NSPopoverDelegate
 
 extension BuildStatusController: TeamCityAccessor
 {
-  var remoteMgr: RemoteManagement! { model.repository }
+  var remoteMgr: (any RemoteManagement)! { model.repository }
 }

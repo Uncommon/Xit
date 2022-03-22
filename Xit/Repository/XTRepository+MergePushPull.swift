@@ -2,8 +2,8 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branches: [LocalBranch],
-                   remote: Remote,
+  public func push(branches: [any LocalBranch],
+                   remote: any Remote,
                    callbacks: RemoteCallbacks) throws
   {
     guard let gitRemote = remote as? GitRemote
@@ -28,7 +28,7 @@ extension XTRepository: RemoteCommunication
     }
   }
   
-  public func fetch(remote: Remote, options: FetchOptions) throws
+  public func fetch(remote: any Remote, options: FetchOptions) throws
   {
     guard let gitRemote = remote as? GitRemote
     else { throw RepoError.unexpected }
@@ -54,8 +54,8 @@ extension XTRepository: RemoteCommunication
     }
   }
   
-  public func pull(branch: Branch,
-                   remote: Remote,
+  public func pull(branch: any Branch,
+                   remote: any Remote,
                    options: FetchOptions) throws
   {
     try fetch(remote: remote, options: options)
@@ -243,14 +243,14 @@ extension XTRepository: Merging
   // - Finalize with conflicts - write MERGE_HEAD, etc
   
   /// Merges the given branch into the current branch.
-  public func merge(branch: Branch) throws
+  public func merge(branch: any Branch) throws
   {
     try performWriting {
       try self.writingMerge(branch: branch)
     }
   }
   
-  fileprivate func writingMerge(branch: Branch) throws
+  fileprivate func writingMerge(branch: any Branch) throws
   {
     guard let gitBranch = branch as? GitBranch
     else { return }
@@ -338,7 +338,7 @@ extension XTRepository: Merging
   /// - parameter branch: Branch to merge into the current branch.
   /// - parameter fastForward: True for fast-forward only, false for
   /// fast-forward not allowed, or nil for no preference.
-  func analyzeMerge(from branch: Branch,
+  func analyzeMerge(from branch: any Branch,
                     fastForward: Bool? = nil) throws -> MergeAnalysis
   {
     guard let branch = branch as? GitBranch,

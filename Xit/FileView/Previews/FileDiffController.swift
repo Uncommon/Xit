@@ -2,9 +2,9 @@ import Cocoa
 
 protocol HunkStaging: AnyObject
 {
-  func stage(hunk: DiffHunk)
-  func unstage(hunk: DiffHunk)
-  func discard(hunk: DiffHunk)
+  func stage(hunk: any DiffHunk)
+  func unstage(hunk: any DiffHunk)
+  func discard(hunk: any DiffHunk)
 }
 
 /// Manages a WebView for displaying text file diffs.
@@ -12,10 +12,10 @@ final class FileDiffController: WebViewController,
                                 WhitespaceVariable,
                                 ContextVariable
 {
-  weak var stagingDelegate: HunkStaging?
-  weak var repo: (FileContents & CommitReferencing)?
+  weak var stagingDelegate: (any HunkStaging)?
+  weak var repo: (any FileContents & CommitReferencing)?
   var stagingType: StagingType = .none
-  var patch: Patch?
+  var patch: (any Patch)?
   
   fileprivate var isLoaded_internal = false
   
@@ -84,7 +84,7 @@ final class FileDiffController: WebViewController,
         """
   }
   
-  func hunkHeader(hunk: DiffHunk, index: Int, lines: [String]?) -> String
+  func hunkHeader(hunk: any DiffHunk, index: Int, lines: [String]?) -> String
   {
     guard stagingType != .none,
           let diffMaker = diffMaker
@@ -118,7 +118,7 @@ final class FileDiffController: WebViewController,
   }
   
   /// Returns the index/workspace counterpart blob
-  func diffTargetBlob() -> Blob?
+  func diffTargetBlob() -> (any Blob)?
   {
     guard let diffMaker = diffMaker,
           let headRef = repo?.headRef
@@ -219,7 +219,7 @@ final class FileDiffController: WebViewController,
     loadNotice(notice)
   }
   
-  func hunk(at index: Int) -> DiffHunk?
+  func hunk(at index: Int) -> (any DiffHunk)?
   {
     guard let patch = self.patch,
           (index >= 0) && (UInt(index) < patch.hunkCount)

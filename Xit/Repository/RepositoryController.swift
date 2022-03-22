@@ -3,7 +3,7 @@ import Combine
 
 public protocol RepositoryController: AnyObject
 {
-  var repository: BasicRepository { get }
+  var repository: any BasicRepository { get }
   var queue: TaskQueue { get }
 
   var cachedStagedChanges: [FileChange]? { get set }
@@ -20,7 +20,7 @@ public protocol RepositoryController: AnyObject
 final class GitRepositoryController: RepositoryController
 {
   let xtRepo: XTRepository
-  var repository: BasicRepository { xtRepo }
+  var repository: any BasicRepository { xtRepo }
 
   public let queue: TaskQueue
   let mutex = Mutex()

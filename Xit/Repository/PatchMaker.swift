@@ -9,7 +9,7 @@ public final class PatchMaker
     case blob(Blob)
     case data(Data)
     
-    init(_ blob: Blob?)
+    init(_ blob: (any Blob)?)
     {
       self = blob.map { .blob($0) } ?? .data(Data())
     }

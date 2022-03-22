@@ -7,7 +7,7 @@ final class CommitSelection: RepositorySelection
   let commit: Commit
   var shaToSelect: String? { commit.sha }
   var canCommit: Bool { false }
-  var fileList: FileListModel { commitFileList }
+  var fileList: any FileListModel { commitFileList }
   
   // Initialization requires a reference to self
   private(set) var commitFileList: CommitFileList!

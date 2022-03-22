@@ -7,14 +7,14 @@ final class WorkspaceTreeBuilder
   static let rootName = "#"
   
   private var changes: [String: DeltaStatus]
-  private var repo: FileStatusDetection?
+  private var repo: (any FileStatusDetection)?
   
   init(changes: [String: DeltaStatus])
   {
     self.changes = changes
   }
   
-  init(fileChanges: [FileChange], repo: FileStatusDetection? = nil)
+  init(fileChanges: [FileChange], repo: (any FileStatusDetection)? = nil)
   {
     var changes = [String: DeltaStatus]()
     

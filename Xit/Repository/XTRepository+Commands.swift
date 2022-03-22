@@ -106,9 +106,9 @@ extension XTRepository: Stashing
   { AnyCollection(StashCollection(repo: self)) }
   
   // TODO: Don't require the message parameter
-  public func stash(index: UInt, message: String?) -> Stash
+  public func stash(index: UInt, message: String?) -> any Stash
   {
-    return GitStash(repo: self, index: index, message: message)
+    GitStash(repo: self, index: index, message: message)
   }
   
   public func saveStash(name: String?,
@@ -199,7 +199,7 @@ extension XTRepository: RemoteManagement
     return strArray.compactMap { $0 }
   }
   
-  public func remote(named name: String) -> Remote?
+  public func remote(named name: String) -> (any Remote)?
   {
     return GitRemote(name: name, repository: gitRepo)
   }
@@ -247,9 +247,9 @@ extension XTRepository: SubmoduleManagement
     */
   }
   
-  public func submodules() -> [Submodule]
+  public func submodules() -> [any Submodule]
   {
-    class Payload { var submodules = [Submodule]() }
+    class Payload { var submodules = [any Submodule]() }
     
     var payload = Payload()
     let callback: git_submodule_cb = {

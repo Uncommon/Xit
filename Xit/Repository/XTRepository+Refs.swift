@@ -28,14 +28,14 @@ extension XTRepository: Branching
   public var currentBranchPublisher: AnyPublisher<String?, Never>
   { currentBranchSubject.eraseToAnyPublisher() }
   
-  public var localBranches: AnySequence<LocalBranch>
+  public var localBranches: AnySequence<any LocalBranch>
   { AnySequence { LocalBranchIterator(repo: self) } }
   
   public var remoteBranches: AnySequence<RemoteBranch>
   { AnySequence { RemoteBranchIterator(repo: self) } }
 
   public func createBranch(named name: String,
-                           target: String) throws -> LocalBranch?
+                           target: String) throws -> (any LocalBranch)?
   {
     if isWriting {
       throw RepoError.alreadyWriting
@@ -70,7 +70,7 @@ extension XTRepository: Branching
     try RepoError.throwIfGitError(result)
   }
 
-  public func localBranch(named name: String) -> LocalBranch?
+  public func localBranch(named name: String) -> (any LocalBranch)?
   {
     let fullName = RefPrefixes.heads +/ name
     
@@ -87,12 +87,13 @@ extension XTRepository: Branching
     }
   }
   
-  public func remoteBranch(named name: String, remote: String) -> RemoteBranch?
+  public func remoteBranch(named name: String,
+                           remote: String) -> (any RemoteBranch)?
   {
     return remoteBranch(named: remote +/ name)
   }
   
-  public func remoteBranch(named name: String) -> RemoteBranch?
+  public func remoteBranch(named name: String) -> (any RemoteBranch)?
   {
     let fullName = RefPrefixes.remotes +/ name
     
@@ -109,7 +110,8 @@ extension XTRepository: Branching
     }
   }
   
-  public func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  public func localBranch(tracking remoteBranch: any RemoteBranch)
+    -> (any LocalBranch)?
   {
     return localTrackingBranch(forBranchRef: remoteBranch.name)
   }
@@ -119,7 +121,8 @@ extension XTRepository: Branching
       NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
                           options: [])
 
-  public func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+  public func localTrackingBranch(forBranchRef branch: String)
+    -> (any LocalBranch)?
   {
     guard let ref = RefName(rawValue: branch),
           case let .remoteBranch(remote, branch) = ref
@@ -149,7 +152,7 @@ extension XTRepository: Branching
     return nil
   }
   
-  public func reset(toCommit target: Commit, mode: ResetMode) throws
+  public func reset(toCommit target: any Commit, mode: ResetMode) throws
   {
     guard let commit = target as? GitCommit
     else { throw RepoError.unexpected }
@@ -163,7 +166,7 @@ extension XTRepository: Branching
 
 extension XTRepository: Tagging
 {
-  public func createTag(name: String, targetOID: OID, message: String?) throws
+  public func createTag(name: String, targetOID: any OID, message: String?) throws
   {
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
@@ -182,12 +185,12 @@ extension XTRepository: Tagging
     }
   }
   
-  public func createLightweightTag(name: String, targetOID: OID) throws
+  public func createLightweightTag(name: String, targetOID: any OID) throws
   {
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
                                    repository: gitRepo)
-        else { throw RepoError.notFound }
+      else { throw RepoError.notFound }
       
       var oid = git_oid()
       let result = git_tag_create_lightweight(&oid, gitRepo, name,

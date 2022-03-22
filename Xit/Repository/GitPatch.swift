@@ -6,7 +6,7 @@ public protocol Patch
   var addedLinesCount: Int { get }
   var deletedLinesCount: Int { get }
 
-  func hunk(at index: Int) -> DiffHunk?
+  func hunk(at index: Int) -> (any DiffHunk)?
 }
 
 
@@ -24,7 +24,7 @@ final class GitPatch: Patch
     self.newData = nil
   }
   
-  init?(oldBlob: Blob, newBlob: Blob, options: DiffOptions? = nil)
+  init?(oldBlob: any Blob, newBlob: any Blob, options: DiffOptions? = nil)
   {
     guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
           let newGitBlob = (newBlob as? GitBlob)?.blob,
@@ -42,7 +42,7 @@ final class GitPatch: Patch
     self.newData = nil
   }
   
-  init?(oldBlob: Blob, newData: Data, options: DiffOptions? = nil)
+  init?(oldBlob: any Blob, newData: Data, options: DiffOptions? = nil)
   {
     guard let oldGitBlob = (oldBlob as? GitBlob)?.blob,
           let patch = try? OpaquePointer.from({

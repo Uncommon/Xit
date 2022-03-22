@@ -44,7 +44,7 @@ struct SidebarDateFilter: SidebarItemFilter
 
 struct SidebarFilterSet
 {
-  var filters: [SidebarItemFilter]
+  var filters: [any SidebarItemFilter]
   
   func apply(to roots: [SideBarGroupItem]) -> [SideBarGroupItem]
   {

@@ -8,7 +8,7 @@ final class SidebarDataModel
                          Branching & RemoteManagement &
                          SubmoduleManagement & Stashing
 
-  private(set) weak var repository: Repository?
+  private(set) weak var repository: (any Repository)?
   private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
 
@@ -26,7 +26,7 @@ final class SidebarDataModel
     return roots
   }
   
-  init(repository: Repository, outlineView: NSOutlineView?)
+  init(repository: any Repository, outlineView: NSOutlineView?)
   {
     self.repository = repository
     self.outline = outlineView

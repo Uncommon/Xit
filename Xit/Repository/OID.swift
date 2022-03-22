@@ -7,7 +7,7 @@ public protocol OID: CustomDebugStringConvertible
   
   // Making OID Equatable would cause cascading requirements that it, and
   // protocols that use it, only be used as a generic constraint.
-  func equals(_ other: OID) -> Bool
+  func equals(_ other: any OID) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
@@ -33,7 +33,7 @@ extension OID
 
 public protocol OIDObject
 {
-  var oid: OID { get }
+  var oid: any OID { get }
 }
 
 

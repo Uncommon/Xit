@@ -24,7 +24,7 @@ final class SearchAccessoryController: NSTitlebarAccessoryViewController
   @IBOutlet weak var searchField: NSSearchField!
   @IBOutlet weak var searchButtons: NSSegmentedControl!
   
-  weak var delegate: HistorySearchDelegate?
+  weak var delegate: (any HistorySearchDelegate)?
 
   override var layoutAttribute: NSLayoutConstraint.Attribute
   {

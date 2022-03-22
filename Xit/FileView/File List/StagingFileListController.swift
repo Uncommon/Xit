@@ -40,7 +40,7 @@ class StagingFileListController: FileListController
     }
   }
 
-  override func finishLoad(controller: RepositoryUIController)
+  override func finishLoad(controller: any RepositoryUIController)
   {
     super.finishLoad(controller: controller)
 

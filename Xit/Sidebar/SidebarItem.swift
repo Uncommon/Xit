@@ -5,7 +5,7 @@ class SidebarItem: NSObject
 {
   var title: String
   var children: [SidebarItem]
-  var selection: RepositorySelection?
+  var selection: (any RepositorySelection)?
   
   var displayTitle: UIString { UIString(rawValue: title) }
   var icon: NSImage? { nil }
@@ -24,7 +24,7 @@ class SidebarItem: NSObject
     super.init()
   }
   
-  convenience init(title: String, selection: RepositorySelection)
+  convenience init(title: String, selection: any RepositorySelection)
   {
     self.init(title: title)
     self.selection = selection
@@ -169,9 +169,9 @@ class BranchSidebarItem: SidebarItem
   { .xtBranch }
   
   var fullName: String { title }
-  var remote: Remote? { nil }
+  var remote: (any Remote)? { nil }
   
-  func branchObject() -> Branch?
+  func branchObject() -> (any Branch)?
   {
     return nil
   }
@@ -195,7 +195,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
     return selection!.repository.localBranch(named: title)
   }
   
-  override var remote: Remote?
+  override var remote: (any Remote)?
   {
     guard let localBranch = branchObject() as? LocalBranch,
           let remoteBranch = localBranch.trackingBranch,
@@ -223,14 +223,16 @@ extension LocalBranchSidebarItem: RefSidebarItem
 final class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remoteName: String
-  override var remote: Remote?
+  override var remote: (any Remote)?
   { (selection!.repository as? RemoteManagement)?.remote(named: remoteName) }
   override var refType: RefType { .remoteBranch }
   
   override var fullName: String { "\(remoteName)/\(title)" }
   
 
-  required init(title: String, remote: String, selection: RepositorySelection?)
+  required init(title: String,
+                remote: String,
+                selection: (any RepositorySelection)?)
   {
     self.remoteName = remote
     
@@ -250,7 +252,7 @@ final class RemoteBranchSidebarItem: BranchSidebarItem
                                selection: selection)
   }
   
-  override func branchObject() -> Branch?
+  override func branchObject() -> (any Branch)?
   {
     return selection!.repository.remoteBranch(named: title, remote: remoteName)
   }
@@ -298,14 +300,14 @@ final class RemoteSidebarItem: SidebarItem
   override var isEditable: Bool { true }
   override var refType: RefType { .remote }
   
-  init(title: String, repository: RemoteManagement)
+  init(title: String, repository: any RemoteManagement)
   {
     self.remote = repository.remote(named: title)
     
     super.init(title: title)
   }
   
-  required init(title: String, remote: Remote?)
+  required init(title: String, remote: (any Remote)?)
   {
     self.remote = remote
     
@@ -327,7 +329,7 @@ final class RemoteSidebarItem: SidebarItem
 
 final class TagSidebarItem: SidebarItem
 {
-  let tag: Tag
+  let tag: any Tag
 
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
@@ -342,7 +344,7 @@ final class TagSidebarItem: SidebarItem
   }
   override var refType: RefType { .tag }
 
-  required init(tag: Tag)
+  required init(tag: any Tag)
   {
     self.tag = tag
     
@@ -376,8 +378,8 @@ final class TagSidebarItem: SidebarItem
       name: "Mock",
       email: "mock@example.com",
       when: .init(timeIntervalSinceReferenceDate: 0))
-    let targetOID: OID? = nil
-    let commit: Commit? = nil
+    let targetOID: (any OID)? = nil
+    let commit: (any Commit)? = nil
     let message: String? = nil
     let type: TagType = .annotated
     let isSigned: Bool = false
@@ -393,11 +395,11 @@ extension TagSidebarItem: RefSidebarItem
 
 class SubmoduleSidebarItem: SidebarItem
 {
-  let submodule: Submodule
+  let submodule: any Submodule
   override var icon: NSImage?
   { .xtSubmodule }
   
-  required init(submodule: Submodule)
+  required init(submodule: any Submodule)
   {
     self.submodule = submodule
     
