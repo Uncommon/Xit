@@ -31,9 +31,10 @@ extension Siesta.Resource
   /// Returns the latest data, or waits for data to arrive.
   var data: Entity<Any>
   {
+    @MainActor
     get async throws
     {
-      if await MainActor.run(body: { self.isUpToDate }), let data = latestData {
+      if isUpToDate, let data = latestData {
         return data
       }
       else {

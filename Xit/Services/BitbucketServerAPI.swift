@@ -310,7 +310,8 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
       self.user = user
     }
   }
-  
+
+  @MainActor
   func pullRequests() -> Resource
   {
     let url = URL(string: "dashboard/pull-requests", relativeTo: baseURL)
@@ -355,7 +356,7 @@ extension BitbucketServerAPI: PullRequestService
   func getPullRequests() async -> [Xit.PullRequest]
   {
     do {
-      let pullRequests = await MainActor.run { self.pullRequests() }
+      let pullRequests = await pullRequests()
       let data = try await pullRequests.data
       guard let requests = data.content as? BitbucketServer.PagedPullRequest
       else {
