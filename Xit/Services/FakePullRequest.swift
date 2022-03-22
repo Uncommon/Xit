@@ -43,21 +43,24 @@ final class FakePRService: Service, PullRequestService, AccountService
     
     callback(requests)
   }
+
+  func getPullRequests() async -> [PullRequest]
+  {
+    let branches = ["master", "delete", "merge"]
+    let statuses: [PullRequestStatus] = [.open, .inactive, .merged]
+
+    let requests = zip(branches, statuses).map {
+      FakePullRequest(service: self, sourceBranch: "refs/heads/" + $0, status: $1)
+    }
+
+    return requests
+  }
   
-  func approve(request: PullRequest,
-               onSuccess: @escaping () -> Void,
-               onFailure: @escaping (RequestError) -> Void)
-  { onSuccess() }
+  func approve(request: PullRequest) {}
 
-  func unapprove(request: PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
-  { onSuccess() }
+  func unapprove(request: PullRequest) {}
 
-  func needsWork(request: PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
-  { onSuccess() }
+  func needsWork(request: PullRequest) {}
   
   func merge(request: PullRequest) {}
   

@@ -61,18 +61,11 @@ protocol UserIDService
 /// A service that manages pull requests
 protocol PullRequestService: RemoteService, UserIDService
 {
-  func getPullRequests(callback: @escaping ([any Xit.PullRequest]) -> Void)
-  
-  func approve(request: any PullRequest,
-               onSuccess: @escaping () -> Void,
-               onFailure: @escaping (RequestError) -> Void)
-  func unapprove(request: any PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
-  func needsWork(request: any PullRequest,
-                 onSuccess: @escaping () -> Void,
-                 onFailure: @escaping (RequestError) -> Void)
-  func merge(request: any PullRequest)
+  func getPullRequests() async -> [any Xit.PullRequest]
+  func approve(request: any PullRequest) async throws
+  func unapprove(request: any PullRequest) async throws
+  func needsWork(request: any PullRequest) async throws
+  func merge(request: any PullRequest) async throws
 }
 
 /// The pull request actions that a particular service implements.

@@ -48,22 +48,22 @@ final class PullRequestCache
     let remotes = repository.remotes()
 
     requests.removeAll()
-    
-    Signpost.intervalStart(.refreshPullRequests)
-    defer {
-      Signpost.intervalEnd(.refreshPullRequests)
-    }
-    
-    for remote in remotes {
-      guard let service = Services.shared.pullRequestService(remote: remote)
-      else { continue }
-      
-      service.getPullRequests {
-        (requests) in
+
+    Task.detached {
+      Signpost.intervalStart(.refreshPullRequests)
+      defer {
+        Signpost.intervalEnd(.refreshPullRequests)
+      }
+
+      for remote in remotes {
+        guard let service = Services.shared.pullRequestService(remote: remote)
+        else { continue }
+
+        let requests = await service.getPullRequests()
         var branchMap: [String: [any PullRequest]] = [:]
-        
+
         self.requests.append(contentsOf: requests)
-        
+
         for request in requests {
           if let branchRequests = branchMap[request.sourceBranch] {
             branchMap[request.sourceBranch] = branchRequests + [request]
