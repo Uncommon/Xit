@@ -63,6 +63,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   
   /// Status of the most recent build of the given branch from any project
   /// and build type.
+  @MainActor
   func buildStatus(_ branch: String, buildType: String) -> Resource
   {
     // Look up:
@@ -79,6 +80,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   
   // Applies the given closure to the build statuses for the given branch and
   // build type, asynchronously if the data is not yet cached.
+  @MainActor
   func enumerateBuildStatus(_ branch: String, buildType: String,
                             processor: @escaping ([String: String]) -> Void)
   {

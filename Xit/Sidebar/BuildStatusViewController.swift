@@ -117,9 +117,14 @@ final class BuildStatusViewController: NSViewController
                          (branch as? RemoteBranch).flatMap({
                             repository.localBranch(tracking: $0) }) {
       setProgressVisible(true)
-      buildStatusCache.refresh(branch: localBranch, onFailure: {
-        self.setProgressVisible(false)
-      })
+      Task {
+        do {
+          try await buildStatusCache.refresh(branch: localBranch)
+        }
+        catch {
+          self.setProgressVisible(false)
+        }
+      }
     }
   }
   

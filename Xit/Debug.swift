@@ -104,4 +104,16 @@ enum Signpost
     }
     return try call()
   }
+
+  static func interval<T>(_ code: Interval,
+                          call: () async throws -> T) async rethrows -> T
+  {
+    let id = OSSignpostID(log: Signpost.logger)
+
+    intervalStart(code, id: id)
+    defer {
+      intervalEnd(code, id: id)
+    }
+    return try await call()
+  }
 }

@@ -39,26 +39,38 @@ extension Siesta.Resource
       }
       else {
         return try await withCheckedThrowingContinuation { continuation in
+          // Convenience functions to help make sure we always remove
+          // to avoid multiple resume calls
+          func resume(returning result: Entity<Any>)
+          {
+            self.removeObservers(ownedBy: self)
+            continuation.resume(returning: result)
+          }
+          func resume<T>(throwing error: T) where T: Error
+          {
+            self.removeObservers(ownedBy: self)
+            continuation.resume(throwing: error)
+          }
           addObserver(owner: self) {
             (resource, event) in
             switch event {
               case .newData:
                 if let data = resource.latestData {
-                  continuation.resume(returning: data)
+                  resume(returning: data)
                   return
                 }
               case .error:
                 if let error = resource.latestError {
-                  continuation.resume(throwing: error)
+                  resume(throwing: error)
                   return
                 }
               case .notModified, .observerAdded, .requested:
                 return
               case .requestCancelled:
-                continuation.resume(throwing: ServiceError.canceled)
+                resume(throwing: ServiceError.canceled)
                 return
             }
-            continuation.resume(throwing: ServiceError.unexpected)
+            resume(throwing: ServiceError.unexpected)
           }
           DispatchQueue.main.async {
             self.loadIfNeeded()

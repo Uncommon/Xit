@@ -49,53 +49,69 @@ final class BuildStatusCache: TeamCityAccessor
     else { return }
     
     statuses.removeAll()
-    Signpost.interval(.refreshBuildStatus) {
-      for local in localBranches {
-        refresh(branch: local)
+    Task {
+      await Signpost.interval(.refreshBuildStatus) {
+        for local in localBranches {
+          do {
+            try await refresh(branch: local)
+          }
+          catch {}
+        }
       }
     }
   }
-  
-  func refresh(branch: any LocalBranch, onFailure: (() -> Void)? = nil)
+
+  enum RefreshError: Error
+  {
+    case noBuildTypes
+    case parseFailure
+  }
+
+  @MainActor
+  func refresh(branch: any LocalBranch) async throws
   {
     guard let tracked = branch.trackingBranch,
           let remoteName = tracked.remoteName,
           let (api, buildTypes) = matchTeamCity(remoteName)
     else {
-      onFailure?()
-      return
+      throw RefreshError.noBuildTypes
     }
   
     let fullBranchName = branch.name
-  
-    for buildType in buildTypes {
-      guard let branchName = api.displayName(forBranch: fullBranchName,
-                                             buildType: buildType)
-      else { continue }
-      
-      let statusResource = api.buildStatus(branchName, buildType: buildType)
-      
-      statusResource.invalidate()
-      statusResource.useData(owner: self) {
-        (data) in
-        guard let xml = data.content as? XMLDocument,
-              let firstBuildElement = xml.rootElement()?.children?.first
-                                      as? XMLElement,
-              let build = TeamCityAPI.Build(element: firstBuildElement)
-        else {
-          onFailure?()
-          return
-        }
-        
-        var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
-        
-        buildTypeStatuses[branchName] = build
-        self.statuses[buildType] = buildTypeStatuses
-        for ref in self.clients {
-          ref.client?.buildStatusUpdated(branch: branchName,
-                                         buildType: buildType)
+
+    try await withThrowingTaskGroup(of: Void.self) {
+      (taskGroup) in
+      for buildType in buildTypes {
+        guard let branchName = api.displayName(forBranch: fullBranchName,
+                                               buildType: buildType)
+        else { continue }
+        let statusResource = api.buildStatus(branchName, buildType: buildType)
+
+        statusResource.invalidate()
+        taskGroup.addTask {
+          let data = try await statusResource.data
+          guard let xml = data.content as? XMLDocument
+          else {
+            throw RefreshError.parseFailure
+          }
+          guard let firstBuildElement = xml.rootElement()?.children?.first
+                                        as? XMLElement,
+                let build = TeamCityAPI.Build(element: firstBuildElement)
+          else {
+            // failed to find matching branch; ignore and continue
+            return
+          }
+          var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
+
+          buildTypeStatuses[branchName] = build
+          self.statuses[buildType] = buildTypeStatuses
+          for ref in self.clients {
+            ref.client?.buildStatusUpdated(branch: branchName,
+                                           buildType: buildType)
+          }
         }
       }
+      try await taskGroup.waitForAll()
     }
   }
 }
