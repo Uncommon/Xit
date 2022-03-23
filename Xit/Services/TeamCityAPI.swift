@@ -5,18 +5,34 @@ import Combine
 /// API for getting TeamCity build information.
 final class TeamCityAPI: BasicAuthService, ServiceAPI
 {
+  enum ParseStep
+  {
+    case vcsRoots, buildTypes, buildType
+  }
+
+  enum Error: Swift.Error
+  {
+    case vcsRoots
+    case parseFailure(ParseStep)
+    case findHrefs
+    case firstBuildType
+    case rootEntries
+    case missingID
+  }
+
   var type: AccountType { .teamCity }
   static let rootPath = "/httpAuth/app/rest"
 
-  @Published fileprivate(set) var buildTypesStatus = Services.Status.notStarted
+  @Published
+  fileprivate(set) var buildTypesStatus = Services.Status.notStarted
 
   /// Maps VCS root ID to repository URL.
-  fileprivate(set) var vcsRootMap = [String: URL]()
+  fileprivate(set) var vcsRootMap: [String: URL] = [:]
   /// Maps VCS root ID to branch specification.
-  fileprivate(set) var vcsBranchSpecs = [String: BranchSpec]()
+  fileprivate(set) var vcsBranchSpecs: [String: BranchSpec] = [:]
   /// Maps built type IDs to lists of repository URLs.
-  fileprivate(set) var buildTypeURLs = [String: [URL]]()
-  fileprivate(set) var cachedBuildTypes = [BuildType]()
+  fileprivate(set) var buildTypeURLs: [String: [URL]] = [:]
+  fileprivate(set) var cachedBuildTypes: [BuildType] = []
   /// Cached results for `buildTypesForRemote`
   private var buildTypesCache: [String: [String]] = [:]
   /// Cached results for `vcsRootsForBuildType`
@@ -114,37 +130,49 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
           ? shortest : name
     }
   }
-  
+
+  /// Use this instead of `Service.resource()` to ensure it runs on the main
+  /// thread.
+  @MainActor
+  func pathResource(_ path: String) -> Resource
+  { super.resource(path) }
+
+  @MainActor
   var vcsRoots: Resource
-  { resource("vcs-roots") }
+  { pathResource("vcs-roots") }
   
+  @MainActor
   var projects: Resource
-  { resource("projects") }
+  { pathResource("projects") }
   
+  @MainActor
   var buildTypes: Resource
-  { resource("buildTypes") }
-  
+  { pathResource("buildTypes") }
+
+  @MainActor
   /// A resource for the VCS root with the given ID.
   func vcsRoot(id: String) -> Resource
   {
-    return resource("vcs-roots/id:\(id)")
+    pathResource("vcs-roots/id:\(id)")
   }
   
   override func didAuthenticate(responseResource: Resource)
   {
-    Signpost.intervalStart(.teamCityQuery)
-    // Get VCS roots, build repo URL -> vcs-root id map.
-    vcsRoots.useData(owner: self) {
-      (data) in
-      Signpost.intervalEnd(.teamCityQuery)
-      guard let xml = data.content as? XMLDocument
-      else {
-        NSLog("Couldn't parse vcs-roots xml")
-        self.buildTypesStatus = .failed(nil)  // TODO: ParseError type
-        return
+    Task {
+      // Get VCS roots, build repo URL -> vcs-root id map.
+      do {
+        let data = try await Signpost.interval(.teamCityQuery,
+                                               call: { try await vcsRoots.data })
+        guard let xml = data.content as? XMLDocument
+        else {
+          throw Error.vcsRoots
+        }
+        try await Signpost.interval(.teamCityProcess) {
+            try await self.parseVCSRoots(xml)
+        }
       }
-      Signpost.interval(.teamCityProcess) {
-        self.parseVCSRoots(xml)
+      catch let error {
+        self.buildTypesStatus = .failed(error)
       }
     }
   }
@@ -204,38 +232,36 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     vcsRootsCache[buildType] = result
     return result
   }
-  
+
   /// Parses the list of VCS roots, collecting their repository URLs.
   /// Once all repo URLs have been logged, it moves on to reading build types.
-  func parseVCSRoots(_ xml: XMLDocument)
+  func parseVCSRoots(_ xml: XMLDocument) async throws
   {
     guard let vcsIDs = xml.rootElement()?.childrenAttributes("id")
     else {
-      NSLog("Couldn't parse vcs-roots")
-      self.buildTypesStatus = .failed(nil)
-      return
+      throw Error.parseFailure(.vcsRoots)
     }
     
-    var waitingRootCount = vcsIDs.count
-
     buildTypesCache.removeAll()
     vcsRootMap.removeAll()
     vcsRootsCache.removeAll()
     vcsBranchSpecs.removeAll()
-    for rootID in vcsIDs {
-      let rootResource = vcsRoot(id: rootID)
-      
-      rootResource.useData(owner: self) {
-        (data) in
-        if let xmlData = data.content as? XMLDocument {
-          self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
-          waitingRootCount -= 1
-          if waitingRootCount == 0 {
-            self.getBuildTypes()
+    try await withThrowingTaskGroup(of: Void.self) {
+      (taskGroup) in
+      for rootID in vcsIDs {
+        let rootResource = await vcsRoot(id: rootID)
+
+        taskGroup.addTask {
+          let data = try await rootResource.data
+
+          if let xmlData = data.content as? XMLDocument {
+            self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
           }
         }
       }
+      try await taskGroup.waitForAll()
     }
+    try await getBuildTypes()
   }
   
   /// Parses the data for an individual VCS root.
@@ -268,77 +294,56 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   }
   
   /// Initiates the request for the list of build types.
-  func getBuildTypes()
+  func getBuildTypes() async throws
   {
-    buildTypes.useData(owner: self) {
-      (data) in
-      guard let xml = data.content as? XMLDocument
-      else {
-        NSLog("Couldn't parse build types xml")
-        self.buildTypesStatus = .failed(nil)
-        return
-      }
-      self.parseBuildTypes(xml)
+    let data = try await buildTypes.data
+    guard let xml = data.content as? XMLDocument
+    else {
+      throw Error.parseFailure(.buildTypes)
     }
-  }
-  
-  /// Parses the received list of build types. Once all have been parsed
-  /// successfully, `buildTypesStatus` is set to `done`.
-  func parseBuildTypes(_ xml: XMLDocument)
-  {
     guard let hrefs = xml.rootElement()?.childrenAttributes(Build.Attribute.href)
     else {
-      NSLog("Couldn't get hrefs: \(xml)")
-      return
+      throw Error.findHrefs
     }
-    
-    var waitingTypeCount = hrefs.count
     
     cachedBuildTypes.removeAll()
-    for href in hrefs {
-      let relativePath = href.droppingPrefix(TeamCityAPI.rootPath)
-      
-      resource(relativePath).useData(owner: self) {
-        (data) in
-        waitingTypeCount -= 1
-        defer {
-          if waitingTypeCount == 0 {
-            self.buildTypesStatus = .done
+    try await withThrowingTaskGroup(of: Void.self) {
+      (taskGroup) in
+      for href in hrefs {
+        let relativePath = href.droppingPrefix(TeamCityAPI.rootPath)
+
+        taskGroup.addTask {
+          guard let data = try? await self.pathResource(relativePath).data,
+                let xml = data.content as? XMLDocument
+          else {
+            throw Error.parseFailure(.buildType)
           }
+
+          try self.parseBuildType(xml)
         }
-        
-        guard let xml = data.content as? XMLDocument
-        else {
-          NSLog("Couldn't parse build type xml")
-          self.buildTypesStatus = .failed(nil)
-          return
-        }
-        
-        self.parseBuildType(xml)
       }
+      try await taskGroup.waitForAll()
     }
+    self.buildTypesStatus = .done
   }
   
   /// Parses an individual build type to see which VCS roots it uses.
-  func parseBuildType(_ xml: XMLDocument)
+  func parseBuildType(_ xml: XMLDocument) throws
   {
     guard let buildType = xml.children?.first as? XMLElement
     else {
-      NSLog("Can't get first buildType element: \(xml)")
-      return
+      throw Error.firstBuildType
     }
 
     let name = buildType.attribute(forName: "name")?.stringValue ?? "❎"
 
     guard let rootEntries = buildType.elements(forName: "vcs-root-entries").first
     else {
-      self.buildTypesStatus = .failed(nil)
-      return
+      throw Error.rootEntries
     }
     guard let buildTypeID = buildType.attribute(forName: "id")?.stringValue
     else {
-      NSLog("No ID for build type \(name)")
-      return
+      throw Error.missingID
     }
 
     let projectName = buildType.attribute(forName: "projectName")?.stringValue
