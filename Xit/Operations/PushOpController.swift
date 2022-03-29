@@ -78,8 +78,7 @@ final class PushOpController: PasswordOpController
           let alert = NSAlert()
           
           alert.messageString = .noRemoteBranches(remoteName)
-          alert.beginSheetModal(for: windowController!.window!,
-                                completionHandler: nil)
+          alert.beginSheetModal(for: windowController!.window!)
           return
         }
 

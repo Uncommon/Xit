@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 enum RemoteOperationOption
 {
@@ -51,7 +52,7 @@ extension XTWindowController
     let alert = NSAlert()
 
     alert.messageString = error.message
-    alert.beginSheetModal(for: window, completionHandler: nil)
+    alert.beginSheetModal(for: window)
   }
 
   /// Called by the operation controller when it's done.

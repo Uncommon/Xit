@@ -39,7 +39,7 @@ extension SidebarController
               
               alert.messageString = .checkoutFailedConflict
               alert.informativeString = .checkoutFailedConflictInfo
-              alert.beginSheetModal(for: self.view.window!, completionHandler: nil)
+              alert.beginSheetModal(for: self.view.window!)
             }
           default:
             break
@@ -90,7 +90,7 @@ extension SidebarController
           let alert = NSAlert()
           
           alert.messageString = repoError.message
-          alert.beginSheetModal(for: window, completionHandler: nil)
+          alert.beginSheetModal(for: window)
         }
       }
       catch {

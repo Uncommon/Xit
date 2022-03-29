@@ -106,7 +106,7 @@ extension AppDelegate: NSOpenSavePanelDelegate
         let alert = NSAlert()
         
         alert.messageString = .notARepository
-        alert.beginSheetModal(for: window, completionHandler: nil)
+        alert.beginSheetModal(for: window)
       }
       throw NSError(domain: NSCocoaErrorDomain,
                     code: CocoaError.featureUnsupported.rawValue)

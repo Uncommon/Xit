@@ -146,7 +146,7 @@ final class ClonePanelController: NSWindowController
             let alert = NSAlert()
             
             alert.messageText = error.localizedDescription
-            alert.beginSheetModal(for: window, completionHandler: nil)
+            alert.beginSheetModal(for: window)
         }
       }
     }

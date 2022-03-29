@@ -101,7 +101,7 @@ class OperationController
         let alert = NSAlert()
         
         alert.messageText = message
-        alert.beginSheetModal(for: window, completionHandler: nil)
+        alert.beginSheetModal(for: window)
       }
     }
   }

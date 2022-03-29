@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 // Command handling extracted for testability
 protocol SidebarCommandHandler: AnyObject, RepositoryUIAccessor
@@ -120,7 +121,7 @@ extension SidebarCommandHandler
           else { return }
           let alert = NSAlert(error: error)
           
-          alert.beginSheetModal(for: window, completionHandler: nil)
+          alert.beginSheetModal(for: window)
         }
       }
     }

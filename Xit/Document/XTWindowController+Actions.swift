@@ -166,7 +166,7 @@ extension XTWindowController
     let alert = NSAlert()
     
     alert.messageString = .noStashes
-    alert.beginSheetModal(for: window!, completionHandler: nil)
+    alert.beginSheetModal(for: window!)
   }
   
   @IBAction

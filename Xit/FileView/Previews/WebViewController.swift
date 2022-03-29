@@ -97,7 +97,7 @@ class WebViewController: NSViewController
   {
     webView.evaluateJavaScript("""
         document.documentElement.style.setProperty('\(property)', '\(value)')
-        """, completionHandler: nil)
+        """)
   }
   
   func wrappingWidthAdjustment() -> Int

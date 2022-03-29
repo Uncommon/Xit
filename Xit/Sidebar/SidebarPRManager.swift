@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 final class SidebarPRManager
 {
@@ -241,6 +242,6 @@ extension SidebarPRManager: PullRequestActionDelegate
     
     alert.messageString = .prActionFailed
     alert.informativeText = (error as CustomStringConvertible).description
-    alert.beginSheetModal(for: window, completionHandler: nil)
+    alert.beginSheetModal(for: window)
   }
 }

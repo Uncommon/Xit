@@ -479,7 +479,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   {
     let alert = NSAlert(error: error)
     
-    alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    alert.beginSheetModal(for: view.window!)
   }
   
   func displayRepositoryAlert(error: RepoError)
@@ -487,7 +487,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     let alert = NSAlert()
     
     alert.messageString = error.message
-    alert.beginSheetModal(for: view.window!, completionHandler: nil)
+    alert.beginSheetModal(for: view.window!)
   }
 
   func revertConfirmed(path: String)
@@ -499,7 +499,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       let alert = NSAlert()
       
       alert.messageString = error.message
-      alert.beginSheetModal(for: view.window!, completionHandler: nil)
+      alert.beginSheetModal(for: view.window!)
     }
     catch {
       NSLog("Unexpected revert error")
