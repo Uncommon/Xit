@@ -28,25 +28,24 @@ final class AppDelegate: NSObject
   @IBAction
   func openDocument(_ sender: Any?)
   {
-    if ClonePanelController.isShowingPanel {
-      ClonePanelController.instance.close()
-    }
     if let openPanel = openPanel {
       openPanel.makeKeyAndOrderFront(self)
       return
     }
-    
-    let newOpenPanel = NSOpenPanel()
-    
-    openPanel = newOpenPanel
-    newOpenPanel.canChooseFiles = false
-    newOpenPanel.canChooseDirectories = true
-    newOpenPanel.delegate = self
-    newOpenPanel.messageString = .openPrompt
-    
-    newOpenPanel.begin {
-      (result) in
-      if result == NSApplication.ModalResponse.OK {
+    if ClonePanelController.isShowingPanel {
+      ClonePanelController.instance.close()
+    }
+
+    Task {
+      let newOpenPanel = NSOpenPanel()
+
+      openPanel = newOpenPanel
+      newOpenPanel.canChooseFiles = false
+      newOpenPanel.canChooseDirectories = true
+      newOpenPanel.delegate = self
+      newOpenPanel.messageString = .openPrompt
+
+      if await newOpenPanel.begin() == .OK {
         for url in newOpenPanel.urls {
           NSDocumentController.shared.openDocument(
               withContentsOf: url,

@@ -68,9 +68,26 @@ final class AccountsPrefsController: NSViewController
   @IBAction
   func addAccount(_ sender: AnyObject)
   {
-    addController.resetForAdd()
-    view.window?.beginSheet(addController.window!,
-                            completionHandler: addAccountDone)
+    guard let sheet = addController.window
+    else {
+      assertionFailure("no sheet window")
+      return
+    }
+    
+    Task {
+      addController.resetForAdd()
+
+      guard await view.window?.beginSheet(sheet) == .OK,
+            let url = addController.location
+      else { return }
+
+      addAccount(type: addController.accountType,
+                 user: addController.userName,
+                 password: addController.password,
+                 location: url)
+      updateActionButtons()
+      savePreferences()
+    }
   }
   
   @IBAction
@@ -78,70 +95,57 @@ final class AccountsPrefsController: NSViewController
   {
     guard let account = selectedAccount
     else { return }
-    
-    addController.loadFieldsForEdit(from: account)
-    view.window?.beginSheet(addController.window!,
-                            completionHandler: editAccountDone)
-  }
-
-  func addAccountDone(response: NSApplication.ModalResponse)
-  {
-    guard response == NSApplication.ModalResponse.OK,
-          let url = addController.location
-    else { return }
-    
-    addAccount(type: addController.accountType,
-               user: addController.userName,
-               password: addController.password,
-               location: url as URL)
-    updateActionButtons()
-    savePreferences()
-  }
-  
-  func editAccountDone(response: NSApplication.ModalResponse)
-  {
-    guard response == NSApplication.ModalResponse.OK,
-          let account = selectedAccount
-    else { return }
-    let oldUser = account.user
-    let newUser = addController.userName
-    let oldURL = account.location
-    let newURL = addController.location!  // addController does validation
-    let oldPassword = XTKeychain.shared.find(url: oldURL, account: oldUser)
-    let newPassword = addController.password
-
-    if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
-      do {
-        let newAccount = Account(type: account.type,
-                                 user: newUser,
-                                 location: newURL)
-        
-        try AccountsManager.manager.modify(oldAccount: account,
-                                           newAccount: newAccount,
-                                           newPassword: newPassword)
-      }
-      catch let error as NSError where error.code == errSecUserCanceled {
-        return
-      }
-      catch PasswordError.invalidURL {
-        NSAlert.showMessage(window: view.window!, message: .keychainInvalidURL)
-      }
-      catch let error {
-        print("changePassword failure: \(error)")
-        NSAlert.showMessage(window: view.window!, message: .keychainError)
-      }
+    guard let sheet = addController.window
+    else {
+      assertionFailure("no sheet window")
+      return
     }
 
-    account.user = newUser
-    account.location = newURL
-    
-    // notify the service
+    Task {
+      addController.loadFieldsForEdit(from: account)
 
-    let columns = 0..<accountsTable.numberOfColumns
-    
-    accountsTable.reloadData(forRowIndexes: [accountsTable.selectedRow],
-                             columnIndexes: IndexSet(integersIn: columns))
-    savePreferences()
+      guard await view.window?.beginSheet(sheet) == .OK
+      else { return }
+      let oldUser = account.user
+      let newUser = addController.userName
+      let oldURL = account.location
+      let newURL = addController.location!  // addController does validation
+      let oldPassword = XTKeychain.shared.find(url: oldURL, account: oldUser)
+      let newPassword = addController.password
+
+      if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {
+        do {
+          let newAccount = Account(type: account.type,
+                                   user: newUser,
+                                   location: newURL)
+
+          try AccountsManager.manager.modify(oldAccount: account,
+                                             newAccount: newAccount,
+                                             newPassword: newPassword)
+        }
+        catch let error as NSError where error.code == errSecUserCanceled {
+          return
+        }
+        catch PasswordError.invalidURL {
+          NSAlert.showMessage(window: view.window!, message: .keychainInvalidURL)
+        }
+        catch let error {
+          print("changePassword failure: \(error)")
+          NSAlert.showMessage(window: view.window!, message: .keychainError)
+        }
+      }
+
+      account.user = newUser
+      account.location = newURL
+
+      // notify the service
+
+      let columns = 0..<accountsTable.numberOfColumns
+
+      accountsTable.reloadData(forRowIndexes: [accountsTable.selectedRow],
+                               columnIndexes: IndexSet(integersIn: columns))
+      savePreferences()
+    }
   }
   
   func addAccount(type: AccountType,
