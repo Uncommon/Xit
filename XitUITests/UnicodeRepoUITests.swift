@@ -48,7 +48,7 @@ class FetchTests: UnicodeRepoUITests
     XCTAssertFalse(statusIndicator.exists)
     
     Window.fetchButton.press(forDuration: 0.5)
-    Window.fetchMenu.menuItems["Fetch remote \"\(remoteName)\""].click()
+    Window.fetchMenu.menuItems["Fetch Remote \"\(remoteName)\""].click()
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
     
     XCTAssertTrue(statusIndicator.exists)

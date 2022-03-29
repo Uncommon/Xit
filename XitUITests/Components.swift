@@ -102,7 +102,7 @@ enum Sidebar
 
 enum CommitHeader
 {
-  static let header = XitApp.groups["commitInfo"].firstMatch
+  static let header = XitApp.scrollViews["commitInfo"].firstMatch
   static let dateField = header.staticTexts["date"].firstMatch
   static let shaField = header.links["sha"].firstMatch
   static let nameField = header.staticTexts["name"].firstMatch
