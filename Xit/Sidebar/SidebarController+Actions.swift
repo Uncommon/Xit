@@ -114,11 +114,13 @@ extension SidebarController
   {
     guard let item = targetItem()
     else { return }
-    
-    confirmDelete(kind: "tag", name: item.title) {
-      self.callCommand(targetItem: item) {
-        [weak self] (item) in
-        try self?.repo.deleteTag(name: item.title)
+
+    Task {
+      if await confirmDelete(kind: "tag", name: item.title) {
+        self.callCommand(targetItem: item) {
+          [weak self] (item) in
+          try self?.repo.deleteTag(name: item.title)
+        }
       }
     }
   }

@@ -104,7 +104,9 @@ extension SidebarCommandHandler
         return false
     }
   }
-  
+
+  /// Executes the given block on the repository queue, and reports errros to
+  /// the user.
   func callCommand(targetItem: SidebarItem? = nil,
                    block: @escaping (SidebarItem) throws -> Void)
   {

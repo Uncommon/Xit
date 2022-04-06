@@ -26,7 +26,7 @@ class ModifyingUITests: XCTestCase
     let newBranchName = "and-then"
 
     Sidebar.list.staticTexts[oldBranchName].rightClick()
-    XitApp.menuItems["Rename"].click()
+    XitApp.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
     XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
 
@@ -34,6 +34,68 @@ class ModifyingUITests: XCTestCase
     
     XCTAssertFalse(branches.contains(oldBranchName))
     XCTAssertTrue(branches.contains(newBranchName))
+  }
+
+  func testDeleteBranch()
+  {
+    env.open()
+
+    let branchName = "and-how"
+    let sheet = XitApp.sheets.firstMatch
+
+    XCTContext.runActivity(named: "Cancel delete branch") {
+      _ in
+      Sidebar.list.staticTexts[branchName].rightClick()
+      XitApp.menuItems[.BranchPopup.delete].click()
+
+      XCTAssertTrue(sheet.exists)
+      sheet.buttons["Cancel"].click()
+      XCTAssertTrue(Sidebar.list.staticTexts[branchName].exists)
+      XCTAssertTrue(env.git.branches().contains(branchName))
+    }
+
+    XCTContext.runActivity(named: "Actually delete branch") {
+      _ in
+      Sidebar.list.staticTexts[branchName].rightClick()
+      XitApp.menuItems[.BranchPopup.delete].click()
+
+      sheet.buttons["Delete"].click()
+      wait(for: [absence(of: Sidebar.list.staticTexts[branchName])],
+           timeout: 5.0)
+      XCTAssertFalse(env.git.branches().contains(branchName))
+    }
+  }
+
+  func testDeleteTag()
+  {
+    let tagName = "someTag"
+    let sheet = XitApp.sheets.firstMatch
+
+    // Add a tag because the test repo doesn't have any
+    env.git.run(args: ["tag", tagName])
+    env.open()
+
+    XCTContext.runActivity(named: "Cancel delete tag") {
+      _ in
+      Sidebar.list.staticTexts[tagName].rightClick()
+      XitApp.menuItems[.TagPopup.delete].click()
+
+      XCTAssertTrue(sheet.exists)
+      sheet.buttons["Cancel"].click()
+      XCTAssertTrue(Sidebar.list.staticTexts[tagName].exists)
+      XCTAssertTrue(env.git.tags().contains(tagName))
+    }
+
+    XCTContext.runActivity(named: "Actually delete tag") {
+      _ in
+      Sidebar.list.staticTexts[tagName].rightClick()
+      XitApp.menuItems[.TagPopup.delete].click()
+
+      sheet.buttons["Delete"].click()
+      XCTAssertFalse(env.git.tags().contains(tagName))
+      wait(for: [absence(of: Sidebar.list.staticTexts[tagName])],
+           timeout: 5.0)
+    }
   }
 
   func testSwitchBranch()

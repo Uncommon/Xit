@@ -141,12 +141,14 @@ final class AccountsManager: NSObject
     }
     accounts[index] = newAccount
   }
-  
+
+  /// Loads the accounts list from user defaults
   func readAccounts()
   {
     accounts = defaults.accounts
   }
-  
+
+  /// Writes the accounts list to user defaults
   func saveAccounts()
   {
     defaults.accounts = accounts

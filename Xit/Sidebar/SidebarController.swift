@@ -104,11 +104,11 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func makeMenus()
   {
     branchContextMenu = NSMenu {
-      NSMenuItem(.checkOut, checkOutBranch(_:))
-      NSMenuItem(.rename, renameBranch(_:))
-      NSMenuItem(.merge, mergeBranch(_:))
+      NSMenuItem(.checkOut, checkOutBranch(_:)).axid(.BranchPopup.checkOut)
+      NSMenuItem(.rename, renameBranch(_:)).axid(.BranchPopup.rename)
+      NSMenuItem(.merge, mergeBranch(_:)).axid(.BranchPopup.merge)
       NSMenuItem.separator()
-      NSMenuItem(.delete, deleteBranch(_:))
+      NSMenuItem(.delete, deleteBranch(_:)).axid(.BranchPopup.delete)
     }
     remoteBranchContextMenu = NSMenu {
       NSMenuItem(.createTrackingBranch, createTrackingBranch(_:))
@@ -124,16 +124,16 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       NSMenuItem(.copyURL, copyRemoteURL(_:))
     }
     stashContextMenu = NSMenu {
-      NSMenuItem(.pop, popStash(_:))
-      NSMenuItem(.apply, applyStash(_:))
-      NSMenuItem(.drop, dropStash(_:))
+      NSMenuItem(.pop, popStash(_:)).axid(.StashPopup.pop)
+      NSMenuItem(.apply, applyStash(_:)).axid(.StashPopup.apply)
+      NSMenuItem(.drop, dropStash(_:)).axid(.StashPopup.drop)
     }
     submoduleContextMenu = NSMenu {
       NSMenuItem(.showInFinder, showSubmodule(_:))
       NSMenuItem(.update, updateSubmodule(_:))
     }
     tagContextMenu = NSMenu {
-      NSMenuItem(.delete, deleteTag(_:))
+      NSMenuItem(.delete, deleteTag(_:)).axid(.TagPopup.delete)
     }
   }
   
@@ -311,31 +311,32 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   
   func deleteBranch(item: SidebarItem)
   {
-    confirmDelete(kind: "branch", name: item.title) {
-      self.callCommand(targetItem: item) {
-        [weak self] (item) in
-        _ = self?.repo.deleteBranch(item.title)
+    Task {
+      if await confirmDelete(kind: "branch", name: item.title) {
+        self.callCommand(targetItem: item) {
+          [weak self] (item) in
+          _ = self?.repo.deleteBranch(item.title)
+        }
       }
     }
   }
-  
-  func confirmDelete(kind: String, name: String,
-                     onConfirm: @escaping () -> Void)
+
+  func confirmDelete(kind: String, name: String) async -> Bool
   {
-    let alert = NSAlert.init()
-    
+    guard let window = view.window
+    else { return false }
+    let alert = NSAlert()
+
     alert.messageString = .confirmDelete(kind: kind, name: name)
     alert.addButton(withString: .delete)
     alert.addButton(withString: .cancel)
     alert.buttons[0].hasDestructiveAction = true
     // Delete is destructive, so it should not be default
     alert.buttons[0].keyEquivalent = ""
-    alert.beginSheetModal(for: view.window!) {
-      (response) in
-      if response == .alertFirstButtonReturn {
-        onConfirm()
-      }
-    }
+
+    let button = await alert.beginSheetModal(for: window)
+
+    return button == .alertFirstButtonReturn
   }
 }
 

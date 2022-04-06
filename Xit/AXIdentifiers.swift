@@ -35,6 +35,26 @@ extension AXID
       static let fileName = AXID("fileName")
     }
   }
+
+  enum BranchPopup
+  {
+    static let checkOut = AXID("checkOutBranch")
+    static let rename = AXID("renameBranch")
+    static let merge = AXID("mergeBranch")
+    static let delete = AXID("deleteBranch")
+  }
+
+  enum StashPopup
+  {
+    static let pop = AXID("popStash")
+    static let apply = AXID("applyStash")
+    static let drop = AXID("dropStash")
+  }
+
+  enum TagPopup
+  {
+    static let delete = AXID("deleteTag")
+  }
   
   enum PopupMenu
   {

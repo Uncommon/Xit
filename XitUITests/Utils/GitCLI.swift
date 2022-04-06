@@ -22,13 +22,18 @@ class GitCLI
   
   func currentBranch() -> String
   {
-    return run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
+    run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
   }
   
   /// Current branch will be prefixed by "* "
   func branches() -> [String]
   {
-    return run(args: ["branch"]).components(separatedBy: .whitespacesAndNewlines)
+    run(args: ["branch"]).components(separatedBy: .whitespacesAndNewlines)
+  }
+
+  func tags() -> [String]
+  {
+    run(args: ["tag", "-l"]).components(separatedBy: .whitespacesAndNewlines)
   }
 
   func checkOut(branch: String)
