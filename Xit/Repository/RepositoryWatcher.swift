@@ -157,8 +157,14 @@ final class RepositoryWatcher
         self.makePackedRefsWatcher()
       }
     }
+
+    let refPaths = [
+      "refs/heads",
+      "refs/remotes",
+      "refs/tags",
+    ]
     
-    if paths(changedPaths, includeSubpaths: ["refs/heads", "refs/remotes"]) {
+    if paths(changedPaths, includeSubpaths: refPaths) {
       checkRefs()
     }
   }
