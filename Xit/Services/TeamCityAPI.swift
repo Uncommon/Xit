@@ -207,7 +207,6 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     return result
   }
 
-
   
   /// Returns a cached build type with a matching ID
   func buildType(id: String) -> BuildType?
@@ -246,6 +245,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     vcsRootMap.removeAll()
     vcsRootsCache.removeAll()
     vcsBranchSpecs.removeAll()
+
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for rootID in vcsIDs {
@@ -259,6 +259,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
           }
         }
       }
+      // Explicitly wait to get errors thrown from tasks
       try await taskGroup.waitForAll()
     }
     try await getBuildTypes()
@@ -313,8 +314,8 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
         let relativePath = href.droppingPrefix(TeamCityAPI.rootPath)
 
         taskGroup.addTask {
-          guard let data = try? await self.pathResource(relativePath).data,
-                let xml = data.content as? XMLDocument
+          let data = try await self.pathResource(relativePath).data
+          guard let xml = data.content as? XMLDocument
           else {
             throw Error.parseFailure(.buildType)
           }
