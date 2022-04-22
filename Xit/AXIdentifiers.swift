@@ -36,6 +36,12 @@ extension AXID
     }
   }
 
+  enum Menu
+  {
+    static let branch = AXID("branchPopup")
+    static let tag = AXID("tagPopup")
+  }
+
   enum BranchPopup
   {
     static let checkOut = AXID("checkOutBranch")

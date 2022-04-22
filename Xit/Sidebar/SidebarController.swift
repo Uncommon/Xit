@@ -109,7 +109,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       NSMenuItem(.merge, mergeBranch(_:)).axid(.BranchPopup.merge)
       NSMenuItem.separator()
       NSMenuItem(.delete, deleteBranch(_:)).axid(.BranchPopup.delete)
-    }
+    }.axid(.Menu.branch)
     remoteBranchContextMenu = NSMenu {
       NSMenuItem(.createTrackingBranch, createTrackingBranch(_:))
       NSMenuItem(.rename, renameBranch(_:))
@@ -134,7 +134,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
     }
     tagContextMenu = NSMenu {
       NSMenuItem(.delete, deleteTag(_:)).axid(.TagPopup.delete)
-    }
+    }.axid(.Menu.tag)
   }
   
   override func viewDidLoad()

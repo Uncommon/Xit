@@ -60,7 +60,10 @@ enum Sidebar
   static let currentBranchCell =
       list.cells.containing(.staticText,
                             identifier: .Sidebar.currentBranch).firstMatch
-  
+
+  static let branchPopup = XitApp.menus[.Menu.branch]
+  static let tagPopup = XitApp.menus[.Menu.tag]
+
   static func cell(named name: String) -> XCUIElement
   {
     return list.cells.containing(.staticText, identifier: name).firstMatch
