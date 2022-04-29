@@ -6,7 +6,7 @@ public final class PatchMaker
 {
   public enum SourceType
   {
-    case blob(Blob)
+    case blob(any Blob)
     case data(Data)
     
     init(_ blob: (any Blob)?)

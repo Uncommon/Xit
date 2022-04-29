@@ -8,7 +8,7 @@ typealias FileChangesRepo =
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
 protocol RepositorySelection: AnyObject
 {
-  var repository: FileChangesRepo { get set }
+  var repository: any FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
   var shaToSelect: String? { get }
   /// Is this used to stage and commit files? Differentiates between staging
@@ -60,7 +60,7 @@ enum StagingType
 
 protocol FileListModel: AnyObject
 {
-  var selection: RepositorySelection { get }
+  var selection: any RepositorySelection { get }
   
   /// Changes displayed in the file list
   var changes: [FileChange] { get }
@@ -79,7 +79,7 @@ protocol FileListModel: AnyObject
   func fileURL(_ path: String) -> URL?
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
 }
 
 extension FileListModel

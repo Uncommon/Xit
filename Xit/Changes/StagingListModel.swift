@@ -31,7 +31,7 @@ class IndexFileList: StagingListModel, FileListModel
     return repository.contentsOfStagedFile(path: path)
   }
   
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   {
     guard let data = repository.contentsOfStagedFile(path: path)
     else { return nil }
@@ -108,7 +108,7 @@ final class WorkspaceFileList: StagingListModel, FileListModel
     return try? Data(contentsOf: url)
   }
   
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   {
     return repository.blame(for: path, from: nil, to: nil)
   }

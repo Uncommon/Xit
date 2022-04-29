@@ -4,7 +4,7 @@ import Siesta
 /// Used for testing pull request status
 struct FakePullRequest: PullRequest
 {
-  let service: PullRequestService
+  let service: any PullRequestService
   var sourceBranch: String
   var sourceRepo: URL? { nil }
   var displayName: String { "fake" }
@@ -32,7 +32,7 @@ final class FakePRService: Service, PullRequestService, AccountService
   
   func accountUpdated(oldAccount: Account, newAccount: Account) {}
   
-  func getPullRequests(callback: @escaping ([PullRequest]) -> Void)
+  func getPullRequests(callback: @escaping ([any PullRequest]) -> Void)
   {
     let branches = ["master", "delete", "merge"]
     let statuses: [PullRequestStatus] = [.open, .inactive, .merged]
@@ -44,7 +44,7 @@ final class FakePRService: Service, PullRequestService, AccountService
     callback(requests)
   }
 
-  func getPullRequests() async -> [PullRequest]
+  func getPullRequests() async -> [any PullRequest]
   {
     let branches = ["master", "delete", "merge"]
     let statuses: [PullRequestStatus] = [.open, .inactive, .merged]
@@ -56,15 +56,15 @@ final class FakePRService: Service, PullRequestService, AccountService
     return requests
   }
   
-  func approve(request: PullRequest) {}
+  func approve(request: any PullRequest) {}
 
-  func unapprove(request: PullRequest) {}
+  func unapprove(request: any PullRequest) {}
 
-  func needsWork(request: PullRequest) {}
+  func needsWork(request: any PullRequest) {}
   
-  func merge(request: PullRequest) {}
+  func merge(request: any PullRequest) {}
   
-  func match(remote: Remote) -> Bool
+  func match(remote: any Remote) -> Bool
   { true }
   
   var userID: String { "You" }

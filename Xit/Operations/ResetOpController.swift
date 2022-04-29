@@ -2,10 +2,10 @@ import Foundation
 
 final class ResetOpController: OperationController
 {
-  var targetCommit: Commit!
+  var targetCommit: (any Commit)!
   
   init(windowController: XTWindowController,
-       targetCommit: Commit)
+       targetCommit: any Commit)
   {
     self.targetCommit = targetCommit
     

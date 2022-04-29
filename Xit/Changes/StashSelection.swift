@@ -3,8 +3,8 @@ import Foundation
 /// Changes for a selected stash, merging workspace, index, and untracked
 final class StashSelection: StagedUnstagedSelection
 {
-  unowned var repository: FileChangesRepo
-  let stash: Stash
+  unowned var repository: any FileChangesRepo
+  let stash: any Stash
   var canCommit: Bool { false }
   var shaToSelect: String? { stash.mainCommit?.parentSHAs[0] }
   var fileList: any FileListModel { stagedList }
@@ -14,13 +14,13 @@ final class StashSelection: StagedUnstagedSelection
   private(set) var stagedList: StashStagedList! = nil
   private(set) var unstagedList: StashUnstagedList! = nil
   
-  convenience init(repository: FileChangesRepo & Stashing, index: UInt)
+  convenience init(repository: any FileChangesRepo & Stashing, index: UInt)
   {
     self.init(repository: repository,
               stash: repository.stash(index: index, message: nil))
   }
   
-  init(repository: FileChangesRepo, stash: Stash)
+  init(repository: any FileChangesRepo, stash: any Stash)
   {
     self.repository = repository
     self.stash = stash
@@ -39,7 +39,7 @@ class StashFileList
   let mainSelection: CommitSelection?
   let mainList: CommitFileList?
 
-  var stash: Stash { stashSelection.stash }
+  var stash: any Stash { stashSelection.stash }
   
   init(selection: StashSelection)
   {
@@ -140,7 +140,7 @@ final class StashUnstagedList: StashFileList, FileListModel
     return stash.unstagedDiffForFile(path)
   }
   
-  func commit(for path: String) -> Commit?
+  func commit(for path: String) -> (any Commit)?
   {
     if let untrackedCommit = stash.untrackedCommit,
        untrackedCommit.tree?.entry(path: path) != nil {
@@ -166,7 +166,7 @@ final class StashUnstagedList: StashFileList, FileListModel
     }
   }
   
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   {
     guard let startCommit = commit(for: path)
     else { return nil }

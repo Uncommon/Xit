@@ -4,7 +4,7 @@ import Foundation
 final class CommitSelection: RepositorySelection
 {
   unowned var repository: FileChangesRepo
-  let commit: Commit
+  let commit: any Commit
   var shaToSelect: String? { commit.sha }
   var canCommit: Bool { false }
   var fileList: any FileListModel { commitFileList }
@@ -33,8 +33,8 @@ final class CommitFileList: FileListModel
   weak var commitSelection: CommitSelection!
   var selection: RepositorySelection { commitSelection }
   
-  var commit: Commit { commitSelection.commit }
-  var diffParent: OID? { commitSelection.diffParent }
+  var commit: any Commit { commitSelection.commit }
+  var diffParent: (any OID)? { commitSelection.diffParent }
   
   init(selection: CommitSelection)
   {
@@ -154,7 +154,7 @@ final class CommitFileList: FileListModel
                                            commit.parentOIDs.first)
   }
   
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   {
     return repository.blame(for: path, from: commit.oid, to: nil)
   }

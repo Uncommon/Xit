@@ -10,7 +10,7 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
   var repository: CommitStorage?
   var selectParent: ((OID) -> Void)?
   
-  var commit: Commit?
+  var commit: (any Commit)?
   {
     get { rootView.commit }
     set {
@@ -29,9 +29,9 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
 
 struct CommitHeader: View
 {
-  let commit: Commit?
-  let messageLookup: (OID) -> String
-  let selectParent: (OID) -> Void
+  let commit: (any Commit)?
+  let messageLookup: (any OID) -> String
+  let selectParent: (any OID) -> Void
   
   enum Measurement
   {

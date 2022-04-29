@@ -154,7 +154,7 @@ public protocol FileDiffing: AnyObject
              to endOID: (any OID)?) -> (any Blame)?
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: (any OID)?) -> Blame?
+             to endOID: (any OID)?) -> (any Blame)?
 }
 
 public protocol FileContents: AnyObject
@@ -164,7 +164,7 @@ public protocol FileContents: AnyObject
   func isTextFile(_ path: String, context: FileContext) -> Bool
   func fileBlob(ref: String, path: String) -> (any Blob)?
   func stagedBlob(file: String) -> (any Blob)?
-  func contentsOfFile(path: String, at commit: Commit) -> Data?
+  func contentsOfFile(path: String, at commit: any Commit) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
   func fileURL(_ file: String) -> URL
 }
@@ -253,14 +253,14 @@ public struct RemoteCallbacks
   /// discovered automatically
   var passwordBlock: (() -> (String, String)?)?
   /// Fetch progress. Return false to stop the operation
-  var downloadProgress: ((TransferProgress) -> Bool)?
+  var downloadProgress: ((any TransferProgress) -> Bool)?
   /// Push progress. Return false to stop the operation
   var uploadProgress: ((PushTransferProgress) -> Bool)?
   /// Message from the server
   var sidebandMessage: ((String) -> Bool)?
   
   init(passwordBlock: (() -> (String, String)?)? = nil,
-       downloadProgress: ((TransferProgress) -> Bool)? = nil,
+       downloadProgress: ((any TransferProgress) -> Bool)? = nil,
        uploadProgress: ((PushTransferProgress) -> Bool)? = nil,
        sidebandMessage: ((String) -> Bool)? = nil)
   {
@@ -323,15 +323,16 @@ public protocol Branching: AnyObject
   var remoteBranches: AnySequence<RemoteBranch> { get }
   
   /// Creates a branch at the given target ref
-  func createBranch(named name: String, target: String) throws -> LocalBranch?
+  func createBranch(named name: String,
+                    target: String) throws -> (any LocalBranch)?
   func rename(branch: String, to: String) throws
-  func localBranch(named name: String) -> LocalBranch?
-  func remoteBranch(named name: String) -> RemoteBranch?
-  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
-  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+  func localBranch(named name: String) -> (any LocalBranch)?
+  func remoteBranch(named name: String) -> (any RemoteBranch)?
+  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
+  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
   
   /// Resets the current branch to the specified commit
-  func reset(toCommit target: Commit, mode: ResetMode) throws
+  func reset(toCommit target: any Commit, mode: ResetMode) throws
 }
 
 public protocol Merging: AnyObject

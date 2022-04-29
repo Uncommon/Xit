@@ -341,7 +341,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
 
 extension BitbucketServerAPI: RemoteService
 {
-  func match(remote: Remote) -> Bool
+  func match(remote: any Remote) -> Bool
   {
     let host = remote.url?.host
     

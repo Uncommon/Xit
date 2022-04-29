@@ -196,9 +196,9 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     }
 
     let result = buildTypeURLs.keys.filter {
-      key in
+      (key) in
       buildTypeURLs[key].map {
-        urls in
+        (urls) in
         urls.contains { matchHostPath($0) }
       } ?? false
     }
@@ -382,7 +382,7 @@ extension TeamCityAccessor
 
 extension TeamCityAPI: RemoteService
 {
-  func match(remote: Remote) -> Bool
+  func match(remote: any Remote) -> Bool
   {
     guard let urlString = remote.url?.absoluteString
     else { return false }

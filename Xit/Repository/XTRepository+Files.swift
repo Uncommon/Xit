@@ -2,7 +2,7 @@ import Foundation
 
 public enum FileContext
 {
-  case commit(Commit)
+  case commit(any Commit)
   case index
   case workspace
 }
@@ -231,14 +231,14 @@ extension XTRepository: FileDiffing
   
   public func blame(for path: String,
                     from startOID: (any OID)?,
-                    to endOID: (any OID)?) -> Blame?
+                    to endOID: (any OID)?) -> (any Blame)?
   {
     GitBlame(repository: self, path: path, from: startOID, to: endOID)
   }
   
   public func blame(for path: String,
                     data fromData: Data?,
-                    to endOID: (any OID)?) -> Blame?
+                    to endOID: (any OID)?) -> (any Blame)?
   {
     GitBlame(repository: self, path: path,
              data: fromData ?? Data(), to: endOID)

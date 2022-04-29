@@ -257,7 +257,7 @@ final class Services
     }
   }
   
-  func pullRequestService(remote: Remote) -> PullRequestService?
+  func pullRequestService(remote: any Remote) -> PullRequestService?
   {
     let prServices = allServices.compactMap { $0 as? PullRequestService }
     

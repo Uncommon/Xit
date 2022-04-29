@@ -37,8 +37,8 @@ final class PushOpController: PasswordOpController
     guard let repository = repository
     else { throw RepoError.unexpected }
 
-    let remote: Remote
-    let branches: [LocalBranch]
+    let remote: any Remote
+    let branches: [any LocalBranch]
 
     switch remoteOption {
       case .all:
@@ -162,7 +162,8 @@ final class PushOpController: PasswordOpController
     }
   }
   
-  func push(branches: [LocalBranch], remote: Remote,
+  func push(branches: [any LocalBranch],
+            remote: any Remote,
             then callback: (() -> Void)? = nil)
   {
     tryRepoOperation {

@@ -3,9 +3,9 @@ import Cocoa
 public protocol Stash: AnyObject
 {
   var message: String? { get }
-  var mainCommit: Commit? { get }
-  var indexCommit: Commit? { get }
-  var untrackedCommit: Commit? { get }
+  var mainCommit: (any Commit)? { get }
+  var indexCommit: (any Commit)? { get }
+  var untrackedCommit: (any Commit)? { get }
   
   func indexChanges() -> [FileChange]
   func workspaceChanges() -> [FileChange]
@@ -73,7 +73,7 @@ public final class GitStash: Stash
     return changes
   }
 
-  func headBlobForPath(_ path: String) -> Blob?
+  func headBlobForPath(_ path: String) -> (any Blob)?
   {
     guard let mainCommit = self.mainCommit as? GitCommit,
           let parentOID = mainCommit.parentOIDs.first,
@@ -106,7 +106,7 @@ public final class GitStash: Stash
     guard let indexCommit = self.indexCommit as? GitCommit
     else { return nil }
 
-    var indexBlob: Blob?
+    var indexBlob: (any Blob)?
     
     if let indexEntry = indexCommit.tree!.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {

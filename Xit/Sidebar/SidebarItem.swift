@@ -190,7 +190,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   }
   
 
-  override func branchObject() -> Branch?
+  override func branchObject() -> (any Branch)?
   {
     return selection!.repository.localBranch(named: title)
   }
@@ -275,7 +275,7 @@ final class BranchFolderSidebarItem: SidebarItem
 
 final class RemoteSidebarItem: SidebarItem
 {
-  let remote: Remote?
+  let remote: (any Remote)?
   
   override var icon: NSImage?
   {

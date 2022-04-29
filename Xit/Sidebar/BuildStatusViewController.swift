@@ -5,7 +5,7 @@ final class BuildStatusViewController: NSViewController
   typealias Repository = RemoteManagement & Branching
 
   weak var repository: (any Repository)!
-  let branch: Branch
+  let branch: any Branch
   let buildStatusCache: BuildStatusCache
   var api: TeamCityAPI?
   @IBOutlet weak var tableView: NSTableView!

@@ -66,8 +66,8 @@ struct TagInfoView_Previews: PreviewProvider
   {
     let name: String
     let signature: Signature?
-    let targetOID: OID?
-    let commit: Commit?
+    let targetOID: (any OID)?
+    let commit: (any Commit)?
     let message: String?
     let type: TagType
     let isSigned: Bool
