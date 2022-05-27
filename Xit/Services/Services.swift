@@ -91,12 +91,11 @@ extension Siesta.Request
         (info) in
         switch info.response {
           case .success:
-            continuation.resume(returning: ())
+            continuation.resume()
           case .failure(let error):
             continuation.resume(throwing: error)
         }
       }
-      return
     }
   }
 }
