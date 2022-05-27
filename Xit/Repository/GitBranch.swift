@@ -112,7 +112,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
 {
   public var shortName: String { strippedName }
   
-  init?(repository: OpaquePointer, name: String, config: Config)
+  init?(repository: OpaquePointer, name: String, config: any Config)
   {
     guard let branch = GitBranch.lookUpBranch(name: name,
                                               repository: repository,
@@ -123,7 +123,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   }
   
   // Apparently just needed to disambiguate the overload
-  required public init(branch: OpaquePointer, config: Config)
+  required public init(branch: OpaquePointer, config: any Config)
   {
     super.init(branch: branch, config: config)
   }

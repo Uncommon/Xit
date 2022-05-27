@@ -53,7 +53,7 @@ public protocol Cloning
   func clone(from source: URL, to destination: URL,
              branch: String,
              recurseSubmodules: Bool,
-             publisher: RemoteProgressPublisher) throws -> FullRepository?
+             publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
 }
 
 public protocol CommitStorage: AnyObject
@@ -64,7 +64,7 @@ public protocol CommitStorage: AnyObject
   
   func commit(message: String, amend: Bool) throws
   
-  func walker() -> RevWalk?
+  func walker() -> (any RevWalk)?
 }
 
 public protocol CommitReferencing: AnyObject
@@ -74,7 +74,7 @@ public protocol CommitReferencing: AnyObject
   
   func oid(forRef: String) -> (any OID)?
   func sha(forRef: String) -> String?
-  func tags() throws -> [Tag]
+  func tags() throws -> [any Tag]
   func graphBetween(localBranch: any LocalBranch,
                     upstreamBranch: any RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
@@ -98,7 +98,7 @@ public protocol CommitReferencing: AnyObject
 
 extension CommitReferencing
 {
-  var headReference: Reference? { reference(named: "HEAD") }
+  var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
 }
 
@@ -311,7 +311,7 @@ public protocol RemoteCommunication: AnyObject
 
 public protocol SubmoduleManagement: AnyObject
 {
-  func submodules() -> [Submodule]
+  func submodules() -> [any Submodule]
   func addSubmodule(path: String, url: String) throws
 }
 

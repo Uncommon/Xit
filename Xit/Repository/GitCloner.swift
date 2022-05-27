@@ -6,7 +6,8 @@ public final class GitCloner: Cloning
   public func clone(from source: URL, to destination: URL,
                     branch: String,
                     recurseSubmodules: Bool,
-                    publisher: RemoteProgressPublisher) throws -> FullRepository?
+                    publisher: RemoteProgressPublisher) throws
+    -> (any FullRepository)?
   {
     try branch.withCString {
       (cBranch) in

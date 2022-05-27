@@ -24,7 +24,7 @@ extension OID
     sha.hash(into: &hasher)
   }
 
-  public func equals(_ other: OID) -> Bool
+  public func equals(_ other: any OID) -> Bool
   {
     return sha == other.sha
   }
@@ -121,7 +121,7 @@ public struct GitOID: OID, Hashable, Equatable
   public var isZero: Bool
   { withUnsafeOID { git_oid_iszero($0) } == 1 }
   
-  public func equals(_ other: OID) -> Bool
+  public func equals(_ other: any OID) -> Bool
   {
     guard let otherGitOID = other as? GitOID
     else { return false }

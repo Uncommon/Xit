@@ -6,8 +6,8 @@ public protocol RevWalk
 {
   func reset()
   func setSorting(_ sort: RevWalkSorting)
-  func push(oid: OID)
-  func next() -> OID?
+  func push(oid: any OID)
+  func next() -> (any OID)?
 }
 
 public struct RevWalkSorting: OptionSet
@@ -59,7 +59,7 @@ final class GitRevWalk: RevWalk
     git_revwalk_sorting(walker, sort.rawValue)
   }
   
-  public func push(oid: OID)
+  public func push(oid: any OID)
   {
     guard let gitOID = oid as? GitOID
     else { return }
@@ -67,7 +67,7 @@ final class GitRevWalk: RevWalk
     _ = gitOID.withUnsafeOID { git_revwalk_push(walker, $0) }
   }
   
-  public func next() -> OID?
+  public func next() -> (any OID)?
   {
     var oid = git_oid()
     let result = git_revwalk_next(&oid, walker)

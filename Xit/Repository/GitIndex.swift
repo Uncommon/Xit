@@ -21,9 +21,9 @@ public protocol StagingIndex
   /// Returns the total numbef of entries in the index.
   var entryCount: Int { get }
   /// Returns the entry at the given index in the list of entries.
-  func entry(atIndex: Int) -> IndexEntry!
+  func entry(atIndex: Int) -> (any IndexEntry)!
   /// Returns the entry matching the given file path.
-  func entry(at path: String) -> IndexEntry?
+  func entry(at path: String) -> (any IndexEntry)?
   
   /// Returns true if any entry is conflicted.
   var hasConflicts: Bool { get }

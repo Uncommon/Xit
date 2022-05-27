@@ -140,7 +140,7 @@ public final class GitCommit: Commit
   public var commitDate: Date
   { committerSig?.when ?? Date() }
 
-  public var tree: Tree?
+  public var tree: (any Tree)?
   {
     guard let tree = try? OpaquePointer.from({
       git_commit_tree(&$0, commit)

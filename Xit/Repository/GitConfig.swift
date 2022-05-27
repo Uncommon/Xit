@@ -280,7 +280,7 @@ final class GitConfig: Config
       }
     }
     
-    func next() -> ConfigEntry?
+    func next() -> (any ConfigEntry)?
     {
       guard let iterator = self.iterator,
             let entry: UnsafeMutablePointer<git_config_entry> = try? .from({
