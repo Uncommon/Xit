@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 /// Contains the items listed in the sidebar
 final class SidebarDataModel
