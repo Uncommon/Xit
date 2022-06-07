@@ -23,11 +23,6 @@ final class AccountsPrefsController: NSViewController
     return manager.accounts[selectedRow]
   }
 
-  deinit
-  {
-    authStatusObserver.map { NotificationCenter.default.removeObserver($0) }
-  }
-  
   override func viewDidLoad()
   {
     super.viewDidLoad()
@@ -46,6 +41,11 @@ final class AccountsPrefsController: NSViewController
       // the regular pencil icon is very thin
       .withSymbolConfiguration(.init(pointSize: 9, weight: .black))
     updateActionButtons()
+  }
+
+  override func viewWillDisappear()
+  {
+    authStatusObserver.map { NotificationCenter.default.removeObserver($0) }
   }
   
   func updateActionButtons()

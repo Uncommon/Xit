@@ -57,7 +57,7 @@ class WebViewController: NSViewController
     }
   }
   
-  deinit
+  override func viewWillDisappear()
   {
     webView.navigationDelegate = nil
     fontObserver.map {

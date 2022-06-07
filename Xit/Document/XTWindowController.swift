@@ -64,12 +64,13 @@ final class XTWindowController: NSWindowController,
   private var kvObservers: [NSKeyValueObservation] = []
   private var splitObserver: NSObjectProtocol?
 
-  deinit
+  override func close()
   {
     currentOperation?.canceled = true
     splitObserver.map {
       NotificationCenter.default.removeObserver($0)
     }
+    super.close()
   }
 
   @objc

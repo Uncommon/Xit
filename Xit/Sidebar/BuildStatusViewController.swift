@@ -44,15 +44,15 @@ final class BuildStatusViewController: NSViewController
     fatalError("init(coder:) has not been implemented")
   }
   
-  deinit
-  {
-    buildStatusCache.remove(client: self)
-  }
-  
   override func viewDidLoad()
   {
     super.viewDidLoad()
     headingLabel.uiStringValue = .buildStatus(branch.strippedName)
+  }
+
+  override func viewWillDisappear()
+  {
+    buildStatusCache.remove(client: self)
   }
 
   func filterStatuses()

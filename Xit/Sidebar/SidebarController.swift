@@ -94,13 +94,6 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
     }
   }
 
-  deinit
-  {
-    // The timers contain references to the ds object and repository.
-    sidebarDS?.stopTimers()
-    pullRequestManager?.stopCacheRefresh()
-  }
-
   func makeMenus()
   {
     branchContextMenu = NSMenu {
@@ -157,6 +150,13 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
         self?.selectedModelChanged()
       }
     }
+  }
+
+  override func viewWillDisappear()
+  {
+    // The timers contain references to the ds object and repository.
+    sidebarDS?.stopTimers()
+    pullRequestManager?.stopCacheRefresh()
   }
   
   func selectedModelChanged()

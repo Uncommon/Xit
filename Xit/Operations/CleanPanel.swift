@@ -283,20 +283,13 @@ struct CleanPanel: View
 
 struct CleanPanel_Previews: PreviewProvider
 {
-  class EmptyDelegate: CleanPanelDelegate
-  {
-    func closePanel() {}
-    func clean(_ files: [String]) {}
-    func refresh() {}
-  }
-
   struct Preview: View
   {
     let model = CleanData()
 
     var body: some View
     {
-      CleanPanel(delegate: EmptyDelegate(), model: model)
+      CleanPanel(delegate: nil, model: model)
     }
 
     init(items: [CleanableItem])
