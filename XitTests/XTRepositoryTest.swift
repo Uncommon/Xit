@@ -752,7 +752,7 @@ class XTRepositoryTest: XTTest
     let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
     let parentOID = try XCTUnwrap(commit.parentOIDs.first)
     let diffResult = repository.diffMaker(forFile: TestFileName.file1.rawValue,
-                                          commitOID: commit.oid,
+                                          commitOID: commit.id,
                                           parentOID: parentOID)!
     let patch = try XCTUnwrap(diffResult.extractPatch())
     
@@ -763,7 +763,7 @@ class XTRepositoryTest: XTTest
   {
     let commit = try XCTUnwrap(GitCommit(ref: "HEAD", repository: repository.gitRepo))
     let diffResult = repository.diffMaker(forFile: TestFileName.file1.rawValue,
-                                          commitOID: commit.oid,
+                                          commitOID: commit.id,
                                           parentOID: nil)!
     let patch = try XCTUnwrap(diffResult.extractPatch())
     

@@ -219,7 +219,7 @@ final class CommitHistory<ID: OID & Hashable>
     
     result.reserveCapacity(batchSize)
     for entry in entries[batchStart..<batchStart+batchSize] {
-      let commitOID = entry.commit.oid as! ID
+      let commitOID = entry.commit.id as! ID
       let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
@@ -261,14 +261,14 @@ final class CommitHistory<ID: OID & Hashable>
   {
     var nextChildIndex: UInt = 0
     let parentOutlets = connections.compactMap {
-        ($0.parentOID.equals(entry.commit.oid)) ? nil : $0.parentOID }.unique()
+        ($0.parentOID.equals(entry.commit.id)) ? nil : $0.parentOID }.unique()
     var parentLines: [ID: (childIndex: UInt,
                            colorIndex: UInt)] = [:]
     var generatedLines: [HistoryLine] = []
     
     for connection in connections {
-      let commitIsParent = connection.parentOID.equals(entry.commit.oid)
-      let commitIsChild = connection.childOID.equals(entry.commit.oid)
+      let commitIsParent = connection.parentOID.equals(entry.commit.id)
+      let commitIsChild = connection.childOID.equals(entry.commit.id)
       let parentIndexInt = commitIsParent
               ? nil : parentOutlets.firstIndex(of: connection.parentOID)
       let parentIndex = parentIndexInt.map { UInt($0) }
@@ -341,7 +341,7 @@ extension CommitHistory
   /// Adds new commits to the list.
   public func process(_ startCommit: any Commit, afterCommit: (any Commit)? = nil)
   {
-    let startOID = startCommit.oid as! ID
+    let startOID = startCommit.id as! ID
     guard commitLookup[startOID] == nil
     else { return }
     
@@ -377,17 +377,17 @@ extension CommitHistory
                                    after afterCommit: (any Commit)?)
   {
     for branchEntry in result.entries {
-      commitLookup[branchEntry.commit.oid as! ID] = branchEntry
+      commitLookup[branchEntry.commit.id as! ID] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap
-        { commit in entries.firstIndex { $0.commit.oid.equals(commit.oid) } }
+        { commit in entries.firstIndex { $0.commit.id.equals(commit.id) } }
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.compactMap(
-           { oid in entries.firstIndex(where: { $0.commit.oid.equals(oid) }) })
+           { oid in entries.firstIndex(where: { $0.commit.id.equals(oid) }) })
            .sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
@@ -407,10 +407,10 @@ extension CommitHistory
         entries.insert(contentsOf: result.entries, at: insertBeforeIndex)
       }
     }
-    else if let lastSecondaryOID = result.queue.last?.after.oid as? ID,
+    else if let lastSecondaryOID = result.queue.last?.after.id as? ID,
             let lastSecondaryEntry = commitLookup[lastSecondaryOID],
             let lastSecondaryIndex = entries.firstIndex(where:
-                { $0.commit.oid.equals(lastSecondaryEntry.commit.oid) }) {
+                { $0.commit.id.equals(lastSecondaryEntry.commit.id) }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif

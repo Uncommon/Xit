@@ -27,7 +27,7 @@ final class CommitSelection: RepositorySelection
 final class CommitFileList: FileListModel
 {
   lazy var changes: [FileChange] =
-      self.repository.changes(for: self.commit.oid.sha,
+      self.repository.changes(for: self.commit.id.sha,
                               parent: self.commit.parentOIDs.first)
   
   weak var commitSelection: CommitSelection!
@@ -149,14 +149,14 @@ final class CommitFileList: FileListModel
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     return repository.diffMaker(forFile: path,
-                                commitOID: commit.oid,
+                                commitOID: commit.id,
                                 parentOID: diffParent ??
                                            commit.parentOIDs.first)
   }
   
   func blame(for path: String) -> (any Blame)?
   {
-    return repository.blame(for: path, from: commit.oid, to: nil)
+    return repository.blame(for: path, from: commit.id, to: nil)
   }
   
   func dataForFile(_ path: String) -> Data?

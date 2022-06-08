@@ -162,7 +162,7 @@ struct CommitHeader_Previews: PreviewProvider
     let parentOIDs: [any OID] = ["A", "B"]
     let message: String? = "Single line"
     let tree: (any Tree)? = nil
-    let oid: any OID = "45a608978"
+    let id: any OID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",

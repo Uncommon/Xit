@@ -26,7 +26,7 @@ public protocol Commit: OIDObject, CustomStringConvertible
 
 extension Commit
 {
-  public var sha: String { oid.sha }
+  public var sha: String { id.sha }
   
   var authorName: String? { authorSig?.name }
   var authorEmail: String? { authorSig?.email }
@@ -70,14 +70,14 @@ public final class GitCommit: Commit
         return sha
       }
       else {
-        let result = oid.sha
+        let result = id.sha
         
         storedSHA = result
         return result
       }
     }
   }
-  public let oid: any OID
+  public let id: any OID
   public let parentOIDs: [any OID]
   
   public var repository: OpaquePointer
@@ -154,7 +154,7 @@ public final class GitCommit: Commit
   {
     // Immitate git_commit_extract_signature() but just check that it exists
     guard let odb = GitODB(repository: repository),
-          let object = odb[oid]
+          let object = odb[id]
     else { return false }
     let text = object.text
     var found = false
@@ -168,7 +168,7 @@ public final class GitCommit: Commit
 
   init?(gitCommit: OpaquePointer)
   {
-    self.oid = GitOID(oidPtr: git_commit_id(gitCommit))
+    self.id = GitOID(oidPtr: git_commit_id(gitCommit))
     self.commit = gitCommit
     self.parentOIDs = GitCommit.calculateParentOIDs(gitCommit)
   }
@@ -240,5 +240,5 @@ public final class GitCommit: Commit
 
 public func == (a: GitCommit, b: GitCommit) -> Bool
 {
-  return (a.oid as! GitOID) == (b.oid as! GitOID)
+  return (a.id as! GitOID) == (b.id as! GitOID)
 }

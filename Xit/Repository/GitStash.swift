@@ -60,7 +60,7 @@ public final class GitStash: Stash
     
     guard let mainCommit = self.mainCommit
     else { return [] }
-    var changes = repo.changes(for: mainCommit.sha, parent: indexCommit?.oid)
+    var changes = repo.changes(for: mainCommit.sha, parent: indexCommit?.id)
     
     if let untrackedCommit = self.untrackedCommit {
       let untrackedChanges = repo.changes(for: untrackedCommit.sha, parent: nil)

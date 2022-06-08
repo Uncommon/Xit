@@ -10,7 +10,7 @@ struct FakeCommit: Commit
   var committerSig: Signature?
   var email: String?
   var tree: (any Tree)?
-  var oid: any OID
+  var id: any OID
   var isSigned: Bool { false }
 }
 
@@ -20,7 +20,7 @@ extension FakeCommit
   {
     self.parentOIDs = []
     self.message = branch.shortName
-    self.oid = branch.oid!
+    self.id = branch.oid!
   }
 }
 

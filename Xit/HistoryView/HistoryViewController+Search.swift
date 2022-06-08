@@ -52,7 +52,7 @@ extension HistoryViewController: HistorySearchDelegate
       case .committer:
         found = commit.committerSig?.contains(text) ?? false
       case .sha:
-        found = commit.oid.sha.lowercased().hasPrefix(text)
+        found = commit.id.sha.lowercased().hasPrefix(text)
     }
     if found {
       historyTable.selectRowIndexes(IndexSet(integer: index),

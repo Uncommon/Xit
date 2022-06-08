@@ -26,11 +26,11 @@ public struct TreeLoader
   func treeNode(path: String, tree: any Tree, oldTree: NSTreeNode?) -> NSTreeNode
   {
     let result = NSTreeNode(representedObject: CommitTreeItem(path: path,
-                                                              oid: tree.oid))
+                                                              oid: tree.id))
     
     if let oldTree = oldTree,
        let oldItem = oldTree.representedObject as? CommitTreeItem,
-      oldItem.oid?.equals(tree.oid) ?? false {
+      oldItem.oid?.equals(tree.id) ?? false {
       oldTree.children.map { result.mutableChildren.addObjects(from: $0) }
       applyStatus(to: result)
     }
@@ -55,7 +55,7 @@ public struct TreeLoader
         else {
           let fileStatus = changes[entryPath] ?? .unmodified
           let stagedChange = fileStatus
-          let fileItem = CommitTreeItem(path: entryPath, oid: entry.oid,
+          let fileItem = CommitTreeItem(path: entryPath, oid: entry.id,
                                         change: stagedChange)
           let node = NSTreeNode(representedObject: fileItem)
           

@@ -16,7 +16,7 @@ extension HistoryTableController: NSMenuItemValidation
            let branchName = repository.currentBranch,
            let branch = repository.localBranch(named: branchName),
            let branchOID = branch.oid {
-          return !branchOID.equals(history.entries[clickedRow].commit.oid)
+          return !branchOID.equals(history.entries[clickedRow].commit.id)
         }
         else {
           return false

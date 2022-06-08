@@ -95,7 +95,7 @@ class StashStagedList: StashFileList, FileListModel
     guard let indexCommit = stash.indexCommit
     else { return nil }
     
-    return repository.blame(for: path, from: indexCommit.oid, to: nil)
+    return repository.blame(for: path, from: indexCommit.id, to: nil)
   }
 
   func fileURL(_ path: String) -> URL?
@@ -171,7 +171,7 @@ final class StashUnstagedList: StashFileList, FileListModel
     guard let startCommit = commit(for: path)
     else { return nil }
     
-    return repository.blame(for: path, from: startCommit.oid, to: nil)
+    return repository.blame(for: path, from: startCommit.id, to: nil)
   }
 
   func fileURL(_ path: String) -> URL? { return nil }
@@ -179,5 +179,5 @@ final class StashUnstagedList: StashFileList, FileListModel
 
 func == (a: StashSelection, b: StashSelection) -> Bool
 {
-  return a.stash.mainCommit?.oid.sha == b.stash.mainCommit?.oid.sha
+  return a.stash.mainCommit?.id.sha == b.stash.mainCommit?.id.sha
 }

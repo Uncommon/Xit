@@ -267,7 +267,7 @@ extension XTRepository: Merging
             let remoteCommit = branch.targetCommit as? GitCommit
       else { throw RepoError.unexpected }
       
-      if targetCommit.oid.equals(remoteCommit.oid) {
+      if targetCommit.id.equals(remoteCommit.id) {
         return
       }
       
@@ -313,7 +313,7 @@ extension XTRepository: Merging
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
   func annotatedCommit(_ commit: GitCommit) throws -> OpaquePointer
   {
-    guard let oid = commit.oid as? GitOID
+    guard let oid = commit.id as? GitOID
     else { throw RepoError.unexpected }
     
     return try OpaquePointer.from {

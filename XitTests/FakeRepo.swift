@@ -33,10 +33,10 @@ class FakeRepo: FakeFileChangesRepo
     let commitR1 = FakeCommit(branchHead: remoteBranch1)
     let commitR2 = FakeCommit(branchHead: remoteBranch2)
 
-    commits[commit1.oid as! StringOID] = commit1
-    commits[commit2.oid as! StringOID] = commit2
-    commits[commitR1.oid as! StringOID] = commitR1
-    commits[commitR2.oid as! StringOID] = commitR2
+    commits[commit1.id as! StringOID] = commit1
+    commits[commit2.id as! StringOID] = commit2
+    commits[commitR1.id as! StringOID] = commitR1
+    commits[commitR2.id as! StringOID] = commitR2
 
     remote1.name = "remote1"
     remote1.urlString = "https://example.com/repo1.git"

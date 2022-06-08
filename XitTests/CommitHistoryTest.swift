@@ -18,21 +18,21 @@ class GenericCommit: Commit
   init(sha: String?, oid: any OID, parentOIDs: [any OID])
   {
     self.sha = sha
-    self.oid = oid
+    self.id = oid
     self.parentOIDs = parentOIDs
   }
   
   init(sha: String, parentOIDs: [any OID])
   {
     self.sha = sha
-    self.oid = §sha
+    self.id = §sha
     self.parentOIDs = parentOIDs
   }
 }
 
 func == (a: GenericCommit, b: GenericCommit) -> Bool
 {
-  return a.oid.equals(b.oid)
+  return a.id.equals(b.id)
 }
 
 
@@ -63,7 +63,7 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
   func commit(forOID oid: any OID) -> (any Commit)?
   {
     for commit in commits {
-      if commit.oid.equals(oid) {
+      if commit.id.equals(oid) {
         return commit
       }
     }
@@ -145,7 +145,7 @@ class CommitHistoryTest: XCTestCase
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
         guard let parentIndex = history.entries.firstIndex(
-            where: { $0.commit.oid.equals(parentOID) })
+            where: { $0.commit.id.equals(parentOID) })
         else {
           XCTFail("parent entry not found: \(parentOID)")
           continue

@@ -33,7 +33,7 @@ extension OID
 
 public protocol OIDObject
 {
-  var oid: any OID { get }
+  var id: any OID { get }
 }
 
 
