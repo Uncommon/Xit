@@ -37,7 +37,7 @@ public protocol OIDObject
 }
 
 
-public struct GitOID: OID, Hashable, Equatable
+public struct GitOID: OID, Equatable
 {
   var oid: git_oid
   
@@ -45,7 +45,7 @@ public struct GitOID: OID, Hashable, Equatable
   
   static func zero() -> GitOID
   {
-    return GitOID(oid: git_oid())
+    return .init(oid: git_oid())
   }
   
   init(oid: git_oid)
@@ -94,30 +94,7 @@ public struct GitOID: OID, Hashable, Equatable
     (storage + GitOID.shaLength).pointee = 0
     return String(cString: storage)
   }
-  
-  public func hash(into hasher: inout Hasher)
-  {
-    hasher.combine(oid.id.0)
-    hasher.combine(oid.id.1)
-    hasher.combine(oid.id.2)
-    hasher.combine(oid.id.3)
-    hasher.combine(oid.id.4)
-    hasher.combine(oid.id.5)
-    hasher.combine(oid.id.6)
-    hasher.combine(oid.id.7)
-    hasher.combine(oid.id.8)
-    hasher.combine(oid.id.9)
-    hasher.combine(oid.id.10)
-    hasher.combine(oid.id.11)
-    hasher.combine(oid.id.12)
-    hasher.combine(oid.id.13)
-    hasher.combine(oid.id.14)
-    hasher.combine(oid.id.15)
-    hasher.combine(oid.id.16)
-    hasher.combine(oid.id.17)
-    hasher.combine(oid.id.18)
-  }
-  
+
   public var isZero: Bool
   { withUnsafeOID { git_oid_iszero($0) } == 1 }
   
@@ -139,6 +116,16 @@ public struct GitOID: OID, Hashable, Equatable
       _ block: (UnsafeMutablePointer<git_oid>) throws -> T) rethrows -> T
   {
     try withUnsafeMutablePointer(to: &oid, block)
+  }
+}
+
+extension GitOID: Hashable
+{
+  public func hash(into hasher: inout Hasher)
+  {
+    withUnsafeBytes(of: oid) { buffer in
+      hasher.combine(bytes: buffer)
+    }
   }
 }
 
