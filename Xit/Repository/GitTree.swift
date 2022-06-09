@@ -17,19 +17,6 @@ public protocol TreeEntry: OIDObject
 }
 
 
-/// Used as a return value when an entry can't be returned for a given subscript
-struct NullEntry: TreeEntry
-{
-  var id: GitOID
-  { .zero() }
-  var type: GitObjectType
-  { .invalid }
-  var name: String
-  { "" }
-  var object: (any OIDObject)?
-  { nil }
-}
-
 final class GitTree: Tree
 {
   struct EntryCollection: Collection
@@ -44,29 +31,30 @@ final class GitTree: Tree
       return i + 1
     }
     
-    subscript(position: Int) -> any TreeEntry
+    subscript(position: Int) -> GitTreeEntry
     {
       guard let result = git_tree_entry_byindex(tree.tree, position),
             let owner = git_tree_owner(tree.tree)
       else {
-        return NullEntry()
+        assertionFailure("can't get tree entry")
+        return .invalid
       }
       
-      return GitTreeEntry(entry: result, owner: owner, owned: false)
+      return .init(entry: result, owner: owner, owned: false)
     }
   }
   
   var entries: EntryCollection
-  { EntryCollection(tree: self) }
+  { .init(tree: self) }
   
   let tree: OpaquePointer
   
   var id: GitOID
   {
     guard let result = git_tree_id(tree)
-    else { return GitOID.zero() }
+    else { return .zero() }
     
-    return GitOID(oidPtr: result)
+    return .init(oidPtr: result)
   }
   
   var count: Int
@@ -124,18 +112,20 @@ final class GitTree: Tree
   }
 }
 
-class GitTreeEntry: TreeEntry
+final class GitTreeEntry: TreeEntry
 {
-  let entry: OpaquePointer
-  let owner: OpaquePointer
+  let entry: OpaquePointer!
+  let owner: OpaquePointer!
   let owned: Bool
-  
+
+  static var invalid: Self { .init() }
+
   var id: GitOID
   {
     guard let gitOID = git_tree_entry_id(entry)
-    else { return GitOID.zero() }
+    else { return .zero() }
     
-    return GitOID(oidPtr: gitOID)
+    return .init(oidPtr: gitOID)
   }
   
   var type: GitObjectType
@@ -181,5 +171,12 @@ class GitTreeEntry: TreeEntry
     if owned {
       git_tree_entry_free(entry)
     }
+  }
+
+  private init()
+  {
+    self.entry = nil
+    self.owner = nil
+    self.owned = false
   }
 }
