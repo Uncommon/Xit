@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol OID: CustomDebugStringConvertible, Equatable, Sendable
+public protocol OID: CustomDebugStringConvertible, Hashable, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }
@@ -11,8 +11,6 @@ extension OID // CustomDebugStringConvertible
   public var debugDescription: String { sha }
 }
 
-// Don't explicitly conform to Hashable here because that constrains how the
-// protocol can be used.
 extension OID
 {
   public func hash(into hasher: inout Hasher)
@@ -20,6 +18,7 @@ extension OID
     sha.hash(into: &hasher)
   }
 
+  /// For use when it isn't statically known that two OID values are the same type
   public func equals(_ other: (any OID)?) -> Bool
   {
     return sha == other?.sha
@@ -44,16 +43,20 @@ func != (a: (any OID)?, b: (any OID)?) -> Bool
 }
 
 
-public protocol OIDObject: Equatable, Identifiable where ID: OID
+public protocol OIDObject: Hashable, Identifiable where ID: OID
 {
+}
+
+extension OIDObject // Hashable
+{
+  public func hash(into hasher: inout Hasher)
+  { id.hash(into: &hasher) }
 }
 
 extension OIDObject // Equatable
 {
-  public static func ==(a: Self, b: Self) -> Bool
-  {
-    return a.id == b.id
-  }
+  public static func == (a: Self, b: Self) -> Bool
+  { a.id == b.id }
 }
 
 
