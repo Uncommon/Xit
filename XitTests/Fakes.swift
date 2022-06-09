@@ -35,9 +35,9 @@ class FakeRemote: Remote
 {
   var name: String?
   var urlString: String?
-  var pushURLString: String? { return urlString }
+  var pushURLString: String? { urlString }
   
-  var refSpecs: AnyCollection<any RefSpec> { return AnyCollection([any RefSpec]()) }
+  var refSpecs: AnyCollection<any RefSpec> { AnyCollection([any RefSpec]()) }
   
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
@@ -58,12 +58,12 @@ class FakeStash: Stash
   var indexCommit: (any Commit)? = nil
   var untrackedCommit: (any Commit)? = nil
   
-  func indexChanges() -> [FileChange] { return [] }
-  func workspaceChanges() -> [FileChange] { return [] }
+  func indexChanges() -> [FileChange] { [] }
+  func workspaceChanges() -> [FileChange] { [] }
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
-  { return nil }
+  { nil }
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
-  { return nil }
+  { nil }
 }
 
 struct FakePullRequest: PullRequest
@@ -78,10 +78,10 @@ struct FakePullRequest: PullRequest
   var status: PullRequestStatus
   var webURL: URL?
   
-  func isApproved(by userID: String) -> Bool { return false }
+  func isApproved(by userID: String) -> Bool { false }
   
   func reviewerStatus(userID: String) -> PullRequestApproval
-  { return .unreviewed }
+  { .unreviewed }
   
   mutating func setReviewerStatus(userID: String, status: PullRequestApproval) {}
 }
@@ -96,7 +96,7 @@ class FakePRService : PullRequestService
   func needsWork(request: PullRequest) {}
   func merge(request: PullRequest) {}
   
-  func match(remote: any Remote) -> Bool { return true }
+  func match(remote: any Remote) -> Bool { true }
   
   var userID: String = ""
 }
@@ -106,7 +106,7 @@ class FakeLocalBranch: LocalBranch
   var trackingBranchName: String?
   var trackingBranch: (any RemoteBranch)?
   var name: String
-  var shortName: String { return strippedName }
+  var shortName: String { strippedName }
   var oid: (any OID)?
   var targetCommit: (any Commit)?
   
@@ -122,7 +122,7 @@ class FakeRemoteBranch: RemoteBranch
   var remoteName: String?
   var name: String
   public var shortName: String
-  { return name.droppingPrefix(RefPrefixes.remotes) }
+  { name.droppingPrefix(RefPrefixes.remotes) }
   var oid: (any OID)?
   var targetCommit: (any Commit)?
   
@@ -163,17 +163,17 @@ class FakeFileChangesRepo: FileChangesRepo
   var headRef: String? = nil
   var currentBranch: String? = nil
   
-  func sha(forRef: String) -> String? { return nil }
+  func sha(forRef: String) -> String? { nil }
   
-  func tags() throws -> [any Tag] { return [] }
+  func tags() throws -> [any Tag] { [] }
   func graphBetween(localBranch: LocalBranch, upstreamBranch: RemoteBranch)
     -> (ahead: Int, behind: Int)?
-  { return nil }
-  func localBranch(named name: String) -> LocalBranch? { return nil }
-  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
-  { return nil }
-  func reference(named name: String) -> Reference? { return nil }
-  func refs(at sha: String) -> [String] { return [] }
+  { nil }
+  func localBranch(named name: String) -> (any LocalBranch)? { nil }
+  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
+  { nil }
+  func reference(named name: String) -> (any Reference)? { nil }
+  func refs(at sha: String) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
@@ -181,30 +181,30 @@ class FakeFileChangesRepo: FileChangesRepo
   { return StringOID(sha: "") }
   func oid(forRef: String) -> (any OID)? { nil }
 
-  var repoURL: URL { return URL(fileURLWithPath: "") }
+  var repoURL: URL { URL(fileURLWithPath: "") }
   
-  func isTextFile(_ path: String, context: FileContext) -> Bool{ return false }
-  func fileBlob(ref: String, path: String) -> Blob? { return nil }
-  func stagedBlob(file: String) -> Blob? { return nil }
-  func contentsOfFile(path: String, at commit: Commit) -> Data? { return nil }
-  func contentsOfStagedFile(path: String) -> Data? { return nil }
-  func fileURL(_ file: String) -> URL { return URL(fileURLWithPath: "") }
+  func isTextFile(_ path: String, context: FileContext) -> Bool { false }
+  func fileBlob(ref: String, path: String) -> Blob? { nil }
+  func stagedBlob(file: String) -> Blob? { nil }
+  func contentsOfFile(path: String, at commit: Commit) -> Data? { nil }
+  func contentsOfStagedFile(path: String) -> Data? { nil }
+  func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   
   func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
     -> PatchMaker.PatchResult?
-  { return nil }
+  { nil }
   func diff(for path: String, commitSHA sha: String, parentOID: (any OID)?) -> DiffDelta?
-  { return nil }
-  func stagedDiff(file: String) -> PatchMaker.PatchResult? { return nil }
-  func unstagedDiff(file: String) -> PatchMaker.PatchResult? { return nil }
-  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ return nil }
+  { nil }
+  func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
+  func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
+  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
   
   func blame(for path: String, from startOID: (any OID)?, to endOID: (any OID)?) -> (any Blame)?
-  { return nil }
+  { nil }
   func blame(for path: String, data fromData: Data?, to endOID: (any OID)?) -> (any Blame)?
-  { return nil }
+  { nil }
   
-  var index: StagingIndex? { return nil }
+  var index: (any StagingIndex)? { nil }
   
   func stage(file: String) throws {}
   func unstage(file: String) throws {}
@@ -219,12 +219,12 @@ class FakeFileChangesRepo: FileChangesRepo
 
   func changes(for sha: String, parent parentOID: (any OID)?) -> [FileChange]
   { [] }
-  func stagedChanges() -> [FileChange] { return [] }
+  func stagedChanges() -> [FileChange] { [] }
   func unstagedChanges(showIgnored: Bool,
                        recurseUntracked: Bool,
                        useCache: Bool) -> [FileChange]
   { [] }
-  func amendingStagedChanges() -> [FileChange] { return [] }
+  func amendingStagedChanges() -> [FileChange] { [] }
   func amendingStagedStatus(for path: String) throws -> DeltaStatus
   { .unmodified }
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
