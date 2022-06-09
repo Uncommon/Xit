@@ -5,24 +5,24 @@ import XCTest
 class GenericCommit: Commit
 {
   let sha: String?
-  let oid: OID
-  let parentOIDs: [OID]
+  let id: any OID
+  let parentOIDs: [any OID]
   
   var message: String? = nil
   var authorSig: Signature? = nil
   var committerSig: Signature? = nil
   var email: String? = nil
-  var tree: Tree? = nil
+  var tree: (any Tree)? = nil
   var isSigned: Bool { false }
 
-  init(sha: String?, oid: OID, parentOIDs: [OID])
+  init(sha: String?, oid: any OID, parentOIDs: [any OID])
   {
     self.sha = sha
     self.oid = oid
     self.parentOIDs = parentOIDs
   }
   
-  init(sha: String, parentOIDs: [OID])
+  init(sha: String, parentOIDs: [any OID])
   {
     self.sha = sha
     self.oid = §sha
@@ -38,19 +38,19 @@ func == (a: GenericCommit, b: GenericCommit) -> Bool
 
 class GenericRepository<ID: OID & Hashable>: CommitStorage
 {
-  let commits: [Commit]
+  let commits: [any Commit]
   
-  init(commits: [Commit])
+  init(commits: [any Commit])
   {
     self.commits = commits
   }
   
-  func oid(forSHA sha: String) -> OID?
+  func oid(forSHA sha: String) -> (any OID)?
   {
     return StringOID(sha: sha)
   }
   
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: String) -> (any Commit)?
   {
     for commit in commits {
       if commit.sha == sha {
@@ -60,7 +60,7 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
     return nil
   }
 
-  func commit(forOID oid: OID) -> Commit?
+  func commit(forOID oid: any OID) -> (any Commit)?
   {
     for commit in commits {
       if commit.oid.equals(oid) {

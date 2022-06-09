@@ -92,7 +92,7 @@ final class HistoryCellView: NSTableCellView
     }
   }
 
-  func configure(entry: CommitEntry, repository: Branching & CommitReferencing)
+  func configure(entry: CommitEntry, repository: any Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch
     refs = repository.refs(at: entry.commit.sha)

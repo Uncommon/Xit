@@ -35,7 +35,7 @@ final class XTWindowController: NSWindowController,
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
   var repository: any FullRepository
-  { (repoDocument?.repository as FullRepository?)! }
+  { (repoDocument?.repository as (any FullRepository)?)! }
 
   @objc dynamic var isAmending = false
   {

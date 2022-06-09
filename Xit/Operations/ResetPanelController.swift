@@ -47,7 +47,7 @@ final class ResetPanelController: SheetController
   @IBOutlet var statusLabel: NSTextField!
   @IBOutlet var statusImage: NSImageView!
   
-  var repository: FileStatusDetection!
+  var repository: (any FileStatusDetection)!
   
   private var isWorkspaceClean: Bool
   { repository.unstagedChanges(showIgnored: false).isEmpty }

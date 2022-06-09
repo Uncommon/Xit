@@ -14,7 +14,7 @@ class OperationController
   /// if the window is closed before the operation completes.
   weak var windowController: XTWindowController?
   /// Convenient reference to the repository from the window controller.
-  weak var repository: FullRepository?
+  weak var repository: (any FullRepository)?
   /// True if the operation is being canceled.
   var canceled = false
   /// Actions to be executed after the operation succeeds.

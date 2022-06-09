@@ -30,7 +30,7 @@ final class NewTagOpController: OperationController
     }
   }
   
-  func executeTag(name: String, oid: OID, message: String?)
+  func executeTag(name: String, oid: any OID, message: String?)
   {
     guard let repository = self.repository
     else { return }

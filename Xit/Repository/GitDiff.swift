@@ -12,7 +12,7 @@ public protocol Diff: AnyObject
 
 public protocol DiffFile
 {
-  var oid: OID { get }
+  var oid: any OID { get }
   var filePath: String { get }
   var size: UInt64 { get }
   var diffFlags: DiffFlags { get }
@@ -163,7 +163,7 @@ final class GitDiff: Diff
     var startIndex: Int { 0 }
     var endIndex: Int { diff.deltaCount }
     
-    subscript(position: Int) -> Patch { diff.patch(at: position)! }
+    subscript(position: Int) -> any Patch { diff.patch(at: position)! }
     func index(after i: Int) -> Int { i + 1 }
   }
   

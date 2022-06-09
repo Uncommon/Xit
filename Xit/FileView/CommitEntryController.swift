@@ -67,7 +67,7 @@ final class CommitEntryController: NSViewController,
     }
   }
   
-  func configure(repository: Repository, config: Config)
+  func configure(repository: any Repository, config: any Config)
   {
     self.config = config
     self.repo = repository

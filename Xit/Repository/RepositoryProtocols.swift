@@ -319,8 +319,8 @@ public protocol Branching: AnyObject
 {
   /// Returns the current checked out branch, or nil if in a detached head state
   var currentBranch: String? { get }
-  var localBranches: AnySequence<LocalBranch> { get }
-  var remoteBranches: AnySequence<RemoteBranch> { get }
+  var localBranches: AnySequence<any LocalBranch> { get }
+  var remoteBranches: AnySequence<any RemoteBranch> { get }
   
   /// Creates a branch at the given target ref
   func createBranch(named name: String,

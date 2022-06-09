@@ -7,7 +7,7 @@ class PatchTest: XCTestCase
   var loremURL, lorem2URL: URL!
   var loremData, lorem2Data: Data!
   var loremText, lorem2Text: String!
-  var patch: Patch!
+  var patch: (any Patch)!
 
   override func setUpWithError() throws
   {

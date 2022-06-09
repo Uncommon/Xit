@@ -3,7 +3,7 @@ import XCTest
 
 extension Xit.PatchMaker.PatchResult
 {
-  func extractPatch() -> Patch?
+  func extractPatch() -> (any Patch)?
   {
     switch self {
       case .diff(let maker):
@@ -389,7 +389,7 @@ class XTRepositoryTest: XTTest
 
   func assertWriteAction(name: String,
                          file: StaticString = #file, line: UInt = #line,
-                         @RepoActionBuilder actions: () -> [RepoAction])
+                         @RepoActionBuilder actions: () -> [any RepoAction])
   {
     func executeActions() throws {
       try execute(in: repository, actions: actions)
@@ -686,7 +686,7 @@ class XTRepositoryTest: XTTest
   {
     let diffResult = try XCTUnwrap(diffResult, file: file, line: line)
     
-    var makerPatch: Patch? = nil
+    var makerPatch: (any Patch)? = nil
     
     switch diffResult {
       case .diff(let maker):

@@ -173,7 +173,7 @@ extension XTRepository: CommitReferencing
     return GitReference(name: name, repository: gitRepo)
   }
   
-  public func createCommit(with tree: Tree, message: String,
+  public func createCommit(with tree: any Tree, message: String,
                            parents: [any Commit],
                            updatingReference refName: String) throws -> any OID
   {

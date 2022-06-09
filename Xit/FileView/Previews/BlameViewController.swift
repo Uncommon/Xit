@@ -13,12 +13,12 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     var commitColors = [String: NSColor]()
     var lastHue = 120
     
-    init(firstOID: OID)
+    init(firstOID: any OID)
     {
       _ = color(for: firstOID)
     }
     
-    func color(for oid: OID) -> NSColor
+    func color(for oid: any OID) -> NSColor
     {
       if let color = commitColors[oid.sha] {
         return color

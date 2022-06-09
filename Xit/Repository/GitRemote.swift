@@ -37,7 +37,7 @@ public protocol Remote: AnyObject
   var urlString: String? { get }
   var pushURLString: String? { get }
   
-  var refSpecs: AnyCollection<RefSpec> { get }
+  var refSpecs: AnyCollection<any RefSpec> { get }
   
   func rename(_ name: String) throws
   func updateURLString(_ URLString: String?) throws
@@ -100,7 +100,7 @@ final class GitRemote: Remote
     return String(cString: url)
   }
   
-  var refSpecs: AnyCollection<RefSpec>
+  var refSpecs: AnyCollection<any RefSpec>
   { AnyCollection(RefSpecCollection(remote: self)) }
   
   init?(name: String, repository: OpaquePointer)
@@ -218,7 +218,7 @@ extension GitRemote
       return RefSpecIterator(remote: remote)
     }
     
-    subscript(position: Int) -> RefSpec
+    subscript(position: Int) -> any RefSpec
     {
       return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, position))
     }
@@ -243,7 +243,7 @@ extension GitRemote
       self.remote = remote
     }
     
-    mutating func next() -> RefSpec?
+    mutating func next() -> (any RefSpec)?
     {
       guard index < git_remote_refspec_count(remote.remote)
       else { return nil }
@@ -259,8 +259,8 @@ extension GitRemote
 public struct RemoteHead
 {
   let local: Bool
-  let oid: OID
-  let localOID: OID
+  let oid: any OID
+  let localOID: any OID
   let name: String
   let symrefTarget: String
   

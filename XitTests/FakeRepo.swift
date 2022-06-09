@@ -45,7 +45,7 @@ class FakeRepo: FakeFileChangesRepo
     remote1.urlString = "https://example.com/repo2.git"
   }
   
-  override func localBranch(named name: String) -> LocalBranch?
+  override func localBranch(named name: String) -> (any LocalBranch)?
   {
     switch name {
       case "branch1":
@@ -60,40 +60,40 @@ class FakeRepo: FakeFileChangesRepo
 
 extension FakeRepo: Branching
 {
-  var localBranches: AnySequence<LocalBranch>
+  var localBranches: AnySequence<any LocalBranch>
   {
-    let array: [LocalBranch] = [localBranch1, localBranch2]
+    let array: [any LocalBranch] = [localBranch1, localBranch2]
     return AnySequence(array)
   }
   
-  var remoteBranches: AnySequence<RemoteBranch>
+  var remoteBranches: AnySequence<any RemoteBranch>
   {
-    let array: [RemoteBranch] = [remoteBranch1, remoteBranch2]
+    let array: [any RemoteBranch] = [remoteBranch1, remoteBranch2]
     return AnySequence(array)
   }
   
-  func createBranch(named name: String, target: String) throws -> LocalBranch?
+  func createBranch(named name: String, target: String) throws -> (any LocalBranch)?
   { return nil }
-  func remoteBranch(named name: String) -> RemoteBranch?
+  func remoteBranch(named name: String) -> (any RemoteBranch)?
   { return nil }
-  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
   { return nil }
-  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
+  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
   { return nil }
   func rename(branch: String, to: String) throws {}
-  func reset(toCommit target: Commit, mode: ResetMode) throws {}
+  func reset(toCommit target: any Commit, mode: ResetMode) throws {}
 }
 
 extension FakeRepo: CommitStorage
 {
-  func oid(forSHA sha: String) -> OID? { return StringOID(sha: sha) }
+  func oid(forSHA sha: String) -> (any OID)? { return StringOID(sha: sha) }
   
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: String) -> (any Commit)?
   {
     return commits[StringOID(sha: sha)]
   }
   
-  func commit(forOID oid: OID) -> Commit?
+  func commit(forOID oid: any OID) -> (any Commit)?
   {
     return (oid as? StringOID).flatMap { commits[$0] }
   }
@@ -105,12 +105,12 @@ extension FakeRepo: CommitStorage
 
 extension FakeRepo: Stashing
 {
-  var stashes: AnyCollection<Stash> { return AnyCollection([]) }
-  func stash(index: UInt, message: String?) -> Stash { return FakeStash() }
+  var stashes: AnyCollection<any Stash> { return AnyCollection([]) }
+  func stash(index: UInt, message: String?) -> any Stash { return FakeStash() }
   func popStash(index: UInt) throws {}
   func applyStash(index: UInt) throws {}
   func dropStash(index: UInt) throws {}
-  func commitForStash(at index: UInt) -> Commit? { return nil }
+  func commitForStash(at index: UInt) -> (any Commit)? { return nil }
   func saveStash(name: String?, keepIndex: Bool,
                  includeUntracked: Bool, includeIgnored: Bool) throws {}
 }
@@ -125,7 +125,7 @@ extension FakeRepo: RemoteManagement
 {
   func remoteNames() -> [String] { return ["origin1", "origin2" ]}
   
-  func remote(named name: String) -> Remote?
+  func remote(named name: String) -> (any Remote)?
   {
     switch name {
       case "origin1": return remote1

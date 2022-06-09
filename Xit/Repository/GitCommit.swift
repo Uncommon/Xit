@@ -173,7 +173,7 @@ public final class GitCommit: Commit
     self.parentOIDs = GitCommit.calculateParentOIDs(gitCommit)
   }
 
-  convenience init?(oid: OID, repository: OpaquePointer)
+  convenience init?(oid: any OID, repository: OpaquePointer)
   {
     guard let oid = oid as? GitOID,
           let commit = try? OpaquePointer.from({

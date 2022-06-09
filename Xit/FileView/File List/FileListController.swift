@@ -60,7 +60,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
   var actionButtonSelector: Selector? { nil }
   
   var repository: any BasicRepository & FileStaging & FileContents
-  { repoController?.repository as! BasicRepository & FileStaging & FileContents }
+  { repoController?.repository as! any BasicRepository & FileStaging & FileContents }
 
   var optionsCancellable: AnyCancellable?
 

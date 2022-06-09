@@ -203,7 +203,7 @@ extension GitIndex
   {
     let gitEntry: git_index_entry
     
-    var oid: OID { GitOID(oid: gitEntry.id) }
+    var oid: any OID { GitOID(oid: gitEntry.id) }
     var path: String { String(cString: gitEntry.path) }
     
     var conflicted: Bool

@@ -91,7 +91,7 @@ public final class GitTag: Tag
     return tag.flatMap { String(cString: git_tag_message($0)) }
   }
   
-  func calculateOID() -> OID?
+  func calculateOID() -> (any OID)?
   {
     if let tag = self.tag {
       return GitOID(oid: git_tag_target_id(tag).pointee)

@@ -4,19 +4,19 @@ import Siesta
 
 struct FakeCommit: Commit
 {
-  var parentOIDs: [OID]
+  var parentOIDs: [any OID]
   var message: String?
   var authorSig: Signature?
   var committerSig: Signature?
   var email: String?
-  var tree: Tree?
-  var oid: OID
+  var tree: (any Tree)?
+  var oid: any OID
   var isSigned: Bool { false }
 }
 
 extension FakeCommit
 {
-  init(branchHead branch: Branch)
+  init(branchHead branch: any Branch)
   {
     self.parentOIDs = []
     self.message = branch.shortName
@@ -37,7 +37,7 @@ class FakeRemote: Remote
   var urlString: String?
   var pushURLString: String? { return urlString }
   
-  var refSpecs: AnyCollection<RefSpec> { return AnyCollection([RefSpec]()) }
+  var refSpecs: AnyCollection<any RefSpec> { return AnyCollection([any RefSpec]()) }
   
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
@@ -54,9 +54,9 @@ class FakeRemote: Remote
 class FakeStash: Stash
 {
   var message: String? = nil
-  var mainCommit: Commit? = nil
-  var indexCommit: Commit? = nil
-  var untrackedCommit: Commit? = nil
+  var mainCommit: (any Commit)? = nil
+  var indexCommit: (any Commit)? = nil
+  var untrackedCommit: (any Commit)? = nil
   
   func indexChanges() -> [FileChange] { return [] }
   func workspaceChanges() -> [FileChange] { return [] }
@@ -96,7 +96,7 @@ class FakePRService : PullRequestService
   func needsWork(request: PullRequest) {}
   func merge(request: PullRequest) {}
   
-  func match(remote: Remote) -> Bool { return true }
+  func match(remote: any Remote) -> Bool { return true }
   
   var userID: String = ""
 }
@@ -104,11 +104,11 @@ class FakePRService : PullRequestService
 class FakeLocalBranch: LocalBranch
 {
   var trackingBranchName: String?
-  var trackingBranch: RemoteBranch?
+  var trackingBranch: (any RemoteBranch)?
   var name: String
   var shortName: String { return strippedName }
-  var oid: OID?
-  var targetCommit: Commit?
+  var oid: (any OID)?
+  var targetCommit: (any Commit)?
   
   init(name: String)
   {
@@ -123,8 +123,8 @@ class FakeRemoteBranch: RemoteBranch
   var name: String
   public var shortName: String
   { return name.droppingPrefix(RefPrefixes.remotes) }
-  var oid: OID?
-  var targetCommit: Commit?
+  var oid: (any OID)?
+  var targetCommit: (any Commit)?
   
   init(remoteName: String, name: String)
   {
@@ -165,7 +165,7 @@ class FakeFileChangesRepo: FileChangesRepo
   
   func sha(forRef: String) -> String? { return nil }
   
-  func tags() throws -> [Tag] { return [] }
+  func tags() throws -> [any Tag] { return [] }
   func graphBetween(localBranch: LocalBranch, upstreamBranch: RemoteBranch)
     -> (ahead: Int, behind: Int)?
   { return nil }
@@ -177,9 +177,9 @@ class FakeFileChangesRepo: FileChangesRepo
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
-                    updatingReference refName: String) throws -> OID
+                    updatingReference refName: String) throws -> any OID
   { return StringOID(sha: "") }
-  func oid(forRef: String) -> OID? { nil }
+  func oid(forRef: String) -> (any OID)? { nil }
 
   var repoURL: URL { return URL(fileURLWithPath: "") }
   
@@ -190,18 +190,18 @@ class FakeFileChangesRepo: FileChangesRepo
   func contentsOfStagedFile(path: String) -> Data? { return nil }
   func fileURL(_ file: String) -> URL { return URL(fileURLWithPath: "") }
   
-  func diffMaker(forFile file: String, commitOID: OID, parentOID: OID?)
+  func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
     -> PatchMaker.PatchResult?
   { return nil }
-  func diff(for path: String, commitSHA sha: String, parentOID: OID?) -> DiffDelta?
+  func diff(for path: String, commitSHA sha: String, parentOID: (any OID)?) -> DiffDelta?
   { return nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { return nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { return nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ return nil }
   
-  func blame(for path: String, from startOID: OID?, to endOID: OID?) -> Blame?
+  func blame(for path: String, from startOID: (any OID)?, to endOID: (any OID)?) -> (any Blame)?
   { return nil }
-  func blame(for path: String, data fromData: Data?, to endOID: OID?) -> Blame?
+  func blame(for path: String, data fromData: Data?, to endOID: (any OID)?) -> (any Blame)?
   { return nil }
   
   var index: StagingIndex? { return nil }
@@ -217,7 +217,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   { (.unmodified, .unmodified) }
 
-  func changes(for sha: String, parent parentOID: OID?) -> [FileChange]
+  func changes(for sha: String, parent parentOID: (any OID)?) -> [FileChange]
   { [] }
   func stagedChanges() -> [FileChange] { return [] }
   func unstagedChanges(showIgnored: Bool,

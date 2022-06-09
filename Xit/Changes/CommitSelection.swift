@@ -3,7 +3,7 @@ import Foundation
 /// Changes for a selected commit in the history
 final class CommitSelection: RepositorySelection
 {
-  unowned var repository: FileChangesRepo
+  unowned var repository: any FileChangesRepo
   let commit: any Commit
   var shaToSelect: String? { commit.sha }
   var canCommit: Bool { false }
@@ -15,7 +15,7 @@ final class CommitSelection: RepositorySelection
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
-  init(repository: FileChangesRepo, commit: Commit)
+  init(repository: any FileChangesRepo, commit: any Commit)
   {
     self.repository = repository
     self.commit = commit

@@ -84,16 +84,16 @@ protocol FileListModel: AnyObject
 
 extension FileListModel
 {
-  var repository: FileChangesRepo { selection.repository }
+  var repository: any FileChangesRepo { selection.repository }
 }
 
-func == (a: RepositorySelection, b: RepositorySelection) -> Bool
+func == (a: any RepositorySelection, b: any RepositorySelection) -> Bool
 {
   return type(of: a) == type(of: b) &&
          a.shaToSelect == b.shaToSelect
 }
 
-func != (a: RepositorySelection, b: RepositorySelection) -> Bool
+func != (a: any RepositorySelection, b: any RepositorySelection) -> Bool
 {
   return !(a == b)
 }

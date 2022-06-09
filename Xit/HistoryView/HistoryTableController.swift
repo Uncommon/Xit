@@ -23,7 +23,7 @@ final class HistoryTableController: NSViewController,
   
   var tableView: HistoryTableView { view as! HistoryTableView }
   let history = GitCommitHistory()
-  var repository: any Repository { repoController?.repository as! Repository }
+  var repository: any Repository { repoController?.repository as! (any Repository) }
   var sinks: [AnyCancellable] = []
   
   func finishLoad(repository: any Repository)
@@ -328,7 +328,7 @@ extension HistoryTableController: NSTableViewDelegate
         historyCell.displayMode = refsColumnVisible ? .titleGraph : .all
         historyCell.configure(
             entry: entry,
-            repository: repository as! Branching & CommitReferencing)
+            repository: repository as! any Branching & CommitReferencing)
         historyCell.mutex = history.syncMutex
 
       case ColumnID.author:
@@ -356,7 +356,7 @@ extension HistoryTableController: NSTableViewDelegate
         refsCell.displayMode = .refsOnly
         refsCell.configure(
             entry: entry,
-            repository: repository as! Branching & CommitReferencing)
+            repository: repository as! any Branching & CommitReferencing)
         refsCell.mutex = history.syncMutex
 
       default:

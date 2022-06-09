@@ -165,9 +165,9 @@ extension FileTreeDataSource: NSOutlineViewDataSource
 
 class CommitTreeItem: FileChange
 {
-  let oid: OID?
+  let oid: (any OID)?
   
-  init(path: String, oid: OID? = nil,
+  init(path: String, oid: (any OID)? = nil,
        change: DeltaStatus = .unmodified)
   {
     self.oid = oid

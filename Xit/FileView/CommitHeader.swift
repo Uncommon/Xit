@@ -8,7 +8,7 @@ extension Font
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
   var repository: CommitStorage?
-  var selectParent: ((OID) -> Void)?
+  var selectParent: ((any OID) -> Void)?
   
   var commit: (any Commit)?
   {
@@ -159,10 +159,10 @@ struct CommitHeader_Previews: PreviewProvider
 {
   struct PreviewCommit: Commit
   {
-    let parentOIDs: [OID] = ["A", "B"]
+    let parentOIDs: [any OID] = ["A", "B"]
     let message: String? = "Single line"
-    let tree: Tree? = nil
-    let oid: OID = "45a608978"
+    let tree: (any Tree)? = nil
+    let oid: any OID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",

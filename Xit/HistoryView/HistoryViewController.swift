@@ -36,7 +36,7 @@ final class HistoryViewController: NSViewController
     view.window?.addTitlebarAccessoryViewController(searchController)
   }
   
-  func finishLoad(repository: FullRepository)
+  func finishLoad(repository: any FullRepository)
   {
     fileViewController.finishLoad(repository: repository)
     tableController.finishLoad(repository: repository)

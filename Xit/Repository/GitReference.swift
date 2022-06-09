@@ -16,7 +16,7 @@ public protocol Reference
   /// Peels a symbolic reference until a direct reference is reached
   func resolve() -> (any Reference)?
   /// Changes the ref to point to a different object
-  func setTarget(_ newOID: OID, logMessage: String)
+  func setTarget(_ newOID: any OID, logMessage: String)
 }
 
 final class GitReference: Reference
@@ -118,7 +118,7 @@ final class GitReference: Reference
     return GitReference(reference: ref)
   }
   
-  public func setTarget(_ newOID: OID, logMessage: String)
+  public func setTarget(_ newOID: any OID, logMessage: String)
   {
     guard var gitOID = (newOID as? GitOID)?.oid,
           let newRef = try? OpaquePointer.from({

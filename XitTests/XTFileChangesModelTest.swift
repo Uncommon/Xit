@@ -205,7 +205,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStashTree() throws
   {
-    try execute(in: repository, actions: { () -> [RepoAction] in
+    try execute(in: repository, actions: { () -> [any RepoAction] in
       CommitFiles {
         Write("bye!", to: .deleted)
       }
