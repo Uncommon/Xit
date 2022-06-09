@@ -207,22 +207,6 @@ public final class GitCommit: Commit
     self.init(gitCommit: gitObject)
   }
   
-  /// Returns a list of all files in the commit's tree, with paths relative
-  /// to the root.
-  func allFiles() -> [String]
-  {
-    guard let tree = tree as? GitTree
-    else { return [] }
-    
-    var result = [String]()
-    
-    tree.walkEntries {
-      (entry, root) in
-      result.append(root.appending(pathComponent: entry.name))
-    }
-    return result
-  }
-  
   private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GitOID]
   {
     var result = [GitOID]()

@@ -7,7 +7,6 @@ public protocol Tree: OIDObject
   func entry(named: String) -> (any TreeEntry)?
   func entry(path: String) -> (any TreeEntry)?
   func entry(at index: Int) -> (any TreeEntry)?
-  func walkEntries(callback: (any TreeEntry, String) -> Void)
 }
 
 public protocol TreeEntry: OIDObject
@@ -121,23 +120,6 @@ final class GitTree: Tree
         return entries[index]
       default:
         return nil
-    }
-  }
-  
-  func walkEntries(callback: (any TreeEntry, String) -> Void)
-  {
-    walkEntries(root: "", callback: callback)
-  }
-  
-  private func walkEntries(root: String,
-                           callback: (any TreeEntry, String) -> Void)
-  {
-    for entry in entries {
-      callback(entry, root)
-      if let tree = entry.object as? GitTree {
-        tree.walkEntries(root: root.appending(pathComponent: entry.name),
-                         callback: callback)
-      }
     }
   }
 }
