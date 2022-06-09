@@ -1,13 +1,9 @@
 import Foundation
 
-public protocol OID: CustomDebugStringConvertible, Sendable
+public protocol OID: CustomDebugStringConvertible, Equatable, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }
-  
-  // Making OID Equatable would cause cascading requirements that it, and
-  // protocols that use it, only be used as a generic constraint.
-  func equals(_ other: (any OID)?) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
@@ -47,13 +43,21 @@ func != (a: (any OID)?, b: (any OID)?) -> Bool
   return !(a == b)
 }
 
-public protocol OIDObject
+
+public protocol OIDObject: Equatable, Identifiable where ID: OID
 {
-  var id: any OID { get }
+}
+
+extension OIDObject // Equatable
+{
+  public static func ==(a: Self, b: Self) -> Bool
+  {
+    return a.id == b.id
+  }
 }
 
 
-public struct GitOID: OID, Equatable
+public struct GitOID: OID
 {
   var oid: git_oid
   
@@ -113,14 +117,6 @@ public struct GitOID: OID, Equatable
 
   public var isZero: Bool
   { withUnsafeOID { git_oid_iszero($0) } == 1 }
-  
-  public func equals(_ other: any OID) -> Bool
-  {
-    guard let otherGitOID = other as? GitOID
-    else { return false }
-    
-    return self == otherGitOID
-  }
   
   func withUnsafeOID<T>(_ block: (UnsafePointer<git_oid>) throws -> T) rethrows
     -> T

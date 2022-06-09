@@ -41,7 +41,7 @@ public struct TreeLoader
         let entryPath = path.appending(pathComponent: entry.name)
         
         if entry.type == .tree {
-          guard let entryTree = entry.object as? Tree
+          guard let entryTree = entry.object as? (any Tree)
           else { continue }
           let oldNode = oldTree?.children?.first {
             (node) in

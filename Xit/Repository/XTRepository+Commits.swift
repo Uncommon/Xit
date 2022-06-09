@@ -78,7 +78,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns a list of refs that point to the given commit.
-  public func refs(at oid: OID) -> [String]
+  public func refs(at oid: any OID) -> [String]
   {
     objc_sync_enter(self)
     defer {

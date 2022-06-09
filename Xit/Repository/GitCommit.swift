@@ -60,7 +60,7 @@ public final class GitCommit: Commit
 {
   let commit: OpaquePointer
 
-  public let id: any OID
+  public let id: GitOID
   public let parentOIDs: [any OID]
   
   public var repository: OpaquePointer
@@ -227,9 +227,4 @@ public final class GitCommit: Commit
     }
     return result
   }
-}
-
-public func == (a: GitCommit, b: GitCommit) -> Bool
-{
-  return (a.id as! GitOID) == (b.id as! GitOID)
 }

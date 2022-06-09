@@ -212,12 +212,12 @@ struct CommitHeader_Previews: PreviewProvider
     let parentOIDs: [any OID] = [§"A", §"B"]
     let message: String? = "Single line"
     let tree: (any Tree)? = nil
-    let id: any OID = §"45a608978"
+    let id = §"45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
                                           when: Date())
-    
+
     let committerSig: Signature? = Signature(name: "Committer Person",
                                              email: "commit@example.com",
                                              when: Date())
@@ -232,10 +232,10 @@ struct CommitHeader_Previews: PreviewProvider
       ]
     }
   }
-  
-  static var parents: [StringOID: String] = ["A": "First parent",
-                                             "B": "Second parent"]
-  
+
+  static var parents = [§"A": "First parent",
+                        §"B": "Second parent"]
+
   static var previews: some View {
     CommitHeader(commit: PreviewCommit(),
                  messageLookup: { parents[$0 as! StringOID]! },

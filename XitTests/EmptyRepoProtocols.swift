@@ -2,6 +2,9 @@ import Foundation
 @testable import Xit
 
 /// Empty implementations of all the repository protocols.
+/// For these types, "Empty" is used for sub-protocols with default
+/// implementations that do nothing. "Null" is for concrete types whose
+/// instances represent null or empty values.
 
 protocol EmptyBasicRepository: BasicRepository {}
 
@@ -39,16 +42,16 @@ class NullLocalBranch: LocalBranch
   var trackingBranch: (RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (OID)? { nil }
-  var targetCommit: (Commit)? { nil }
+  var oid: (any OID)? { nil }
+  var targetCommit: (any Commit)? { nil }
 }
 
 class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (OID)? { nil }
-  var targetCommit: (Commit)? { nil }
+  var oid: (any OID)? { nil }
+  var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }
 
@@ -94,17 +97,17 @@ extension EmptyCommitReferencing
                     message: String,
                     parents: [any Commit],
                     updatingReference refName: String) throws -> any OID
-  { StringOID("") }
+  { §"" }
 }
 
 class NullCommit: Commit
 {
-  var id: OID { StringOID("") }
-  var parentOIDs: [OID] { [] }
+  var id:  StringOID { §"" }
+  var parentOIDs: [any OID] { [] }
   var message: String? { nil }
   var authorSig: Signature? { nil }
   var committerSig: Signature? { nil }
-  var tree: (Tree)? { nil }
+  var tree: (any Tree)? { nil }
   var isSigned: Bool { false }
 
   func getTrailers() -> [(String, [String])] { [] }

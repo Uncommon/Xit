@@ -11,7 +11,7 @@ struct FakeCommit: Commit
   var committerSig: Signature?
   var email: String?
   var tree: (any Tree)?
-  var id: any OID
+  var id: StringOID
   var isSigned: Bool { false }
 
   init(parentOIDs: [any OID],
@@ -40,7 +40,7 @@ extension FakeCommit
   {
     self.parentOIDs = []
     self.message = branch.shortName
-    self.id = branch.oid!
+    self.id = .init(rawValue: branch.oid!.sha)
   }
 }
 
@@ -178,7 +178,7 @@ class FakeRepoController: RepositoryController
 
 class FakeFileChangesRepo: FileChangesRepo
 {
-  var controller: RepositoryController?
+  var controller: (any RepositoryController)?
 
   var headRef: String? = nil
   var currentBranch: String? = nil
@@ -186,7 +186,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func sha(forRef: String) -> String? { nil }
   
   func tags() throws -> [any Tag] { [] }
-  func graphBetween(localBranch: LocalBranch, upstreamBranch: RemoteBranch)
+  func graphBetween(localBranch: any LocalBranch, upstreamBranch: any RemoteBranch)
     -> (ahead: Int, behind: Int)?
   { nil }
   func localBranch(named name: String) -> (any LocalBranch)? { nil }
@@ -196,7 +196,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func refs(at oid: any OID) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
-  func createCommit(with tree: Tree, message: String, parents: [Commit],
+  func createCommit(with tree: any Tree, message: String, parents: [any Commit],
                     updatingReference refName: String) throws -> any OID
   { §"" }
   func oid(forRef: String) -> (any OID)? { nil }
@@ -204,9 +204,9 @@ class FakeFileChangesRepo: FileChangesRepo
   var repoURL: URL { URL(fileURLWithPath: "") }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: String, path: String) -> Blob? { nil }
-  func stagedBlob(file: String) -> Blob? { nil }
-  func contentsOfFile(path: String, at commit: Commit) -> Data? { nil }
+  func fileBlob(ref: String, path: String) -> (any Blob)? { nil }
+  func stagedBlob(file: String) -> (any Blob)? { nil }
+  func contentsOfFile(path: String, at commit: any Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   
@@ -231,7 +231,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func revert(file: String) throws {}
   func stageAllFiles() throws {}
   func unstageAllFiles() throws {}
-  func patchIndexFile(path: String, hunk: DiffHunk, stage: Bool) throws {}
+  func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws {}
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   { (.unmodified, .unmodified) }
 

@@ -20,8 +20,8 @@ public protocol TreeEntry: OIDObject
 /// Used as a return value when an entry can't be returned for a given subscript
 struct NullEntry: TreeEntry
 {
-  var id: any OID
-  { GitOID.zero() }
+  var id: GitOID
+  { .zero() }
   var type: GitObjectType
   { .invalid }
   var name: String
@@ -61,7 +61,7 @@ final class GitTree: Tree
   
   let tree: OpaquePointer
   
-  var id: any OID
+  var id: GitOID
   {
     guard let result = git_tree_id(tree)
     else { return GitOID.zero() }
@@ -130,7 +130,7 @@ class GitTreeEntry: TreeEntry
   let owner: OpaquePointer
   let owned: Bool
   
-  var id: any OID
+  var id: GitOID
   {
     guard let gitOID = git_tree_entry_id(entry)
     else { return GitOID.zero() }
