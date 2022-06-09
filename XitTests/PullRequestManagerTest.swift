@@ -41,9 +41,8 @@ class PullRequestManagerTest: XCTestCase
     prManager.pullRequestCache = PullRequestCache(repository: fakeRepo)
     prManager.pullRequestCache.requests = [matchPR, otherPR]
     
-    let commit1 = FakeCommit(parentOIDs: [], message: "", authorSig: nil,
-                             committerSig: nil, email: nil, tree: nil,
-                             oid: "A")
+    let commit1 = StringCommit(parentOIDs: [], message: "", authorSig: nil,
+                               committerSig: nil, id: "A", tree: nil)
     let branch1Selection = CommitSelection(repository: fakeRepo, commit: commit1)
     let branch1Item = LocalBranchSidebarItem(title: "branch1",
                                              selection: branch1Selection)

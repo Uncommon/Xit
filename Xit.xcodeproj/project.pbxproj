@@ -87,6 +87,7 @@
 		89C927781D36A5890074F71A /* GitTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* GitTag.swift */; };
 		89C927881D43B0460074F71A /* PullOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* PullOpController.swift */; };
 		89C927941D43B23B0074F71A /* XTRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927931D43B23B0074F71A /* XTRepository.swift */; };
+		89CAF5822852A9E2000D2014 /* StringFakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CAF5812852A9E2000D2014 /* StringFakes.swift */; };
 		89CB61981E788A3900D69FE4 /* lorem.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61971E788A3900D69FE4 /* lorem.txt */; };
 		89CB619A1E788B6800D69FE4 /* lorem2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61991E788B6800D69FE4 /* lorem2.txt */; };
 		89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB619B1E788C6000D69FE4 /* PatchTest.swift */; };
@@ -452,6 +453,7 @@
 		89C927771D36A5890074F71A /* GitTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTag.swift; sourceTree = "<group>"; };
 		89C927871D43B0460074F71A /* PullOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PullOpController.swift; sourceTree = "<group>"; };
 		89C927931D43B23B0074F71A /* XTRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepository.swift; sourceTree = "<group>"; };
+		89CAF5812852A9E2000D2014 /* StringFakes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringFakes.swift; sourceTree = "<group>"; };
 		89CB61971E788A3900D69FE4 /* lorem.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem.txt; sourceTree = "<group>"; };
 		89CB61991E788B6800D69FE4 /* lorem2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem2.txt; sourceTree = "<group>"; };
 		89CB619B1E788C6000D69FE4 /* PatchTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchTest.swift; sourceTree = "<group>"; };
@@ -1098,6 +1100,7 @@
 				C95BD4021F8FD611000A2E2D /* GitEnums.swift */,
 				C94736771DEF5AAE000E3A05 /* GitExtensions.swift */,
 				C9DA20CA1F6C8B7800C472CD /* GitIndex.swift */,
+				C9B68A5D27B425BC00EE4C3A /* GitODB.swift */,
 				C991732C1F91255200054154 /* GitPatch.swift */,
 				C90B4EC21FEB2B2300277B13 /* GitReference.swift */,
 				C9470B8323073A5B003895A9 /* GitRefLog.swift */,
@@ -1125,7 +1128,7 @@
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
-				C9B68A5D27B425BC00EE4C3A /* GitODB.swift */,
+				89CAF5812852A9E2000D2014 /* StringFakes.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1547,6 +1550,7 @@
 				C9BDF4C11D99A70F0034841F /* RenameBranchOpController.swift in Sources */,
 				C95BF6541FCF5BC90020C51D /* FileContentProtocols.swift in Sources */,
 				C931A0E5275EBE21007F441C /* FileViewOptions.swift in Sources */,
+				89CAF5822852A9E2000D2014 /* StringFakes.swift in Sources */,
 				C9C3013F26A2816F00EBBBC8 /* AXID.swift in Sources */,
 				C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */,
 				895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */,

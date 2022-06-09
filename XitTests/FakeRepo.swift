@@ -13,8 +13,8 @@ class FakeRepo: FakeFileChangesRepo
   
   var isWriting: Bool { return false }
   
-  var commits: [StringOID: FakeCommit] = [:]
-  
+  var commits: [StringOID: StringCommit] = [:]
+
   override init()
   {
     self.remote1.name = "origin1"
@@ -28,10 +28,10 @@ class FakeRepo: FakeFileChangesRepo
     
     super.init()
     
-    let commit1 = FakeCommit(branchHead: localBranch1)
-    let commit2 = FakeCommit(branchHead: localBranch2)
-    let commitR1 = FakeCommit(branchHead: remoteBranch1)
-    let commitR2 = FakeCommit(branchHead: remoteBranch2)
+    let commit1 = StringCommit(branchHead: localBranch1)
+    let commit2 = StringCommit(branchHead: localBranch2)
+    let commitR1 = StringCommit(branchHead: remoteBranch1)
+    let commitR2 = StringCommit(branchHead: remoteBranch2)
 
     commits[commit1.id] = commit1
     commits[commit2.id] = commit2

@@ -3,44 +3,14 @@
 import Siesta
 @testable import Xit
 
-struct FakeCommit: Commit
-{
-  var parentOIDs: [any OID]
-  var message: String?
-  var authorSig: Signature?
-  var committerSig: Signature?
-  var email: String?
-  var tree: (any Tree)?
-  var id: StringOID
-  var isSigned: Bool { false }
-
-  init(parentOIDs: [any OID],
-       message: String? = nil,
-       authorSig: Signature? = nil,
-       committerSig: Signature? = nil,
-       email: String? = nil,
-       tree: (any Tree)? = nil,
-       oid: StringOID)
-  {
-    self.parentOIDs = parentOIDs
-    self.message = message
-    self.authorSig = authorSig
-    self.committerSig = committerSig
-    self.email = email
-    self.tree = tree
-    self.id = oid
-  }
-
-  func getTrailers() -> [(String, [String])] { [] }
-}
-
-extension FakeCommit
+extension StringCommit
 {
   init(branchHead branch: any Branch)
   {
-    self.parentOIDs = []
-    self.message = branch.shortName
-    self.id = .init(rawValue: branch.oid!.sha)
+    self.init(parentOIDs: [],
+              message: branch.shortName,
+              isSigned: false,
+              id: .init(rawValue: branch.oid!.sha))
   }
 }
 
