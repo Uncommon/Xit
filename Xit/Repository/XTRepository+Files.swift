@@ -42,7 +42,9 @@ extension XTRepository: FileContents
     
     switch context {
       case .commit(let commit):
-        if let blob = commit.tree?.entry(path: path)?.object as? Blob {
+        if let tree = commit.tree,
+           let entry = tree.entry(path: path) as (any TreeEntry)?,
+           let blob = entry.object as? Blob {
           return !blob.isBinary
         }
       case .index:
@@ -63,10 +65,9 @@ extension XTRepository: FileContents
   
   public func contentsOfFile(path: String, at commit: any Commit) -> Data?
   {
-    // TODO: make a Tree protocol to eliminate this cast
     guard let commit = commit as? GitCommit,
           let tree = commit.tree,
-          let entry = tree.entry(path: path),
+          let entry = tree.entry(path: path) as (any TreeEntry)?,
           let blob = entry.object as? Blob
     else { return nil }
     
@@ -93,7 +94,11 @@ extension XTRepository: FileContents
   
   func commitBlob(commit: (any Commit)?, path: String) -> (any Blob)?
   {
-    return commit?.tree?.entry(path: path)?.object as? Blob
+    guard let tree = commit?.tree,
+          let entry = tree.entry(path: path) as (any TreeEntry)?
+    else { return nil }
+
+    return entry.object as? Blob
   }
   
   public func fileBlob(ref: String, path: String) -> (any Blob)?
@@ -135,13 +140,13 @@ extension XTRepository: FileDiffing
     var toSource = PatchMaker.SourceType.data(Data())
     
     if let toTree = toCommit.tree,
-       let toEntry = toTree.entry(path: file),
+       let toEntry = toTree.entry(path: file) as (any TreeEntry)?,
        let toBlob = toEntry.object as? GitBlob {
       toSource = .blob(toBlob)
     }
     
     if let fromTree = parentCommit?.tree,
-       let fromEntry = fromTree.entry(path: file),
+       let fromEntry = fromTree.entry(path: file) as (any TreeEntry)?,
        let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
     }

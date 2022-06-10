@@ -36,7 +36,7 @@ public struct TreeLoader
     }
     else {
       for index in 0..<tree.count {
-        guard let entry = tree.entry(at: index)
+        guard let entry = tree.entry(at: index) as (any TreeEntry)?
         else { continue }
         let entryPath = path.appending(pathComponent: entry.name)
         

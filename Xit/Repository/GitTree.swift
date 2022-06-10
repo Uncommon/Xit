@@ -1,24 +1,37 @@
 import Foundation
 
-public protocol Tree: OIDObject
+public protocol Tree<ObjectIdentifier>: OIDObject
 {
+  associatedtype ObjectIdentifier
+  associatedtype Entry: TreeEntry<ObjectIdentifier>
+
+  /// Number of entries in the tree.
   var count: Int { get }
-  
-  func entry(named: String) -> (any TreeEntry)?
-  func entry(path: String) -> (any TreeEntry)?
-  func entry(at index: Int) -> (any TreeEntry)?
+
+  /// Finds an entry with the given name.
+  func entry(named: String) -> Entry?
+  /// Finds a descendent item matching a relative path.
+  func entry(path: String) -> Entry?
+  /// Finds an entry by index.
+  func entry(at index: Int) -> Entry?
 }
 
-public protocol TreeEntry: OIDObject
+public protocol TreeEntry<ObjectIdentifier>: OIDObject
 {
+  associatedtype ObjectIdentifier: OID
+
   var type: GitObjectType { get }
   var name: String { get }
+  /// The object referenced by the entry is not a specific type because it
+  /// could be a blob or a sub-tree.
   var object: (any OIDObject)? { get }
 }
 
 
 final class GitTree: Tree
 {
+  typealias ObjectIdentifier = GitOID
+
   struct EntryCollection: Collection
   {
     let tree: GitTree
@@ -81,7 +94,7 @@ final class GitTree: Tree
     git_tree_free(tree)
   }
   
-  func entry(named name: String) -> (any TreeEntry)?
+  func entry(named name: String) -> GitTreeEntry?
   {
     guard let result = git_tree_entry_byname(tree, name),
           let owner = git_tree_owner(tree)
@@ -90,7 +103,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: result, owner: owner, owned: false)
   }
   
-  func entry(path: String) -> (any TreeEntry)?
+  func entry(path: String) -> GitTreeEntry?
   {
     guard let owner = git_tree_owner(tree),
           let entry = try? OpaquePointer.from({
@@ -101,7 +114,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: entry, owner: owner, owned: true)
   }
   
-  func entry(at index: Int) -> (any TreeEntry)?
+  func entry(at index: Int) -> GitTreeEntry?
   {
     switch index {
       case 0..<count:
@@ -114,6 +127,8 @@ final class GitTree: Tree
 
 final class GitTreeEntry: TreeEntry
 {
+  typealias ObjectIdentifier = GitOID
+
   let entry: OpaquePointer!
   let owner: OpaquePointer!
   let owned: Bool

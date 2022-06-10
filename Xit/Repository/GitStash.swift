@@ -79,7 +79,8 @@ public final class GitStash: Stash
           let parentOID = mainCommit.parentOIDs.first,
           let parent = GitCommit(oid: parentOID,
                                  repository: mainCommit.repository),
-          let headEntry = parent.tree?.entry(path: path)
+          let tree = parent.tree,
+          let headEntry = tree.entry(path: path) as (any TreeEntry)?
     else { return nil }
     
     return headEntry.object as? Blob
@@ -91,7 +92,8 @@ public final class GitStash: Stash
     else { return nil }
     guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
-    guard let indexEntry = indexCommit.tree?.entry(path: path),
+    guard let tree = indexCommit.tree,
+          let indexEntry = tree.entry(path: path) as (any TreeEntry)?,
           let indexBlob = indexEntry.object as? Blob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
@@ -108,7 +110,8 @@ public final class GitStash: Stash
 
     var indexBlob: (any Blob)?
     
-    if let indexEntry = indexCommit.tree!.entry(path: path) {
+    if let tree = indexCommit.tree,
+       let indexEntry = tree.entry(path: path) as (any TreeEntry)? {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
@@ -116,7 +119,8 @@ public final class GitStash: Stash
     }
     
     if let untrackedCommit = self.untrackedCommit as? GitCommit,
-       let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
+       let tree = untrackedCommit.tree,
+       let untrackedEntry = tree.entry(path: path) as (any TreeEntry)? {
       if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary
       }
@@ -128,7 +132,8 @@ public final class GitStash: Stash
                                path: path))
     }
     if let mainCommit = self.mainCommit,
-       let unstagedEntry = mainCommit.tree?.entry(path: path) {
+       let tree = mainCommit.tree,
+       let unstagedEntry = tree.entry(path: path) as (any TreeEntry)? {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
       

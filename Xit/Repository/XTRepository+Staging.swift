@@ -440,7 +440,8 @@ extension XTRepository: FileStaging
         else {
           throw RepoError.commitNotFound(sha: parentOID.sha)
         }
-        guard let entry = parentCommit.tree?.entry(path: file),
+        guard let tree = parentCommit.tree,
+              let entry = tree.entry(path: file) as (any TreeEntry)?,
               let blob = entry.object as? Blob
         else {
           throw RepoError.fileNotFound(path: file)

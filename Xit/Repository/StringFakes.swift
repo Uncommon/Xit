@@ -17,18 +17,20 @@ struct StringCommit: Commit
 /// String-based tree for testing and placeholders
 struct StringTree: Tree
 {
+  typealias ObjectIdentifier = StringOID
+  
   var id: StringOID
 
   var count: Int { entries.count }
-  var entries: [any TreeEntry] = []
+  var entries: [Entry] = []
 
-  func entry(named: String) -> (any TreeEntry)? { nil }
-  func entry(path: String) -> (any TreeEntry)? { nil }
-  func entry(at index: Int) -> (any TreeEntry)? { nil }
+  func entry(named: String) -> Entry? { nil }
+  func entry(path: String) -> Entry? { nil }
+  func entry(at index: Int) -> Entry? { nil }
 
   struct Entry: TreeEntry
   {
-    typealias ObjectIdentifier = String
+    typealias ObjectIdentifier = StringOID
 
     var id: StringOID { "" }
     var type: GitObjectType { .invalid }

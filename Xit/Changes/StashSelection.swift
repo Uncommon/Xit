@@ -166,7 +166,8 @@ final class StashUnstagedList: StashFileList, FileListModel
   func commit(for path: String) -> (any Commit)?
   {
     if let untrackedCommit = stash.untrackedCommit,
-       untrackedCommit.tree?.entry(path: path) != nil {
+       let tree = untrackedCommit.tree,
+       tree.entry(path: path) as (any TreeEntry)? != nil {
       return untrackedCommit
     }
     else {
