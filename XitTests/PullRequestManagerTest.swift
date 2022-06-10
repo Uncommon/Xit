@@ -42,7 +42,7 @@ class PullRequestManagerTest: XCTestCase
     
     let commit1 = FakeCommit(parentOIDs: [], message: "", authorSig: nil,
                              committerSig: nil, email: nil, tree: nil,
-                             id: StringOID(sha: "A"))
+                             oid: "A")
     let branch1Selection = CommitSelection(repository: fakeRepo, commit: commit1)
     let branch1Item = LocalBranchSidebarItem(title: "branch1",
                                              selection: branch1Selection)

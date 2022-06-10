@@ -114,7 +114,6 @@
 		C919B9E526B09F4D007952FA /* LabeledField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919B9D326B09F4D007952FA /* LabeledField.swift */; };
 		C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91E9A001D527A1300E128AC /* HistoryTableController.swift */; };
 		C91F34781D30656B005F9BDF /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* Services.swift */; };
-		C921026D1F757FEB0068F87C /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C921026C1F757FEB0068F87C /* StringOID.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarController.swift */; };
 		C924EFB5262F316500B13D31 /* RepoActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C924EFB4262F316500B13D31 /* RepoActions.swift */; };
@@ -478,7 +477,6 @@
 		C919B9D326B09F4D007952FA /* LabeledField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledField.swift; sourceTree = "<group>"; };
 		C91E9A001D527A1300E128AC /* HistoryTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableController.swift; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
-		C921026C1F757FEB0068F87C /* StringOID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
 		C923D66B1D906FAA00C6B90B /* TitleBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TitleBarController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C924EFB4262F316500B13D31 /* RepoActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoActions.swift; sourceTree = "<group>"; };
@@ -945,7 +943,6 @@
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
 				C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
-				C921026C1F757FEB0068F87C /* StringOID.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
@@ -1705,7 +1702,6 @@
 				C9A05432227CF61D002BFFF5 /* CommitRootTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
-				C921026D1F757FEB0068F87C /* StringOID.swift in Sources */,
 				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
 				C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,

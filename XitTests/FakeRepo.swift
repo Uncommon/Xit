@@ -13,7 +13,7 @@ class FakeRepo: FakeFileChangesRepo
   
   var isWriting: Bool { return false }
   
-  var commits: [StringOID: FakeCommit] = [:]
+  var commits: [String: FakeCommit] = [:]
   
   override init()
   {
@@ -33,10 +33,10 @@ class FakeRepo: FakeFileChangesRepo
     let commitR1 = FakeCommit(branchHead: remoteBranch1)
     let commitR2 = FakeCommit(branchHead: remoteBranch2)
 
-    commits[commit1.id as! StringOID] = commit1
-    commits[commit2.id as! StringOID] = commit2
-    commits[commitR1.id as! StringOID] = commitR1
-    commits[commitR2.id as! StringOID] = commitR2
+    commits[commit1.id as! String] = commit1
+    commits[commit2.id as! String] = commit2
+    commits[commitR1.id as! String] = commitR1
+    commits[commitR2.id as! String] = commitR2
 
     remote1.name = "remote1"
     remote1.urlString = "https://example.com/repo1.git"
@@ -86,16 +86,16 @@ extension FakeRepo: Branching
 
 extension FakeRepo: CommitStorage
 {
-  func oid(forSHA sha: String) -> (any OID)? { return StringOID(sha: sha) }
+  func oid(forSHA sha: String) -> (any OID)? { sha }
   
   func commit(forSHA sha: String) -> (any Commit)?
   {
-    return commits[StringOID(sha: sha)]
+    return commits[sha]
   }
   
   func commit(forOID oid: any OID) -> (any Commit)?
   {
-    return (oid as? StringOID).flatMap { commits[$0] }
+    return (oid as? String).flatMap { commits[$0] }
   }
   
   func commit(message: String, amend: Bool) throws {}

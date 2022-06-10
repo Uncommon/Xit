@@ -12,6 +12,23 @@ struct FakeCommit: Commit
   var tree: (any Tree)?
   var id: any OID
   var isSigned: Bool { false }
+
+  init(parentOIDs: [any OID],
+       message: String? = nil,
+       authorSig: Signature? = nil,
+       committerSig: Signature? = nil,
+       email: String? = nil,
+       tree: (any Tree)? = nil,
+       oid: String)
+  {
+    self.parentOIDs = parentOIDs
+    self.message = message
+    self.authorSig = authorSig
+    self.committerSig = committerSig
+    self.email = email
+    self.tree = tree
+    self.id = oid
+  }
 }
 
 extension FakeCommit
@@ -113,7 +130,7 @@ class FakeLocalBranch: LocalBranch
   init(name: String)
   {
     self.name = RefPrefixes.heads +/ name
-    self.oid = StringOID(sha: UUID().uuidString)
+    self.oid = UUID().uuidString
   }
 }
 
@@ -130,7 +147,7 @@ class FakeRemoteBranch: RemoteBranch
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name
     self.remoteName = remoteName
-    self.oid = StringOID(sha: UUID().uuidString)
+    self.oid = UUID().uuidString
   }
 }
 
@@ -178,7 +195,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
                     updatingReference refName: String) throws -> any OID
-  { return StringOID(sha: "") }
+  { "" }
   func oid(forRef: String) -> (any OID)? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
