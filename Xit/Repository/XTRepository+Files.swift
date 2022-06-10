@@ -1,4 +1,5 @@
 import Foundation
+import UniformTypeIdentifiers
 
 public enum FileContext
 {
@@ -16,14 +17,11 @@ extension XTRepository: FileContents
   static func isTextExtension(_ name: String) -> Bool
   {
     let ext = (name as NSString).pathExtension
-    guard !ext.isEmpty
+    guard !ext.isEmpty,
+          let type = UTType(filenameExtension: ext)
     else { return false }
-    
-    let unmanaged = UTTypeCreatePreferredIdentifierForTag(
-          kUTTagClassFilenameExtension, ext as CFString, nil)
-    let utType = unmanaged?.takeRetainedValue()
-    
-    return utType.map { UTTypeConformsTo($0, kUTTypeText) } ?? false
+
+    return type.conforms(to: .text)
   }
   
   /// Returns true if the file seems to be text, based on its name or its content.

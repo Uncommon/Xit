@@ -107,41 +107,41 @@ class WebViewController: NSViewController
   
   func updateColors()
   {
-    let savedAppearance = NSAppearance.current
-    
-    defer {
-      NSAppearance.current = savedAppearance
-    }
-    NSAppearance.current = view.effectiveAppearance
-    
-    let names = [
-          "addBackground",
-          "background",
-          "blameBorder",
-          "blameStart",
-          "buttonActiveBorder",
-          "buttonActiveGrad1",
-          "buttonActiveGrad2",
-          "buttonBorder",
-          "buttonGrad1",
-          "buttonGrad2",
-          "deleteBackground",
-          "divider",
-          "heading",
-          "hunkBottomBorder",
-          "hunkTopBorder",
-          "jumpActive",
-          "jumpHoverBackground",
-          "leftBackground",
-          "shadow",
-          ]
-    
-    setColor(name: "textColor", color: .textColor)
-    setColor(name: "textBackground", color: .textBackgroundColor)
-    setColor(name: "underPageBackgroundColor", color: .underPageBackgroundColor)
-    for name in names {
-      if let color = NSColor(named: name) {
-        setColor(name: name, color: color)
+    view.effectiveAppearance.performAsCurrentDrawingAppearance {
+      let names = [
+            "addBackground",
+            "background",
+            "blameBorder",
+            "blameStart",
+            "buttonActiveBorder",
+            "buttonActiveGrad1",
+            "buttonActiveGrad2",
+            "buttonBorder",
+            "buttonGrad1",
+            "buttonGrad2",
+            "deleteBackground",
+            "divider",
+            "heading",
+            "hunkBottomBorder",
+            "hunkTopBorder",
+            "jumpActive",
+            "jumpHoverBackground",
+            "leftBackground",
+            "shadow",
+            ]
+      let colorPairs: [(String, NSColor)] = [
+        ("textColor", .textColor),
+        ("textBackground", .textBackgroundColor),
+        ("underPageBackgroundColor", .underPageBackgroundColor),
+      ]
+
+      for pair in colorPairs {
+        setColor(name: pair.0, color: pair.1)
+      }
+      for name in names {
+        if let color = NSColor(named: name) {
+          setColor(name: name, color: color)
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 import Foundation
 import Cocoa
 import Combine
+import UniformTypeIdentifiers
 
 class FileListController: NSViewController, RepositoryWindowViewController
 {
@@ -325,12 +326,12 @@ extension FileListController: NSOutlineViewDelegate
                                               owner: self) as? FileCellView
         else { break }
         let path = viewDataSource.path(for: item)
-      
+
         cell.textField?.stringValue = path.lastPathComponent
         cell.imageView?.image = viewDataSource.outlineView!(outlineView,
                                                             isItemExpandable: item)
             ? NSImage(named: NSImage.folderName)
-            : NSWorkspace.shared.icon(forFileType: path.pathExtension)
+            : NSWorkspace.shared.icon(for: .fromExtension(path.pathExtension))
         
         cell.textField?.textColor = textColor(for: change,
                                               outlineView: outlineView,

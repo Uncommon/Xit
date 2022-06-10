@@ -219,11 +219,12 @@ final class XTKeychain: PasswordStorage
   }
 }
 
+/// For testing
 class Keychain
 {
   let keychainRef: SecKeychain
   
-  init?(path: String, password: String, promptUser: Bool)
+  init?(path: String, password: String)
   {
     var keychain: SecKeychain?
     let status = SecKeychainCreate(path, UInt32(password.utf8.count), password,

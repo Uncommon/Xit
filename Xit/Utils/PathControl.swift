@@ -1,6 +1,5 @@
-//
-
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct PathControl: NSViewRepresentable
 {
@@ -31,7 +30,8 @@ struct PathControl: NSViewRepresentable
         let lastItem = NSPathControlItem()
 
         lastItem.title = path.lastPathComponent
-        lastItem.image = NSWorkspace.shared.icon(forFileType: path.pathExtension)
+        lastItem.image =
+            NSWorkspace.shared.icon(for: .fromExtension(path.pathExtension))
         nsView.pathItems.append(lastItem)
       }
     }

@@ -22,7 +22,7 @@ class KeychainTest: XCTestCase
     try super.setUpWithError()
     
     deleteKeychain(at: path)
-    keychain = Keychain(path: path, password: "", promptUser: false)
+    keychain = Keychain(path: path, password: "")
     if keychain == nil {
       continueAfterFailure = false
       XCTFail("Could not create keychain")

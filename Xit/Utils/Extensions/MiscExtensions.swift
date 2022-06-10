@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UniformTypeIdentifiers
 
 extension Data
 {
@@ -320,6 +321,15 @@ extension NSObject
 extension TimeInterval
 {
   static let minutes: TimeInterval = 60
+}
+
+extension UTType
+{
+  /// Returns the type for the given extension, or `.item` if none found.
+  static func fromExtension(_ ext: String) -> UTType
+  {
+    .init(filenameExtension: ext) ?? .item
+  }
 }
 
 // Swift 3 took away ++, but it still can be useful.

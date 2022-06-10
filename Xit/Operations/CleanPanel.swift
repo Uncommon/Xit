@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct CleanableItem
 {
@@ -7,9 +8,11 @@ struct CleanableItem
 
   var icon: NSImage
   {
-    path.hasSuffix("/")
+    let type = UTType(filenameExtension: path.pathExtension) ?? .item
+
+    return path.hasSuffix("/")
         ? .init(named: NSImage.folderName)!
-        : NSWorkspace.shared.icon(forFileType: path.pathExtension)
+        : NSWorkspace.shared.icon(for: type)
   }
 }
 

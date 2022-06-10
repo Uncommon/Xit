@@ -341,10 +341,10 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       (index, component) -> NSPathControlItem in
       let workspace = NSWorkspace.shared
       let item = NSPathControlItem()
-      
+
       item.title = component
       item.image = !isFolder && (index == components.count - 1)
-          ? workspace.icon(forFileType: (component as NSString).pathExtension)
+          ? workspace.icon(for: .fromExtension(component.pathExtension))
           : NSImage(named: NSImage.folderName)
       
       return item
