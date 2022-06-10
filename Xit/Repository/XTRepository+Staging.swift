@@ -138,7 +138,7 @@ extension XTRepository: FileStatusDetection
     }
     
     var options = git_status_options.defaultOptions()
-    let tree = baseCommit?.tree as? GitTree
+    let tree = (baseCommit as? GitCommit)?.tree
 
     options.show = git_status_show_t(UInt32(show.rawValue))
     options.flags = GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue |
@@ -373,7 +373,7 @@ extension XTRepository: FileStaging
     
     if let headOID = headReference?.resolve()?.targetOID {
       guard let headCommit = commit(forOID: headOID),
-            let headTree = headCommit.tree
+            let headTree = headCommit.tree as (any Tree)?
       else { throw RepoError.unexpected }
       
       try index.read(tree: headTree)
@@ -436,12 +436,11 @@ extension XTRepository: FileStaging
         else {
           throw RepoError.commitNotFound(sha: headSHA)
         }
-        guard let parentCommit = commit(forOID: parentOID)
+        guard let parentCommit = commit(forOID: parentOID) as? GitCommit
         else {
           throw RepoError.commitNotFound(sha: parentOID.sha)
         }
-        guard let tree = parentCommit.tree,
-              let entry = tree.entry(path: file) as (any TreeEntry)?,
+        guard let entry = parentCommit.tree?.entry(path: file),
               let blob = entry.object as? Blob
         else {
           throw RepoError.fileNotFound(path: file)

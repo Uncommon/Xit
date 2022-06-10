@@ -79,8 +79,7 @@ public final class GitStash: Stash
           let parentOID = mainCommit.parentOIDs.first,
           let parent = GitCommit(oid: parentOID,
                                  repository: mainCommit.repository),
-          let tree = parent.tree,
-          let headEntry = tree.entry(path: path) as (any TreeEntry)?
+          let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     
     return headEntry.object as? Blob
@@ -92,8 +91,7 @@ public final class GitStash: Stash
     else { return nil }
     guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
-    guard let tree = indexCommit.tree,
-          let indexEntry = tree.entry(path: path) as (any TreeEntry)?,
+    guard let indexEntry = indexCommit.tree?.entry(path: path),
           let indexBlob = indexEntry.object as? Blob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
@@ -110,8 +108,7 @@ public final class GitStash: Stash
 
     var indexBlob: (any Blob)?
     
-    if let tree = indexCommit.tree,
-       let indexEntry = tree.entry(path: path) as (any TreeEntry)? {
+    if let indexEntry = indexCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
@@ -119,8 +116,7 @@ public final class GitStash: Stash
     }
     
     if let untrackedCommit = self.untrackedCommit as? GitCommit,
-       let tree = untrackedCommit.tree,
-       let untrackedEntry = tree.entry(path: path) as (any TreeEntry)? {
+       let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary
       }
@@ -131,9 +127,8 @@ public final class GitStash: Stash
                                to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
-    if let mainCommit = self.mainCommit,
-       let tree = mainCommit.tree,
-       let unstagedEntry = tree.entry(path: path) as (any TreeEntry)? {
+    if let mainCommit = self.mainCommit as? GitCommit,
+       let unstagedEntry = mainCommit.tree?.entry(path: path) {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
       

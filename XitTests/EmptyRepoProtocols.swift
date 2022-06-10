@@ -102,15 +102,40 @@ extension EmptyCommitReferencing
 
 class NullCommit: Commit
 {
+  typealias ObjectIdentifier = StringOID
+  typealias Tree = NullTree
+
   var id:  StringOID { §"" }
-  var parentOIDs: [any OID] { [] }
+  var parentOIDs: [StringOID] { [] }
   var message: String? { nil }
   var authorSig: Signature? { nil }
   var committerSig: Signature? { nil }
-  var tree: (any Tree)? { nil }
+  var tree: NullTree? { nil }
   var isSigned: Bool { false }
 
   func getTrailers() -> [(String, [String])] { [] }
+}
+
+class NullTree: Tree
+{
+  typealias ObjectIdentifier = StringOID
+
+  struct Entry: TreeEntry
+  {
+    typealias ObjectIdentifier = StringOID
+
+    var id: StringOID { §"" }
+    var type: GitObjectType { .invalid }
+    var name: String { "" }
+    var object: (any OIDObject)? { nil }
+  }
+
+  var id: StringOID { §"" }
+  var count: Int { 0 }
+
+  func entry(named: String) -> Entry? { nil }
+  func entry(path: String) -> Entry? { nil }
+  func entry(at index: Int) -> Entry? { nil }
 }
 
 protocol EmptyFileStatusDetection: FileStatusDetection {}

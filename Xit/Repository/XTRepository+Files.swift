@@ -42,8 +42,7 @@ extension XTRepository: FileContents
     
     switch context {
       case .commit(let commit):
-        if let tree = commit.tree,
-           let entry = tree.entry(path: path) as (any TreeEntry)?,
+        if let entry = (commit as? GitCommit)?.tree?.entry(path: path),
            let blob = entry.object as? Blob {
           return !blob.isBinary
         }
@@ -65,9 +64,7 @@ extension XTRepository: FileContents
   
   public func contentsOfFile(path: String, at commit: any Commit) -> Data?
   {
-    guard let commit = commit as? GitCommit,
-          let tree = commit.tree,
-          let entry = tree.entry(path: path) as (any TreeEntry)?,
+    guard let entry = (commit as? GitCommit)?.tree?.entry(path: path),
           let blob = entry.object as? Blob
     else { return nil }
     
@@ -94,17 +91,13 @@ extension XTRepository: FileContents
   
   func commitBlob(commit: (any Commit)?, path: String) -> (any Blob)?
   {
-    guard let tree = commit?.tree,
-          let entry = tree.entry(path: path) as (any TreeEntry)?
-    else { return nil }
-
-    return entry.object as? Blob
+    (commit as? GitCommit)?.tree?.entry(path: path)?.object as? (any Blob)
   }
   
   public func fileBlob(ref: String, path: String) -> (any Blob)?
   {
-    return commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
-                      path: path)
+    commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
+               path: path)
   }
   
   public func fileBlob(oid: any OID, path: String) -> (any Blob)?
@@ -131,7 +124,7 @@ extension XTRepository: FileDiffing
     guard let toCommit = commit(forOID: commitOID as! GitOID) as? GitCommit
     else { return nil }
     
-    let parentCommit = parentOID.flatMap { commit(forOID: $0) }
+    let parentCommit = parentOID.flatMap { commit(forOID: $0) } as? GitCommit
     guard isTextFile(file, context: .commit(toCommit)) ||
           parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
@@ -139,14 +132,12 @@ extension XTRepository: FileDiffing
     var fromSource = PatchMaker.SourceType.data(Data())
     var toSource = PatchMaker.SourceType.data(Data())
     
-    if let toTree = toCommit.tree,
-       let toEntry = toTree.entry(path: file) as (any TreeEntry)?,
+    if let toEntry = toCommit.tree?.entry(path: file),
        let toBlob = toEntry.object as? GitBlob {
       toSource = .blob(toBlob)
     }
     
-    if let fromTree = parentCommit?.tree,
-       let fromEntry = fromTree.entry(path: file) as (any TreeEntry)?,
+    if let fromEntry = parentCommit?.tree?.entry(path: file),
        let fromBlob = fromEntry.object as? GitBlob {
       fromSource = .blob(fromBlob)
     }
@@ -245,7 +236,7 @@ extension XTRepository
       return diff
     }
     else {
-      guard let commit = commit(forOID: oid)
+      guard let commit = commit(forOID: oid) as? GitCommit
       else { return nil }
       
       let parentOIDs = commit.parentOIDs
@@ -253,6 +244,7 @@ extension XTRepository
             ? parentOIDs.first
             : parentOIDs.first { $0.equals(parentOID) }
       let parentCommit = parentOID.flatMap { self.commit(forOID: $0) }
+                         as? GitCommit
       
       guard let diff = GitDiff(oldTree: parentCommit?.tree,
                                newTree: commit.tree,
@@ -340,7 +332,7 @@ extension XTRepository
   
     init(repo: XTRepository, head: (any Commit)?)
     {
-      let headTree = (head?.tree as? GitTree)?.tree
+      let headTree = ((head as? GitCommit)?.tree)?.tree
       var options = git_status_options()
       
       git_status_init_options(&options, UInt32(GIT_STATUS_OPTIONS_VERSION))

@@ -3,13 +3,15 @@ import Foundation
 /// String-based commit for testing and placeholders
 struct StringCommit: Commit
 {
-  var parentOIDs: [any OID]
+  typealias ObjectIdentifier = StringOID
+
+  var parentOIDs: [StringOID]
   var message: String?
   var authorSig: Signature?
   var committerSig: Signature?
   var isSigned: Bool = false
   var id: StringOID
-  var tree: (any Tree)? = nil
+  var tree: StringTree? = nil
 
   func getTrailers() -> [(String, [String])] { [] }
 }

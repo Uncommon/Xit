@@ -1,10 +1,13 @@
 import Cocoa
 
 
-public protocol Commit: OIDObject, CustomStringConvertible
+public protocol Commit<ObjectIdentifier>: OIDObject, CustomStringConvertible
 {
+  associatedtype ObjectIdentifier
+  associatedtype Tree: Xit.Tree<ObjectIdentifier>
+
   // Strictly speaking these should probably all be the same OID type
-  var parentOIDs: [any OID] { get }
+  var parentOIDs: [ObjectIdentifier] { get }
   
   var message: String? { get }
   
@@ -18,7 +21,7 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var committerEmail: String? { get }
   var commitDate: Date { get }
   
-  var tree: (any Tree)? { get }
+  var tree: Tree? { get }
 
   var isSigned: Bool { get }
 
@@ -58,10 +61,13 @@ extension Commit
 
 public final class GitCommit: Commit
 {
+  public typealias ObjectIdentifier = GitOID
+  public typealias Tree = GitTree
+
   let commit: OpaquePointer
 
   public let id: GitOID
-  public let parentOIDs: [any OID]
+  public let parentOIDs: [GitOID]
   
   public var repository: OpaquePointer
   { git_commit_owner(commit) }
@@ -123,7 +129,7 @@ public final class GitCommit: Commit
   public var commitDate: Date
   { committerSig?.when ?? Date() }
 
-  public var tree: (any Tree)?
+  public var tree: GitTree?
   {
     guard let tree = try? OpaquePointer.from({
       git_commit_tree(&$0, commit)
