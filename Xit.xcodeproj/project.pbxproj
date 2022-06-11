@@ -34,6 +34,7 @@
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
+		890F7BE32853A90F005C24A7 /* FetchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890F7BE22853A90F005C24A7 /* FetchPanel.swift */; };
 		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891052D92523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891261B01F867FCC00C292B7 /* GitTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* GitTree.swift */; };
@@ -81,6 +82,7 @@
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89F411F32853E039009ECF7D /* FetchSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchSheetController.swift */; };
 		89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -106,8 +108,6 @@
 		C90FD41D23845679006358C7 /* ModifyingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD41C23845679006358C7 /* ModifyingUITests.swift */; };
 		C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */; };
 		C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */; };
-		C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90FD5941D217D5B00A30570 /* FetchPanelController.swift */; };
-		C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C90FD5951D217D5B00A30570 /* FetchPanelController.xib */; };
 		C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9120EDE23EE04C00052387E /* ResetPanelController.swift */; };
 		C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9120EDF23EE04C00052387E /* ResetPanelController.xib */; };
 		C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91727B523689F500023DC57 /* ReadOnlyUITests.swift */; };
@@ -386,6 +386,7 @@
 		3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DEVELOPMENT_TEAM.xcconfig; sourceTree = "<group>"; };
 		3DB98C8423E0928A0039B454 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
+		890F7BE22853A90F005C24A7 /* FetchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPanel.swift; sourceTree = "<group>"; };
 		891052D72523F3D30095E299 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
 		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
@@ -434,6 +435,7 @@
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
+		89F411F22853E039009ECF7D /* FetchSheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSheetController.swift; sourceTree = "<group>"; };
 		89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -467,8 +469,6 @@
 		C90FD41C23845679006358C7 /* ModifyingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyingUITests.swift; sourceTree = "<group>"; };
 		C90FD41E23845FB8006358C7 /* TestRepoEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRepoEnvironment.swift; sourceTree = "<group>"; };
 		C90FD4202385A983006358C7 /* XCTestCaseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestCaseExtensions.swift; sourceTree = "<group>"; };
-		C90FD5941D217D5B00A30570 /* FetchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchPanelController.swift; sourceTree = "<group>"; };
-		C90FD5951D217D5B00A30570 /* FetchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FetchPanelController.xib; sourceTree = "<group>"; };
 		C9120EDE23EE04C00052387E /* ResetPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPanelController.swift; sourceTree = "<group>"; };
 		C9120EDF23EE04C00052387E /* ResetPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResetPanelController.xib; sourceTree = "<group>"; };
 		C91727B323689F500023DC57 /* XitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1122,8 +1122,8 @@
 				8983E19026641BC20075370C /* ClonePanel.swift */,
 				891B02132666C36400E20F2B /* ClonePanelController.swift */,
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
-				C90FD5941D217D5B00A30570 /* FetchPanelController.swift */,
-				C90FD5951D217D5B00A30570 /* FetchPanelController.xib */,
+				890F7BE22853A90F005C24A7 /* FetchPanel.swift */,
+				89F411F22853E039009ECF7D /* FetchSheetController.swift */,
 				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
 				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
 				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
@@ -1389,7 +1389,6 @@
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
 				8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
-				C90FD5971D217D5B00A30570 /* FetchPanelController.xib in Resources */,
 				89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
 				C93FFCAA1F0FD65100FDDD78 /* Defaults.plist in Resources */,
@@ -1558,6 +1557,7 @@
 				C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */,
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
+				890F7BE32853A90F005C24A7 /* FetchPanel.swift in Sources */,
 				89D0630E25CC5C6D00EF5020 /* CommitHeader.swift in Sources */,
 				C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */,
 				C95BD4051F8FF8C8000A2E2D /* GitDiff.swift in Sources */,
@@ -1613,6 +1613,7 @@
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
 				C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */,
 				89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */,
+				89F411F32853E039009ECF7D /* FetchSheetController.swift in Sources */,
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
 				C959A7271F6C8440004277CD /* GitBlob.swift in Sources */,
 				89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */,
@@ -1634,7 +1635,6 @@
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */,
 				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
-				C90FD5961D217D5B00A30570 /* FetchPanelController.swift in Sources */,
 				C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,

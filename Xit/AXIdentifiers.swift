@@ -2,6 +2,12 @@ import Foundation
 
 extension AXID
 {
+  public enum Button
+  {
+    static let accept = AXID("acceptButton")
+    static let cancel = AXID("cancelButton")
+  }
+
   public enum Clean
   {
     static let window = AXID("cleanWindow")
@@ -34,6 +40,13 @@ extension AXID
     {
       static let fileName = AXID("fileName")
     }
+  }
+
+  enum FetchSheet
+  {
+    static let remotePopup = AXID("remote")
+    static let tagsCheck = AXID("downloadTags")
+    static let pruneCheck = AXID("pruneBranches")
   }
 
   enum Menu
