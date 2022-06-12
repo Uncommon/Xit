@@ -83,6 +83,7 @@
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89F411F32853E039009ECF7D /* FetchSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchSheetController.swift */; };
+		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
 		89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -436,6 +437,7 @@
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
 		89F411F22853E039009ECF7D /* FetchSheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSheetController.swift; sourceTree = "<group>"; };
+		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -753,6 +755,7 @@
 				C9BBBBF726D7F13700469007 /* CombineExtensions.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
+				89F411F428552A81009ECF7D /* DialogButtonRow.swift */,
 				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
@@ -1659,6 +1662,7 @@
 				C907037723280239002DF393 /* SidebarBottomController.swift in Sources */,
 				C9F1B5F02217264A00293305 /* Nibs.swift in Sources */,
 				C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */,
+				89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */,
 				897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */,
 				89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */,
 				C95BD3EF1F8ECEC9000A2E2D /* Mutex.swift in Sources */,
@@ -1829,7 +1833,7 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
 				SDKROOT = macosx;
@@ -1962,7 +1966,7 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -2014,7 +2018,7 @@
 					"$(inherited)",
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;

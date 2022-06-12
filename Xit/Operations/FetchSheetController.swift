@@ -12,9 +12,16 @@ class FetchSheetController: NSWindowController
   {
     self.options = options
 
-    let panel = FetchPanel(remotes: remotes, options: options,
-                           accept: accept, cancel: cancel)
-    let viewController = NSHostingController(rootView: panel)
+    let viewController = NSHostingController {
+      VStack {
+        FetchPanel(remotes: remotes, options: options)
+        DialogButtonRow()
+          .environment(\.buttons, [
+            (.cancel, cancel),
+            (.accept(.fetch), accept),
+          ])
+      }.padding(20)
+    }
     let window = NSWindow(contentViewController: viewController)
 
     window.contentMinSize = viewController.view.intrinsicContentSize
@@ -82,5 +89,13 @@ class FetchSheetController: NSWindowController
       }
       return remotes.first
     }
+  }
+}
+
+extension NSHostingController
+{
+  convenience init(@ViewBuilder _ viewBuilder: () -> Content)
+  {
+    self.init(rootView: viewBuilder())
   }
 }
