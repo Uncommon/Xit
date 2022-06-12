@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="19455"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -100,7 +99,7 @@
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
-                                            <segment toolTip="Diff view" image="plus.slash.minus" catalog="system" imageScaling="none" width="37" selected="YES">
+                                            <segment toolTip="Diff view" image="plus.forwardslash.minus" catalog="system" imageScaling="none" width="37" selected="YES">
                                                 <nil key="label"/>
                                             </segment>
                                             <segment toolTip="Blame view" image="person.fill.questionmark" catalog="system" imageScaling="none" width="37" tag="1">
@@ -400,6 +399,6 @@
         <image name="NSQuickLookTemplate" width="21" height="13"/>
         <image name="doc.plaintext" catalog="system" width="14" height="16"/>
         <image name="person.fill.questionmark" catalog="system" width="17" height="14"/>
-        <image name="plus.slash.minus" catalog="system" width="16" height="14"/>
+        <image name="plus.forwardslash.minus" catalog="system" width="16" height="14"/>
     </resources>
 </document>

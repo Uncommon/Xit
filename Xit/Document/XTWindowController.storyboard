@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -65,9 +64,9 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectAny" id="m64-hM-ec1">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment toolTip="Sidebar" image="rectangle.leftthird.inset.fill" catalog="system" width="32" selected="YES"/>
-                                                <segment toolTip="History" image="rectangle.topthird.inset.fill" catalog="system" width="32" selected="YES" tag="1"/>
-                                                <segment toolTip="Details" image="rectangle.bottomthird.inset.fill" catalog="system" width="32" selected="YES">
+                                                <segment toolTip="Sidebar" image="rectangle.leftthird.inset.filled" catalog="system" width="32" selected="YES"/>
+                                                <segment toolTip="History" image="rectangle.topthird.inset.filled" catalog="system" width="32" selected="YES" tag="1"/>
+                                                <segment toolTip="Details" image="rectangle.bottomthird.inset.filled" catalog="system" width="32" selected="YES">
                                                     <nil key="label"/>
                                                 </segment>
                                             </segments>
@@ -229,7 +228,7 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
+                    <view key="view" id="WdE-eB-CPt">
                         <rect key="frame" x="0.0" y="0.0" width="329" height="640"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -607,9 +606,9 @@
         <image name="info.circle" catalog="system" width="15" height="15"/>
         <image name="magnifyingglass" catalog="system" width="16" height="15"/>
         <image name="pullRequestTemplate" width="14" height="16"/>
-        <image name="rectangle.bottomthird.inset.fill" catalog="system" width="18" height="14"/>
-        <image name="rectangle.leftthird.inset.fill" catalog="system" width="18" height="14"/>
-        <image name="rectangle.topthird.inset.fill" catalog="system" width="18" height="14"/>
+        <image name="rectangle.bottomthird.inset.filled" catalog="system" width="18" height="14"/>
+        <image name="rectangle.leftthird.inset.filled" catalog="system" width="18" height="14"/>
+        <image name="rectangle.topthird.inset.filled" catalog="system" width="18" height="14"/>
         <image name="scm.branch" width="12" height="14"/>
         <image name="square.and.arrow.down" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
