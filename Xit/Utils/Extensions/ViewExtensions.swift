@@ -1,5 +1,6 @@
 import Foundation
 import Cocoa
+import SwiftUI
 
 extension NSView
 {
@@ -85,6 +86,14 @@ extension NSTextField
     else { return false }
     
     return expansionRect != NSRect.zero
+  }
+}
+
+extension NSHostingController
+{
+  convenience init(@ViewBuilder _ viewBuilder: () -> Content)
+  {
+    self.init(rootView: viewBuilder())
   }
 }
 

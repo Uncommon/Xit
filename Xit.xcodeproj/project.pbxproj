@@ -82,8 +82,9 @@
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
-		89F411F32853E039009ECF7D /* FetchSheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchSheetController.swift */; };
+		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
+		89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F62856946D009ECF7D /* SheetDialog.swift */; };
 		89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -436,8 +437,9 @@
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
-		89F411F22853E039009ECF7D /* FetchSheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchSheetController.swift; sourceTree = "<group>"; };
+		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
+		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
 		89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -1126,7 +1128,7 @@
 				891B02132666C36400E20F2B /* ClonePanelController.swift */,
 				C94866B51D256C24000BDB0A /* FetchOpController.swift */,
 				890F7BE22853A90F005C24A7 /* FetchPanel.swift */,
-				89F411F22853E039009ECF7D /* FetchSheetController.swift */,
+				89F411F22853E039009ECF7D /* FetchDialog.swift */,
 				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
 				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
 				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
@@ -1151,6 +1153,7 @@
 				C900E3D323F21B6100846FFD /* ResetOpController.swift */,
 				C9120EDE23EE04C00052387E /* ResetPanelController.swift */,
 				C9120EDF23EE04C00052387E /* ResetPanelController.xib */,
+				89F411F62856946D009ECF7D /* SheetDialog.swift */,
 				89AB21D9213DE5E300EF7507 /* StashOperationController.swift */,
 				89AB21EB213DE67500EF7507 /* StashPanelController.swift */,
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
@@ -1616,7 +1619,7 @@
 				C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */,
 				C967AAB51FAA45B3008A4DF0 /* Debug.swift in Sources */,
 				89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */,
-				89F411F32853E039009ECF7D /* FetchSheetController.swift in Sources */,
+				89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */,
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
 				C959A7271F6C8440004277CD /* GitBlob.swift in Sources */,
 				89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */,
@@ -1674,6 +1677,7 @@
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
 				891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */,
+				89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */,
 				C9C30139269E2D8100EBBBC8 /* CleanPanelController.swift in Sources */,
 				891261B01F867FCC00C292B7 /* GitTree.swift in Sources */,

@@ -50,8 +50,7 @@ class FetchOpController: PasswordOpController
     }
     else {
       Task {
-        guard let options = await FetchSheetController.getFetchOptions(
-            repository: repository,
+        guard let options = await FetchDialog(repository: repository).getOptions(
             parent: windowController!.window!)
         else {
           self.ended(result: .canceled)
