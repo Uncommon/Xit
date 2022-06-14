@@ -4,7 +4,7 @@ struct PathField: View
 {
   @Binding var path: String
   @State var isDropTarget: Bool = false
-  @Environment(\.window) var window: NSWindow
+  @Environment(\.window) var window: NSWindow?
   
   struct FolderDropDelegate: DropDelegate
   {
@@ -62,8 +62,14 @@ struct PathField: View
                                           isDropTarget: $isDropTarget))
   }
 
+  @MainActor
   func chooseFolder()
   {
+    guard let window = self.window
+    else {
+      assertionFailure("no parent window")
+      return
+    }
     let panel = NSOpenPanel()
     
     panel.prompt = "Choose"

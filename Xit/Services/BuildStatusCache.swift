@@ -1,4 +1,5 @@
 import Foundation
+@preconcurrency import Siesta
 
 protocol BuildStatusClient: AnyObject
 {
@@ -45,15 +46,21 @@ final class BuildStatusCache: TeamCityAccessor
   
   func refresh()
   {
-    guard let localBranches = branchLister?.localBranches
+    guard let branchLister = branchLister
     else { return }
     
     statuses.removeAll()
     Task {
+      let localBranches = branchLister.localBranches
+
       await Signpost.interval(.refreshBuildStatus) {
         for local in localBranches {
+          guard let remoteName = local.trackingBranch?.remoteName
+          else { continue }
+
           do {
-            try await refresh(branch: local)
+            try await refresh(remoteName: remoteName,
+                              branchName: local.name)
           }
           catch {}
         }
@@ -68,21 +75,17 @@ final class BuildStatusCache: TeamCityAccessor
   }
 
   @MainActor
-  func refresh(branch: any LocalBranch) async throws
+  func refresh(remoteName: String, branchName: String) async throws
   {
-    guard let tracked = branch.trackingBranch,
-          let remoteName = tracked.remoteName,
-          let (api, buildTypes) = matchTeamCity(remoteName)
+    guard let (api, buildTypes) = matchTeamCity(remoteName)
     else {
       throw RefreshError.noBuildTypes
     }
   
-    let fullBranchName = branch.name
-
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for buildType in buildTypes {
-        guard let branchName = api.displayName(forBranch: fullBranchName,
+        guard let branchName = api.displayName(forBranch: branchName,
                                                buildType: buildType)
         else { continue }
         let statusResource = api.buildStatus(branchName, buildType: buildType)

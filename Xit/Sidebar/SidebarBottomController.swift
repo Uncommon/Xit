@@ -1,6 +1,7 @@
 import Cocoa
 
-@objc protocol SidebarBottomDelegate: AnyObject
+@objc @MainActor
+protocol SidebarBottomDelegate: AnyObject
 {
   func updateFilter(string: String?)
   func newBranch()

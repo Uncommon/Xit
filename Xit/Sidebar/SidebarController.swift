@@ -64,10 +64,9 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   }
   var window: NSWindow? { view.window }
   var savedSidebarWidth: UInt = 0
-  var amendingObserver: NSKeyValueObservation?
   var statusPopover: NSPopover?
 
-  private var selectionSink: AnyCancellable?
+  private var cancellables: [AnyCancellable] = []
 
   var selectedItem: SidebarItem?
   {
@@ -140,22 +139,22 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   {
     let repoUIController = view.window!.windowController as! XTWindowController
     
-    if amendingObserver == nil {
-      amendingObserver = repoUIController.observe(\.isAmending) {
-        [weak self] (controller, _) in
-        self?.sidebarDS.setAmending(controller.isAmending)
-      }
-      selectionSink = repoUIController.selectionPublisher.sink {
-        [weak self] (_) in
-        self?.selectedModelChanged()
-      }
+    if cancellables.isEmpty {
+      cancellables.append(contentsOf: [
+        repoUIController.publisher(for: \.isAmending).sink {
+          [weak self] (amending) in
+          self?.sidebarDS.setAmending(amending)
+        },
+        repoUIController.selectionPublisher.sink {
+          [weak self] (_) in
+          self?.selectedModelChanged()
+        }
+      ])
     }
   }
 
   override func viewWillDisappear()
   {
-    // The timers contain references to the ds object and repository.
-    sidebarDS?.stopTimers()
     pullRequestManager?.stopCacheRefresh()
   }
   

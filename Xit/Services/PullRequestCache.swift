@@ -95,14 +95,13 @@ final class PullRequestCache
   
   func update(pullRequestID: String, approval: PullRequestApproval)
   {
-    guard let requestIndex = requests.firstIndex(where: { $0.id == pullRequestID })
+    guard var request = requests.first(where: { $0.id == pullRequestID }),
+          let service = Services.shared.pullRequestService(forID: request.serviceID)
     else { return }
-    let userID = requests[requestIndex].service.userID
+    let userID = service.userID
     
-    requests[requestIndex].setReviewerStatus(userID: userID, status: approval)
+    request.setReviewerStatus(userID: userID, status: approval)
     
-    let request = requests[requestIndex]
-
     notifyChange(request: request)
   }
   

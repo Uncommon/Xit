@@ -4,7 +4,7 @@ import Siesta
 /// Used for testing pull request status
 struct FakePullRequest: PullRequest
 {
-  let service: any PullRequestService
+  let serviceID: UUID = .init()
   var sourceBranch: String
   var sourceRepo: URL? { nil }
   var displayName: String { "fake" }
@@ -38,7 +38,7 @@ final class FakePRService: Service, PullRequestService, AccountService
     let statuses: [PullRequestStatus] = [.open, .inactive, .merged]
     
     let requests = zip(branches, statuses).map {
-      FakePullRequest(service: self, sourceBranch: "refs/heads/" + $0, status: $1)
+      FakePullRequest(sourceBranch: "refs/heads/" + $0, status: $1)
     }
     
     callback(requests)
@@ -50,7 +50,7 @@ final class FakePRService: Service, PullRequestService, AccountService
     let statuses: [PullRequestStatus] = [.open, .inactive, .merged]
 
     let requests = zip(branches, statuses).map {
-      FakePullRequest(service: self, sourceBranch: "refs/heads/" + $0, status: $1)
+      FakePullRequest(sourceBranch: "refs/heads/" + $0, status: $1)
     }
 
     return requests

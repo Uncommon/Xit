@@ -14,6 +14,9 @@ public protocol Branch: AnyObject
   var oid: (any OID)? { get }
   /// The branch's head commit
   var targetCommit: (any Commit)? { get }
+  /// The remote this branch relates to. If a remote branch, then that remote.
+  /// Otherwise the remote for the tracking branch, if any.
+  var remoteName: String? { get }
 }
 
 extension Branch
@@ -31,13 +34,13 @@ public protocol LocalBranch: Branch
 
 extension LocalBranch
 {
+  public var remoteName: String? { trackingBranch?.remoteName }
   public var prefix: String { RefPrefixes.heads }
 }
 
 
 public protocol RemoteBranch: Branch
 {
-  var remoteName: String? { get }
 }
 
 extension RemoteBranch
@@ -95,8 +98,7 @@ public class GitBranch
     
     return GitCommit(oid: oid, repository: repo)
   }
-  var remoteName: String? { nil }
-  
+
   fileprivate static func lookUpBranch(name: String,
                                        repository: OpaquePointer,
                                        branchType: git_branch_t)
@@ -176,9 +178,6 @@ public final class GitLocalBranch: GitBranch, LocalBranch
     
     return GitRemoteBranch(branch: upstream, config: config)
   }
-  
-  override var remoteName: String?
-  { trackingBranch?.remoteName }
 }
 
 public final class GitRemoteBranch: GitBranch, RemoteBranch
@@ -186,7 +185,7 @@ public final class GitRemoteBranch: GitBranch, RemoteBranch
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
 
-  public override var remoteName: String?
+  public var remoteName: String?
   { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }
 
   init?(repository: OpaquePointer, name: String, config: Config)

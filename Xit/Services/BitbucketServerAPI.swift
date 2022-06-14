@@ -1,5 +1,5 @@
 import Foundation
-import Siesta
+@preconcurrency import Siesta
 
 enum BitbucketServer
 {
@@ -53,6 +53,7 @@ enum BitbucketServer
         case .approved:   self = .approved
         case .unreviewed: self = .unapproved
         case .needsWork:  self = .needsWork
+        case .unknown:    self = .unapproved
       }
     }
   }
@@ -152,9 +153,11 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
   struct PullRequest: Xit.PullRequest
   {
     var request: BitbucketServer.PullRequest
-    let bitbucketService: BitbucketServerAPI
+    let serviceID: UUID
+
+    // Stored for convenience
+    let userID: Int?
     
-    var service: PullRequestService { bitbucketService }
     var sourceBranch: String { request.fromRef.id }
     var sourceRepo: URL?
     {
@@ -213,7 +216,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
         case .declined, .merged:
           return []
         case .open:
-          guard let userID = bitbucketService.user?.id
+          guard let userID = self.userID
           else { return [] }
           
           if request.author.user.id == userID {
@@ -229,6 +232,12 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
         default:
           return []
       }
+    }
+
+    init(request: BitbucketServer.PullRequest, service: BitbucketServerAPI) {
+      self.request = request
+      self.serviceID = service.id
+      self.userID = service.user?.id
     }
     
     func matchRemote(url: URL) -> Bool
@@ -364,7 +373,7 @@ extension BitbucketServerAPI: PullRequestService
       }
 
       let result = requests.values.map { PullRequest(request: $0,
-                                                     bitbucketService: self) }
+                                                     service: self) }
 
       #if DEBUG
       for request in result {

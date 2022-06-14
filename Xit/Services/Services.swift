@@ -105,6 +105,11 @@ protocol AccountService
   func accountUpdated(oldAccount: Account, newAccount: Account)
 }
 
+class IdentifiableService: Service, Identifiable
+{
+  let id = UUID()
+}
+
 /// Manages and provides access to all service API instances.
 final class Services
 {
@@ -118,7 +123,7 @@ final class Services
     case failed(Error?)
   }
   
-  typealias RepositoryService = Service & AccountService
+  typealias RepositoryService = IdentifiableService & AccountService
   
   static let shared = Services()
   
@@ -138,39 +143,81 @@ final class Services
   
   init()
   {
-    NotificationCenter.default.addObserver(
-        forName: .authenticationStatusChanged,
-        object: nil,
-        queue: .main)
-    {
-      (notification) in
-      guard let service = notification.object as? BasicAuthService
-      else { return }
-        
-      if case .failed(let error) = service.authenticationStatus {
-        guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
+    if false /*#available(macOS 13, *)*/ {
+//      Task {
+//        let center = NotificationCenter.default
+//
+//        for note in await center.notifications(named: .authenticationStatusChanged) {
+//          guard let service = note.object as? BasicAuthService
+//          else { return }
+//
+//          if case .failed(let error) = service.authenticationStatus {
+//            let serviceName = service.account.type.displayName.rawValue
+//            let user = service.account.user
+//
+//            if await Self.shouldReauthenticate(
+//                service: serviceName,
+//                user: user,
+//                error: error?.localizedDescription) {
+//              service.attemptAuthentication()
+//            }
+//          }
+//        }
+//      }
+    }
+    else {
+      NotificationCenter.default.addObserver(
+          forName: .authenticationStatusChanged,
+          object: nil,
+          queue: .main)
+      {
+        (notification) in
+        guard let service = notification.object as? BasicAuthService
         else { return }
-        let alert = NSAlert()
-        
-        alert.messageString = .authFailed(
-                service: service.account.type.displayName.rawValue,
-                account: service.account.user)
-        alert.informativeText = error?.localizedDescription ?? ""
-        alert.addButton(withString: .ok)
-        alert.addButton(withString: .retry)
-        alert.addButton(withString: .openPrefs)
-        switch alert.runModal() {
-          case .alertFirstButtonReturn: // OK
-            break
-          case .alertSecondButtonReturn: // Retry
-            service.attemptAuthentication()
-          case .alertThirdButtonReturn: // Open prefs
-            PrefsWindowController.show(tab: .accounts)
-          default:
-            break
+
+        if case .failed(let error) = service.authenticationStatus {
+          let serviceName = service.account.type.displayName.rawValue
+          let user = service.account.user
+
+          Task {
+            if await Self.shouldReauthenticate(service: serviceName, user: user, error: error?.localizedDescription) {
+              service.attemptAuthentication()
+            }
+          }
         }
       }
     }
+  }
+
+  func pullRequestService(forID id: UUID) -> (any PullRequestService)?
+  {
+    allServices.first { $0.id == id } as? PullRequestService
+  }
+
+  @MainActor static func shouldReauthenticate(service: String,
+                                              user: String,
+                                              error: String?) -> Bool
+  {
+    guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
+    else { return false }
+    let alert = NSAlert()
+
+    alert.messageString = .authFailed(service: service, account: user)
+    alert.informativeText = error ?? ""
+    alert.addButton(withString: .ok)
+    alert.addButton(withString: .retry)
+    alert.addButton(withString: .openPrefs)
+    switch alert.runModal() {
+      case .alertFirstButtonReturn: // OK
+        break
+      case .alertSecondButtonReturn: // Retry
+        return true
+      case .alertThirdButtonReturn: // Open prefs
+        PrefsWindowController.show(tab: .accounts)
+      default:
+        break
+    }
+    return false
   }
   
   /// Creates an API object for each account so they can start with

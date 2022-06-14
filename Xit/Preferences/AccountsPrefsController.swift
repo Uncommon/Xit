@@ -229,7 +229,7 @@ final class AccountsPrefsController: NSViewController
 
 extension AccountsPrefsController: PreferencesSaver
 {
-  func savePreferences()
+  nonisolated func savePreferences()
   {
     AccountsManager.manager.saveAccounts()
   }

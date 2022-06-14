@@ -2,6 +2,7 @@ import Foundation
 import Cocoa
 
 // Command handling extracted for testability
+@MainActor
 protocol SidebarCommandHandler: AnyObject, RepositoryUIAccessor
 {
   var window: NSWindow? { get }

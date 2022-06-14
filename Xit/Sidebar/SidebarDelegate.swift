@@ -1,6 +1,7 @@
 import Cocoa
 import SwiftUI
 
+@MainActor
 final class SidebarDelegate: NSObject
 {
   enum CellID

@@ -3,12 +3,12 @@ import SwiftUI
 
 struct WindowEnvironmentKey: EnvironmentKey
 {
-  static let defaultValue: NSWindow = NSApp.mainWindow ?? NSWindow()
+  static let defaultValue: NSWindow? = nil
 }
 
 extension EnvironmentValues
 {
-  var window: NSWindow
+  var window: NSWindow?
   {
     get { self[WindowEnvironmentKey.self] }
     set { self[WindowEnvironmentKey.self] = newValue }

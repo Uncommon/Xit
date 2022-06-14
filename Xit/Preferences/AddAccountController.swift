@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// Controller for the "new account" sheet
 final class AddAccountController: SheetController
@@ -8,21 +9,23 @@ final class AddAccountController: SheetController
   @IBOutlet private weak var passwordField: NSSecureTextField!
   @IBOutlet private weak var locationField: NSTextField!
   
-  private var responderObserver: NSKeyValueObservation?
+  private var responderCancellable: AnyCancellable?
   
   override var window: NSWindow?
   {
     didSet
     {
       if let window = self.window {
-        responderObserver = window.observe(\.firstResponder, options: [.new]) {
-          [weak self] (_, change) in
-          guard let newResponder = change.newValue,
-                newResponder === self?.passwordField
-          else { return }
-          
-          self?.passwordFocused()
-        }
+        responderCancellable = window.publisher(for: \.firstResponder)
+          .receive(on: DispatchQueue.main)
+          .sink {
+            [weak self] newValue in
+            guard let newResponder = newValue,
+                  newResponder === self?.passwordField
+            else { return }
+
+            self?.passwordFocused()
+          }
       }
     }
   }

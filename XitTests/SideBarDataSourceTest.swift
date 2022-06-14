@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import Xit
 
+@MainActor
 class SidebarDataSourceTest: XTTest
 {
   var outline = MockSidebarOutline()
@@ -14,7 +15,8 @@ class SidebarDataSourceTest: XTTest
     return sbds.outlineView(outline, child: row.rawValue, ofItem: nil)
            as! SideBarGroupItem
   }
-  
+
+  @MainActor
   override func setUp()
   {
     super.setUp()
@@ -185,6 +187,7 @@ extension SidebarItem
   var childrenTitles: [String] { return children.map { $0.title } }
 }
 
+@MainActor
 class SidebarDSFakeRepoTest: XCTestCase
 {
   func testFilter()

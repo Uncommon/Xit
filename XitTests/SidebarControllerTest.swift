@@ -28,10 +28,12 @@ class TestingSidebarHandler : SidebarCommandHandler
   }
 }
 
+@MainActor
 class SidebarHandlerTest: XTTest
 {
   let handler = TestingSidebarHandler()
-  
+
+  @MainActor
   override func setUp()
   {
     super.setUp()

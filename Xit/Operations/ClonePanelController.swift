@@ -198,6 +198,7 @@ final class ClonePanelController: NSWindowController
     return .failure(.unwindFailure)
   }
   
+  nonisolated
   static func validate(url: URL) -> Bool
   {
     guard let scheme = url.scheme,
@@ -207,7 +208,8 @@ final class ClonePanelController: NSWindowController
     
     return true
   }
-  
+
+  nonisolated
   static func readURL(_ newURL: String) -> CloneData.URLResult
   {
     guard let url = URL(string: newURL)

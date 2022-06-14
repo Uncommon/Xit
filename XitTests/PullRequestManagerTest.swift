@@ -3,11 +3,13 @@ import XCTest
 @testable import Xit
 
 
+@MainActor
 class PullRequestManagerTest: XCTestCase
 {
   let fakeRepo = FakeRepo()
   var model: SidebarDataModel!
-  
+
+  @MainActor
   override func setUp()
   {
     super.setUp()
@@ -19,9 +21,8 @@ class PullRequestManagerTest: XCTestCase
   func testPullRequestForBranch()
   {
     let prManager = SidebarPRManager(model: model)
-    let service = FakePRService()
     let matchPR = FakePullRequest(
-          service: service,
+          serviceID: .init(),
           availableActions: [],
           sourceBranch: "refs/heads/branch1",
           sourceRepo: fakeRepo.remote1.url,
@@ -29,7 +30,7 @@ class PullRequestManagerTest: XCTestCase
           authorName: "Man1", status: .open,
           webURL: URL(string: "https://example.com/repo1"))
     let otherPR = FakePullRequest(
-          service: service,
+          serviceID: .init(),
           availableActions: [],
           sourceBranch: "refs/heads/branch2",
           sourceRepo: fakeRepo.remote2.url,

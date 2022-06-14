@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import Xit
 
+@MainActor
 class XTFileChangesDataSourceTest: XTTest
 {
   func testInitialCommit() throws

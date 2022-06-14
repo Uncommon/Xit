@@ -127,7 +127,7 @@ extension NSMenu
 
 extension NSMenuItem
 {
-  typealias ActionBlock = (NSMenuItem) -> Void
+  typealias ActionBlock = @MainActor (NSMenuItem) -> Void
 
   /// Constructs a menu item using a callback block instead of a target
   /// and action.
@@ -168,6 +168,7 @@ extension NSMenuItem
   }
 
   /// A singleton used as the target for menu items with callback blocks.
+  @MainActor
   private class GlobalTarget: NSObject
   {
     static let shared = GlobalTarget()

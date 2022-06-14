@@ -3,13 +3,14 @@ import Combine
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.
+@MainActor
 final class SideBarDataSource: NSObject
 {
   enum Intervals
   {
     static let reloadDelay: TimeInterval = 1
   }
-  
+
   @IBOutlet weak var viewController: SidebarController!
   @IBOutlet weak var outline: NSOutlineView!
 
@@ -52,16 +53,9 @@ final class SideBarDataSource: NSObject
   var filterSet: SidebarFilterSet = SidebarFilterSet(filters: [])
   var displayItemList: [SideBarGroupItem] = []
   var stagingItem: SidebarItem { model.stagingItem }
-  
-  var reloadTimer: Timer?
-  
+
   var repository: SidebarDataModel.Repository!
   { model?.repository }
-  
-  deinit
-  {
-    stopTimers()
-  }
   
   func setAmending(_ amending: Bool)
   {
@@ -248,11 +242,6 @@ final class SideBarDataSource: NSObject
       }
     }
     return false
-  }
-  
-  func stopTimers()
-  {
-    reloadTimer?.invalidate()
   }
 }
 

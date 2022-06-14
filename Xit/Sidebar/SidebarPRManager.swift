@@ -1,6 +1,7 @@
 import Foundation
 import Cocoa
 
+@MainActor
 final class SidebarPRManager
 {
   let refreshInterval: TimeInterval = 5 * .minutes
@@ -84,7 +85,7 @@ final class SidebarPRManager
             info = ("checkmark.circle.fill", .systemGreen)
           case .needsWork:
             info = ("slash.circle.fill", .systemYellow)
-          case .unreviewed:
+          case .unreviewed, .unknown:
             info = nil
         }
       case .merged:
@@ -112,7 +113,7 @@ final class SidebarPRManager
             return .approved
           case .needsWork:
             return .needsWork
-          case .unreviewed:
+          case .unreviewed, .unknown:
             return nil
         }
       case .merged:
@@ -123,7 +124,7 @@ final class SidebarPRManager
         return nil
     }
   }
-  
+
   func updatePullRequestMenu(popup: NSPopUpButton, pullRequest: any PullRequest)
   {
     let actions = pullRequest.availableActions
@@ -170,9 +171,10 @@ final class SidebarPRManager
 
 extension SidebarPRManager: PullRequestClient
 {
-  func pullRequestUpdated(branch: String, requests: [any PullRequest])
+  nonisolated func pullRequestUpdated(branch: String,
+                                      requests: [any PullRequest])
   {
-    DispatchQueue.main.async {
+    Task { @MainActor in
       for request in requests {
         guard let item = self.remoteItem(for: request)
         else { continue }
@@ -201,7 +203,7 @@ extension SidebarPRManager: PullRequestActionDelegate
     guard let pullRequest = pullRequest(for: item)
     else { return }
 
-    Task.detached {
+    Task {
       do {
         try await block(pullRequest)
         self.pullRequestCache.update(pullRequestID: pullRequest.id,
@@ -216,21 +218,27 @@ extension SidebarPRManager: PullRequestActionDelegate
   func approvePR(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .approved) {
-      try await $0.service.approve(request: $0)
+      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      else { return }
+      try await service.approve(request: $0)
     }
   }
   
   func unapprovePR(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .unreviewed) {
-      try await $0.service.unapprove(request: $0)
+      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      else { return }
+      try await service.unapprove(request: $0)
     }
   }
   
   func prNeedsWork(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .needsWork) {
-      try await $0.service.needsWork(request: $0)
+      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      else { return }
+      try await service.needsWork(request: $0)
     }
   }
   

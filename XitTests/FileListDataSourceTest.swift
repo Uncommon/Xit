@@ -28,6 +28,7 @@ class FakeRepoUIController: RepositoryUIController
   func postIndexNotification() {}
 }
 
+@MainActor
 class FileListDataSourceTest: XTTest
 {
   func testHistoricFileList() throws

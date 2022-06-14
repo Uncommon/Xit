@@ -1,6 +1,7 @@
 import Cocoa
 import SwiftUI
 
+@MainActor
 protocol PullRequestActionDelegate: AnyObject
 {
   func viewPRWebPage(item: SidebarItem)

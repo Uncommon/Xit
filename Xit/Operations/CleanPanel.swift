@@ -57,6 +57,7 @@ enum CleanFolderMode
   case clean, recurse, ignore
 }
 
+@MainActor
 protocol CleanPanelDelegate: AnyObject
 {
   func closePanel()
@@ -124,7 +125,6 @@ struct CleanPanel: View
   @State private var cleanSelectedAlertShown = false
   @State private var cleanAllAlertShown = false
   @State private var cleanError: CleanError?
-  @Environment(\.window) private var window: NSWindow
 
   var body: some View
   {
@@ -250,13 +250,18 @@ struct CleanPanel: View
       }
   }
 
-  func confirmCleanAlert(_ message: UIString, onConfirm: @escaping () -> Void)
+  func confirmCleanAlert(_ message: UIString,
+                         onConfirm: @escaping @MainActor () -> Void)
     -> Alert
   {
-    Alert(title: Text(message),
-          primaryButton: .destructive(Text(.delete),
-                                      action: onConfirm),
-          secondaryButton: .cancel())
+    // TODO: `Alert` is deprecated
+    let button = Alert.Button.destructive(Text(.delete)) {
+      Task { @MainActor in onConfirm() }
+    }
+
+    return Alert(title: Text(message),
+                 primaryButton: button,
+                 secondaryButton: .cancel())
   }
 
   func cleanSelected()

@@ -281,7 +281,7 @@ public struct FetchOptions
   let callbacks: RemoteCallbacks
 }
 
-public struct PushTransferProgress
+public struct PushTransferProgress: Sendable
 {
   let current, total: UInt32
   let bytes: size_t

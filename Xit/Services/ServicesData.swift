@@ -1,9 +1,11 @@
 import Foundation
 import Siesta
 
-protocol PullRequest
+protocol PullRequest: Sendable // Identifiable
 {
-  var service: PullRequestService { get }
+  /// In order to be `Sendable`, the source service is identified by ID rather
+  /// than direct reference.
+  var serviceID: UUID { get }
   var sourceBranch: String { get }
   var sourceRepo: URL? { get }
   var displayName: String { get }
@@ -22,7 +24,11 @@ protocol PullRequest
 extension PullRequest
 {
   var userApproval: PullRequestApproval
-  { reviewerStatus(userID: service.userID) }
+  {
+    guard let service = Services.shared.pullRequestService(forID: serviceID)
+    else { return .unknown }
+    return reviewerStatus(userID: service.userID)
+  }
   
   func matchRemote(url: URL) -> Bool
   {
@@ -43,6 +49,7 @@ enum PullRequestApproval
   case approved
   case needsWork
   case unreviewed
+  case unknown
 }
 
 /// A service that is related to specific remote repositories

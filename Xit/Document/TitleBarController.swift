@@ -1,5 +1,6 @@
 import Cocoa
 
+@MainActor
 protocol TitleBarDelegate: AnyObject
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
@@ -46,6 +47,7 @@ extension Notification
   var total: Float? { userInfo?[XTProgressKeys.total] as? Float }
 }
 
+@MainActor
 class TitleBarController: NSObject
 {
   @IBOutlet weak var window: NSWindow!
@@ -98,6 +100,7 @@ class TitleBarController: NSObject
     case sidebar, history, details
   }
 
+  @MainActor
   override func awakeFromNib()
   {
     super.awakeFromNib()

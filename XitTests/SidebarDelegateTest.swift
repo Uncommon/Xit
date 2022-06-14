@@ -2,12 +2,14 @@ import Foundation
 import XCTest
 @testable import Xit
 
+@MainActor
 class SidebarDelegateTest: XTTest
 {
   var outline = MockSidebarOutline()
   let sbDelegate = SidebarDelegate()
   var model: SidebarDataModel!
   
+  @MainActor
   override func setUp()
   {
     super.setUp()

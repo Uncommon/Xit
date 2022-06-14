@@ -85,7 +85,7 @@ class FakeStash: Stash
 
 struct FakePullRequest: PullRequest
 {
-  var service: PullRequestService
+  var serviceID: UUID
   var availableActions: PullRequestActions
   var sourceBranch: String
   var sourceRepo: URL?

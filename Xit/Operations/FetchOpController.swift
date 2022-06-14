@@ -20,6 +20,7 @@ class FetchOpController: PasswordOpController
     super.init(windowController: windowController)
   }
 
+  @MainActor
   override func start() throws
   {
     guard let repository = repository

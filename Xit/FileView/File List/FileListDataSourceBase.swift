@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 /// Abstract base class for file list data sources.
+@MainActor
 class FileListDataSourceBase: NSObject
 {
   @IBOutlet weak var outlineView: NSOutlineView!

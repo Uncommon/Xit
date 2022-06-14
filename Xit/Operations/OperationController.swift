@@ -1,6 +1,7 @@
 import Cocoa
 
 /// Takes charge of executing a command
+@MainActor
 class OperationController
 {
   enum OperationResult
@@ -69,7 +70,9 @@ class OperationController
         else { return }
         
         defer {
-          self.ended(result: .failure)
+          Task { @MainActor in
+            self.ended(result: .failure)
+          }
         }
         
         switch error {

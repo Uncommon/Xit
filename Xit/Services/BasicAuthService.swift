@@ -7,7 +7,7 @@ extension Notification.Name
 }
 
 /// Abstract service class that handles HTTP basic authentication.
-class BasicAuthService: Siesta.Service
+class BasicAuthService: IdentifiableService
 {
   var account: Account
   var authenticationStatus: Services.Status

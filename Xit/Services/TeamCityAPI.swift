@@ -1,5 +1,5 @@
 import Foundation
-import Siesta
+@preconcurrency import Siesta
 import Combine
 
 /// API for getting TeamCity build information.
