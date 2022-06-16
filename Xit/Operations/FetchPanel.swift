@@ -60,11 +60,10 @@ struct FetchPanel_Previews: PreviewProvider
     FetchPanel(model: options)
     VStack {
       FetchPanel(model: options)
-      DialogButtonRow(validator: options)
-        .environment(\.buttons, [
-          (.cancel, {}),
-          (.accept(.fetch), {}),
-        ])
+      DialogButtonRow(validator: options, buttons: [
+        (.cancel, {}),
+        (.accept(.fetch), {}),
+      ])
     }
   }
 }

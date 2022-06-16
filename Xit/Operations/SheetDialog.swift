@@ -32,13 +32,12 @@ extension SheetDialog
     let viewController = NSHostingController {
       VStack {
         ContentView(model: model)
-        DialogButtonRow(validator: model)
-          .environment(\.buttons, [
-            (.cancel,
-             { parent.endSheet(sheet, returnCode: .cancel) }),
-            (.accept(acceptButtonTitle),
-             { parent.endSheet(sheet, returnCode: .OK) }),
-          ])
+        DialogButtonRow(validator: model, buttons: [
+          (.cancel,
+           { parent.endSheet(sheet, returnCode: .cancel) }),
+          (.accept(acceptButtonTitle),
+           { parent.endSheet(sheet, returnCode: .OK) }),
+        ])
       }.padding()
     }
 

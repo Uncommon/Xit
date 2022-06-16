@@ -71,24 +71,11 @@ extension AlwaysValid
 typealias ButtonAction = () -> Void
 typealias ButtonList = [(ButtonType, ButtonAction)]
 
-struct ButtonsKey: EnvironmentKey
-{ static let defaultValue: ButtonList = [] }
-
-extension EnvironmentValues
-{
-  /// The set of buttons that should appear at the bottom of a dialog.
-  var buttons: ButtonList
-  {
-    get { self[ButtonsKey.self] }
-    set { self[ButtonsKey.self] = newValue }
-  }
-}
-
 /// A row of buttons, as specified in the `.buttons` environment value.
 struct DialogButtonRow<V>: View where V: ObservableObject & Validating
 {
-  @Environment(\.buttons) var buttons: ButtonList
   @ObservedObject var validator: V
+  let buttons: ButtonList
 
   var body: some View
   {
@@ -107,15 +94,13 @@ struct ButtonRow_Previews: PreviewProvider {
   class Model: ObservableObject, AlwaysValid {}
 
   static var previews: some View {
-    DialogButtonRow(validator: Model())
-      .environment(\.buttons, [
-        (.cancel, {}),
-        (.ok, {}),
-      ])
-    DialogButtonRow(validator: Model())
-      .environment(\.buttons, [
-        (.cancel, {}),
-        (.accept(.add), {}),
-      ])
+    DialogButtonRow(validator: Model(), buttons: [
+      (.cancel, {}),
+      (.ok, {}),
+    ])
+    DialogButtonRow(validator: Model(), buttons: [
+      (.cancel, {}),
+      (.accept(.add), {}),
+    ])
   }
 }

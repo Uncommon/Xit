@@ -93,11 +93,10 @@ struct TagPanel_Previews: PreviewProvider
   {
     VStack {
       TagPanel(model: model)
-      DialogButtonRow(validator: model)
-        .environment(\.buttons, [
-          (.cancel, {}),
-          (.accept("Create"), {}),
-        ])
+      DialogButtonRow(validator: model, buttons: [
+        (.cancel, {}),
+        (.accept("Create"), {}),
+      ])
     }.padding()
   }
 }
