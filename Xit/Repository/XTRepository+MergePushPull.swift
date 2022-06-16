@@ -292,7 +292,7 @@ extension XTRepository: Merging
     }
   }
   
-  struct MergeAnalysis: OptionSet
+  struct MergeAnalysis: OptionSet, Sendable
   {
     let rawValue: UInt32
     

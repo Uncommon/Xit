@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 /// Interface for a controller that displays file content in some form.
 @MainActor

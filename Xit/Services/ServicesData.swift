@@ -76,7 +76,7 @@ protocol PullRequestService: RemoteService, UserIDService
 }
 
 /// The pull request actions that a particular service implements.
-struct PullRequestActions: OptionSet
+struct PullRequestActions: OptionSet, Sendable
 {
   let rawValue: UInt32
   

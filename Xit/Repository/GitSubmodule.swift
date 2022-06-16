@@ -21,7 +21,7 @@ extension Submodule
   }
 }
 
-public struct SubmoduleStatus: OptionSet
+public struct SubmoduleStatus: OptionSet, Sendable
 {
   public let rawValue: git_submodule_status_t.RawValue
   

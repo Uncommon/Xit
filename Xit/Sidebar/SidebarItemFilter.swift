@@ -1,7 +1,7 @@
 import Foundation
 
 /// A filter that determines if sidebar items should be displayed
-protocol SidebarItemFilter
+protocol SidebarItemFilter: Sendable
 {
   func check(_ item: SidebarItem) -> Bool
 }

@@ -220,7 +220,7 @@ extension RemoteManagement
   }
 }
 
-public protocol TransferProgress
+public protocol TransferProgress: Sendable
 {
   var totalObjects: UInt32 { get }
   var indexedObjects: UInt32 { get }

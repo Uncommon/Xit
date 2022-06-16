@@ -136,7 +136,7 @@ extension XTRepository: FileStatusDetection
                   baseCommit: (any Commit)?)
     -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
-    struct CallbackData
+    struct CallbackData: Sendable
     {
       let path: String
       var status: git_status_t

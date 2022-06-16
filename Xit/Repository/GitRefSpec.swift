@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol RefSpec
+public protocol RefSpec: Sendable
 {
   var source: String { get }
   var destination: String { get }

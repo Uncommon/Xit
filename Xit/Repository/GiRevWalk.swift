@@ -10,7 +10,7 @@ public protocol RevWalk
   func next() -> (any OID)?
 }
 
-public struct RevWalkSorting: OptionSet
+public struct RevWalkSorting: OptionSet, Sendable
 {
   public var rawValue: git_sort_t.RawValue
   

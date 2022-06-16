@@ -2,21 +2,21 @@ import Foundation
 
 extension TeamCityAPI
 {
-  public struct Build
+  public struct Build: Sendable
   {
-    enum Status: String
+    enum Status: String, Sendable
     {
       case succeeded = "SUCCESS"
       case failed = "FAILURE"
     }
     
-    enum State: String
+    enum State: String, Sendable
     {
       case running
       case finished
     }
     
-    enum Attribute
+    enum Attribute: Sendable
     {
       static let id = "id"
       static let buildType = "buildTypeId"

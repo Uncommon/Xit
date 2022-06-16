@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public struct AXID: RawRepresentable
+public struct AXID: RawRepresentable, Sendable
 {
   public let rawValue: String
 

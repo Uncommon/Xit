@@ -1,6 +1,6 @@
 import Foundation
 
-struct FileViewOptions
+struct FileViewOptions: Sendable
 {
   enum Sort: Int
   {

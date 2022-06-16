@@ -5,9 +5,9 @@ public protocol Blame
   var hunks: [BlameHunk] { get }
 }
 
-public class BlameHunk
+public struct BlameHunk: Sendable
 {
-  struct LineInfo
+  struct LineInfo: Sendable
   {
     let oid: any OID // OIDs are zero for local changes
     let start: Int
@@ -50,9 +50,10 @@ public final class GitBlame: Blame
               let oid = GitOID(sha: parts[0])
         else { continue }
         
-        if let last = hunks.last,
+        if var last = hunks.last,
            oid == (last.originalLine.oid as? GitOID) {
           last.lineCount += 1
+          hunks[hunks.index(before: hunks.endIndex)] = last
         }
         else {
           guard let originalLine = Int(parts[1]),

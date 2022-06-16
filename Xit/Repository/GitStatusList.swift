@@ -48,7 +48,7 @@ final class GitStatusList: RandomAccessCollection
   }
 }
 
-struct GitStatusEntry
+struct GitStatusEntry: Sendable
 {
   let entry: git_status_entry
   

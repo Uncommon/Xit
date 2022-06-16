@@ -367,6 +367,7 @@ final class TagSidebarItem: SidebarItem
   // Not used, but required
   required init(title: String)
   {
+    assertionFailure("This initializer shouldn't be used.")
     self.tag = MockTag()
     super.init(title: title)
   }
@@ -377,7 +378,7 @@ final class TagSidebarItem: SidebarItem
     let signature: Signature? = .init(
       name: "Mock",
       email: "mock@example.com",
-      when: .init(timeIntervalSinceReferenceDate: 0))
+      when: .init())
     let targetOID: (any OID)? = nil
     let commit: (any Commit)? = nil
     let message: String? = nil

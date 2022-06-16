@@ -68,14 +68,14 @@ class EntryCollection: RandomAccessCollection
 }
 
 /// An individual file entry in an index.
-public protocol IndexEntry
+public protocol IndexEntry: Sendable
 {
   var oid: any OID { get }
   var path: String { get }
   var conflicted: Bool { get }
 }
 
-public protocol ConflictEntry
+public protocol ConflictEntry: Sendable
 {
   var ancestor: any IndexEntry { get }
   var ours: any IndexEntry { get }

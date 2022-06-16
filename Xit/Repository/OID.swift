@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol OID: CustomDebugStringConvertible
+public protocol OID: CustomDebugStringConvertible, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }

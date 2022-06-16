@@ -1,6 +1,6 @@
 import Foundation
 
-struct HistoryLine
+struct HistoryLine: Sendable
 {
   let childIndex, parentIndex: UInt?
   let colorIndex: UInt
@@ -30,7 +30,7 @@ func == (left: CommitEntry, right: CommitEntry) -> Bool
 
 
 /// A connection line between commits in the history list.
-struct CommitConnection<ID: OID>: Equatable
+struct CommitConnection<ID: OID>: Equatable, Sendable
 {
   let parentOID, childOID: ID
   let colorIndex: UInt

@@ -3,7 +3,7 @@ import Foundation
 
 enum BitbucketServer
 {
-  struct PagedResponse<T>: Codable where T: Codable
+  struct PagedResponse<T>: Codable, Sendable where T: Codable & Sendable
   {
     let size, limit: Int
     let start: Int? // Not present for the first page
@@ -19,20 +19,20 @@ enum BitbucketServer
     case all = "ALL" // queries only
   }
 
-  enum UserType: String, Codable
+  enum UserType: String, Codable, Sendable
   {
     case normal = "NORMAL"
     case service = "SERVICE"
   }
   
-  enum ReviewerRole: String, Codable
+  enum ReviewerRole: String, Codable, Sendable
   {
     case author = "AUTHOR"
     case reviewer = "REVIEWER"
     case participant = "PARTICIPANT"
   }
   
-  enum ReviewerStatus: String, Codable
+  enum ReviewerStatus: String, Codable, Sendable
   {
     case approved = "APPROVED"
     case unapproved = "UNAPPROVED"
@@ -58,7 +58,7 @@ enum BitbucketServer
     }
   }
 
-  struct Project: Codable
+  struct Project: Codable, Sendable
   {
     let key: String
     let id: Int?
@@ -68,7 +68,7 @@ enum BitbucketServer
     let type: String? // NORMAL and what else?
   }
 
-  struct Repository: Codable
+  struct Repository: Codable, Sendable
   {
     let slug: String
     let name: String?
@@ -81,7 +81,7 @@ enum BitbucketServer
     let statusMessage: String?
   }
 
-  struct Ref: Codable
+  struct Ref: Codable, Sendable
   {
     let id: String
     let displayId: String?
@@ -89,7 +89,7 @@ enum BitbucketServer
     let repository: Repository
   }
 
-  struct User: Codable, Equatable
+  struct User: Codable, Equatable, Sendable
   {
     let name: String
     let emailAddress: String?
@@ -101,19 +101,19 @@ enum BitbucketServer
     let links: Links?
   }
   
-  struct Link: Codable, Equatable
+  struct Link: Codable, Equatable, Sendable
   {
     let href: String?
     let name: String?
   }
   
-  struct Links: Codable, Equatable
+  struct Links: Codable, Equatable, Sendable
   {
     let `self`: [Link]
     let clone: [Link]?
   }
   
-  struct Participant: Codable
+  struct Participant: Codable, Sendable
   {
     let user: User
     let role: ReviewerRole
@@ -122,7 +122,7 @@ enum BitbucketServer
     let lastReviewedCommit: String?
   }
 
-  struct PullRequest: Codable
+  struct PullRequest: Codable, Sendable
   {
     let id: Int
     let version: Int

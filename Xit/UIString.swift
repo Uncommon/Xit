@@ -11,7 +11,7 @@ prefix func ›(string: StringLiteralType) -> UIString
 }
 
 /// Contains a string that is specifically for display in the user interface.
-struct UIString: RawRepresentable
+struct UIString: RawRepresentable, Sendable
 {
   let rawValue: String
   

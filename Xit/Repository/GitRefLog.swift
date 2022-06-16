@@ -17,7 +17,7 @@ extension RefLog
   { RefLogEntryCollection(refLog: self) }
 }
 
-protocol RefLogEntry
+protocol RefLogEntry: Sendable
 {
   var oldOID: any OID { get }
   var newOID: any OID { get }
