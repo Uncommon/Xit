@@ -42,6 +42,7 @@
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
+		8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8959E6E02856E35400AD88C4 /* TagPanel.swift */; };
 		895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52126507E3E0073F15A /* FakePullRequest.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
@@ -217,8 +218,6 @@
 		C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986447B208FBD990088209B /* ResponderNotifierWindow.swift */; };
 		C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986846F2334389A0026E70B /* SidebarItemFilter.swift */; };
 		C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */; };
-		C98925C61DB693CC00E5645C /* TagPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925C41DB693CC00E5645C /* TagPanelController.swift */; };
-		C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C98925C51DB693CC00E5645C /* TagPanelController.xib */; };
 		C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* NewTagOpController.swift */; };
 		C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925F81DBFCE7000E5645C /* SidebarController.swift */; };
 		C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */; };
@@ -396,6 +395,7 @@
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
+		8959E6E02856E35400AD88C4 /* TagPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPanel.swift; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
 		895CD52D265379450073F15A /* CommitPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitPanel.swift; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
@@ -440,6 +440,7 @@
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
+		89F411F82856A6A7009ECF7D /* NewBranchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBranchPanel.swift; sourceTree = "<group>"; };
 		89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -583,8 +584,6 @@
 		C986447B208FBD990088209B /* ResponderNotifierWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponderNotifierWindow.swift; sourceTree = "<group>"; };
 		C986846F2334389A0026E70B /* SidebarItemFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemFilter.swift; sourceTree = "<group>"; };
 		C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitLinesTest.swift; sourceTree = "<group>"; };
-		C98925C41DB693CC00E5645C /* TagPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPanelController.swift; sourceTree = "<group>"; };
-		C98925C51DB693CC00E5645C /* TagPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagPanelController.xib; sourceTree = "<group>"; };
 		C98925D41DB6D3D300E5645C /* NewTagOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTagOpController.swift; sourceTree = "<group>"; };
 		C98925F81DBFCE7000E5645C /* SidebarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
 		C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWorkTree.swift; sourceTree = "<group>"; };
@@ -1130,6 +1129,7 @@
 				890F7BE22853A90F005C24A7 /* FetchPanel.swift */,
 				89F411F22853E039009ECF7D /* FetchDialog.swift */,
 				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
+				89F411F82856A6A7009ECF7D /* NewBranchPanel.swift */,
 				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
 				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
 				C96256B1235A402800A625DC /* NewRemoteOpController.swift */,
@@ -1157,8 +1157,7 @@
 				89AB21D9213DE5E300EF7507 /* StashOperationController.swift */,
 				89AB21EB213DE67500EF7507 /* StashPanelController.swift */,
 				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
-				C98925C41DB693CC00E5645C /* TagPanelController.swift */,
-				C98925C51DB693CC00E5645C /* TagPanelController.xib */,
+				8959E6E02856E35400AD88C4 /* TagPanel.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1381,7 +1380,6 @@
 				C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */,
 				C9F20AE42347DB6F002E8603 /* NewBranchPanelController.xib in Resources */,
 				89880EED20D17D1E007042F8 /* Media.xcassets in Resources */,
-				C98925C71DB693CC00E5645C /* TagPanelController.xib in Resources */,
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
 				C90703752326C944002DF393 /* XTWindowController.storyboard in Resources */,
@@ -1522,7 +1520,6 @@
 				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
 				8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */,
-				C98925C61DB693CC00E5645C /* TagPanelController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
 				89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */,
 				C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */,
@@ -1596,6 +1593,7 @@
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
 				C9DA20CB1F6C8B7800C472CD /* GitIndex.swift in Sources */,
 				89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */,
+				8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */,
 				C931A0EF276BA6C0007F441C /* CommitFileListController.swift in Sources */,
 				C9F9A02A1E1C417D00261E33 /* PatchMaker.swift in Sources */,
 				C93799D51DDF9B28005C08B8 /* WorkspaceWatcher.swift in Sources */,

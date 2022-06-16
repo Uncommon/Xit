@@ -4,7 +4,7 @@ import SwiftUI
 /// A view with a specific data model type.
 protocol DataModelView: View
 {
-  associatedtype Model: ObservableObject
+  associatedtype Model: ObservableObject & Validating
 
   init(model: Model)
 }
@@ -32,7 +32,7 @@ extension SheetDialog
     let viewController = NSHostingController {
       VStack {
         ContentView(model: model)
-        DialogButtonRow()
+        DialogButtonRow(validator: model)
           .environment(\.buttons, [
             (.cancel,
              { parent.endSheet(sheet, returnCode: .cancel) }),

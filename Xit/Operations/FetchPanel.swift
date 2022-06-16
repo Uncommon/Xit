@@ -4,7 +4,7 @@ struct FetchPanel: DataModelView
 {
   typealias Model = Options
 
-  class Options: ObservableObject
+  final class Options: ObservableObject, AlwaysValid
   {
     let remotes: [String]
     @Published var remote: String
@@ -60,7 +60,7 @@ struct FetchPanel_Previews: PreviewProvider
     FetchPanel(model: options)
     VStack {
       FetchPanel(model: options)
-      DialogButtonRow()
+      DialogButtonRow(validator: options)
         .environment(\.buttons, [
           (.cancel, {}),
           (.accept(.fetch), {}),

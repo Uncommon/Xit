@@ -6,7 +6,7 @@ enum ButtonType
   case accept(String)
   case other(String)
 
-  static var ok = ButtonType.accept(UIString.ok.rawValue)
+  static var ok: Self = .accept(UIString.ok.rawValue)
 
   static func accept(_ uiString: UIString) -> ButtonType
   { .accept(uiString.rawValue) }
@@ -32,6 +32,16 @@ enum ButtonType
         return nil
     }
   }
+
+  var isAccept: Bool
+  {
+    switch self {
+      case .accept:
+        return true
+      default:
+        return false
+    }
+  }
 }
 
 extension ButtonType: Hashable
@@ -40,6 +50,22 @@ extension ButtonType: Hashable
   {
     hasher.combine(title)
   }
+}
+
+protocol Validating
+{
+  /// Returns true if the object has valid values.
+  ///
+  /// Implementations should be `@Published` so that buttons will update
+  /// immediately.
+  var isValid: Bool { get }
+}
+
+/// For types that need to conform to `Validating` but are always valid.
+protocol AlwaysValid: Validating {}
+extension AlwaysValid
+{
+  var isValid: Bool { true }
 }
 
 typealias ButtonAction = () -> Void
@@ -59,9 +85,10 @@ extension EnvironmentValues
 }
 
 /// A row of buttons, as specified in the `.buttons` environment value.
-struct DialogButtonRow: View
+struct DialogButtonRow<V>: View where V: ObservableObject & Validating
 {
   @Environment(\.buttons) var buttons: ButtonList
+  @ObservedObject var validator: V
 
   var body: some View
   {
@@ -70,22 +97,25 @@ struct DialogButtonRow: View
       ForEach(buttons, id: \.0) {
         Button($0.0.title, action: $0.1)
           .keyboardShortcut($0.0.keyboardShortcut)
+          .disabled($0.0.isAccept && !validator.isValid)
       }
     }.padding([.top])
   }
 }
 
 struct ButtonRow_Previews: PreviewProvider {
-    static var previews: some View {
-      DialogButtonRow()
-        .environment(\.buttons, [
-          (.cancel, {}),
-          (.ok, {}),
-        ])
-      DialogButtonRow()
-        .environment(\.buttons, [
-          (.cancel, {}),
-          (.accept(.add), {}),
-        ])
-    }
+  class Model: ObservableObject, AlwaysValid {}
+
+  static var previews: some View {
+    DialogButtonRow(validator: Model())
+      .environment(\.buttons, [
+        (.cancel, {}),
+        (.ok, {}),
+      ])
+    DialogButtonRow(validator: Model())
+      .environment(\.buttons, [
+        (.cancel, {}),
+        (.accept(.add), {}),
+      ])
+  }
 }
