@@ -440,7 +440,6 @@
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
-		89F411F82856A6A7009ECF7D /* NewBranchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBranchPanel.swift; sourceTree = "<group>"; };
 		89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExtensions.swift; sourceTree = "<group>"; };
 		C3FA46FC13D0F8E200AC4F9B /* Xit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3FA470013D0F8E200AC4F9B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -1129,7 +1128,6 @@
 				890F7BE22853A90F005C24A7 /* FetchPanel.swift */,
 				89F411F22853E039009ECF7D /* FetchDialog.swift */,
 				C9F20ACF2347C8C7002E8603 /* NewBranchOpController.swift */,
-				89F411F82856A6A7009ECF7D /* NewBranchPanel.swift */,
 				C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */,
 				C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */,
 				C96256B1235A402800A625DC /* NewRemoteOpController.swift */,
