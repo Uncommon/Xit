@@ -37,6 +37,8 @@
 		890F7BE32853A90F005C24A7 /* FetchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890F7BE22853A90F005C24A7 /* FetchPanel.swift */; };
 		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
 		891052D92523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
+		891260E0285BCA1800053528 /* StashPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891260DF285BCA1800053528 /* StashPanel.swift */; };
+		891260E2285BD11300053528 /* StashDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891260E1285BD11300053528 /* StashDialog.swift */; };
 		891261B01F867FCC00C292B7 /* GitTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* GitTree.swift */; };
 		891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891B02132666C36400E20F2B /* ClonePanelController.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
@@ -62,8 +64,6 @@
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* CommitEntryController.xib */; };
 		89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21D9213DE5E300EF7507 /* StashOperationController.swift */; };
-		89AB21ED213DE67500EF7507 /* StashPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21EB213DE67500EF7507 /* StashPanelController.swift */; };
-		89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB21EC213DE67500EF7507 /* StashPanelController.xib */; };
 		89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB952124DDE63E0029CECC /* PushNewPanelController.xib */; };
 		89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB953624DE064B0029CECC /* PushNewPanelController.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
@@ -389,6 +389,8 @@
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		890F7BE22853A90F005C24A7 /* FetchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPanel.swift; sourceTree = "<group>"; };
 		891052D72523F3D30095E299 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
+		891260DF285BCA1800053528 /* StashPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashPanel.swift; sourceTree = "<group>"; };
+		891260E1285BD11300053528 /* StashDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashDialog.swift; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
 		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
@@ -415,8 +417,6 @@
 		899DB1A01CE5022400760270 /* CommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* CommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommitEntryController.xib; sourceTree = "<group>"; };
 		89AB21D9213DE5E300EF7507 /* StashOperationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashOperationController.swift; sourceTree = "<group>"; };
-		89AB21EB213DE67500EF7507 /* StashPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashPanelController.swift; sourceTree = "<group>"; };
-		89AB21EC213DE67500EF7507 /* StashPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StashPanelController.xib; sourceTree = "<group>"; };
 		89AB952124DDE63E0029CECC /* PushNewPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PushNewPanelController.xib; sourceTree = "<group>"; };
 		89AB953624DE064B0029CECC /* PushNewPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNewPanelController.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1155,8 +1155,8 @@
 				C9120EDF23EE04C00052387E /* ResetPanelController.xib */,
 				89F411F62856946D009ECF7D /* SheetDialog.swift */,
 				89AB21D9213DE5E300EF7507 /* StashOperationController.swift */,
-				89AB21EB213DE67500EF7507 /* StashPanelController.swift */,
-				89AB21EC213DE67500EF7507 /* StashPanelController.xib */,
+				891260DF285BCA1800053528 /* StashPanel.swift */,
+				891260E1285BD11300053528 /* StashDialog.swift */,
 				8959E6E02856E35400AD88C4 /* TagPanel.swift */,
 			);
 			path = Operations;
@@ -1388,7 +1388,6 @@
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
 				C934C23A258ADBA2004197EB /* HistoryViewController.storyboard in Resources */,
-				89AB21EE213DE67500EF7507 /* StashPanelController.xib in Resources */,
 				899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */,
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
 				8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */,
@@ -1537,6 +1536,7 @@
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
 				C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */,
 				C94154B61EE5AC460030E481 /* XTRepository+Commands.swift in Sources */,
+				891260E2285BD11300053528 /* StashDialog.swift in Sources */,
 				C9ACC3432512699300C4FE4F /* SidebarCommandHandler.swift in Sources */,
 				C959CDE91F859D3D00C1E282 /* BuildStatusController.swift in Sources */,
 				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
@@ -1587,7 +1587,6 @@
 				C9473B9125A64D3000DA95BF /* HistorySplitController.swift in Sources */,
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,
 				C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */,
-				89AB21ED213DE67500EF7507 /* StashPanelController.swift in Sources */,
 				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
 				C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */,
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
@@ -1605,6 +1604,7 @@
 				C94866B61D256C24000BDB0A /* FetchOpController.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* AccountsManager.swift in Sources */,
 				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
+				891260E0285BCA1800053528 /* StashPanel.swift in Sources */,
 				C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */,
 				C9BBBBF826D7F13700469007 /* CombineExtensions.swift in Sources */,
 				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,

@@ -88,6 +88,7 @@ struct UIString: RawRepresentable, Sendable
   static let stage = ›"Stage"
   static let stageAll = ›"Stage All"
   static let staging = ›"Staging"
+  static let stash = ›"Stash"
   static let unstage = ›"Unstage"
   static let unstageAll = ›"Unstage All"
   static let update = ›"Update"
