@@ -14,7 +14,7 @@ public final class RemoteProgressPublisher
   private(set) var callbacks = RemoteCallbacks()
   var canceled: Bool = false
   
-  init(passwordBlock: (() -> (String, String))? = nil)
+  init(passwordBlock: RemoteCallbacks.PasswordBlock? = nil)
   {
     callbacks = .init(
         passwordBlock: passwordBlock,
@@ -38,7 +38,7 @@ public final class RemoteProgressPublisher
         })
   }
   
-  func setPasswordBlock(_ block: (() -> (String, String)?)?)
+  func setPasswordBlock(_ block: RemoteCallbacks.PasswordBlock?)
   {
     callbacks.passwordBlock = block
   }

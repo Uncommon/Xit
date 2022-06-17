@@ -249,26 +249,20 @@ struct MockTransferProgress: TransferProgress
 
 public struct RemoteCallbacks
 {
+  typealias PasswordBlock = () async -> (String, String)?
+  typealias DownloadProgressBlock = (any TransferProgress) -> Bool
+  typealias UploadProgressBlock = (PushTransferProgress) -> Bool
+  typealias SidebandMessageBlock = (String) -> Bool
+
   /// Callback for getting the user and password when they could not be
   /// discovered automatically
-  var passwordBlock: (() -> (String, String)?)?
+  var passwordBlock: PasswordBlock? = nil
   /// Fetch progress. Return false to stop the operation
-  var downloadProgress: ((any TransferProgress) -> Bool)?
+  var downloadProgress: DownloadProgressBlock? = nil
   /// Push progress. Return false to stop the operation
-  var uploadProgress: ((PushTransferProgress) -> Bool)?
+  var uploadProgress: UploadProgressBlock? = nil
   /// Message from the server
-  var sidebandMessage: ((String) -> Bool)?
-  
-  init(passwordBlock: (() -> (String, String)?)? = nil,
-       downloadProgress: ((any TransferProgress) -> Bool)? = nil,
-       uploadProgress: ((PushTransferProgress) -> Bool)? = nil,
-       sidebandMessage: ((String) -> Bool)? = nil)
-  {
-    self.passwordBlock = passwordBlock
-    self.downloadProgress = downloadProgress
-    self.uploadProgress = uploadProgress
-    self.sidebandMessage = sidebandMessage
-  }
+  var sidebandMessage: SidebandMessageBlock? = nil
 }
 
 public struct FetchOptions
