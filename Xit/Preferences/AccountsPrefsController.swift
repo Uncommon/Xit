@@ -1,5 +1,5 @@
 import Cocoa
-
+import Combine
 
 final class AccountsPrefsController: NSViewController
 {
@@ -9,12 +9,13 @@ final class AccountsPrefsController: NSViewController
   @IBOutlet weak var refreshButton: NSButton!
   @IBOutlet weak var editButton: NSButton!
   @IBOutlet weak var deleteButton: NSButton!
-  
-  var authStatusObserver: NSObjectProtocol?
+
+  var manager: AccountsManager = .manager
+
+  var authStatusCancellable: AnyCancellable?
   
   var selectedAccount: Account?
   {
-    let manager = AccountsManager.manager
     guard case let selectedRow = accountsTable.selectedRow,
           selectedRow >= 0,
           selectedRow < manager.accounts.count
@@ -27,13 +28,12 @@ final class AccountsPrefsController: NSViewController
   {
     super.viewDidLoad()
     
-    let notificationCenter = NotificationCenter.default
+    let center = NotificationCenter.default
     
-    AccountsManager.manager.readAccounts()
-    authStatusObserver = notificationCenter.addObserver(
-        forName: .authenticationStatusChanged,
-        object: nil,
-        queue: OperationQueue.main) {
+    manager.readAccounts()
+    authStatusCancellable = center.publisher(for: .authenticationStatusChanged)
+                                  .receive(on: DispatchQueue.main)
+                                  .sink {
       [weak self] (_) in
       self?.accountsTable.reloadData()
     }
@@ -43,11 +43,6 @@ final class AccountsPrefsController: NSViewController
     updateActionButtons()
   }
 
-  override func viewWillDisappear()
-  {
-    authStatusObserver.map { NotificationCenter.default.removeObserver($0) }
-  }
-  
   func updateActionButtons()
   {
     let enabled = accountsTable.selectedRow != -1
@@ -119,9 +114,9 @@ final class AccountsPrefsController: NSViewController
                                    user: newUser,
                                    location: newURL)
 
-          try AccountsManager.manager.modify(oldAccount: account,
-                                             newAccount: newAccount,
-                                             newPassword: newPassword)
+          try manager.modify(oldAccount: account,
+                             newAccount: newAccount,
+                             newPassword: newPassword)
         }
         catch let error as NSError where error.code == errSecUserCanceled {
           return
@@ -156,7 +151,7 @@ final class AccountsPrefsController: NSViewController
     let account = Account(type: type, user: user, location: location)
     
     do {
-      try AccountsManager.manager.add(account, password: password)
+      try manager.add(account, password: password)
       accountsTable.reloadData()
     }
     catch let error as PasswordError {
@@ -201,7 +196,7 @@ final class AccountsPrefsController: NSViewController
       guard response == NSApplication.ModalResponse.alertFirstButtonReturn
       else { return }
       
-      AccountsManager.manager.accounts.remove(at: self.accountsTable.selectedRow)
+      self.manager.accounts.remove(at: self.accountsTable.selectedRow)
       self.accountsTable.reloadData()
       self.updateActionButtons()
     }
@@ -229,9 +224,12 @@ final class AccountsPrefsController: NSViewController
 
 extension AccountsPrefsController: PreferencesSaver
 {
+  // nonisolated because PreferencesSaver is not @MainActor
   nonisolated func savePreferences()
   {
-    AccountsManager.manager.saveAccounts()
+    Task {
+      await self.manager.saveAccounts()
+    }
   }
 }
 
@@ -311,7 +309,7 @@ extension AccountsPrefsController: NSTableViewDelegate
     let view = tableView.makeView(withIdentifier: tableColumn.identifier,
                               owner: self)
                as! NSTableCellView
-    let account = AccountsManager.manager.accounts[row]
+    let account = manager.accounts[row]
     
     switch tableColumn.identifier {
       case ColumnID.service:
@@ -358,6 +356,6 @@ extension AccountsPrefsController: NSTableViewDataSource
 {
   func numberOfRows(in tableView: NSTableView) -> Int
   {
-    return AccountsManager.manager.accounts.count
+    return manager.accounts.count
   }
 }
