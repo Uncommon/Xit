@@ -6,6 +6,7 @@ enum PreferenceKeys
   static let deemphasizeMerges = "deemphasizeMerges"
   static let collapseHistory = "collapseHistory"
   static let resetAmend = "resetAmend"
+  static let fetchTags = "FetchTags"
   static let accounts = "accounts"
   static let statusInTabs = "statusInTabs"
   static let stripComments = "stripComments"

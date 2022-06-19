@@ -11,6 +11,51 @@ public protocol Config: AnyObject
   func invalidate()
 }
 
+/// Only values returned/accepted by overloads of Config.subscript() should
+/// conform to this protocol.
+protocol ConfigValueType: Hashable, Sendable {}
+extension Bool: ConfigValueType {}
+extension String: ConfigValueType {}
+extension Int: ConfigValueType {}
+
+extension Config
+{
+  func value<T>(for key: String) -> T? where T: ConfigValueType
+  { value(type: T.self, for: key) as? T }
+
+  func value(type: Any.Type, for key: String) -> Any?
+  {
+    switch type {
+      case is Bool.Type:
+        return self[key] as Bool?
+      case is String.Type:
+        return self[key] as String?
+      case is Int.Type:
+        return self[key] as Int?
+      default:
+        assertionFailure("invalid config value type")
+        return nil
+    }
+  }
+
+  func set<T>(value: T, for key: String) where T: ConfigValueType
+  { set(value: value, type: T.self, for: key) }
+
+  func set(value: Any, type: Any.Type, for key: String)
+  {
+    switch type {
+      case is Bool.Type:
+        self[key] = value as? Bool
+      case is String.Type:
+        self[key] = value as? String
+      case is Int.Type:
+        self[key] = value as? Int
+      default:
+        assertionFailure("invalid config value type")
+    }
+  }
+}
+
 public protocol ConfigEntry
 {
   var name: String { get }
@@ -32,6 +77,32 @@ extension ConfigEntry
   
   var intValue: Int
   { Int(stringValue) ?? 0 }
+}
+
+/// An in-memory `Config` that uses a dictionary.
+class DictionaryConfig: Config
+{
+  struct Entry: ConfigEntry
+  {
+    let name: String
+    let stringValue: String
+  }
+
+  var store: [String: Any] = [:]
+
+  subscript(index: String) -> Bool?
+  { get { store[index] as? Bool } set { store[index] = newValue} }
+  subscript(index: String) -> String?
+  { get { store[index] as? String } set { store[index] = newValue} }
+  subscript(index: String) -> Int?
+  { get { store[index] as? Int } set { store[index] = newValue} }
+
+  var entries: AnySequence<ConfigEntry>
+  {
+    .init(store.map { Entry(name: $0.key, stringValue: $0.value as? String ?? "") })
+  }
+
+  func invalidate() {}
 }
 
 extension Config
@@ -62,8 +133,7 @@ extension Config
     if self["remote.\(remote).tagOpt"] == "--no-tags" {
       return false
     }
-    return UserDefaults.standard.bool(
-        forKey: GeneralPrefsConroller.PrefKey.fetchTags)
+    return UserDefaults.standard.bool(forKey: PreferenceKeys.fetchTags)
   }
   
   func commitTemplate() -> String?

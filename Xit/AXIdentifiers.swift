@@ -88,6 +88,9 @@ extension AXID
 
     enum Controls
     {
+      static let collapseHistory = AXID("collapseHistory")
+      static let deemphasize = AXID("deemphasize")
+      static let resetAmend = AXID("resetAmend")
       static let tabStatus = AXID("tabStatus")
     }
 
