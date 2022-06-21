@@ -12,12 +12,25 @@ enum PreferenceKeys
   static let stripComments = "stripComments"
   static let showColumns = "showColumns"
 
-  static let diffWhitespace = "diffWhitespace"
-  static let tabWidth = "tabWidth"
-  static let contextLines = "contextLines"
-  static let fontName = "fontName"
-  static let fontSize = "fontSize"
-  static let wrapping = "wrapping"
+  static let diffWhitespace = PreferenceKey("diffWhitespace",
+                                            WhitespaceSetting.showAll)
+  static let tabWidth = PreferenceKey("tabWidth", 4)
+  static let contextLines = PreferenceKey("contextLines", 3)
+  static let fontName = PreferenceKey("fontName", "Menlo-Regular")
+  static let fontSize = PreferenceKey("fontSize", 11)
+  static let wrapping = PreferenceKey("wrapping", TextWrapping.none)
+}
+
+struct PreferenceKey<T>
+{
+  let key: String
+  let defaultValue: T
+
+  init(_ key: String, _ value: T)
+  {
+    self.key = key
+    self.defaultValue = value
+  }
 }
 
 enum WhitespaceSetting: String, CaseIterable
@@ -43,6 +56,21 @@ extension UserDefaults
     result.removePersistentDomain(forName: "xit-testing")
     return result
   }()
+
+  subscript<T>(_ key: PreferenceKey<T>) -> T
+  {
+    get { value(forKey: key.key) as? T ?? key.defaultValue }
+    set { setValue(newValue, forKey: key.key) }
+  }
+  subscript<T>(_ key: PreferenceKey<T>) -> T where T: RawRepresentable
+  {
+    get
+    {
+      (object(forKey: key.key) as? T.RawValue)
+          .flatMap { .init(rawValue: $0) } ?? key.defaultValue
+    }
+    set { setValue(newValue.rawValue, forKey: key.key) }
+  }
 
   @objc dynamic var collapseHistory: Bool
   {
@@ -102,43 +130,33 @@ extension UserDefaults
   }
   @objc dynamic var fontName: String
   {
-    get { object(forKey: PreferenceKeys.fontName) as? String ?? "Menlo-Regular" }
-    set { set(newValue, forKey: PreferenceKeys.fontName) }
+    get { self[PreferenceKeys.fontName] }
+    set { self[PreferenceKeys.fontName] = newValue }
   }
   @objc dynamic var fontSize: Int
   {
-    get { object(forKey: PreferenceKeys.fontSize) as? Int ?? 11 }
-    set { set(newValue, forKey: PreferenceKeys.fontSize) }
+    get { self[PreferenceKeys.fontSize] }
+    set { self[PreferenceKeys.fontSize] = newValue }
   }
   @objc dynamic var tabWidth: Int
   {
-    get { object(forKey: PreferenceKeys.tabWidth) as? Int ?? 4 }
-    set { set(newValue, forKey: PreferenceKeys.tabWidth) }
+    get { self[PreferenceKeys.tabWidth] }
+    set { self[PreferenceKeys.tabWidth] = newValue }
   }
   @objc dynamic var contextLines: Int
   {
-    get { object(forKey: PreferenceKeys.contextLines) as? Int ?? 3 }
-    set { set(newValue, forKey: PreferenceKeys.contextLines) }
+    get { self[PreferenceKeys.contextLines] }
+    set { self[PreferenceKeys.contextLines] = newValue }
   }
   dynamic var wrapping: TextWrapping
   {
-    get
-    {
-      (object(forKey: PreferenceKeys.wrapping) as? Int).flatMap {
-        .init(rawValue: $0)
-      } ?? .none
-    }
-    set { set(newValue.rawValue, forKey: PreferenceKeys.wrapping) }
+    get { self[PreferenceKeys.wrapping] }
+    set { self[PreferenceKeys.wrapping] = newValue }
   }
   dynamic var whitespace: WhitespaceSetting
   {
-    get
-    {
-      (object(forKey: PreferenceKeys.diffWhitespace) as? String).flatMap {
-        .init(rawValue: $0)
-      } ?? .showAll
-    }
-    set { set(newValue.rawValue, forKey: PreferenceKeys.contextLines) }
+    get { self[PreferenceKeys.diffWhitespace] }
+    set { self[PreferenceKeys.diffWhitespace] = newValue }
   }
 
   func setShowColumn(_ identifier: String, show: Bool)

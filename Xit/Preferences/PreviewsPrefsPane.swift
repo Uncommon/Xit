@@ -91,22 +91,22 @@ struct PreviewsPrefsPane: View
   init(defaults: UserDefaults)
   {
     _fontName = .init(wrappedValue: defaults.fontName,
-                      PreferenceKeys.fontName,
+                      PreferenceKeys.fontName.key,
                       store: defaults)
     _fontSize = .init(wrappedValue: defaults.fontSize,
-                      PreferenceKeys.fontSize,
+                      PreferenceKeys.fontSize.key,
                       store: defaults)
     _whitespcae = .init(wrappedValue: defaults.whitespace,
-                        PreferenceKeys.diffWhitespace,
+                        PreferenceKeys.diffWhitespace.key,
                         store: defaults)
     _wrapping = .init(wrappedValue: defaults.wrapping,
-                      PreferenceKeys.wrapping,
+                      PreferenceKeys.wrapping.key,
                       store: defaults)
     _tabWidth = .init(wrappedValue: defaults.tabWidth,
-                      PreferenceKeys.tabWidth,
+                      PreferenceKeys.tabWidth.key,
                       store: defaults)
     _contextLines = .init(wrappedValue: defaults.contextLines,
-                          PreferenceKeys.contextLines,
+                          PreferenceKeys.contextLines.key,
                           store: defaults)
 
     // Access wrappedValue and projectedValue explicitly because self isn't

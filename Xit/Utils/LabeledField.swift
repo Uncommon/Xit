@@ -54,7 +54,7 @@ private struct LabelWidthPreferenceKey: MaxDimensionKey
 // MARK: -
 
 /// A preference that collects the maximum value from the subviews.
-protocol MaxDimensionKey: PreferenceKey where Value == CGFloat {}
+protocol MaxDimensionKey: SwiftUI.PreferenceKey where Value == CGFloat {}
 
 extension MaxDimensionKey
 {
