@@ -14,5 +14,11 @@
 	<true/>
 	<key>stripComments</key>
 	<true/>
+	<key>fontName</key>
+	<string>Menlo-Regular</string>
+	<key>fontSize</key>
+	<integer>11</integer>
+	<key>tabWidth</key>
+	<integer>4</integer>
 </dict>
 </plist>

@@ -28,7 +28,8 @@ final class PrefsWindowController: NSWindowController
                                  config: GitConfig.default!)
       .padding().fixedSize())
 
-    generalController.preferredContentSize = generalController.sizeThatFits(in: window!.frame.size)
+    generalController.preferredContentSize =
+        generalController.sizeThatFits(in: window!.frame.size)
     generalItem.label = "General"
     generalItem.image = .init(systemSymbolName: "gear")
     generalItem.viewController = generalController
@@ -38,6 +39,19 @@ final class PrefsWindowController: NSWindowController
       tabController.removeTabViewItem(oldItem)
     }
     tabController.insertTabViewItem(generalItem, at: 0)
+
+    let previewsItem = NSTabViewItem(identifier: Tab.previews.rawValue)
+    let previewsController = NSHostingController(
+      rootView: PreviewsPrefsPane(defaults: .standard)
+                .padding().fixedSize())
+
+    previewsController.preferredContentSize =
+        previewsController.sizeThatFits(in: window!.frame.size)
+    previewsItem.label = "Previews"
+    previewsItem.image = .init(systemSymbolName: "doc.text")
+    previewsItem.viewController = previewsController
+    tabController.insertTabViewItem(previewsItem, at: 2)
+
     tabController.selectedTabViewItemIndex = 0
   }
 

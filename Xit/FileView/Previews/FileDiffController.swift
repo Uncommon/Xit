@@ -19,11 +19,11 @@ final class FileDiffController: WebViewController,
   
   fileprivate var isLoaded_internal = false
   
-  public var whitespace = PreviewsPrefsController.Default.whitespace()
+  public var whitespace = UserDefaults.standard.whitespace
   {
     didSet { configureDiffMaker() }
   }
-  public var contextLines = PreviewsPrefsController.Default.contextLines()
+  public var contextLines = UInt(UserDefaults.standard.contextLines)
   {
     didSet { configureDiffMaker() }
   }

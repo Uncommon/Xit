@@ -63,15 +63,10 @@ struct GeneralPrefsPane: View
 
 struct GeneralPrefsPane_Previews: PreviewProvider
 {
-  static var tempDefaults: UserDefaults = {
-    let defaults = UserDefaults(suiteName: "xit-temp")!
-    defaults.removePersistentDomain(forName: "xit-temp")
-    return defaults
-  }()
   static var config = DictionaryConfig()
 
   static var previews: some View
   {
-    GeneralPrefsPane(defaults: tempDefaults, config: config).padding()
+    GeneralPrefsPane(defaults: .testing, config: config).padding()
   }
 }

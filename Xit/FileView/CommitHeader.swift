@@ -2,7 +2,12 @@ import SwiftUI
 
 extension Font
 {
-  static var code: Font { .init(PreviewsPrefsController.Default.font()) }
+  static var code: Font
+  {
+    .init(NSFont(name: UserDefaults.standard.fontName,
+                 size: CGFloat(UserDefaults.standard.fontSize))
+          ?? .monospacedSystemFont(ofSize: 11, weight: .regular))
+  }
 }
 
 class CommitHeaderHostingView: NSHostingView<CommitHeader>

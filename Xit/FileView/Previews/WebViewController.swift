@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 import WebKit
 
 class WebViewController: NSViewController
@@ -6,13 +7,13 @@ class WebViewController: NSViewController
   @IBOutlet weak var webView: WKWebView!
   var savedTabWidth: UInt = Default.tabWidth
   var savedWrapping: TextWrapping?
-  var fontObserver: NSObjectProtocol?
   private var appearanceObserver: NSKeyValueObservation?
+  private var cancellables: [AnyCancellable] = []
   
   enum Default
   {
     static var tabWidth: UInt
-    { PreviewsPrefsController.Default.tabWidth() }
+    { UInt(UserDefaults.standard.tabWidth) }
   }
   
   static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)!
@@ -37,13 +38,12 @@ class WebViewController: NSViewController
 #endif
     
     webView.setValue(false, forKey: "drawsBackground")
-    fontObserver = NotificationCenter.default
-                                     .addObserver(forName: .XTFontChanged,
-                                                  object: nil,
-                                                  queue: .main) {
-      [weak self] (_) in
-      self?.updateFont()
-    }
+    cancellables.append(contentsOf: [
+      UserDefaults.standard.publisher(for: \.fontName).sink
+      { [weak self] (_) in self?.updateFont() },
+      UserDefaults.standard.publisher(for: \.fontSize).sink
+      { [weak self] (_) in self?.updateFont() },
+    ])
   }
   
   override func viewDidAppear()
@@ -60,19 +60,14 @@ class WebViewController: NSViewController
   override func viewWillDisappear()
   {
     webView.navigationDelegate = nil
-    fontObserver.map {
-      NotificationCenter.default.removeObserver($0)
-    }
   }
   
   func updateFont()
   {
-    let font = PreviewsPrefsController.Default.font()
-    guard let familyName = font.familyName
-    else { return }
+    let defaults = UserDefaults.standard
 
-    setDocumentProperty("font-family", value: familyName)
-    setDocumentProperty("font-size", value: "\(font.pointSize)")
+    setDocumentProperty("font-family", value: defaults.fontName)
+    setDocumentProperty("font-size", value: "\(defaults.fontSize)")
   }
   
   public func load(html: String, baseURL: URL = WebViewController.baseURL)
@@ -228,7 +223,7 @@ extension WebViewController: WKNavigationDelegate
     }
     
     tabWidth = savedTabWidth
-    wrapping = savedWrapping ?? PreviewsPrefsController.Default.wrapping()
+    wrapping = savedWrapping ?? UserDefaults.standard.wrapping
     updateFont()
     updateColors()
   }

@@ -45,8 +45,14 @@ protocol ContextVariable: AnyObject
   var contextLines: UInt { get set }
 }
 
-enum TextWrapping: RawRepresentable
+enum TextWrapping: RawRepresentable, CaseIterable
 {
+  static var allCases: [TextWrapping] = [
+    .windowWidth,
+    .columns(80),
+    .none,
+  ]
+
   case windowWidth
   case columns(Int)
   case none
@@ -75,6 +81,23 @@ enum TextWrapping: RawRepresentable
       default:
         return nil
     }
+  }
+
+  var displayName: String
+  {
+    switch self {
+      case .windowWidth: return "Wrap to window"
+      case .columns(let count): return "Wrap to \(count) columns"
+      case .none: return "No wrapping"
+    }
+  }
+}
+
+extension TextWrapping: Hashable
+{
+  func hash(into hasher: inout Hasher)
+  {
+    hasher.combine(rawValue)
   }
 }
 

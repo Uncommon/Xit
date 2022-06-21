@@ -85,6 +85,7 @@
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
 		89E4272A285D6E3D00A17651 /* ConfigTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E42729285D6E3D00A17651 /* ConfigTest.swift */; };
+		89E4272C285EC3F800A17651 /* PreviewsPrefsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
@@ -247,7 +248,6 @@
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
-		C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */; };
 		C9ABDB2F1E0AE72600CBD8D8 /* PrefsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */; };
 		C9ACC3432512699300C4FE4F /* SidebarCommandHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */; };
 		C9AEE087279F4AEC008BA92C /* TagInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AEE086279F4AEC008BA92C /* TagInfoView.swift */; };
@@ -442,6 +442,7 @@
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
 		89E42729285D6E3D00A17651 /* ConfigTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigTest.swift; sourceTree = "<group>"; };
+		89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsPane.swift; sourceTree = "<group>"; };
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
@@ -613,7 +614,6 @@
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
-		C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsController.swift; sourceTree = "<group>"; };
 		C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsTabViewController.swift; sourceTree = "<group>"; };
 		C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCommandHandler.swift; sourceTree = "<group>"; };
 		C9AEE086279F4AEC008BA92C /* TagInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagInfoView.swift; sourceTree = "<group>"; };
@@ -1233,9 +1233,9 @@
 				C957B87B1D2DBBC00040F858 /* AccountsManager.swift */,
 				891260E5285D183B00053528 /* GeneralPrefsPane.swift */,
 				C9ABDB2E1E0AE72600CBD8D8 /* PrefsTabViewController.swift */,
-				C9ABDB1F1E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift */,
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 				C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */,
+				89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -1548,7 +1548,6 @@
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Staging.swift in Sources */,
 				C94E4EDE22A989BC00D5B2B1 /* CLIRunner.swift in Sources */,
 				C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */,
-				C9ABDB201E0ADE1A00CBD8D8 /* PreviewsPrefsController.swift in Sources */,
 				C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
 				C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */,
@@ -1611,6 +1610,7 @@
 				C957B87C1D2DBBC00040F858 /* AccountsManager.swift in Sources */,
 				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
 				891260E0285BCA1800053528 /* StashPanel.swift in Sources */,
+				89E4272C285EC3F800A17651 /* PreviewsPrefsPane.swift in Sources */,
 				C947367A1DEF5CA8000E3A05 /* FileViewController.swift in Sources */,
 				C9BBBBF826D7F13700469007 /* CombineExtensions.swift in Sources */,
 				C935BD7E1E8BFA4F00BE51F0 /* DateCellView.swift in Sources */,
