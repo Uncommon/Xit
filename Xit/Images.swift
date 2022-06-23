@@ -10,10 +10,10 @@ extension NSImage.Name
   static let xtBuildInProgress = "buildInProgress"
   static let xtBuildSucceeded = "buildSucceeded"
   static let xtNoBuilds = "noBuilds"
-  static let xtGitHubTemplate = "githubTemplate"
-  static let xtGitLabTemplate = "gitlabTemplate"
+  static let xtGitHub = "github"
+  static let xtGitLab = "gitlab"
   static let xtStageAllTemplate = "stageAllTemplate"
-  static let xtTeamCityTemplate = "teamcityTemplate"
+  static let xtTeamCity = "teamcity"
   static let xtTrackingMissing = "trackingMissing"
   static let xtUnstageAllTemplate = "unstageAllTemplate"
 }

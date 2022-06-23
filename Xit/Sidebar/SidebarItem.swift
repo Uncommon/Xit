@@ -283,8 +283,8 @@ final class RemoteSidebarItem: SidebarItem
        let url = URL(string: urlString),
        let host = url.host?.lowercased() {
       let hostsWithIcons: [(String, NSImage.Name)] =
-            [("github.com", .xtGitHubTemplate),
-             ("gitlab.com", .xtGitLabTemplate),
+            [("github.com", .xtGitHub),
+             ("gitlab.com", .xtGitLab),
              ("bitbucket.com", .xtBitBucketTemplate)]
 
       for (domain, image) in hostsWithIcons {

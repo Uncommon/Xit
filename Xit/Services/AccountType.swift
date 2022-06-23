@@ -86,10 +86,10 @@ enum AccountType: Int, CaseIterable
   var imageName: NSImage.Name
   {
     switch self {
-      case .gitHub: return .xtGitHubTemplate
-      case .gitLab: return .xtGitLabTemplate
+      case .gitHub: return .xtGitHub
+      case .gitLab: return .xtGitLab
       case .bitbucketCloud, .bitbucketServer: return .xtBitBucketTemplate
-      case .teamCity: return .xtTeamCityTemplate
+      case .teamCity: return .xtTeamCity
     }
   }
 }
