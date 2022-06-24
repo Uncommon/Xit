@@ -43,6 +43,13 @@ class BasicAuthService: IdentifiableService
       }
     }
   }
+
+  required init?(account: Account, password: String)
+  {
+    assertionFailure(
+      "subclasses should call init(account:password:authenticationPath:)")
+    return nil
+  }
   
   /// Re-generates the authentication header with the new credentials.
   func updateAuthentication(_ user: String, password: String) -> Bool

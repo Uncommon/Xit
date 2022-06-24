@@ -56,7 +56,7 @@ final class PullRequestCache
       }
 
       for remote in remotes {
-        guard let service = Services.shared.pullRequestService(remote: remote)
+        guard let service = Services.shared.pullRequestService(for: remote)
         else { continue }
 
         let requests = await service.getPullRequests()

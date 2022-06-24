@@ -100,8 +100,9 @@ extension Siesta.Request
   }
 }
 
-protocol AccountService
+protocol AccountService: AnyObject
 {
+  init?(account: Account, password: String)
   func accountUpdated(oldAccount: Account, newAccount: Account)
 }
 
@@ -125,8 +126,11 @@ final class Services
   
   typealias RepositoryService = IdentifiableService & AccountService
   
-  static let shared = Services()
-  
+
+  static let shared = Services(passwordStorage: XTKeychain.shared)
+
+  let passwordStorage: any PasswordStorage
+
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
@@ -141,8 +145,10 @@ final class Services
     return result
   }
   
-  init()
+  init(passwordStorage: any PasswordStorage)
   {
+    self.passwordStorage = passwordStorage
+
     #if false // #available(macOS 13, *) {
       Task {
         let center = NotificationCenter.default
@@ -185,7 +191,7 @@ final class Services
           }
         }
       }
-    }
+#endif
   }
 
   func pullRequestService(forID id: UUID) -> (any PullRequestService)?
@@ -193,9 +199,10 @@ final class Services
     allServices.first { $0.id == id } as? PullRequestService
   }
 
-  @MainActor static func shouldReauthenticate(service: String,
-                                              user: String,
-                                              error: String?) -> Bool
+  @MainActor
+  static func shouldReauthenticate(service: String,
+                                   user: String,
+                                   error: String?) -> Bool
   {
     guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
     else { return false }
@@ -258,21 +265,11 @@ final class Services
     if let api = teamCityServices[key] {
       return api
     }
-    else {
-      guard let password = XTKeychain.shared.find(url: account.location,
-                                                  account: account.user)
-      else {
-        NSLog("No password found for \(key)")
-        return nil
-      }
-      
-      guard let api = TeamCityAPI(account: account, password: password)
-      else { return nil }
-      
-      api.attemptAuthentication()
+    else if let api: TeamCityAPI = createService(for: account) {
       teamCityServices[key] = api
       return api
     }
+    return nil
   }
   
   func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?
@@ -282,24 +279,30 @@ final class Services
     if let api = bitbucketServices[key] {
       return api
     }
-    else {
-      guard let password = XTKeychain.shared.find(url: account.location,
-                                                  account: account.user)
-      else {
-        NSLog("No password found for \(key)")
-        return nil
-      }
-      
-      guard let api = BitbucketServerAPI(account: account, password: password)
-      else { return nil }
-      
-      api.attemptAuthentication()
+    else if let api: BitbucketServerAPI = createService(for: account) {
       bitbucketServices[key] = api
       return api
     }
+    return nil
+  }
+
+  func createService<T>(for account: Account) -> T? where T: BasicAuthService
+  {
+    guard let password = passwordStorage.find(url: account.location,
+                                              account: account.user)
+    else {
+      NSLog("No password found for \(account.user)")
+      return nil
+    }
+
+    guard let api = T(account: account, password: password)
+    else { return nil }
+
+    api.attemptAuthentication()
+    return api
   }
   
-  func pullRequestService(remote: any Remote) -> PullRequestService?
+  func pullRequestService(for remote: any Remote) -> (any PullRequestService)?
   {
     let prServices = allServices.compactMap { $0 as? PullRequestService }
     

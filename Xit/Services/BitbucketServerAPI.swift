@@ -281,7 +281,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
     }
   }
   
-  init?(account: Account, password: String)
+  required init?(account: Account, password: String)
   {
     guard var fullBaseURL = URLComponents(url: account.location,
                                           resolvingAgainstBaseURL: false)
