@@ -131,8 +131,8 @@ extension AppDelegate: NSApplicationDelegate
   
   func applicationDidFinishLaunching(_ note: Notification)
   {
-    if !isTesting {
-      Services.shared.initializeServices()
+    if !isTesting && !UserDefaults.standard.bool(forKey: "noServices") {
+      Services.shared.initializeServices(with: AccountsManager.manager)
     }
   }
   

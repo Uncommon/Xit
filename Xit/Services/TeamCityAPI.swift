@@ -65,7 +65,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     else { return nil }
     
     let accounts = AccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.compactMap { Services.shared.teamCityAPI($0) }
+    let services = accounts.compactMap { Services.shared.teamCityAPI(for: $0) }
     
     for service in services {
       let buildTypes = service.buildTypesForRemote(remoteURL)

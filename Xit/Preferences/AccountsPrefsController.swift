@@ -192,13 +192,13 @@ final class AccountsPrefsController: NSViewController
     alert.buttons[1].keyEquivalent = "\r"
     
     alert.beginSheetModal(for: window) {
-      (response) in
+      [self] (response) in
       guard response == NSApplication.ModalResponse.alertFirstButtonReturn
       else { return }
-      
-      self.manager.accounts.remove(at: self.accountsTable.selectedRow)
-      self.accountsTable.reloadData()
-      self.updateActionButtons()
+
+      manager.delete(account: manager.accounts[accountsTable.selectedRow])
+      accountsTable.reloadData()
+      updateActionButtons()
     }
   }
   
@@ -211,10 +211,10 @@ final class AccountsPrefsController: NSViewController
     switch account.type {
       
       case .teamCity:
-        Services.shared.teamCityAPI(account)?.attemptAuthentication()
+        Services.shared.teamCityAPI(for: account)?.attemptAuthentication()
       
       case .bitbucketServer:
-        Services.shared.bitbucketServerAPI(account)?.attemptAuthentication()
+        Services.shared.bitbucketServerAPI(for: account)?.attemptAuthentication()
       
       default:
         break
@@ -323,14 +323,14 @@ extension AccountsPrefsController: NSTableViewDelegate
         view.imageView?.isHidden = true
         switch account.type {
           case .teamCity:
-            let api = Services.shared.teamCityAPI(account)
+            let api = Services.shared.teamCityAPI(for: account)
             
             if let image = statusImage(forTeamCity: api) {
               view.imageView?.image = image
               view.imageView?.isHidden = false
             }
           case .bitbucketServer:
-            let api = Services.shared.bitbucketServerAPI(account)
+            let api = Services.shared.bitbucketServerAPI(for: account)
             
             if let image = statusImage(forBitbucket: api) {
               view.imageView?.image = image

@@ -143,29 +143,28 @@ final class Services
   
   init()
   {
-    if false /*#available(macOS 13, *)*/ {
-//      Task {
-//        let center = NotificationCenter.default
-//
-//        for note in await center.notifications(named: .authenticationStatusChanged) {
-//          guard let service = note.object as? BasicAuthService
-//          else { return }
-//
-//          if case .failed(let error) = service.authenticationStatus {
-//            let serviceName = service.account.type.displayName.rawValue
-//            let user = service.account.user
-//
-//            if await Self.shouldReauthenticate(
-//                service: serviceName,
-//                user: user,
-//                error: error?.localizedDescription) {
-//              service.attemptAuthentication()
-//            }
-//          }
-//        }
-//      }
-    }
-    else {
+    #if false // #available(macOS 13, *) {
+      Task {
+        let center = NotificationCenter.default
+
+        for note in await center.notifications(named: .authenticationStatusChanged) {
+          guard let service = note.object as? BasicAuthService
+          else { return }
+
+          if case .failed(let error) = service.authenticationStatus {
+            let serviceName = service.account.type.displayName.rawValue
+            let user = service.account.user
+
+            if await Self.shouldReauthenticate(
+                service: serviceName,
+                user: user,
+                error: error?.localizedDescription) {
+              service.attemptAuthentication()
+            }
+          }
+        }
+      }
+#else
       NotificationCenter.default.addObserver(
           forName: .authenticationStatusChanged,
           object: nil,
@@ -222,16 +221,13 @@ final class Services
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
-  func initializeServices()
+  func initializeServices(with manager: AccountsManager)
   {
-    guard !UserDefaults.standard.bool(forKey: "noServices")
-    else { return }
-    
-    for account in AccountsManager.manager.accounts(ofType: .teamCity) {
-      _ = teamCityAPI(account)
+    for account in manager.accounts(ofType: .teamCity) {
+      _ = teamCityAPI(for: account)
     }
-    for account in AccountsManager.manager.accounts(ofType: .bitbucketServer) {
-      _ = bitbucketServerAPI(account)
+    for account in manager.accounts(ofType: .bitbucketServer) {
+      _ = bitbucketServerAPI(for: account)
     }
   }
   
@@ -255,7 +251,7 @@ final class Services
 
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
-  func teamCityAPI(_ account: Account) -> TeamCityAPI?
+  func teamCityAPI(for account: Account) -> TeamCityAPI?
   {
     let key = Services.accountKey(account)
   
@@ -279,7 +275,7 @@ final class Services
     }
   }
   
-  func bitbucketServerAPI(_ account: Account) -> BitbucketServerAPI?
+  func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?
   {
     let key = Services.accountKey(account)
     

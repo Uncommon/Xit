@@ -72,7 +72,7 @@ final class AccountsManager: NSObject
   let defaults: UserDefaults
   let passwordStorage: any PasswordStorage
   
-  var accounts: [Account] = []
+  private(set) var accounts: [Account] = []
   
   init(defaults: UserDefaults? = nil,
        passwordStorage: (any PasswordStorage)? = nil)
