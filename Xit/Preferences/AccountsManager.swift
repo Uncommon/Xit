@@ -4,11 +4,12 @@ import Cocoa
 /// Stores information about an account for an online service.
 /// Passwords are stored in the keychain.
 /// This would have been a `struct` but we need it to be `NSObject` compatible.
-final class Account: NSObject
+final class Account: NSObject, Identifiable
 {
   var type: AccountType
   var user: String
   var location: URL
+  let id: UUID
   
   /// Account fields as stored in preferences
   enum Keys
@@ -28,11 +29,12 @@ final class Account: NSObject
     return accountDict
   }
 
-  init(type: AccountType, user: String, location: URL)
+  init(type: AccountType, user: String, location: URL, id: UUID)
   {
     self.type = type
     self.user = user
     self.location = location
+    self.id = id
     
     super.init()
   }
@@ -45,7 +47,7 @@ final class Account: NSObject
           let url = URL(string: location)
     else { return nil }
     
-    self.init(type: type, user: user, location: url)
+    self.init(type: type, user: user, location: url, id: .init())
   }
   
   override func isEqual(_ object: Any?) -> Bool

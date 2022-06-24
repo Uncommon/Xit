@@ -112,7 +112,8 @@ final class AccountsPrefsController: NSViewController
         do {
           let newAccount = Account(type: account.type,
                                    user: newUser,
-                                   location: newURL)
+                                   location: newURL,
+                                   id: .init())
 
           try manager.modify(oldAccount: account,
                              newAccount: newAccount,
@@ -148,7 +149,7 @@ final class AccountsPrefsController: NSViewController
                   password: String,
                   location: URL)
   {
-    let account = Account(type: type, user: user, location: location)
+    let account = Account(type: type, user: user, location: location, id: .init())
     
     do {
       try manager.add(account, password: password)

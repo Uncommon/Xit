@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum AccountType: Int, CaseIterable
+enum AccountType: Int, CaseIterable, Sendable
 {
   case gitHub = 0
   case gitLab = 1
@@ -49,7 +49,7 @@ enum AccountType: Int, CaseIterable
       case .teamCity: return Names.teamCity
     }
   }
-  
+
   var displayName: UIString
   {
     switch self {
