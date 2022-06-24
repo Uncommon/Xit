@@ -1,6 +1,6 @@
 import Cocoa
 
-enum PasswordError: Swift.Error
+enum PasswordError: LocalizedError
 {
   case invalidURL
   case invalidName
