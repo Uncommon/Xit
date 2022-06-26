@@ -126,7 +126,7 @@ final class BuildStatusController: NSObject
     else { return nil }
 
     guard let remoteName = model.remoteName(forBranchItem: item),
-          let (api, buildTypes) = matchTeamCity(remoteName)
+          let (api, buildTypes) = matchBuildStatusService(remoteName)
     else { return nil }
     
     var overallState = DisplayState.unknown
@@ -179,7 +179,7 @@ extension BuildStatusController: NSPopoverDelegate
   }
 }
 
-extension BuildStatusController: TeamCityAccessor
+extension BuildStatusController: BuildStatusAccessor
 {
   var remoteMgr: (any RemoteManagement)! { model.repository }
 }

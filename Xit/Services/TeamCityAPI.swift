@@ -2,8 +2,21 @@ import Foundation
 @preconcurrency import Siesta
 import Combine
 
+protocol BuildStatusService: AnyObject
+{
+  func displayName(forBranch branch: String, buildType: String) -> String?
+  @MainActor
+  func buildStatus(_ branch: String, buildType: String) -> Resource
+
+  // TeamCity-specific stuff that should be abstrated somehow
+  var vcsBranchSpecs: [String: BranchSpec] { get }
+
+  func vcsRootsForBuildType(_ buildType: String) -> [String]
+  func buildType(id: String) -> BuildType?
+}
+
 /// API for getting TeamCity build information.
-final class TeamCityAPI: BasicAuthService, ServiceAPI
+final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
 {
   enum ParseStep
   {
@@ -360,16 +373,17 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   }
 }
 
-protocol TeamCityAccessor: AnyObject
+protocol BuildStatusAccessor: AnyObject
 {
   var remoteMgr: (any RemoteManagement)! { get }
 }
 
-extension TeamCityAccessor
+extension BuildStatusAccessor
 {
   /// Returns the first TeamCity service that builds from the given repository,
   /// and a list of its build types.
-  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
+  func matchBuildStatusService(_ remoteName: String)
+    -> (BuildStatusService, [String])?
   {
     guard let remoteMgr = self.remoteMgr,
           let remote = remoteMgr.remote(named: remoteName),

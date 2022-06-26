@@ -6,7 +6,7 @@ protocol BuildStatusClient: AnyObject
   func buildStatusUpdated(branch: String, buildType: String)
 }
 
-final class BuildStatusCache: TeamCityAccessor
+final class BuildStatusCache: BuildStatusAccessor
 {
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
@@ -77,7 +77,7 @@ final class BuildStatusCache: TeamCityAccessor
   @MainActor
   func refresh(remoteName: String, branchName: String) async throws
   {
-    guard let (api, buildTypes) = matchTeamCity(remoteName)
+    guard let (api, buildTypes) = matchBuildStatusService(remoteName)
     else {
       throw RefreshError.noBuildTypes
     }
