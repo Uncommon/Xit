@@ -11,6 +11,7 @@ final class BuildStatusCache: BuildStatusAccessor
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
 
+  var servicesMgr: Services { Services.shared }
   weak var remoteMgr: (any RemoteManagement)!
   weak var branchLister: (any Branching)?
   var statuses = [String: BranchStatuses]() // Build type to branch builds

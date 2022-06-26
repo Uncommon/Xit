@@ -256,6 +256,38 @@ final class Services
     }
   }
 
+  func service(for account: Account) -> BasicAuthService?
+  {
+    let key = Services.accountKey(account)
+    if let typeServices = services[account.type],
+       let api = typeServices[key] {
+      return api
+    }
+    else if let api = serviceMakers[account.type]?(account) {
+      if services[account.type] != nil {
+        services[account.type]![key] = api
+      }
+      else {
+        services[account.type] = [key: api]
+      }
+      return api
+    }
+    return nil
+  }
+
+  func buildStatusService(for remoteURL: String)
+    -> (BuildStatusService, [String])?
+  {
+    for service in allServices.compactMap({ $0 as? BuildStatusService }) {
+      let buildTypes = service.buildTypesForRemote(remoteURL)
+
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
   func teamCityAPI(for account: Account) -> TeamCityAPI?

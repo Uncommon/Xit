@@ -181,5 +181,6 @@ extension BuildStatusController: NSPopoverDelegate
 
 extension BuildStatusController: BuildStatusAccessor
 {
+  var servicesMgr: Services { Services.shared }
   var remoteMgr: (any RemoteManagement)! { model.repository }
 }

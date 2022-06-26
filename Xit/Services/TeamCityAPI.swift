@@ -13,6 +13,7 @@ protocol BuildStatusService: AnyObject
 
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   func buildType(id: String) -> BuildType?
+  func buildTypesForRemote(_ remoteURLString: String) -> [String]
 }
 
 /// API for getting TeamCity build information.
@@ -70,24 +71,6 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
                                 contentTypes: [ "*/xml" ])
     }
-  }
-  
-  static func service(for remoteURL: String) -> (TeamCityAPI, [String])?
-  {
-    guard !UserDefaults.standard.bool(forKey: "noServices")
-    else { return nil }
-    
-    let accounts = AccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.compactMap { Services.shared.teamCityAPI(for: $0) }
-    
-    for service in services {
-      let buildTypes = service.buildTypesForRemote(remoteURL)
-      
-      if !buildTypes.isEmpty {
-        return (service, buildTypes)
-      }
-    }
-    return nil
   }
   
   /// Status of the most recent build of the given branch from any project
@@ -375,6 +358,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
 
 protocol BuildStatusAccessor: AnyObject
 {
+  var servicesMgr: Services { get }
   var remoteMgr: (any RemoteManagement)! { get }
 }
 
@@ -390,7 +374,7 @@ extension BuildStatusAccessor
           let remoteURL = remote.urlString
     else { return nil }
     
-    return TeamCityAPI.service(for: remoteURL)
+    return servicesMgr.buildStatusService(for: remoteURL)
   }
 }
 
