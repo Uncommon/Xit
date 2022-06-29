@@ -373,10 +373,14 @@
                                     <font key="font" metaFont="menu"/>
                                     <menu key="menu" id="WNc-nd-pFh">
                                         <items>
-                                            <menuItem title="GitHub" state="on" image="githubTemplate" id="Nn0-pR-p5o"/>
+                                            <menuItem title="GitHub" state="on" id="Nn0-pR-p5o">
+                                                <imageReference key="image" image="github" symbolScale="large"/>
+                                            </menuItem>
                                             <menuItem title="Bitbucket Cloud" image="bitbucketTemplate" id="jVm-j9-1Ue"/>
                                             <menuItem title="Bitbucket Server" image="bitbucketTemplate" id="VgT-4S-lhl"/>
-                                            <menuItem title="TeamCity" image="teamcityTemplate" id="gdq-jq-YO7"/>
+                                            <menuItem title="TeamCity" id="gdq-jq-YO7">
+                                                <imageReference key="image" image="teamcity" symbolScale="large"/>
+                                            </menuItem>
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
@@ -510,8 +514,8 @@ Gw
         <image name="NSStatusAvailable" width="16" height="16"/>
         <image name="at.circle.fill" catalog="system" width="15" height="15"/>
         <image name="bitbucketTemplate" width="16" height="16"/>
-        <image name="githubTemplate" width="16" height="16"/>
+        <image name="github" width="11" height="10"/>
         <image name="pencil" catalog="system" width="14" height="13"/>
-        <image name="teamcityTemplate" width="16" height="16"/>
+        <image name="teamcity" width="10" height="10"/>
     </resources>
 </document>

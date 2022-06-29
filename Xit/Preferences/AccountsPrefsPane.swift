@@ -16,9 +16,10 @@ func serviceLabel(_ type: AccountType) -> some View
 {
   // Using `Label` doesn't work in menus
   HStack {
-    // Image(nsImage:) properly renders template images; Image(String) doesn't.
-    Image(nsImage: .init(named: type.imageName)!)
-      .resizable().aspectRatio(contentMode: .fit).frame(width: 16)
+    Image(type.imageName)
+      .renderingMode(.template)
+      .imageScale(.large)
+      .frame(width: 18)
     Text(type.displayName)
   }
 }
@@ -217,6 +218,8 @@ struct AccountsPrefsPane_Previews: PreviewProvider
             location: .init(string:"https://teamcity.com")!, id: .init()),
       .init(type: .gitLab, user: "Henry",
             location: .init(string:"https://gitlab.com")!, id: .init()),
+      .init(type: .bitbucketServer, user: "Hank",
+            location: .init(string:"https://bitbucket.com")!, id: .init()),
     ]
     let manager = AccountsManager(defaults: .testing,
                                   passwordStorage: NoOpKeychain())
