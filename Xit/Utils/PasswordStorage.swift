@@ -104,9 +104,9 @@ extension URL
   }
 }
 
-final class XTKeychain: PasswordStorage
+final class KeychainStorage: PasswordStorage
 {
-  static let shared: PasswordStorage = XTKeychain()
+  static let shared: PasswordStorage = KeychainStorage()
   
   var keychain: SecKeychain?
   

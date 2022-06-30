@@ -127,7 +127,7 @@ final class Services
   typealias RepositoryService = IdentifiableService & AccountService
   
 
-  static let shared = Services(passwordStorage: XTKeychain.shared)
+  static let shared = Services(passwordStorage: KeychainStorage.shared)
 
   let passwordStorage: any PasswordStorage
 

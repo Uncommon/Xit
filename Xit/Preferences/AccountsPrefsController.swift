@@ -105,7 +105,7 @@ final class AccountsPrefsController: NSViewController
       let newUser = addController.userName
       let oldURL = account.location
       let newURL = addController.location!  // addController does validation
-      let oldPassword = XTKeychain.shared.find(url: oldURL, account: oldUser)
+      let oldPassword = KeychainStorage.shared.find(url: oldURL, account: oldUser)
       let newPassword = addController.password
 
       if oldPassword != newPassword || oldUser != newUser || oldURL != newURL {

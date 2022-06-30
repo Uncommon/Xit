@@ -80,7 +80,7 @@ final class AccountsManager: NSObject
        passwordStorage: (any PasswordStorage)? = nil)
   {
     self.defaults = defaults ?? .standard
-    self.passwordStorage = passwordStorage ?? XTKeychain.shared
+    self.passwordStorage = passwordStorage ?? KeychainStorage.shared
     super.init()
     
     readAccounts()

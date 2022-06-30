@@ -125,7 +125,7 @@ extension BasicAuthService: AccountService
   {
     guard oldAccount == account
     else { return }
-    guard let password = XTKeychain.shared.find(account: newAccount)
+    guard let password = KeychainStorage.shared.find(account: newAccount)
     else {
       authenticationStatus = .unknown
       return

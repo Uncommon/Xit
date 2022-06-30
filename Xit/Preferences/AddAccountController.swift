@@ -92,7 +92,7 @@ final class AddAccountController: SheetController
     let userName: String! = self.userName
     guard !userName.isEmpty,
           let location = location,
-          let newPassword = XTKeychain.shared.find(url: location,
+          let newPassword = KeychainStorage.shared.find(url: location,
                                                    account: userName)
     else { return }
     
@@ -127,7 +127,7 @@ final class AddAccountController: SheetController
     }
     userField.stringValue = account.user
     locationField.stringValue = account.location.absoluteString
-    passwordField.stringValue = XTKeychain.shared.find(url: account.location,
+    passwordField.stringValue = KeychainStorage.shared.find(url: account.location,
                                                        account: account.user)
                                 ?? ""
     acceptButton!.titleString = .save
