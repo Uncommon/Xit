@@ -208,18 +208,8 @@ final class AccountsPrefsController: NSViewController
   {
     guard let account = selectedAccount
     else { return }
-    
-    switch account.type {
-      
-      case .teamCity:
-        Services.shared.teamCityAPI(for: account)?.attemptAuthentication()
-      
-      case .bitbucketServer:
-        Services.shared.bitbucketServerAPI(for: account)?.attemptAuthentication()
-      
-      default:
-        break
-    }
+
+    Services.shared.service(for: account)?.attemptAuthentication()
   }
 }
 
@@ -325,7 +315,7 @@ extension AccountsPrefsController: NSTableViewDelegate
         switch account.type {
           case .teamCity:
             let api = Services.shared.teamCityAPI(for: account)
-            
+
             if let image = statusImage(forTeamCity: api) {
               view.imageView?.image = image
               view.imageView?.isHidden = false

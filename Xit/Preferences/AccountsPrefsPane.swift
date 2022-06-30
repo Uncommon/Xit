@@ -28,6 +28,7 @@ struct AccountsPrefsPane: View
 {
   let bottomBarHeight: CGFloat = 21
   let accountsManager: AccountsManager
+  let services: Services
 
   @State var selectedAccount: UUID?
   @State var newAccountInfo: AccountInfo?
@@ -108,7 +109,7 @@ struct AccountsPrefsPane: View
     }
   }
 
-  func statusImage(forBitbucket api: BitbucketServerAPI?) -> NSImage.Name
+  func statusImage(forService api: BasicAuthService?) -> NSImage.Name
   {
     guard let api = api
     else { return NSImage.statusUnavailableName }
@@ -128,16 +129,9 @@ struct AccountsPrefsPane: View
 
   func serviceStatus(_ account: Account) -> some View
   {
-    var imageName = NSImage.statusNoneName
+    let service = services.service(for: account)
+    let imageName = statusImage(forService: service)
 
-//    switch account.type {
-//      case .bitbucketServer:
-//        imageName = statusImage(forBitbucket: api)
-//      case .teamCity:
-//        imageName = statusImage(forTeamCity: api)
-//      default:
-//        break
-//    }
     return HStack {
       Spacer()
       Image(nsImage: .init(named: imageName)!)
@@ -228,9 +222,11 @@ struct AccountsPrefsPane_Previews: PreviewProvider
     manager.readAccounts()
     return manager
   }()
+  static let services = Services(passwordStorage: NoOpKeychain())
 
   static var previews: some View
   {
-    AccountsPrefsPane(accountsManager: manager).padding().frame(height: 300.0)
+    AccountsPrefsPane(accountsManager: manager, services: services)
+      .padding().frame(height: 300.0)
   }
 }

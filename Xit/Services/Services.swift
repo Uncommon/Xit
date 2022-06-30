@@ -133,21 +133,24 @@ final class Services
 
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
-  
+
+  private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
-    let tcServices: [any RepositoryService] = Array(teamCityServices.values)
-    let bbServices: [any RepositoryService] = Array(bitbucketServices.values)
-    let result: [any RepositoryService] = tcServices + bbServices
-    // for testing
-    //  + [FakePRService()]
-    
-    return result
+    services.values.flatMap { $0.values }
   }
+
+  var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
   
   init(passwordStorage: any PasswordStorage)
   {
     self.passwordStorage = passwordStorage
+
+    let teamCityMaker: (Account) -> TeamCityAPI? = createService(for:)
+    let bbsMaker: (Account) -> BitbucketServerAPI? = createService(for:)
+
+    serviceMakers[.teamCity] = teamCityMaker
+    serviceMakers[.bitbucketServer] = bbsMaker
 
     #if false // #available(macOS 13, *) {
       Task {
@@ -231,10 +234,10 @@ final class Services
   func initializeServices(with manager: AccountsManager)
   {
     for account in manager.accounts(ofType: .teamCity) {
-      _ = teamCityAPI(for: account)
+      _ = service(for: account)
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
-      _ = bitbucketServerAPI(for: account)
+      _ = service(for: account)
     }
   }
   
@@ -292,30 +295,12 @@ final class Services
   /// the password cannot be found.
   func teamCityAPI(for account: Account) -> TeamCityAPI?
   {
-    let key = Services.accountKey(account)
-  
-    if let api = teamCityServices[key] {
-      return api
-    }
-    else if let api: TeamCityAPI = createService(for: account) {
-      teamCityServices[key] = api
-      return api
-    }
-    return nil
+    service(for: account) as? TeamCityAPI
   }
   
   func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?
   {
-    let key = Services.accountKey(account)
-    
-    if let api = bitbucketServices[key] {
-      return api
-    }
-    else if let api: BitbucketServerAPI = createService(for: account) {
-      bitbucketServices[key] = api
-      return api
-    }
-    return nil
+    service(for: account) as? BitbucketServerAPI
   }
 
   func createService<T>(for account: Account) -> T? where T: BasicAuthService
