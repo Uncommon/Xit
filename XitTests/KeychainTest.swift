@@ -126,7 +126,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
 
     let account2 = Account(type: baseAccount.type, user: baseAccount.user,
-                           location: URL(string: "https://other.github.com")!)
+                           location: URL(string: "https://other.github.com")!,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: nil)
   }
@@ -136,7 +137,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
-                           location: baseURL)
+                           location: baseURL,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: nil)
   }
@@ -153,7 +155,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
-                           location: baseURL)
+                           location: baseURL,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: "other password")
   }
