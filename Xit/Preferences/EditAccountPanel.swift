@@ -47,7 +47,7 @@ struct EditAccountPanel: DataModelView
       LabeledField("Service:", Picker(selection: $model.serviceType) {
         ForEach(AccountType.allCases, id: \.self) {
           (type) in
-          serviceLabel(type)
+          ServiceLabel(type)
         }
       } label: { EmptyView() })
       LabeledField("Location:", TextField("", text: $model.location))

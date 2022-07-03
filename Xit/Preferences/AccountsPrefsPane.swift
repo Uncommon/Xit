@@ -1,26 +1,25 @@
 import SwiftUI
 
-struct SquareButtonStyle: ButtonStyle
+struct ServiceLabel: View
 {
-  func makeBody(configuration: Configuration) -> some View
-  {
-    configuration.label
-      .padding(4)
-      .frame(height: 21)
-      .border(.tertiary)
-      .cornerRadius(0)
-  }
-}
+  let type: AccountType
+  @Environment(\.lineSpacing) var lineSpacing: CGFloat
 
-func serviceLabel(_ type: AccountType) -> some View
-{
-  // Using `Label` doesn't work in menus
-  HStack {
-    Image(type.imageName)
-      .renderingMode(.template)
-      .imageScale(.large)
-      .frame(width: 18)
-    Text(type.displayName)
+  var body: some View
+  {
+    // Using `Label` doesn't work in menus
+    HStack {
+      Image(type.imageName)
+        .renderingMode(.template)
+        .imageScale(.large)
+        .frame(width: 18)
+      Text(type.displayName)
+    }
+  }
+
+  init(_ type: AccountType)
+  {
+    self.type = type
   }
 }
 
@@ -41,7 +40,7 @@ struct AccountsPrefsPane: View
   {
     VStack(spacing: -1) {
       Table(accountsManager.accounts, selection: $selectedAccount) {
-        TableColumn("Service", content: { serviceLabel($0.type) })
+        TableColumn("Service", content: { ServiceLabel($0.type) })
             .width(min: 40, ideal: 80)
         TableColumn("User name", value: \.user)
         TableColumn("Location", value: \.location.absoluteString)
@@ -49,7 +48,7 @@ struct AccountsPrefsPane: View
         TableColumn("Status", content: serviceStatus).width(47)
       }.tableStyle(.bordered)
       HStack {
-        HStack(spacing: -1) {
+        HStack(spacing: 0) {
           Button(action: addNewAccount, label: { Image(systemName: "plus") })
             .frame(width: bottomBarHeight)
             .sheet(item: $newAccountInfo) {
