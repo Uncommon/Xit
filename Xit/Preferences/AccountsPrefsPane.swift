@@ -51,24 +51,18 @@ struct AccountsPrefsPane: View
         HStack(spacing: 0) {
           Button(action: addNewAccount, label: { Image(systemName: "plus") })
             .frame(width: bottomBarHeight)
-            .sheet(item: $newAccountInfo) {
-              (info) in
-              editAccountSheet(for: $newAccountInfo, title: "Create",
-                               action: { addAccount(from: info) })
-            }
+            .sheet(item: $newAccountInfo, content: newAccountSheet(_:))
           Divider()
           Button(action: deleteAccount, label: { Image(systemName: "minus") })
             .frame(width: bottomBarHeight)
+            .disabled(selectedAccount == nil)
           Divider()
         }.buttonStyle(.plain)
         Spacer()
         HStack {
           Button(action: editAccount, label: { Image(systemName: "pencil") })
-            .sheet(item: $editAccountInfo) {
-              (info) in
-              editAccountSheet(for: $editAccountInfo, title: "Save",
-                               action: { modifyAccount(with: info) })
-            }
+            .disabled(selectedAccount == nil)
+            .sheet(item: $editAccountInfo, content: editAccountSheet(_:))
           Button(action: refreshAccount,
                  label: { Image(systemName: "arrow.clockwise.circle.fill") })
             .padding([.trailing], 4)
@@ -138,22 +132,43 @@ struct AccountsPrefsPane: View
     }
   }
 
-  func editAccountSheet(for binding: Binding<AccountInfo?>,
+  func newAccountSheet(_ info: AccountInfo) -> some View
+  {
+    var info = info
+    let binding = Binding<AccountInfo>(get: { info }, set: { info = $0 })
+
+    return accountInfoSheet(for: binding, title: "Create",
+                            action: { addAccount(from: info) },
+                            cancel: { newAccountInfo = nil })
+  }
+
+  func editAccountSheet(_ info: AccountInfo) -> some View
+  {
+    var info = info
+    let binding = Binding<AccountInfo>(get: { info }, set: { info = $0 })
+
+    return accountInfoSheet(for: binding, title: "Save",
+                            action: { modifyAccount(with: info) },
+                            cancel: { editAccountInfo = nil })
+  }
+
+  func accountInfoSheet(for binding: Binding<AccountInfo>,
                         title: String,
-                        action: @escaping () -> Void) -> some View
+                        action: @escaping () -> Void,
+                        cancel: @escaping () -> Void) -> some View
   {
     VStack {
-      EditAccountPanel(model: binding.wrappedValue!)
-      DialogButtonRow(validator: binding.wrappedValue!, buttons: [
-        (.cancel, { binding.wrappedValue = nil }),
+      EditAccountPanel(model: binding.wrappedValue)
+      DialogButtonRow(validator: binding.wrappedValue, buttons: [
+        (.cancel, cancel),
         (.accept(title), action),
       ])
-    }
+    }.padding()
   }
 
   func addNewAccount()
   {
-    newAccountInfo = .init() // trigger the sheet
+    newAccountInfo = AccountInfo() // trigger the sheet
   }
 
   func addAccount(from info: AccountInfo)
@@ -191,13 +206,18 @@ struct AccountsPrefsPane: View
 
   func editAccount()
   {
-    // get the password
-    // set editAccountInfo
+    guard let selectedAccount = selectedAccount,
+          let account = accountsManager.accounts
+                                       .first(where: { $0.id == selectedAccount })
+    else { return }
+    let password = accountsManager.passwordStorage.find(account: account) ?? ""
+
+    editAccountInfo = AccountInfo(with: account, password: password)
   }
 
   func refreshAccount()
   {
-
+    // tell the account service to log in again
   }
 }
 

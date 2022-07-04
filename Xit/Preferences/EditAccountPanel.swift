@@ -54,6 +54,7 @@ struct EditAccountPanel: DataModelView
       LabeledField("User name:", TextField("", text: $model.userName))
       LabeledField("Password:", SecureField("", text: $model.password))
     }.labelWidthGroup()
+      .frame(minWidth: 300)
   }
 
   init()
@@ -81,6 +82,5 @@ struct EditAccountPanel_Previews: PreviewProvider
       ])
     }
     .padding()
-    .frame(width: 320.0)
   }
 }
