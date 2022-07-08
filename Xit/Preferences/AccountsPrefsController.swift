@@ -88,7 +88,7 @@ final class AccountsPrefsController: NSViewController
   @IBAction
   func editAccount(_ sender: Any)
   {
-    guard let account = selectedAccount
+    guard var account = selectedAccount
     else { return }
     guard let sheet = addController.window
     else {

@@ -62,6 +62,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     
     guard let location = fullBaseURL.url
     else { return nil }
+    var account = account
     
     account.location = location
     

@@ -3,8 +3,7 @@ import Cocoa
 
 /// Stores information about an account for an online service.
 /// Passwords are stored in the keychain.
-/// This would have been a `struct` but we need it to be `NSObject` compatible.
-final class Account: NSObject, Identifiable
+struct Account: Identifiable
 {
   var type: AccountType
   var user: String
@@ -35,11 +34,9 @@ final class Account: NSObject, Identifiable
     self.user = user
     self.location = location
     self.id = id
-    
-    super.init()
   }
   
-  convenience init?(dict: [String: AnyObject])
+  init?(dict: [String: AnyObject])
   {
     guard let type = AccountType(name: dict[Keys.type] as? String),
           let user = dict[Keys.user] as? String,
@@ -49,21 +46,16 @@ final class Account: NSObject, Identifiable
     
     self.init(type: type, user: user, location: url, id: .init())
   }
-  
-  override func isEqual(_ object: Any?) -> Bool
-  {
-    if let other = object as? Account {
-      return self == other
-    }
-    return false
-  }
 }
 
-func == (left: Account, right: Account) -> Bool
+extension Account: Equatable
 {
-  return (left.type == right.type) &&
-         (left.user == right.user) &&
-         (left.location.absoluteString == right.location.absoluteString)
+  static func == (lhs: Account, rhs: Account) -> Bool
+  {
+    lhs.type == rhs.type &&
+    lhs.user == rhs.user &&
+    lhs.location == rhs.location
+  }
 }
 
 

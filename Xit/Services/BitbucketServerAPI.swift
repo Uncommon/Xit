@@ -292,6 +292,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
     
     guard let location = fullBaseURL.url
     else { return nil }
+    var account = account
     
     account.location = location
     

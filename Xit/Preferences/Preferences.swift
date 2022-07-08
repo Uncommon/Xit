@@ -87,7 +87,7 @@ extension UserDefaults
     get { bool(forKey: PreferenceKeys.resetAmend) }
     set { set(newValue, forKey: PreferenceKeys.resetAmend) }
   }
-  @objc dynamic var accounts: [Account]
+  var accounts: [Account]
   {
     get
     {
