@@ -59,13 +59,14 @@ extension Account: Equatable
 }
 
 
-final class AccountsManager: NSObject
+final class AccountsManager: ObservableObject
 {
   static let manager = AccountsManager()
   
   let defaults: UserDefaults
   let passwordStorage: any PasswordStorage
-  
+
+  @Published
   private(set) var accounts: [Account] = []
   
   init(defaults: UserDefaults? = nil,
@@ -73,8 +74,7 @@ final class AccountsManager: NSObject
   {
     self.defaults = defaults ?? .standard
     self.passwordStorage = passwordStorage ?? KeychainStorage.shared
-    super.init()
-    
+
     readAccounts()
   }
   

@@ -26,8 +26,8 @@ struct ServiceLabel: View
 struct AccountsPrefsPane: View
 {
   let bottomBarHeight: CGFloat = 21
-  let accountsManager: AccountsManager
   let services: Services
+  @ObservedObject var accountsManager: AccountsManager
 
   @State var selectedAccount: UUID?
   @State var newAccountInfo: AccountInfo?
@@ -50,10 +50,12 @@ struct AccountsPrefsPane: View
       HStack {
         HStack(spacing: 0) {
           Button(action: addNewAccount, label: { Image(systemName: "plus") })
+            .help("Add new account")
             .frame(width: bottomBarHeight)
             .sheet(item: $newAccountInfo, content: newAccountSheet(_:))
           Divider()
           Button(action: deleteAccount, label: { Image(systemName: "minus") })
+            .help("Delete account")
             .frame(width: bottomBarHeight)
             .disabled(selectedAccount == nil)
           Divider()
@@ -61,12 +63,14 @@ struct AccountsPrefsPane: View
         Spacer()
         HStack {
           Button(action: editAccount, label: { Image(systemName: "pencil") })
-            .disabled(selectedAccount == nil)
             .sheet(item: $editAccountInfo, content: editAccountSheet(_:))
+            .help("Edit account")
           Button(action: refreshAccount,
                  label: { Image(systemName: "arrow.clockwise.circle.fill") })
             .padding([.trailing], 4)
+            .help("Refresh account status")
         }.buttonStyle(.plain)
+          .disabled(selectedAccount == nil)
       }.background(.tertiary)
         .frame(height: bottomBarHeight)
         .border(.tertiary)
@@ -159,6 +163,7 @@ struct AccountsPrefsPane: View
   {
     VStack {
       EditAccountPanel(model: binding.wrappedValue)
+        .onSubmit(action)
       DialogButtonRow(validator: binding.wrappedValue, buttons: [
         (.cancel, cancel),
         (.accept(title), action),
@@ -190,13 +195,27 @@ struct AccountsPrefsPane: View
 
   func modifyAccount(with info: AccountInfo)
   {
+    editAccountInfo = nil
+
     guard let account = accountsManager.accounts
-                                       .first(where: { $0.id == info.id })
+                                       .first(where: { $0.id == info.id }),
+          let url = URL(string: info.location)
     else { return }
 
-    account.type = info.serviceType
-    account.user = info.userName
-    account.location = URL(string: info.location)!
+    do {
+      try accountsManager.modify(oldAccount: account,
+                                 newAccount: .init(type: info.serviceType,
+                                                   user: info.userName,
+                                                   location: url,
+                                                   id: account.id),
+                                 newPassword: info.password)
+    }
+    catch let error as PasswordError {
+      passwordError = error
+    }
+    catch {
+      assertionFailure("unexpected error")
+    }
   }
 
   func deleteAccount()
@@ -235,7 +254,7 @@ struct AccountsPrefsPane_Previews: PreviewProvider
             location: .init(string:"https://bitbucket.com")!, id: .init()),
     ]
     let manager = AccountsManager(defaults: .testing,
-                                  passwordStorage: NoOpKeychain())
+                                  passwordStorage: MemoryPasswordStorage())
 
     UserDefaults.testing.accounts = accounts
     manager.readAccounts()
@@ -245,7 +264,7 @@ struct AccountsPrefsPane_Previews: PreviewProvider
 
   static var previews: some View
   {
-    AccountsPrefsPane(accountsManager: manager, services: services)
+    AccountsPrefsPane(services: services, accountsManager: manager)
       .padding().frame(height: 300.0)
   }
 }

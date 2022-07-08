@@ -8,7 +8,7 @@ enum PasswordError: LocalizedError
   case passwordNotSpecified
 }
 
-public enum PasswordProtocol
+public enum PasswordProtocol: String
 {
   case http
   case https
@@ -234,5 +234,13 @@ class Keychain
     else { return nil }
     
     self.keychainRef = finalKeychain
+  }
+}
+
+class TemporaryKeychain: Keychain
+{
+  deinit
+  {
+    SecKeychainDelete(keychainRef)
   }
 }
