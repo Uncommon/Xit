@@ -1,4 +1,5 @@
-import Foundation
+// URL should be Sendable
+@preconcurrency import Foundation
 
 extension TeamCityAPI
 {

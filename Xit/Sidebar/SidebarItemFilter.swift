@@ -1,4 +1,5 @@
-import Foundation
+// Date should be Sendable
+@preconcurrency import Foundation
 
 /// A filter that determines if sidebar items should be displayed
 protocol SidebarItemFilter: Sendable
