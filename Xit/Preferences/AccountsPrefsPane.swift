@@ -36,6 +36,13 @@ struct AccountsPrefsPane: View
   @State var showAlert: Bool = false
   @State var passwordError: PasswordError?
 
+  func squareImage(systemName: String, size: CGFloat) -> some View
+  {
+    Image(systemName: systemName)
+      .frame(width: size, height: size)
+      .contentShape(Rectangle())
+  }
+
   var body: some View
   {
     VStack(spacing: -1) {
@@ -49,24 +56,30 @@ struct AccountsPrefsPane: View
       }.tableStyle(.bordered)
       HStack {
         HStack(spacing: 0) {
-          Button(action: addNewAccount, label: { Image(systemName: "plus") })
+          Button(action: addNewAccount,
+                 label: { squareImage(systemName: "plus",
+                                      size: bottomBarHeight) })
             .help("Add new account")
-            .frame(width: bottomBarHeight)
+            .frame(minWidth: bottomBarHeight, maxHeight: .infinity)
             .sheet(item: $newAccountInfo, content: newAccountSheet(_:))
           Divider()
-          Button(action: deleteAccount, label: { Image(systemName: "minus") })
+          Button(action: { showDeleteConfirmation = true },
+                 label: { squareImage(systemName: "minus",
+                                      size: bottomBarHeight) })
             .help("Delete account")
-            .frame(width: bottomBarHeight)
             .disabled(selectedAccount == nil)
           Divider()
         }.buttonStyle(.plain)
         Spacer()
         HStack {
-          Button(action: editAccount, label: { Image(systemName: "pencil") })
+          Button(action: editAccount,
+                 label: { squareImage(systemName: "pencil",
+                                      size: bottomBarHeight) })
             .sheet(item: $editAccountInfo, content: editAccountSheet(_:))
             .help("Edit account")
           Button(action: refreshAccount,
-                 label: { Image(systemName: "arrow.clockwise.circle.fill") })
+                 label: { squareImage(systemName: "arrow.clockwise.circle.fill",
+                                      size: bottomBarHeight) })
             .padding([.trailing], 4)
             .help("Refresh account status")
         }.buttonStyle(.plain)
