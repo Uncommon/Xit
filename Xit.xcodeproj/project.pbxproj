@@ -70,6 +70,7 @@
 		89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21D9213DE5E300EF7507 /* StashOperationController.swift */; };
 		89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB952124DDE63E0029CECC /* PushNewPanelController.xib */; };
 		89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB953624DE064B0029CECC /* PushNewPanelController.swift */; };
+		89ADB3BD283F2E6800EF508A /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89ADB3BC283F2E6800EF508A /* Box.swift */; };
 		89B1C9B228778BE6006724EA /* MemoryPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
 		89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* GitSubmodule.swift */; };
@@ -430,6 +431,7 @@
 		89AB21D9213DE5E300EF7507 /* StashOperationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashOperationController.swift; sourceTree = "<group>"; };
 		89AB952124DDE63E0029CECC /* PushNewPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PushNewPanelController.xib; sourceTree = "<group>"; };
 		89AB953624DE064B0029CECC /* PushNewPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNewPanelController.swift; sourceTree = "<group>"; };
+		89ADB3BC283F2E6800EF508A /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryPasswordStorage.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		89C927741D36A2180074F71A /* GitSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSubmodule.swift; sourceTree = "<group>"; };
@@ -763,6 +765,7 @@
 				C9B023521F61A06900896EA9 /* LibGitExtensions.h */,
 				C9B023511F61A06900896EA9 /* LibGitExtensions.m */,
 				C931A0E82762B8A9007F441C /* ArrayBuilder.swift */,
+				89ADB3BC283F2E6800EF508A /* Box.swift */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
 				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
@@ -1599,6 +1602,7 @@
 				C929D03B1D400B3B00D7DC52 /* GitRemote.swift in Sources */,
 				C9B6DFB61FDB4A6500B5E3AA /* GitConfig.swift in Sources */,
 				C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */,
+				89ADB3BD283F2E6800EF508A /* Box.swift in Sources */,
 				C91F34781D30656B005F9BDF /* Services.swift in Sources */,
 				C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */,
 				89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */,
