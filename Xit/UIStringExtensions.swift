@@ -129,9 +129,9 @@ extension NSWindow
 
 extension Button where Label == Text
 {
-  init(_ string: UIString, action: @escaping () -> Void)
+  init(_ string: UIString, role: ButtonRole? = nil, action: @escaping () -> Void)
   {
-    self.init(string.rawValue, action: action)
+    self.init(string.rawValue, role: role, action: action)
   }
 }
 
@@ -152,5 +152,20 @@ extension TextField where Label == Text
   {
     self.init(title.rawValue, text: text,
               onEditingChanged: onEditingChanged, onCommit: onCommit)
+  }
+}
+
+extension View
+{
+  public func confirmationDialog<A>(_ title: UIString,
+                                    isPresented: Binding<Bool>,
+                                    titleVisibility: Visibility = .automatic,
+                                    @ViewBuilder actions: () -> A)
+    -> some View where A : View
+  {
+    confirmationDialog(title.rawValue,
+                       isPresented: isPresented,
+                       titleVisibility: titleVisibility,
+                       actions: actions)
   }
 }

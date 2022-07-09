@@ -11,11 +11,11 @@ prefix func ›(string: StringLiteralType) -> UIString
 }
 
 /// Contains a string that is specifically for display in the user interface.
-struct UIString: RawRepresentable, Sendable
+public struct UIString: RawRepresentable, Sendable
 {
-  let rawValue: String
+  public let rawValue: String
   
-  init(rawValue: String)
+  public init(rawValue: String)
   {
     self.rawValue = rawValue
   }
@@ -155,6 +155,7 @@ struct UIString: RawRepresentable, Sendable
       clear the tracking branch setting, or delete your local branch "%@"?
       """
 
+  // Reset dialog
   static let resetSoftDescription = ›"""
       Sets the current branch to point to the selected commit, but staged \
       changes are retained and workspace files are not changed.
@@ -345,7 +346,7 @@ struct UIString: RawRepresentable, Sendable
 
 extension UIString: Comparable
 {
-  static func < (lhs: UIString, rhs: UIString) -> Bool
+  public static func < (lhs: UIString, rhs: UIString) -> Bool
   {
     return lhs.rawValue < rhs.rawValue
   }

@@ -104,6 +104,7 @@ final class AccountsManager: ObservableObject
   {
     if let index = accounts.firstIndex(where: { $0 == account }) {
       accounts.remove(at: index)
+      // shut down the corresponding service object
     }
   }
   

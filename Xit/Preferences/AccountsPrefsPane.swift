@@ -34,6 +34,7 @@ struct AccountsPrefsPane: View
   @State var editAccountInfo: AccountInfo?
 
   @State var showAlert: Bool = false
+  @State var showDeleteConfirmation: Bool = false
   @State var passwordError: PasswordError?
 
   func squareImage(systemName: String, size: CGFloat) -> some View
@@ -68,6 +69,11 @@ struct AccountsPrefsPane: View
                                       size: bottomBarHeight) })
             .help("Delete account")
             .disabled(selectedAccount == nil)
+            .confirmationDialog(.confirmDeleteAccount,
+                                isPresented: $showDeleteConfirmation) {
+              Button(.delete, role: .destructive, action: deleteAccount)
+              Button(.cancel, role: .cancel, action: {})
+            }
           Divider()
         }.buttonStyle(.plain)
         Spacer()
@@ -233,7 +239,13 @@ struct AccountsPrefsPane: View
 
   func deleteAccount()
   {
+    guard let accountID = selectedAccount,
+          let account = accountsManager.accounts.first(where: {
+            $0.id == accountID
+          })
+    else { return }
 
+    accountsManager.delete(account: account)
   }
 
   func editAccount()
@@ -266,14 +278,15 @@ struct AccountsPrefsPane_Previews: PreviewProvider
       .init(type: .bitbucketServer, user: "Hank",
             location: .init(string:"https://bitbucket.com")!, id: .init()),
     ]
-    let manager = AccountsManager(defaults: .testing,
+    let defaults = UserDefaults.testing
+    let manager = AccountsManager(defaults: defaults,
                                   passwordStorage: MemoryPasswordStorage())
 
-    UserDefaults.testing.accounts = accounts
+    defaults.accounts = accounts
     manager.readAccounts()
     return manager
   }()
-  static let services = Services(passwordStorage: NoOpKeychain())
+  static let services = Services(passwordStorage: MemoryPasswordStorage())
 
   static var previews: some View
   {
