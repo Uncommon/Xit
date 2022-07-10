@@ -135,3 +135,30 @@ extension BasicAuthService: AccountService
     attemptAuthentication()
   }
 }
+
+class MockAuthService: BasicAuthService
+{
+  init(account: Account)
+  {
+    super.init(account: account, password: "", authenticationPath: "")!
+  }
+
+  required init?(account: Account, password: String)
+  { fatalError("init(account:password:) has not been implemented") }
+
+  override func attemptAuthentication(_ path: String? = nil)
+  {
+    authenticationStatus = .inProgress
+    Task {
+      _ = try? await Task.sleep(nanoseconds:1000000000)
+      authenticationStatus = .done
+    }
+  }
+
+  static func maker(_ account: Account) -> MockAuthService
+  {
+    let service = MockAuthService(account: account)
+    service.attemptAuthentication()
+    return service
+  }
+}

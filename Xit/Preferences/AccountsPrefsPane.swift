@@ -260,7 +260,10 @@ struct AccountsPrefsPane: View
 
   func refreshAccount()
   {
-    // tell the account service to log in again
+    guard let account = selectedAccount
+    else { return }
+
+    services.service(for: account)?.attemptAuthentication()
   }
 }
 
@@ -285,7 +288,11 @@ struct AccountsPrefsPane_Previews: PreviewProvider
     manager.readAccounts()
     return manager
   }()
-  static let services = Services(passwordStorage: MemoryPasswordStorage())
+  static let services: Services = {
+    let result = Services(passwordStorage: MemoryPasswordStorage())
+    result.serviceMakers[.teamCity] = MockAuthService.maker
+    return result
+  }()
 
   static var previews: some View
   {
