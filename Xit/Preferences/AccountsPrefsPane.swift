@@ -23,13 +23,14 @@ struct ServiceLabel: View
   }
 }
 
+fileprivate let bottomBarHeight: CGFloat = 21
+
 struct AccountsPrefsPane: View
 {
-  let bottomBarHeight: CGFloat = 21
   let services: Services
   @ObservedObject var accountsManager: AccountsManager
 
-  @State var selectedAccount: UUID?
+  @State var selectedAccountID: UUID?
   @State var newAccountInfo: AccountInfo?
   @State var editAccountInfo: AccountInfo?
 
@@ -37,7 +38,16 @@ struct AccountsPrefsPane: View
   @State var showDeleteConfirmation: Bool = false
   @State var passwordError: PasswordError?
 
-  func squareImage(systemName: String, size: CGFloat) -> some View
+  var selectedAccount: Account?
+  {
+    selectedAccountID.flatMap {
+      (id) in
+      accountsManager.accounts.first { $0.id == id }
+    }
+  }
+
+  func squareImage(_ systemName: String,
+                   size: CGFloat = bottomBarHeight) -> some View
   {
     Image(systemName: systemName)
       .frame(width: size, height: size)
@@ -47,7 +57,7 @@ struct AccountsPrefsPane: View
   var body: some View
   {
     VStack(spacing: -1) {
-      Table(accountsManager.accounts, selection: $selectedAccount) {
+      Table(accountsManager.accounts, selection: $selectedAccountID) {
         TableColumn("Service", content: { ServiceLabel($0.type) })
             .width(min: 40, ideal: 80)
         TableColumn("User name", value: \.user)
@@ -57,18 +67,15 @@ struct AccountsPrefsPane: View
       }.tableStyle(.bordered)
       HStack {
         HStack(spacing: 0) {
-          Button(action: addNewAccount,
-                 label: { squareImage(systemName: "plus",
-                                      size: bottomBarHeight) })
+          Button(action: addNewAccount, label: { squareImage("plus") })
             .help("Add new account")
             .frame(minWidth: bottomBarHeight, maxHeight: .infinity)
             .sheet(item: $newAccountInfo, content: newAccountSheet(_:))
           Divider()
           Button(action: { showDeleteConfirmation = true },
-                 label: { squareImage(systemName: "minus",
-                                      size: bottomBarHeight) })
+                 label: { squareImage("minus") })
             .help("Delete account")
-            .disabled(selectedAccount == nil)
+            .disabled(selectedAccountID == nil)
             .confirmationDialog(.confirmDeleteAccount,
                                 isPresented: $showDeleteConfirmation) {
               Button(.delete, role: .destructive, action: deleteAccount)
@@ -78,18 +85,15 @@ struct AccountsPrefsPane: View
         }.buttonStyle(.plain)
         Spacer()
         HStack {
-          Button(action: editAccount,
-                 label: { squareImage(systemName: "pencil",
-                                      size: bottomBarHeight) })
+          Button(action: editAccount, label: { squareImage("pencil") })
             .sheet(item: $editAccountInfo, content: editAccountSheet(_:))
             .help("Edit account")
           Button(action: refreshAccount,
-                 label: { squareImage(systemName: "arrow.clockwise.circle.fill",
-                                      size: bottomBarHeight) })
+                 label: { squareImage("arrow.clockwise.circle.fill") })
             .padding([.trailing], 4)
             .help("Refresh account status")
         }.buttonStyle(.plain)
-          .disabled(selectedAccount == nil)
+          .disabled(selectedAccountID == nil)
       }.background(.tertiary)
         .frame(height: bottomBarHeight)
         .border(.tertiary)
@@ -125,12 +129,12 @@ struct AccountsPrefsPane: View
     }
   }
 
-  func statusImage(forService api: BasicAuthService?) -> NSImage.Name
+  func statusImage(for service: BasicAuthService?) -> NSImage.Name
   {
-    guard let api = api
+    guard let service = service
     else { return NSImage.statusUnavailableName }
 
-    switch api.authenticationStatus {
+    switch service.authenticationStatus {
       case .unknown, .notStarted:
         return NSImage.statusNoneName
       case .inProgress:
@@ -146,7 +150,7 @@ struct AccountsPrefsPane: View
   func serviceStatus(_ account: Account) -> some View
   {
     let service = services.service(for: account)
-    let imageName = statusImage(forService: service)
+    let imageName = statusImage(for: service)
 
     return HStack {
       Spacer()
@@ -239,10 +243,7 @@ struct AccountsPrefsPane: View
 
   func deleteAccount()
   {
-    guard let accountID = selectedAccount,
-          let account = accountsManager.accounts.first(where: {
-            $0.id == accountID
-          })
+    guard let account = selectedAccount
     else { return }
 
     accountsManager.delete(account: account)
@@ -250,9 +251,7 @@ struct AccountsPrefsPane: View
 
   func editAccount()
   {
-    guard let selectedAccount = selectedAccount,
-          let account = accountsManager.accounts
-                                       .first(where: { $0.id == selectedAccount })
+    guard let account = selectedAccount
     else { return }
     let password = accountsManager.passwordStorage.find(account: account) ?? ""
 
