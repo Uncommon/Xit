@@ -7,11 +7,15 @@ extension Notification.Name
 }
 
 /// Abstract service class that handles HTTP basic authentication.
-class BasicAuthService: IdentifiableService
+class BasicAuthService: IdentifiableService, ObservableObject
 {
   var account: Account
   var authenticationStatus: Services.Status
   {
+    willSet
+    {
+      objectWillChange.send()
+    }
     didSet
     {
       NotificationCenter.default.post(name: .authenticationStatusChanged,

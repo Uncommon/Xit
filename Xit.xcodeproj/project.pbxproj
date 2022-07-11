@@ -34,6 +34,7 @@
 /* Begin PBXBuildFile section */
 		31A893A013E9DA5B008BE0C2 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
 		89009E332878CE52004A684B /* SiestaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89009E322878CE52004A684B /* SiestaExtensions.swift */; };
+		89009E50287C8A88004A684B /* AccountStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89009E4F287C8A88004A684B /* AccountStatusCell.swift */; };
 		89039F561703A9FC000949A8 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 89039F551703A9FC000949A8 /* html */; };
 		890F7BE32853A90F005C24A7 /* FetchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 890F7BE22853A90F005C24A7 /* FetchPanel.swift */; };
 		891052D82523F3D30095E299 /* TestErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891052D72523F3D30095E299 /* TestErrors.swift */; };
@@ -395,6 +396,7 @@
 		3DB98C8323E0928A0039B454 /* DEVELOPMENT_TEAM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = DEVELOPMENT_TEAM.xcconfig; sourceTree = "<group>"; };
 		3DB98C8423E0928A0039B454 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		89009E322878CE52004A684B /* SiestaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiestaExtensions.swift; sourceTree = "<group>"; };
+		89009E4F287C8A88004A684B /* AccountStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStatusCell.swift; sourceTree = "<group>"; };
 		89039F551703A9FC000949A8 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		890F7BE22853A90F005C24A7 /* FetchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPanel.swift; sourceTree = "<group>"; };
 		891052D72523F3D30095E299 /* TestErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestErrors.swift; sourceTree = "<group>"; };
@@ -1246,6 +1248,7 @@
 				C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */,
 				89E4272D2861711700A17651 /* AccountsPrefsPane.swift */,
 				C948D5B61D2C6A4800F72A27 /* AccountsPrefsController.swift */,
+				89009E4F287C8A88004A684B /* AccountStatusCell.swift */,
 				C957B8531D2D533C0040F858 /* AddAccountController.swift */,
 				C957B87B1D2DBBC00040F858 /* AccountsManager.swift */,
 				89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */,
@@ -1667,6 +1670,7 @@
 				C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */,
+				89009E50287C8A88004A684B /* AccountStatusCell.swift in Sources */,
 				89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */,
 				C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */,
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,

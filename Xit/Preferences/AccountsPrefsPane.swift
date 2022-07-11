@@ -63,7 +63,9 @@ struct AccountsPrefsPane: View
         TableColumn("User name", value: \.user)
         TableColumn("Location", value: \.location.absoluteString)
             .width(min: 40, ideal: 150)
-        TableColumn("Status", content: serviceStatus).width(47)
+        TableColumn("Status") {
+          AccountStatusCell.for(service: services.service(for: $0))
+        }.width(47)
       }.tableStyle(.bordered)
       HStack {
         HStack(spacing: 0) {
@@ -99,63 +101,6 @@ struct AccountsPrefsPane: View
         .border(.tertiary)
     }.alert(isPresented: $showAlert, error: passwordError) {
       Button(.ok, action: { showAlert = false })
-    }
-  }
-
-  func statusImage(forTeamCity api: TeamCityAPI?) -> NSImage.Name
-  {
-    guard let api = api
-    else { return NSImage.statusUnavailableName }
-
-    switch api.authenticationStatus {
-      case .unknown, .notStarted:
-        return NSImage.statusNoneName
-      case .inProgress:
-        // eventually have a spinner instead
-        return NSImage.statusPartiallyAvailableName
-      case .done:
-        break
-      case .failed:
-        return NSImage.statusUnavailableName
-    }
-
-    switch api.buildTypesStatus {
-      case .unknown, .notStarted, .inProgress:
-        return NSImage.statusAvailableName
-      case .done:
-        return NSImage.statusAvailableName
-      case .failed:
-        return NSImage.statusPartiallyAvailableName
-    }
-  }
-
-  func statusImage(for service: BasicAuthService?) -> NSImage.Name
-  {
-    guard let service = service
-    else { return NSImage.statusUnavailableName }
-
-    switch service.authenticationStatus {
-      case .unknown, .notStarted:
-        return NSImage.statusNoneName
-      case .inProgress:
-        // eventually have a spinner instead
-        return NSImage.statusPartiallyAvailableName
-      case .done:
-        return NSImage.statusAvailableName
-      case .failed:
-        return NSImage.statusUnavailableName
-    }
-  }
-
-  func serviceStatus(_ account: Account) -> some View
-  {
-    let service = services.service(for: account)
-    let imageName = statusImage(for: service)
-
-    return HStack {
-      Spacer()
-      Image(nsImage: .init(named: imageName)!)
-      Spacer()
     }
   }
 
