@@ -249,7 +249,7 @@ struct MockTransferProgress: TransferProgress
 
 public struct RemoteCallbacks
 {
-  typealias PasswordBlock = () async -> (String, String)?
+  typealias PasswordBlock = () -> (String, String)?
   typealias DownloadProgressBlock = (any TransferProgress) -> Bool
   typealias UploadProgressBlock = (PushTransferProgress) -> Bool
   typealias SidebandMessageBlock = (String) -> Bool
