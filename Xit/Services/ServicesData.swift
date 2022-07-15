@@ -25,7 +25,7 @@ extension PullRequest
 {
   var userApproval: PullRequestApproval
   {
-    guard let service = Services.shared.pullRequestService(forID: serviceID)
+    guard let service = Services.xit.pullRequestService(forID: serviceID)
     else { return .unknown }
     return reviewerStatus(userID: service.userID)
   }

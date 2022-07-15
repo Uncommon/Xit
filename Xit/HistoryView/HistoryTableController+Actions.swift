@@ -60,8 +60,7 @@ extension HistoryTableController
     else { return }
 
     column.isHidden.toggle()
-    UserDefaults.standard.setShowColumn(columnID.rawValue,
-                                        show: !column.isHidden)
+    UserDefaults.xit.setShowColumn(columnID.rawValue, show: !column.isHidden)
   }
 }
 

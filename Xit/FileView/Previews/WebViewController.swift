@@ -9,11 +9,13 @@ class WebViewController: NSViewController
   var savedWrapping: TextWrapping?
   private var appearanceObserver: NSKeyValueObservation?
   private var cancellables: [AnyCancellable] = []
-  
+
+  var defaults: UserDefaults = .xit
+
   enum Default
   {
     static var tabWidth: UInt
-    { UInt(UserDefaults.standard.tabWidth) }
+    { UInt(UserDefaults.xit.tabWidth) }
   }
   
   static let baseURL = Bundle.main.url(forResource: "html", withExtension: nil)!
@@ -39,9 +41,9 @@ class WebViewController: NSViewController
     
     webView.setValue(false, forKey: "drawsBackground")
     cancellables.append(contentsOf: [
-      UserDefaults.standard.publisher(for: \.fontName).sink
+      defaults.publisher(for: \.fontName).sink
       { [weak self] (_) in self?.updateFont() },
-      UserDefaults.standard.publisher(for: \.fontSize).sink
+      defaults.publisher(for: \.fontSize).sink
       { [weak self] (_) in self?.updateFont() },
     ])
   }
@@ -64,8 +66,6 @@ class WebViewController: NSViewController
   
   func updateFont()
   {
-    let defaults = UserDefaults.standard
-
     setDocumentProperty("font-family", value: defaults.fontName)
     setDocumentProperty("font-size", value: "\(defaults.fontSize)")
   }
@@ -223,7 +223,7 @@ extension WebViewController: WKNavigationDelegate
     }
     
     tabWidth = savedTabWidth
-    wrapping = savedWrapping ?? UserDefaults.standard.wrapping
+    wrapping = savedWrapping ?? defaults.wrapping
     updateFont()
     updateColors()
   }

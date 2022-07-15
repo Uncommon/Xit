@@ -2,6 +2,8 @@ import Foundation
 
 final class MemoryPasswordStorage: PasswordStorage
 {
+  static let shared: MemoryPasswordStorage = .init()
+
   struct Key: Hashable // until tuples are hashable
   {
     let url: URL

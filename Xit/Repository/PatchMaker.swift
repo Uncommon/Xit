@@ -28,7 +28,7 @@ public final class PatchMaker
   
   static let defaultContextLines: UInt = 3
   var contextLines: UInt = PatchMaker.defaultContextLines
-  var whitespace = UserDefaults.standard.whitespace
+  var whitespace = UserDefaults.xit.whitespace
   var usePatience = false
   var minimal = false
   

@@ -218,7 +218,7 @@ extension SidebarPRManager: PullRequestActionDelegate
   func approvePR(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .approved) {
-      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      guard let service = Services.xit.pullRequestService(forID: $0.serviceID)
       else { return }
       try await service.approve(request: $0)
     }
@@ -227,7 +227,7 @@ extension SidebarPRManager: PullRequestActionDelegate
   func unapprovePR(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .unreviewed) {
-      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      guard let service = Services.xit.pullRequestService(forID: $0.serviceID)
       else { return }
       try await service.unapprove(request: $0)
     }
@@ -236,7 +236,7 @@ extension SidebarPRManager: PullRequestActionDelegate
   func prNeedsWork(item: SidebarItem)
   {
     tryPRTask(item: item, approval: .needsWork) {
-      guard let service = Services.shared.pullRequestService(forID: $0.serviceID)
+      guard let service = Services.xit.pullRequestService(forID: $0.serviceID)
       else { return }
       try await service.needsWork(request: $0)
     }

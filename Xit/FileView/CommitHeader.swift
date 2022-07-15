@@ -4,8 +4,8 @@ extension Font
 {
   static var code: Font
   {
-    .init(NSFont(name: UserDefaults.standard.fontName,
-                 size: CGFloat(UserDefaults.standard.fontSize))
+    .init(NSFont(name: UserDefaults.xit.fontName,
+                 size: CGFloat(UserDefaults.xit.fontSize))
           ?? .monospacedSystemFont(ofSize: 11, weight: .regular))
   }
 }

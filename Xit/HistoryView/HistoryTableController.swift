@@ -74,7 +74,7 @@ final class HistoryTableController: NSViewController,
   {
     super.viewDidLoad()
 
-    let showColumns = UserDefaults.standard.showColumns
+    let showColumns = UserDefaults.xit.showColumns
 
     for column in tableView.tableColumns {
       column.isHidden = !showColumns.contains(column.identifier.rawValue)
@@ -259,7 +259,7 @@ final class HistoryTableController: NSViewController,
   {
     let entry = history.entries[index]
     let deemphasized = (entry.commit.parentOIDs.count > 1) &&
-                       UserDefaults.standard.deemphasizeMerges
+                       UserDefaults.xit.deemphasizeMerges
 
     if let textField = cellView.textField {
       textField.textColor = deemphasized

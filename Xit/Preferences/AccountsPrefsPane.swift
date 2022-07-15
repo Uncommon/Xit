@@ -212,36 +212,23 @@ struct AccountsPrefsPane: View
   }
 }
 
+#if DEBUG
 struct AccountsPrefsPane_Previews: PreviewProvider
 {
   static let manager: AccountsManager = {
-    let accounts: [Account] = [
-      .init(type: .gitHub, user: "This guy",
-            location: .init(string:"https://github.com")!, id: .init()),
-      .init(type: .teamCity, user: "Person",
-            location: .init(string:"https://teamcity.com")!, id: .init()),
-      .init(type: .gitLab, user: "Henry",
-            location: .init(string:"https://gitlab.com")!, id: .init()),
-      .init(type: .bitbucketServer, user: "Hank",
-            location: .init(string:"https://bitbucket.com")!, id: .init()),
-    ]
     let defaults = UserDefaults.testing
     let manager = AccountsManager(defaults: defaults,
-                                  passwordStorage: MemoryPasswordStorage())
+                                  passwordStorage: MemoryPasswordStorage.shared)
 
-    defaults.accounts = accounts
+    defaults.accounts = Testing.accounts
     manager.readAccounts()
     return manager
-  }()
-  static let services: Services = {
-    let result = Services(passwordStorage: MemoryPasswordStorage())
-    result.serviceMakers[.teamCity] = MockAuthService.maker
-    return result
   }()
 
   static var previews: some View
   {
-    AccountsPrefsPane(services: services, accountsManager: manager)
+    AccountsPrefsPane(services: .testing, accountsManager: manager)
       .padding().frame(height: 300.0)
   }
 }
+#endif

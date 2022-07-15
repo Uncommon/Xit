@@ -28,7 +28,8 @@ final class Services
   typealias RepositoryService = IdentifiableService & AccountService
   
 
-  static let shared = Services(passwordStorage: KeychainStorage.shared)
+  fileprivate static
+  let shared = Services(passwordStorage: KeychainStorage.shared)
 
   let passwordStorage: any PasswordStorage
 
@@ -226,6 +227,28 @@ final class Services
     
     return prServices.first { $0.match(remote: remote) }
   }
+}
+
+extension Services
+{
+  public static var xit: Services
+  {
+#if DEBUG
+    return Testing.defaults == .standard ? .shared : .testing
+#else
+    return shared
+#endif
+  }
+
+#if DEBUG
+  static let testing: Services = {
+    let result = Services(passwordStorage: MemoryPasswordStorage.shared)
+    for type in AccountType.allCases {
+      result.serviceMakers[type] = MockAuthService.maker
+    }
+    return result
+  }()
+#endif
 }
 
 

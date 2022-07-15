@@ -51,6 +51,20 @@ enum WhitespaceSetting: String, CaseIterable
 
 extension UserDefaults
 {
+  static var xit: UserDefaults
+  {
+    #if DEBUG
+    switch Testing.defaults {
+      case .standard:
+        return .standard
+      default:
+        return .testing
+    }
+    #else
+    return .standard
+    #endif
+  }
+
   static var testing: UserDefaults = {
     let result = UserDefaults(suiteName: "xit-testing")!
     result.removePersistentDomain(forName: "xit-testing")

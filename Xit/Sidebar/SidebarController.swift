@@ -30,7 +30,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       pullRequestManager = SidebarPRManager(model: model)
       buildStatusController = BuildStatusController(model: model,
                                                     display: sidebarDelegate)
-      if Services.shared.allServices
+      if Services.xit.allServices
                  .contains(where: { $0 is PullRequestService }) {
         pullRequestManager.scheduleCacheRefresh()
       }

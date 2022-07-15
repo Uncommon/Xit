@@ -61,7 +61,7 @@ extension Account: Equatable
 
 final class AccountsManager: ObservableObject
 {
-  static let manager = AccountsManager()
+  fileprivate static let manager = AccountsManager()
   
   let defaults: UserDefaults
   let passwordStorage: any PasswordStorage
@@ -72,7 +72,7 @@ final class AccountsManager: ObservableObject
   init(defaults: UserDefaults? = nil,
        passwordStorage: (any PasswordStorage)? = nil)
   {
-    self.defaults = defaults ?? .standard
+    self.defaults = defaults ?? .xit
     self.passwordStorage = passwordStorage ?? KeychainStorage.shared
 
     readAccounts()
@@ -148,4 +148,21 @@ final class AccountsManager: ObservableObject
   {
     defaults.accounts = accounts
   }
+}
+
+extension AccountsManager
+{
+  public static var xit: AccountsManager
+  {
+#if DEBUG
+    return Testing.defaults == .standard ? .manager : .testing
+#else
+    return manager
+#endif
+  }
+
+#if DEBUG
+  static var testing: AccountsManager =
+      .init(defaults: .testing, passwordStorage: MemoryPasswordStorage.shared)
+#endif
 }

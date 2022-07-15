@@ -33,19 +33,19 @@ final class PrefsWindowController: NSWindowController
       switch self {
         case .general:
           return NSHostingController(
-            rootView: GeneralPrefsPane(defaults: .standard,
+            rootView: GeneralPrefsPane(defaults: .xit,
                                        config: GitConfig.default!)
               .padding().fixedSize())
             .sizedToFit(in: size)
         case .accounts:
           return NSHostingController(
-            rootView: AccountsPrefsPane(services: .shared,
-                                        accountsManager: .manager)
+            rootView: AccountsPrefsPane(services: .xit,
+                                        accountsManager: .xit)
               .padding().frame(minHeight: 300.0))
             .sizedToFit(in: size)
         case .previews:
           return NSHostingController(
-            rootView: PreviewsPrefsPane(defaults: .standard)
+            rootView: PreviewsPrefsPane(defaults: .xit)
               .padding().fixedSize())
             .sizedToFit(in: size)
       }

@@ -146,7 +146,7 @@ final class BuildStatusViewController: NSViewController
 
 extension BuildStatusViewController: BuildStatusAccessor
 {
-  var servicesMgr: Services { Services.shared }
+  var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { repository }
 }
 

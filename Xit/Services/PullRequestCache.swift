@@ -56,7 +56,7 @@ final class PullRequestCache
       }
 
       for remote in remotes {
-        guard let service = Services.shared.pullRequestService(for: remote)
+        guard let service = Services.xit.pullRequestService(for: remote)
         else { continue }
 
         let requests = await service.getPullRequests()
@@ -96,7 +96,7 @@ final class PullRequestCache
   func update(pullRequestID: String, approval: PullRequestApproval)
   {
     guard var request = requests.first(where: { $0.id == pullRequestID }),
-          let service = Services.shared.pullRequestService(forID: request.serviceID)
+          let service = Services.xit.pullRequestService(forID: request.serviceID)
     else { return }
     let userID = service.userID
     

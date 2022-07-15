@@ -8,11 +8,18 @@ class TestRepoEnvironment
   let tempDir: TemporaryDirectory
   let git: GitCLI
   let repoURL: URL
+  let defaults: Defaults
   private(set) var remotePath: String!
   private(set) var remoteGit: GitCLI! = nil
   private(set) var remoteURL: URL! = nil
+
+  // Like the one in the app Testing enum, but there is no `standard` case
+  enum Defaults: String
+  {
+    case tempEmpty, tempAccounts
+  }
   
-  init?(_ repo: TestRepo, testName: String)
+  init?(_ repo: TestRepo, testName: String, defaults: Defaults = .tempEmpty)
   {
     guard let tempDir = TemporaryDirectory(testName)
     else {
@@ -30,6 +37,7 @@ class TestRepoEnvironment
     self.repo = repo
     self.repoURL = tempDir.url.appendingPathComponent(repo.rawValue)
     self.git = GitCLI(repoURL: repoURL)
+    self.defaults = defaults
   }
   
   /// Extracts the test repo again, to another location, and sets it as
@@ -91,8 +99,8 @@ class TestRepoEnvironment
   func open()
   {
     XitApp.launchArguments = [repoURL.path,
-                              "-noServices", "YES",
-                              "-ApplePersistenceIgnoreState", "YES"]
+                              "-ApplePersistenceIgnoreState", "YES",
+                              "--defaults", "\(defaults)"]
     XitApp.launch()
     XitApp.activate()
 

@@ -35,7 +35,8 @@ final class CommitEntryController: NSViewController,
     }
   }
   private weak var config: Config!
-  
+  var defaults: UserDefaults = .xit
+
   @IBOutlet weak var commitField: NSTextView!
   @IBOutlet weak var commitButton: NSButton!
   @IBOutlet weak var amendChcekbox: NSButton!
@@ -107,7 +108,7 @@ final class CommitEntryController: NSViewController,
   
   func resetAmend()
   {
-    guard UserDefaults.standard.resetAmend
+    guard defaults.resetAmend
     else { return }
     
     amendChcekbox.boolValue = false
@@ -122,8 +123,8 @@ final class CommitEntryController: NSViewController,
     // The editor doesn't allow setting the font of an empty text view.
     commitField.font = placeholder.font
     
-    stripCheckbox.boolValue = UserDefaults.standard.stripComments
-    stripObserver = UserDefaults.standard.observe(\.stripComments) {
+    stripCheckbox.boolValue = defaults.stripComments
+    stripObserver = defaults.observe(\.stripComments) {
       (defaults, _) in
       self.stripCheckbox.boolValue = defaults.stripComments
     }
@@ -141,7 +142,7 @@ final class CommitEntryController: NSViewController,
   {
     do {
       let message = commitField.string.prettifiedMessage(
-            stripComments: UserDefaults.standard.stripComments)
+            stripComments: defaults.stripComments)
       
       try repo.commit(message: message,
                       amend: repoUIController?.isAmending ?? false)
@@ -169,7 +170,7 @@ final class CommitEntryController: NSViewController,
   
   @IBAction func toggleStrip(_ sender: NSButton)
   {
-    UserDefaults.standard.stripComments = sender.boolValue
+    defaults.stripComments = sender.boolValue
   }
   
   func updateAmendingCommitMessage()

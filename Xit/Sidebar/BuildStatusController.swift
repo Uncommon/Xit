@@ -78,7 +78,7 @@ final class BuildStatusController: NSObject
     super.init()
     
     buildStatusCache.add(client: self)
-    if let api: TeamCityAPI = Services.shared.allServices.firstOfType() {
+    if let api: TeamCityAPI = Services.xit.allServices.firstOfType() {
       statusSink = api.$buildTypesStatus.sink {
         [weak self] _ in
         self?.buildStatusCache.refresh()
@@ -181,6 +181,6 @@ extension BuildStatusController: NSPopoverDelegate
 
 extension BuildStatusController: BuildStatusAccessor
 {
-  var servicesMgr: Services { Services.shared }
+  var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { model.repository }
 }
