@@ -14,7 +14,9 @@ class BasicAuthService: IdentifiableService, ObservableObject
   {
     willSet
     {
-      objectWillChange.send()
+      Thread.syncOnMain {
+        objectWillChange.send()
+      }
     }
     didSet
     {

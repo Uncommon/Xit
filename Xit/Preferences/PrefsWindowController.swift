@@ -4,11 +4,52 @@ import SwiftUI
 
 final class PrefsWindowController: NSWindowController
 {
-  enum Tab: String
+  enum Tab: String, CaseIterable
   {
     case general
     case accounts
     case previews
+
+    var label: String
+    {
+      switch self {
+        case .general:  return "General"
+        case .accounts: return "Accounts"
+        case .previews: return "Previews"
+      }
+    }
+
+    var imageName: String
+    {
+      switch self {
+        case .general:  return "gear"
+        case .accounts: return "person.crop.circle"
+        case .previews: return "doc.text"
+      }
+    }
+
+    func makeController(size: CGSize) -> NSViewController
+    {
+      switch self {
+        case .general:
+          return NSHostingController(
+            rootView: GeneralPrefsPane(defaults: .standard,
+                                       config: GitConfig.default!)
+              .padding().fixedSize())
+            .sizedToFit(in: size)
+        case .accounts:
+          return NSHostingController(
+            rootView: AccountsPrefsPane(services: .shared,
+                                        accountsManager: .manager)
+              .padding().frame(minHeight: 300.0))
+            .sizedToFit(in: size)
+        case .previews:
+          return NSHostingController(
+            rootView: PreviewsPrefsPane(defaults: .standard)
+              .padding().fixedSize())
+            .sizedToFit(in: size)
+      }
+    }
   }
   
   static let shared =
@@ -21,36 +62,20 @@ final class PrefsWindowController: NSWindowController
   override func windowDidLoad()
   {
     guard let tabController = contentViewController as? NSTabViewController
-    else { return }
-    let generalItem = NSTabViewItem(identifier: Tab.general.rawValue)
-    let generalController = NSHostingController(
-      rootView: GeneralPrefsPane(defaults: .standard,
-                                 config: GitConfig.default!)
-      .padding().fixedSize())
-
-    generalController.preferredContentSize =
-        generalController.sizeThatFits(in: window!.frame.size)
-    generalItem.label = "General"
-    generalItem.image = .init(systemSymbolName: "gear")
-    generalItem.viewController = generalController
-
-    if let oldItem = tabController.tabViewItems.first(
-        where: { $0.identifier as? String == Tab.general.rawValue}) {
-      tabController.removeTabViewItem(oldItem)
+    else {
+      assertionFailure("no tab controller")
+      return
     }
-    tabController.insertTabViewItem(generalItem, at: 0)
+    let windowFrame = window!.frame
 
-    let previewsItem = NSTabViewItem(identifier: Tab.previews.rawValue)
-    let previewsController = NSHostingController(
-      rootView: PreviewsPrefsPane(defaults: .standard)
-                .padding().fixedSize())
+    for tab in Tab.allCases {
+      let tabItem = NSTabViewItem(identifier: tab.rawValue)
 
-    previewsController.preferredContentSize =
-        previewsController.sizeThatFits(in: window!.frame.size)
-    previewsItem.label = "Previews"
-    previewsItem.image = .init(systemSymbolName: "doc.text")
-    previewsItem.viewController = previewsController
-    tabController.insertTabViewItem(previewsItem, at: 2)
+      tabItem.label = tab.label
+      tabItem.image = .init(systemSymbolName: tab.imageName)
+      tabItem.viewController = tab.makeController(size: windowFrame.size)
+      tabController.addTabViewItem(tabItem)
+    }
 
     tabController.selectedTabViewItemIndex = 0
   }
@@ -67,8 +92,11 @@ final class PrefsWindowController: NSWindowController
   }
 }
 
-
-protocol PreferencesSaver
+extension NSHostingController
 {
-  func savePreferences()
+  func sizedToFit(in size: CGSize) -> Self
+  {
+    preferredContentSize = sizeThatFits(in: size)
+    return self
+  }
 }

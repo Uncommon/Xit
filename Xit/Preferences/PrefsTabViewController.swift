@@ -3,7 +3,6 @@ import Cocoa
 final class PrefsTabViewController: NSTabViewController
 {
   @IBOutlet weak var previewsTab: NSTabViewItem!
-  var observer: NSObjectProtocol?
   var didInitialLoad = false
   
   override var selectedTabViewItemIndex: Int
@@ -28,25 +27,6 @@ final class PrefsTabViewController: NSTabViewController
   
   override func viewWillAppear()
   {
-    guard let window = tabView.window,
-          observer == nil
-    else { return }
-    
-    observer = NotificationCenter.default.addObserver(
-        forName: NSWindow.didResignKeyNotification,
-        object: window, queue: .main) {
-      [weak self] _ in
-      guard let items = self?.tabViewItems
-      else { return }
-      
-      for item in items {
-        guard let controller = item.viewController as? PreferencesSaver
-        else { continue }
-        
-        controller.savePreferences()
-      }
-    }
-    
     // For some reason the window initially appears too big
     if !didInitialLoad {
       didInitialLoad = true
