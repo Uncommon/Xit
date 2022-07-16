@@ -41,7 +41,9 @@ final class PrefsWindowController: NSWindowController
           return NSHostingController(
             rootView: AccountsPrefsPane(services: .xit,
                                         accountsManager: .xit)
-              .padding().frame(minHeight: 300.0))
+              // Without maxHeight the pane wants to be really tall
+              .frame(minWidth: 560, maxHeight: 288)
+              .padding())
             .sizedToFit(in: size)
         case .previews:
           return NSHostingController(
@@ -67,17 +69,22 @@ final class PrefsWindowController: NSWindowController
       return
     }
     let windowFrame = window!.frame
+    var tabSize = CGRect.zero
 
     for tab in Tab.allCases {
       let tabItem = NSTabViewItem(identifier: tab.rawValue)
+      let controller = tab.makeController(size: windowFrame.size)
 
       tabItem.label = tab.label
       tabItem.image = .init(systemSymbolName: tab.imageName)
-      tabItem.viewController = tab.makeController(size: windowFrame.size)
+      tabItem.viewController = controller
       tabController.addTabViewItem(tabItem)
+      tabSize = tabSize.union(
+          .init(origin: .zero, size: controller.preferredContentSize))
     }
 
     tabController.selectedTabViewItemIndex = 0
+    window!.setContentSize(tabSize.size)
   }
 
   static func show(tab: Tab)

@@ -12,7 +12,7 @@
                     <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="preferences" animationBehavior="default" id="ju1-o1-XDS">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="2560" y="730" width="535" height="272"/>
+                        <rect key="contentRect" x="2560" y="730" width="600" height="272"/>
                         <rect key="screenRect" x="2560" y="0.0" width="2560" height="1417"/>
                         <value key="minSize" type="size" width="100" height="100"/>
                         <accessibility identifier="prefsWindow"/>
@@ -28,10 +28,10 @@
             </objects>
             <point key="canvasLocation" x="-65" y="487"/>
         </scene>
-        <!--Prefs Tab View Controller-->
+        <!--Tab View Controller-->
         <scene sceneID="Z2P-aU-1SD">
             <objects>
-                <tabViewController tabStyle="toolbar" id="Kdi-Fz-cba" customClass="PrefsTabViewController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController tabStyle="toolbar" id="Kdi-Fz-cba" sceneMemberID="viewController">
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
                     <tabView key="tabView" misplaced="YES" type="noTabsNoBorder" id="bPH-i7-ChK">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="172"/>
