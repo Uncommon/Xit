@@ -7,7 +7,7 @@ final class BuildStatusViewController: NSViewController
   weak var repository: (any Repository)!
   let branch: any Branch
   let buildStatusCache: BuildStatusCache
-  var api: TeamCityAPI?
+  var api: BuildStatusService?
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var headingLabel: NSTextField!
   @IBOutlet weak var refreshButton: NSButton!
@@ -32,7 +32,7 @@ final class BuildStatusViewController: NSViewController
     cache.add(client: self)
     if let remoteName = (branch as? RemoteBranch)?.remoteName ??
                         (branch as? LocalBranch)?.trackingBranch?.remoteName,
-       let (api, _) = matchTeamCity(remoteName) {
+       let (api, _) = matchBuildStatusService(remoteName) {
       self.api = api
     }
     cache.add(client: self)
@@ -144,8 +144,9 @@ final class BuildStatusViewController: NSViewController
   }
 }
 
-extension BuildStatusViewController: TeamCityAccessor
+extension BuildStatusViewController: BuildStatusAccessor
 {
+  var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { repository }
 }
 

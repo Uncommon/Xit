@@ -1,4 +1,5 @@
-import Foundation
+// URL should be Sendable
+@preconcurrency import Foundation
 
 extension TeamCityAPI
 {
@@ -64,102 +65,103 @@ extension TeamCityAPI
       self.init(element: build)
     }
   }
-  
-  public struct BuildType
+}
+
+public struct BuildType
+{
+  let id: String
+  let name: String
+  let projectName: String
+}
+
+/// A branch specification describes which branches in a VCS are used,
+/// and how their names are displayed.
+public class BranchSpec
+{
+  enum Inclusion
   {
-    let id: String
-    let name: String
-    let projectName: String
+    case include
+    case exclude
   }
 
-  /// A branch specification describes which branches in a VCS are used,
-  /// and how their names are displayed.
-  public class BranchSpec
+  /// An invididual matching rule in a branch specification.
+  struct Rule
   {
-    enum Inclusion
+    let inclusion: Inclusion
+    let regex: NSRegularExpression
+
+    init?(content: String)
     {
-      case include
-      case exclude
-    }
-    
-    /// An invididual matching rule in a branch specification.
-    struct Rule
-    {
-      let inclusion: Inclusion
-      let regex: NSRegularExpression
-      
-      init?(content: String)
-      {
-        let prefixEndIndex = content.index(content.startIndex,
-                                           offsetBy: 2)
-        let prefix = String(content[..<prefixEndIndex])
-        
-        switch prefix {
-          case "+:":
-            self.inclusion = .include
-          case "-:":
-            self.inclusion = .exclude
-          default:
-            print("Unknown prefix in rule: \(content)")
-            return nil
-        }
-        
-        var substring = String(content[prefixEndIndex...])
-        
-        // Parentheses are needed to identify a range to be extracted.
-        substring = substring.replacingOccurrences(of: "*", with: "(.+)")
-        substring.insert("^", at: substring.startIndex)
-        
-        if let regex = try? NSRegularExpression(pattern: substring) {
-          self.regex = regex
-        }
-        else {
+      let prefixEndIndex = content.index(content.startIndex,
+                                         offsetBy: 2)
+      let prefix = String(content[..<prefixEndIndex])
+
+      switch prefix {
+        case "+:":
+          self.inclusion = .include
+        case "-:":
+          self.inclusion = .exclude
+        default:
+          print("Unknown prefix in rule: \(content)")
           return nil
-        }
       }
-      
-      func match(branch: String) -> String?
-      {
-        if branch == regex.pattern.dropFirst() { // skip the "^"
-          return branch
-        }
-        let stringRange = NSRange(location: 0, length: branch.utf8.count)
-        guard let match = regex.firstMatch(in: branch, options: .anchored,
-                                           range: stringRange)
-        else { return nil }
-        
-        if match.numberOfRanges >= 2 {
-          return (branch as NSString).substring(with: match.range(at: 1))
-        }
+
+      var substring = String(content[prefixEndIndex...])
+
+      // Parentheses are needed to identify a range to be extracted.
+      substring = substring.replacingOccurrences(of: "*", with: "(.+)")
+      substring.insert("^", at: substring.startIndex)
+
+      if let regex = try? NSRegularExpression(pattern: substring) {
+        self.regex = regex
+      }
+      else {
         return nil
       }
     }
-    
-    let rules: [Rule]
-    
-    init?(ruleStrings: [String])
-    {
-      self.rules = ruleStrings.compactMap { Rule(content: $0) }
-      if self.rules.isEmpty {
-        return nil
-      }
-    }
-    
-    class func defaultSpec() -> BranchSpec
-    {
-      return BranchSpec(ruleStrings: ["+:refs/heads/*"])!
-    }
-    
-    /// If the given branch matches the rules, the display name is returned,
-    /// otherwise nil.
+
     func match(branch: String) -> String?
     {
-      for rule in rules {
-        if let result = rule.match(branch: branch) {
-          return rule.inclusion == .include ? result : nil
-        }
+      if branch == regex.pattern.dropFirst() { // skip the "^"
+        return branch
+      }
+      let stringRange = NSRange(location: 0, length: branch.utf8.count)
+      guard let match = regex.firstMatch(in: branch, options: .anchored,
+                                         range: stringRange)
+      else { return nil }
+
+      if match.numberOfRanges >= 2 {
+        return (branch as NSString).substring(with: match.range(at: 1))
       }
       return nil
     }
   }
+
+  let rules: [Rule]
+
+  init?(ruleStrings: [String])
+  {
+    self.rules = ruleStrings.compactMap { Rule(content: $0) }
+    if self.rules.isEmpty {
+      return nil
+    }
+  }
+
+  class func defaultSpec() -> BranchSpec
+  {
+    return BranchSpec(ruleStrings: ["+:refs/heads/*"])!
+  }
+
+  /// If the given branch matches the rules, the display name is returned,
+  /// otherwise nil.
+  func match(branch: String) -> String?
+  {
+    for rule in rules {
+      if let result = rule.match(branch: branch) {
+        return rule.inclusion == .include ? result : nil
+      }
+    }
+    return nil
+  }
 }
+

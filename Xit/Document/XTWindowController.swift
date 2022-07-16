@@ -37,6 +37,8 @@ final class XTWindowController: NSWindowController,
   var repository: any FullRepository
   { (repoDocument?.repository as (any FullRepository)?)! }
 
+  var defaults: UserDefaults = .xit
+
   @objc dynamic var isAmending = false
   {
     didSet { selectionChanged(oldValue: selection) }
@@ -165,7 +167,7 @@ final class XTWindowController: NSWindowController,
         selection = isAmending ? AmendingSelection(repository: repo)
                                : StagingSelection(repository: repo)
       }
-      if UserDefaults.standard.collapseHistory {
+      if defaults.collapseHistory {
         historyAutoCollapsed = true
         if !historyController.historyHidden {
           historySplitController.toggleHistory(self)
@@ -174,7 +176,7 @@ final class XTWindowController: NSWindowController,
       }
     }
     else if wasStaging &&
-            UserDefaults.standard.collapseHistory &&
+            defaults.collapseHistory &&
             historyAutoCollapsed {
       if historyController.historyHidden {
         historySplitController.toggleHistory(self)
@@ -258,7 +260,7 @@ final class XTWindowController: NSWindowController,
     guard let tab = window?.tab
     else { return }
     
-    guard UserDefaults.standard.statusInTabs,
+    guard defaults.statusInTabs,
           let stagingItem = sidebarController.model.rootItem(.workspace)
                                              .children.first,
           let selection = stagingItem.selection as? StagedUnstagedSelection
@@ -328,11 +330,11 @@ extension XTWindowController: NSWindowDelegate
       [weak self] (_, _) in
       self?.updateMiniwindowTitle()
     })
-    kvObservers.append(UserDefaults.standard.observe(\.deemphasizeMerges) {
+    kvObservers.append(defaults.observe(\.deemphasizeMerges) {
       [weak self] (_, _) in
       self?.redrawAllHistoryLists()
     })
-    kvObservers.append(UserDefaults.standard.observe(\.statusInTabs) {
+    kvObservers.append(defaults.observe(\.statusInTabs) {
       [weak self] (_, _) in
       self?.updateTabStatus()
     })

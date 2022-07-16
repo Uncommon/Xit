@@ -1,4 +1,5 @@
-import Foundation
+// UUID should be Sendable
+@preconcurrency import Foundation
 @preconcurrency import Siesta
 
 enum BitbucketServer
@@ -281,7 +282,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
     }
   }
   
-  init?(account: Account, password: String)
+  required init?(account: Account, password: String)
   {
     guard var fullBaseURL = URLComponents(url: account.location,
                                           resolvingAgainstBaseURL: false)
@@ -291,6 +292,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
     
     guard let location = fullBaseURL.url
     else { return nil }
+    var account = account
     
     account.location = location
     

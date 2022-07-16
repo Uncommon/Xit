@@ -78,7 +78,7 @@ final class BuildStatusController: NSObject
     super.init()
     
     buildStatusCache.add(client: self)
-    if let api: TeamCityAPI = Services.shared.allServices.firstOfType() {
+    if let api: TeamCityAPI = Services.xit.allServices.firstOfType() {
       statusSink = api.$buildTypesStatus.sink {
         [weak self] _ in
         self?.buildStatusCache.refresh()
@@ -126,7 +126,7 @@ final class BuildStatusController: NSObject
     else { return nil }
 
     guard let remoteName = model.remoteName(forBranchItem: item),
-          let (api, buildTypes) = matchTeamCity(remoteName)
+          let (api, buildTypes) = matchBuildStatusService(remoteName)
     else { return nil }
     
     var overallState = DisplayState.unknown
@@ -179,7 +179,8 @@ extension BuildStatusController: NSPopoverDelegate
   }
 }
 
-extension BuildStatusController: TeamCityAccessor
+extension BuildStatusController: BuildStatusAccessor
 {
+  var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { model.repository }
 }

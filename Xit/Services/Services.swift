@@ -1,107 +1,9 @@
 import Cocoa
 import Siesta
 
-enum ServiceError: Swift.Error
+protocol AccountService: AnyObject
 {
-  case unexpected
-  case canceled
-}
-
-extension Siesta.Resource
-{
-  /// Either executes the closure with the resource's data, or schedules it
-  /// to run later when the data is available.
-  func useData(owner: AnyObject, closure: @escaping (Siesta.Entity<Any>) -> Void)
-  {
-    if isUpToDate, let data = latestData {
-      closure(data)
-    }
-    else {
-      addObserver(owner: owner) {
-        (resource, event) in
-        if case .newData = event,
-           let data = resource.latestData {
-          closure(data)
-        }
-      }
-      loadIfNeeded()
-    }
-  }
-
-  /// Returns the latest data, or waits for data to arrive.
-  var data: Entity<Any>
-  {
-    @MainActor
-    get async throws
-    {
-      if isUpToDate, let data = latestData {
-        return data
-      }
-      else {
-        return try await withCheckedThrowingContinuation { continuation in
-          // Convenience functions to help make sure we always remove
-          // to avoid multiple resume calls
-          func resume(returning result: Entity<Any>)
-          {
-            self.removeObservers(ownedBy: self)
-            continuation.resume(returning: result)
-          }
-          func resume<T>(throwing error: T) where T: Error
-          {
-            self.removeObservers(ownedBy: self)
-            continuation.resume(throwing: error)
-          }
-          addObserver(owner: self) {
-            (resource, event) in
-            switch event {
-              case .newData:
-                if let data = resource.latestData {
-                  resume(returning: data)
-                  return
-                }
-              case .error:
-                if let error = resource.latestError {
-                  resume(throwing: error)
-                  return
-                }
-              case .notModified, .observerAdded, .requested:
-                return
-              case .requestCancelled:
-                resume(throwing: ServiceError.canceled)
-                return
-            }
-            resume(throwing: ServiceError.unexpected)
-          }
-          DispatchQueue.main.async {
-            self.loadIfNeeded()
-          }
-        }
-      }
-    }
-  }
-}
-
-extension Siesta.Request
-{
-  func complete() async throws
-  {
-    try await withCheckedThrowingContinuation {
-      (continuation: CheckedContinuation<Void, Error>) in
-      onCompletion {
-        (info) in
-        switch info.response {
-          case .success:
-            continuation.resume()
-          case .failure(let error):
-            continuation.resume(throwing: error)
-        }
-      }
-    }
-  }
-}
-
-protocol AccountService
-{
+  init?(account: Account, password: String)
   func accountUpdated(oldAccount: Account, newAccount: Account)
 }
 
@@ -125,47 +27,55 @@ final class Services
   
   typealias RepositoryService = IdentifiableService & AccountService
   
-  static let shared = Services()
-  
+
+  fileprivate static
+  let shared = Services(passwordStorage: KeychainStorage.shared)
+
+  let passwordStorage: any PasswordStorage
+
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
-  
+
+  private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
-    let tcServices: [any RepositoryService] = Array(teamCityServices.values)
-    let bbServices: [any RepositoryService] = Array(bitbucketServices.values)
-    let result: [any RepositoryService] = tcServices + bbServices
-    // for testing
-    //  + [FakePRService()]
-    
-    return result
+    services.values.flatMap { $0.values }
   }
+
+  var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
   
-  init()
+  init(passwordStorage: any PasswordStorage)
   {
-    if false /*#available(macOS 13, *)*/ {
-//      Task {
-//        let center = NotificationCenter.default
-//
-//        for note in await center.notifications(named: .authenticationStatusChanged) {
-//          guard let service = note.object as? BasicAuthService
-//          else { return }
-//
-//          if case .failed(let error) = service.authenticationStatus {
-//            let serviceName = service.account.type.displayName.rawValue
-//            let user = service.account.user
-//
-//            if await Self.shouldReauthenticate(
-//                service: serviceName,
-//                user: user,
-//                error: error?.localizedDescription) {
-//              service.attemptAuthentication()
-//            }
-//          }
-//        }
-//      }
-    }
-    else {
+    self.passwordStorage = passwordStorage
+
+    let teamCityMaker: (Account) -> TeamCityAPI? = createService(for:)
+    let bbsMaker: (Account) -> BitbucketServerAPI? = createService(for:)
+
+    serviceMakers[.teamCity] = teamCityMaker
+    serviceMakers[.bitbucketServer] = bbsMaker
+
+    #if false // #available(macOS 13, *) {
+      Task {
+        let center = NotificationCenter.default
+
+        for note in await center.notifications(named: .authenticationStatusChanged) {
+          guard let service = note.object as? BasicAuthService
+          else { return }
+
+          if case .failed(let error) = service.authenticationStatus {
+            let serviceName = service.account.type.displayName.rawValue
+            let user = service.account.user
+
+            if await Self.shouldReauthenticate(
+                service: serviceName,
+                user: user,
+                error: error?.localizedDescription) {
+              service.attemptAuthentication()
+            }
+          }
+        }
+      }
+#else
       NotificationCenter.default.addObserver(
           forName: .authenticationStatusChanged,
           object: nil,
@@ -186,7 +96,7 @@ final class Services
           }
         }
       }
-    }
+#endif
   }
 
   func pullRequestService(forID id: UUID) -> (any PullRequestService)?
@@ -194,9 +104,10 @@ final class Services
     allServices.first { $0.id == id } as? PullRequestService
   }
 
-  @MainActor static func shouldReauthenticate(service: String,
-                                              user: String,
-                                              error: String?) -> Bool
+  @MainActor
+  static func shouldReauthenticate(service: String,
+                                   user: String,
+                                   error: String?) -> Bool
   {
     guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
     else { return false }
@@ -222,16 +133,13 @@ final class Services
   
   /// Creates an API object for each account so they can start with
   /// authorization and other state info.
-  func initializeServices()
+  func initializeServices(with manager: AccountsManager)
   {
-    guard !UserDefaults.standard.bool(forKey: "noServices")
-    else { return }
-    
-    for account in AccountsManager.manager.accounts(ofType: .teamCity) {
-      _ = teamCityAPI(account)
+    for account in manager.accounts(ofType: .teamCity) {
+      _ = service(for: account)
     }
-    for account in AccountsManager.manager.accounts(ofType: .bitbucketServer) {
-      _ = bitbucketServerAPI(account)
+    for account in manager.accounts(ofType: .bitbucketServer) {
+      _ = service(for: account)
     }
   }
   
@@ -253,62 +161,94 @@ final class Services
     }
   }
 
+  func service(for account: Account) -> BasicAuthService?
+  {
+    let key = Services.accountKey(account)
+    if let typeServices = services[account.type],
+       let api = typeServices[key] {
+      return api
+    }
+    else if let api = serviceMakers[account.type]?(account) {
+      if services[account.type] != nil {
+        services[account.type]![key] = api
+      }
+      else {
+        services[account.type] = [key: api]
+      }
+      return api
+    }
+    return nil
+  }
+
+  func buildStatusService(for remoteURL: String)
+    -> (BuildStatusService, [String])?
+  {
+    for service in allServices.compactMap({ $0 as? BuildStatusService }) {
+      let buildTypes = service.buildTypesForRemote(remoteURL)
+
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
-  func teamCityAPI(_ account: Account) -> TeamCityAPI?
+  func teamCityAPI(for account: Account) -> TeamCityAPI?
   {
-    let key = Services.accountKey(account)
-  
-    if let api = teamCityServices[key] {
-      return api
-    }
-    else {
-      guard let password = XTKeychain.shared.find(url: account.location,
-                                                  account: account.user)
-      else {
-        NSLog("No password found for \(key)")
-        return nil
-      }
-      
-      guard let api = TeamCityAPI(account: account, password: password)
-      else { return nil }
-      
-      api.attemptAuthentication()
-      teamCityServices[key] = api
-      return api
-    }
+    service(for: account) as? TeamCityAPI
   }
   
-  func bitbucketServerAPI(_ account: Account) -> BitbucketServerAPI?
+  func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?
   {
-    let key = Services.accountKey(account)
-    
-    if let api = bitbucketServices[key] {
-      return api
-    }
+    service(for: account) as? BitbucketServerAPI
+  }
+
+  func createService<T>(for account: Account) -> T? where T: BasicAuthService
+  {
+    guard let password = passwordStorage.find(url: account.location,
+                                              account: account.user)
     else {
-      guard let password = XTKeychain.shared.find(url: account.location,
-                                                  account: account.user)
-      else {
-        NSLog("No password found for \(key)")
-        return nil
-      }
-      
-      guard let api = BitbucketServerAPI(account: account, password: password)
-      else { return nil }
-      
-      api.attemptAuthentication()
-      bitbucketServices[key] = api
-      return api
+      NSLog("No password found for \(account.user)")
+      return nil
     }
+
+    guard let api = T(account: account, password: password)
+    else { return nil }
+
+    api.attemptAuthentication()
+    return api
   }
   
-  func pullRequestService(remote: any Remote) -> PullRequestService?
+  func pullRequestService(for remote: any Remote) -> (any PullRequestService)?
   {
     let prServices = allServices.compactMap { $0 as? PullRequestService }
     
     return prServices.first { $0.match(remote: remote) }
   }
+}
+
+extension Services
+{
+  public static var xit: Services
+  {
+#if DEBUG
+    return Testing.defaults == .standard ? .shared : .testing
+#else
+    return shared
+#endif
+  }
+
+#if DEBUG
+  static let testing: Services = {
+    let result = Services(passwordStorage: MemoryPasswordStorage.shared)
+    for type in AccountType.allCases {
+      result.serviceMakers[type] = MockAuthService.maker
+    }
+    return result
+  }()
+#endif
 }
 
 

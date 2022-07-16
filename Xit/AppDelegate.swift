@@ -13,6 +13,9 @@ final class AppDelegate: NSObject
   override init()
   {
     super.init()
+    #if DEBUG
+    Testing.initialize()
+    #endif
   }
   
   @IBAction
@@ -131,8 +134,8 @@ extension AppDelegate: NSApplicationDelegate
   
   func applicationDidFinishLaunching(_ note: Notification)
   {
-    if !isTesting {
-      Services.shared.initializeServices()
+    if !isTesting && !UserDefaults.standard.bool(forKey: "noServices") {
+      Services.xit.initializeServices(with: AccountsManager.xit)
     }
   }
   

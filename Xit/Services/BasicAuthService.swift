@@ -7,11 +7,17 @@ extension Notification.Name
 }
 
 /// Abstract service class that handles HTTP basic authentication.
-class BasicAuthService: IdentifiableService
+class BasicAuthService: IdentifiableService, ObservableObject
 {
   var account: Account
   var authenticationStatus: Services.Status
   {
+    willSet
+    {
+      Thread.syncOnMain {
+        objectWillChange.send()
+      }
+    }
     didSet
     {
       NotificationCenter.default.post(name: .authenticationStatusChanged,
@@ -42,6 +48,13 @@ class BasicAuthService: IdentifiableService
         }
       }
     }
+  }
+
+  required init?(account: Account, password: String)
+  {
+    assertionFailure(
+      "subclasses should call init(account:password:authenticationPath:)")
+    return nil
   }
   
   /// Re-generates the authentication header with the new credentials.
@@ -118,7 +131,7 @@ extension BasicAuthService: AccountService
   {
     guard oldAccount == account
     else { return }
-    guard let password = XTKeychain.shared.find(account: newAccount)
+    guard let password = KeychainStorage.shared.find(account: newAccount)
     else {
       authenticationStatus = .unknown
       return
@@ -126,5 +139,32 @@ extension BasicAuthService: AccountService
     
     _ = updateAuthentication(newAccount.user, password: password)
     attemptAuthentication()
+  }
+}
+
+class MockAuthService: BasicAuthService
+{
+  init(account: Account)
+  {
+    super.init(account: account, password: "", authenticationPath: "")!
+  }
+
+  required init?(account: Account, password: String)
+  { fatalError("init(account:password:) has not been implemented") }
+
+  override func attemptAuthentication(_ path: String? = nil)
+  {
+    authenticationStatus = .inProgress
+    Task {
+      _ = try? await Task.sleep(nanoseconds:1000000000)
+      authenticationStatus = .done
+    }
+  }
+
+  static func maker(_ account: Account) -> MockAuthService
+  {
+    let service = MockAuthService(account: account)
+    service.attemptAuthentication()
+    return service
   }
 }

@@ -2,8 +2,22 @@ import Foundation
 @preconcurrency import Siesta
 import Combine
 
+protocol BuildStatusService: AnyObject
+{
+  func displayName(forBranch branch: String, buildType: String) -> String?
+  @MainActor
+  func buildStatus(_ branch: String, buildType: String) -> Resource
+
+  // TeamCity-specific stuff that should be abstrated somehow
+  var vcsBranchSpecs: [String: BranchSpec] { get }
+
+  func vcsRootsForBuildType(_ buildType: String) -> [String]
+  func buildType(id: String) -> BuildType?
+  func buildTypesForRemote(_ remoteURLString: String) -> [String]
+}
+
 /// API for getting TeamCity build information.
-final class TeamCityAPI: BasicAuthService, ServiceAPI
+final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
 {
   enum ParseStep
   {
@@ -38,7 +52,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   /// Cached results for `vcsRootsForBuildType`
   private var vcsRootsCache: [String: [String]] = [:]
   
-  init?(account: Account, password: String)
+  required init?(account: Account, password: String)
   {
     guard var fullBaseURL = URLComponents(url: account.location,
                                           resolvingAgainstBaseURL: false)
@@ -48,6 +62,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
     
     guard let location = fullBaseURL.url
     else { return nil }
+    var account = account
     
     account.location = location
     
@@ -57,24 +72,6 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
       $0.pipeline[.parsing].add(XMLResponseTransformer(),
                                 contentTypes: [ "*/xml" ])
     }
-  }
-  
-  static func service(for remoteURL: String) -> (TeamCityAPI, [String])?
-  {
-    guard !UserDefaults.standard.bool(forKey: "noServices")
-    else { return nil }
-    
-    let accounts = AccountsManager.manager.accounts(ofType: .teamCity)
-    let services = accounts.compactMap { Services.shared.teamCityAPI($0) }
-    
-    for service in services {
-      let buildTypes = service.buildTypesForRemote(remoteURL)
-      
-      if !buildTypes.isEmpty {
-        return (service, buildTypes)
-      }
-    }
-    return nil
   }
   
   /// Status of the most recent build of the given branch from any project
@@ -360,23 +357,25 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI
   }
 }
 
-protocol TeamCityAccessor: AnyObject
+protocol BuildStatusAccessor: AnyObject
 {
+  var servicesMgr: Services { get }
   var remoteMgr: (any RemoteManagement)! { get }
 }
 
-extension TeamCityAccessor
+extension BuildStatusAccessor
 {
   /// Returns the first TeamCity service that builds from the given repository,
   /// and a list of its build types.
-  func matchTeamCity(_ remoteName: String) -> (TeamCityAPI, [String])?
+  func matchBuildStatusService(_ remoteName: String)
+    -> (BuildStatusService, [String])?
   {
     guard let remoteMgr = self.remoteMgr,
           let remote = remoteMgr.remote(named: remoteName),
           let remoteURL = remote.urlString
     else { return nil }
     
-    return TeamCityAPI.service(for: remoteURL)
+    return servicesMgr.buildStatusService(for: remoteURL)
   }
 }
 

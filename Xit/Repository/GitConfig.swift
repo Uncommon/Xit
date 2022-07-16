@@ -133,7 +133,7 @@ extension Config
     if self["remote.\(remote).tagOpt"] == "--no-tags" {
       return false
     }
-    return UserDefaults.standard.bool(forKey: PreferenceKeys.fetchTags)
+    return UserDefaults.xit.bool(forKey: PreferenceKeys.fetchTags)
   }
   
   func commitTemplate() -> String?

@@ -1,4 +1,5 @@
-import Foundation
+// URL and UUID should be Sendable
+@preconcurrency import Foundation
 import Siesta
 
 /// Used for testing pull request status
@@ -25,11 +26,17 @@ struct FakePullRequest: PullRequest
 
 final class FakePRService: Service, PullRequestService, AccountService
 {
+  required init?(account: Account, password: String)
+  {
+    assertionFailure("oops")
+    return nil
+  }
+
   init()
   {
     super.init()
   }
-  
+
   func accountUpdated(oldAccount: Account, newAccount: Account) {}
   
   func getPullRequests(callback: @escaping ([any PullRequest]) -> Void)

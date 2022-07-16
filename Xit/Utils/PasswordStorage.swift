@@ -1,6 +1,6 @@
 import Cocoa
 
-enum PasswordError: Swift.Error
+enum PasswordError: LocalizedError
 {
   case invalidURL
   case invalidName
@@ -8,7 +8,7 @@ enum PasswordError: Swift.Error
   case passwordNotSpecified
 }
 
-public enum PasswordProtocol
+public enum PasswordProtocol: String
 {
   case http
   case https
@@ -104,9 +104,9 @@ extension URL
   }
 }
 
-final class XTKeychain: PasswordStorage
+final class KeychainStorage: PasswordStorage
 {
-  static let shared: PasswordStorage = XTKeychain()
+  static let shared: PasswordStorage = KeychainStorage()
   
   var keychain: SecKeychain?
   
@@ -234,5 +234,13 @@ class Keychain
     else { return nil }
     
     self.keychainRef = finalKeychain
+  }
+}
+
+class TemporaryKeychain: Keychain
+{
+  deinit
+  {
+    SecKeychainDelete(keychainRef)
   }
 }

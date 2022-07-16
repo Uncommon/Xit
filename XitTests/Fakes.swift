@@ -1,4 +1,5 @@
-import Foundation
+// URL and UUID should be Sendable
+@preconcurrency import Foundation
 import Siesta
 @testable import Xit
 

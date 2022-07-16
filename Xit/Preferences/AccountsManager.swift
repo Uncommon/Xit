@@ -3,12 +3,12 @@ import Cocoa
 
 /// Stores information about an account for an online service.
 /// Passwords are stored in the keychain.
-/// This would have been a `struct` but we need it to be `NSObject` compatible.
-final class Account: NSObject
+struct Account: Identifiable
 {
   var type: AccountType
   var user: String
   var location: URL
+  let id: UUID
   
   /// Account fields as stored in preferences
   enum Keys
@@ -28,16 +28,15 @@ final class Account: NSObject
     return accountDict
   }
 
-  init(type: AccountType, user: String, location: URL)
+  init(type: AccountType, user: String, location: URL, id: UUID)
   {
     self.type = type
     self.user = user
     self.location = location
-    
-    super.init()
+    self.id = id
   }
   
-  convenience init?(dict: [String: AnyObject])
+  init?(dict: [String: AnyObject])
   {
     guard let type = AccountType(name: dict[Keys.type] as? String),
           let user = dict[Keys.user] as? String,
@@ -45,42 +44,37 @@ final class Account: NSObject
           let url = URL(string: location)
     else { return nil }
     
-    self.init(type: type, user: user, location: url)
+    self.init(type: type, user: user, location: url, id: .init())
   }
-  
-  override func isEqual(_ object: Any?) -> Bool
+}
+
+extension Account: Equatable
+{
+  static func == (lhs: Account, rhs: Account) -> Bool
   {
-    if let other = object as? Account {
-      return self == other
-    }
-    return false
+    lhs.type == rhs.type &&
+    lhs.user == rhs.user &&
+    lhs.location == rhs.location
   }
 }
 
-func == (left: Account, right: Account) -> Bool
-{
-  return (left.type == right.type) &&
-         (left.user == right.user) &&
-         (left.location.absoluteString == right.location.absoluteString)
-}
 
-
-final class AccountsManager: NSObject
+final class AccountsManager: ObservableObject
 {
-  static let manager = AccountsManager()
+  fileprivate static let manager = AccountsManager()
   
   let defaults: UserDefaults
   let passwordStorage: any PasswordStorage
-  
-  var accounts: [Account] = []
+
+  @Published
+  private(set) var accounts: [Account] = []
   
   init(defaults: UserDefaults? = nil,
        passwordStorage: (any PasswordStorage)? = nil)
   {
-    self.defaults = defaults ?? .standard
-    self.passwordStorage = passwordStorage ?? XTKeychain.shared
-    super.init()
-    
+    self.defaults = defaults ?? .xit
+    self.passwordStorage = passwordStorage ?? KeychainStorage.shared
+
     readAccounts()
   }
   
@@ -110,6 +104,7 @@ final class AccountsManager: NSObject
   {
     if let index = accounts.firstIndex(where: { $0 == account }) {
       accounts.remove(at: index)
+      // shut down the corresponding service object
     }
   }
   
@@ -153,4 +148,21 @@ final class AccountsManager: NSObject
   {
     defaults.accounts = accounts
   }
+}
+
+extension AccountsManager
+{
+  public static var xit: AccountsManager
+  {
+#if DEBUG
+    return Testing.defaults == .standard ? .manager : .testing
+#else
+    return manager
+#endif
+  }
+
+#if DEBUG
+  static var testing: AccountsManager =
+      .init(defaults: .testing, passwordStorage: MemoryPasswordStorage.shared)
+#endif
 }

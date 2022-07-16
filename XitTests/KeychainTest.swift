@@ -7,14 +7,15 @@ class KeychainTest: XCTestCase
                                             NSTemporaryDirectory(),
                                             "test.keychain"])
   var keychain: Keychain!
-  var passwordStorage: XTKeychain!
+  var passwordStorage: KeychainStorage!
   var manager: AccountsManager!
   
   static let baseURLString = "https://api.github.com"
   
   let baseURL = URL(string: KeychainTest.baseURLString)!
   let baseAccount = Account(type: .gitHub, user: "myself",
-                            location: URL(string: KeychainTest.baseURLString)!)
+                            location: URL(string: KeychainTest.baseURLString)!,
+                            id: .init())
   let basePassword = "basePassword"
 
   override func setUpWithError() throws
@@ -29,7 +30,7 @@ class KeychainTest: XCTestCase
       return
     }
     
-    let keychainStorage = XTKeychain()
+    let keychainStorage = KeychainStorage()
     
     keychainStorage.keychain = keychain.keychainRef
     passwordStorage = keychainStorage
@@ -125,7 +126,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
 
     let account2 = Account(type: baseAccount.type, user: baseAccount.user,
-                           location: URL(string: "https://other.github.com")!)
+                           location: URL(string: "https://other.github.com")!,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: nil)
   }
@@ -135,7 +137,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
-                           location: baseURL)
+                           location: baseURL,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: nil)
   }
@@ -152,7 +155,8 @@ class KeychainTest: XCTestCase
     try addBaseAccount()
     
     let account2 = Account(type: baseAccount.type, user: "other",
-                           location: baseURL)
+                           location: baseURL,
+                           id: .init())
     
     try assertModify(newAccount: account2, password: "other password")
   }

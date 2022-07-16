@@ -103,7 +103,7 @@ extension git_remote_callbacks
         }
       }
       if allowed.contains(GIT_CREDENTIAL_USERPASS_PLAINTEXT) {
-        let keychain = XTKeychain.shared
+        let keychain = KeychainStorage.shared
         let urlString = urlCString.flatMap { String(cString: $0) }
         let urlObject = urlString.flatMap { URL(string: $0) }
         let userName = userCString.map { String(cString: $0) } ??
