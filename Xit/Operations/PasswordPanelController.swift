@@ -39,39 +39,25 @@ final class PasswordPanelController: SheetController
   /// - parameter port: For keychain storage
   /// - Returns: A tuple containing the user name and password, or `nil` if the
   /// sheet was canceled.
+  @MainActor
   func getPassword(parentWindow: NSWindow,
                    host: String = "",
                    path: String = "",
-                   port: UInt16 = 80) -> (String, String)?
+                   port: UInt16 = 80) async -> (String, String)?
   {
-    guard !Thread.isMainThread
-    else {
-      assertionFailure("getPassword called on the main thread")
-      return nil
+    if host.isEmpty {
+      keychainCheck.isHidden = true
     }
-    var result: (String, String)?
-    
-    DispatchQueue.main.async { [self] in
-      if host.isEmpty {
-        keychainCheck.isHidden = true
-      }
-      
-      parentWindow.beginSheet(window!) {
-        [self] (response) in
-        if response == .OK {
-          result = (userName, password)
-          if storeInKeychain {
-            Self.storeKeychainPassword(host: host, path: path, port: port,
-                                       account: userName,
-                                       password: password)
-          }
-        }
-        _ = semaphore.signal()
-      }
+
+    guard await parentWindow.beginSheet(window!) == .OK
+    else { return nil }
+
+    if storeInKeychain {
+      Self.storeKeychainPassword(host: host, path: path, port: port,
+                                 account: userName,
+                                 password: password)
     }
-    _ = semaphore.wait(timeout: .distantFuture)
-    
-    return result
+    return (userName, password)
   }
   
   static func storeKeychainPassword(host: String, path: String, port: UInt16,

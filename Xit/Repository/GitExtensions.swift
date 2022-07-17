@@ -75,7 +75,7 @@ extension git_remote_callbacks
       
       return result
     }
-    
+
     static let credentials: git_cred_acquire_cb = {
       (cred, urlCString, userCString, allowed, payload) in
       guard let callbacks = RemoteCallbacks.fromPayload(payload)
@@ -116,7 +116,17 @@ extension git_remote_callbacks
                                         account: userName) {
           return git_cred_userpass_plaintext_new(cred, user, password)
         }
-        if let (user, password) = callbacks.pointee.passwordBlock!() {
+
+        let semaphore = DispatchSemaphore(value: 0)
+        let resultBox = Box<(String, String)>()
+
+        Task.detached {
+          resultBox.value = await callbacks.pointee.passwordBlock?()
+          semaphore.signal()
+        }
+        semaphore.wait()
+
+        if let (user, password) = resultBox.value {
           return git_cred_userpass_plaintext_new(cred, user, password)
         }
       }

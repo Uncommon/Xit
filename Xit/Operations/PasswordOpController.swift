@@ -34,7 +34,7 @@ class PasswordOpController: SimpleOperationController
   }
   
   /// User/password callback
-  func getPassword() -> (String, String)?
+  func getPassword() async -> (String, String)?
   {
     guard passwordController == nil
     else {
@@ -48,8 +48,9 @@ class PasswordOpController: SimpleOperationController
     else { return nil }
     
     passwordController = controller
-    return controller.getPassword(parentWindow: window,
-                                  host: host, path: path, port: UInt16(port))
+    return await controller.getPassword(parentWindow: window,
+                                        host: host, path: path,
+                                        port: UInt16(port))
   }
   
   func setKeychainInfo(from url: URL)

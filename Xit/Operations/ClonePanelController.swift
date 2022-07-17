@@ -91,17 +91,24 @@ final class ClonePanelController: NSWindowController
 
     data.destination = defaultDestination()
     
-    progressPublisher.setPasswordBlock {
-      let panel = PasswordPanelController()
-      guard let url = URL(string: self.data.url)
-      else { return nil }
-      
-      return panel.getPassword(
-          parentWindow: window,
-          host: url.host ?? "",
-          path: url.path,
-          port: UInt16(url.port ?? url.defaultPort))
-    }
+    progressPublisher.setPasswordBlock(getPassword)
+  }
+
+  @MainActor
+  func getPassword() async -> (String, String)?
+  {
+    guard let window = self.window
+    else { return nil }
+    let panel = PasswordPanelController()
+    guard let url = URL(string: self.data.url)
+    else { return nil }
+
+    return await panel.getPassword(
+        parentWindow: window,
+        host: url.host ?? "",
+        path: url.path,
+        port: UInt16(url.port ?? url.defaultPort))
+
   }
 
   @objc required dynamic init?(coder: NSCoder)

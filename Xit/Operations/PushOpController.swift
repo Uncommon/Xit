@@ -3,12 +3,57 @@ import Cocoa
 final class PushOpController: PasswordOpController
 {
   let remoteOption: RemoteOperationOption?
+  private let progressor: Progressor!
+
+  override var canceled: Bool
+  {
+    didSet
+    {
+      progressor.canceled = canceled
+    }
+  }
+
+  /// A nonisolated space for the progress callback
+  private final class Progressor
+  {
+    var canceled: Bool
+    {
+      get { mutex.withLock { canceledPrivate } }
+      set { mutex.withLock { canceledPrivate = newValue} }
+    }
+    weak var repository: FullRepository?
+
+    private var canceledPrivate = false
+    private var mutex: Mutex = .init()
+
+    init(repository: FullRepository?)
+    {
+      self.repository = repository
+    }
+
+    func progressCallback(progress: PushTransferProgress) -> Bool
+    {
+      guard !canceled,
+            let repository = repository
+      else { return true }
+
+      let note = Notification.progressNotification(
+            repository: repository,
+            progress: Float(progress.current),
+            total: Float(progress.total))
+
+      NotificationCenter.default.post(note)
+      return !canceled
+    }
+  }
 
   init(remoteOption: RemoteOperationOption, windowController: XTWindowController)
   {
     self.remoteOption = remoteOption
 
     super.init(windowController: windowController)
+
+    self.progressor = .init(repository: repository)
   }
 
   required init(windowController: XTWindowController)
@@ -18,19 +63,6 @@ final class PushOpController: PasswordOpController
     super.init(windowController: windowController)
   }
 
-  func progressCallback(progress: PushTransferProgress) -> Bool
-  {
-    guard !canceled,
-          let repository = repository
-    else { return true }
-    
-    let note = Notification.progressNotification(repository: repository,
-                                                 progress: Float(progress.current),
-                                                 total: Float(progress.total))
-    
-    NotificationCenter.default.post(note)
-    return !canceled
-  }
 
   override func start() throws
   {
@@ -169,9 +201,10 @@ final class PushOpController: PasswordOpController
     tryRepoOperation {
       guard let repository = self.repository
       else { return }
-      let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
-                                      downloadProgress: nil,
-                                      uploadProgress: self.progressCallback)
+      let callbacks = RemoteCallbacks(
+            passwordBlock: self.getPassword,
+            downloadProgress: nil,
+            uploadProgress: self.progressor.progressCallback)
       
       if let url = remote.pushURL ?? remote.url {
         self.setKeychainInfo(from: url)

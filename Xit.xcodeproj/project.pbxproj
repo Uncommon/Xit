@@ -1248,9 +1248,9 @@
 				C957B87B1D2DBBC00040F858 /* AccountsManager.swift */,
 				89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */,
 				891260E5285D183B00053528 /* GeneralPrefsPane.swift */,
+				89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */,
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 				C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */,
-				89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
