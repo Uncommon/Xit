@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 /// Table cell view that adjusts its date format according to its width.
 final class DateCellView: NSTableCellView
