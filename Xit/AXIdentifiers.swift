@@ -42,6 +42,48 @@ extension AXID
     }
   }
 
+  public enum Clone
+  {
+    static let window = AXID("cloneWindow")
+
+    public enum Text
+    {
+      static let sourceURL = AXID("sourceURL")
+      static let name = AXID("name")
+    }
+
+    public enum Popup
+    {
+      static let checkOutBranch = AXID("checkOutBranch")
+    }
+
+    public enum Label
+    {
+      static let errorText = AXID("errorText")
+    }
+
+    public enum Button
+    {
+      static let cancel = AXID("cancel")
+      static let clone = AXID("clone")
+    }
+  }
+
+  public enum PasswordPanel
+  {
+    static let window = AXID("passwordPanel")
+    static let userField = AXID("user")
+    static let passwordField = AXID("password")
+    static let ok = AXID("ok")
+    static let cancel = AXID("cancel")
+  }
+
+  public enum PathField
+  {
+    static let path = AXID("path")
+    static let chooseButton = AXID("chooseButton")
+  }
+
   enum FetchSheet
   {
     static let remotePopup = AXID("remote")

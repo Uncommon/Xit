@@ -11,6 +11,8 @@ final class PasswordPanelController: SheetController
   @IBOutlet weak var keychainCheck: NSButton!
   
   var semaphore = DispatchSemaphore(value: 0)
+
+  override var windowNibName: NSNib.Name? { String(describing: Self.self) }
   
   deinit
   {
@@ -28,6 +30,7 @@ final class PasswordPanelController: SheetController
     $userName = userField
     $password = passwordField
     $storeInKeychain = keychainCheck
+    window?.setAccessibilityIdentifier(.PasswordPanel.window)
   }
   
   /// Blocks the current thread and runs the sheet on the main thread until

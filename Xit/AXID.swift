@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public struct AXID: RawRepresentable, Sendable
+public struct AXID: RawRepresentable, Equatable, Sendable
 {
   public let rawValue: String
 
@@ -13,6 +13,14 @@ public struct AXID: RawRepresentable, Sendable
   public init(_ id: String)
   {
     self.rawValue = id
+  }
+}
+
+extension AXID: ExpressibleByStringLiteral
+{
+  public init(stringLiteral value: String)
+  {
+    self.rawValue = value
   }
 }
 

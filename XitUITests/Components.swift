@@ -3,6 +3,20 @@ import XCTest
 
 let XitApp = XCUIApplication(bundleIdentifier: "com.uncommonplace.Xit")
 
+enum Clone
+{
+  static let window = XitApp.windows[.Clone.window].firstMatch
+
+  static let urlField = window.textFields[.Clone.Text.sourceURL]
+  static let nameField = window.textFields[.Clone.Text.name]
+  static let branchPopup = window.popUpButtons[.Clone.Popup.checkOutBranch]
+  static let pathField = window.textFields[.PathField.path]
+  static let pathButton = window.buttons[.PathField.chooseButton]
+  static let errorText = window.staticTexts[.Clone.Label.errorText]
+  static let cancelButton = window.buttons[.Clone.Button.cancel]
+  static let cloneButton = window.buttons[.Clone.Button.clone]
+}
+
 enum Window
 {
   static let window = XitApp.windows["repoWindow"].firstMatch
@@ -49,6 +63,15 @@ enum PrefsWindow
       window.buttons[XCUIIdentifierCloseWindow].click()
     }
   }
+}
+
+enum PasswordPanel
+{
+  static let sheet = XitApp.sheets[.PasswordPanel.window]
+  static let userField = sheet.textFields[.PasswordPanel.userField]
+  static let passwordField = sheet.secureTextFields[.PasswordPanel.passwordField]
+  static let ok = sheet.buttons[.PasswordPanel.ok]
+  static let cancel = sheet.buttons[.PasswordPanel.cancel]
 }
 
 enum Sidebar

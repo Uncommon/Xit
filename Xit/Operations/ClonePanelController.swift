@@ -30,7 +30,7 @@ extension PathValidationError: LocalizedError
 final class ClonePanelController: NSWindowController
 {
   let cloner: any Cloning
-  let data = CloneData(readURL: ClonePanelController.readURL(_:))
+  var data: CloneData!
   let presentingModel = PresentingModel()
   let progressPublisher = RemoteProgressPublisher()
   var urlObserver: AnyCancellable?
@@ -66,6 +66,8 @@ final class ClonePanelController: NSWindowController
     
     super.init(window: window)
 
+    data = .init(readURL: readURL(_:))
+
     let panel = ClonePanel(data: data,
                            close: { window.close() },
                            clone: { self.clone() })
@@ -82,6 +84,7 @@ final class ClonePanelController: NSWindowController
     window.standardWindowButton(.zoomButton)?.isEnabled = false
     window.center()
     window.delegate = self
+    window.setAccessibilityIdentifier(.Clone.window)
     
     self.pathObserver = data.$destination.combineLatest(data.$name)
       .debounce(afterInvalidating: data, keyPath: \.results.path)
@@ -217,24 +220,23 @@ final class ClonePanelController: NSWindowController
   }
 
   nonisolated
-  static func readURL(_ newURL: String) -> CloneData.URLResult
+  func readURL(_ newURL: String) -> CloneData.URLResult
   {
     guard let url = URL(string: newURL)
     else { return .failure(.empty) }
-    guard validate(url: url),
+    guard Self.validate(url: url),
           let remote = GitRemote(url: url)
     else { return .failure(.invalid) }
     let name: String
     let branches: [String]
     let selectedBranch: String
-    let noPassword: () -> (String, String)? = { nil }
-    
+
     name = url.path.lastPathComponent.deletingPathExtension
 
     do {
       let (heads, defaultBranchRef) = try
         remote.withConnection(direction: .fetch,
-                              callbacks: .init(passwordBlock: noPassword),
+                              callbacks: .init(passwordBlock: getPassword),
                               action: {
         (try $0.referenceAdvertisements(), $0.defaultBranch)
       })

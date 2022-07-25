@@ -3,7 +3,7 @@ import Cocoa
 final class PushOpController: PasswordOpController
 {
   let remoteOption: RemoteOperationOption?
-  private let progressor: Progressor!
+  private var progressor: Progressor!
 
   override var canceled: Bool
   {

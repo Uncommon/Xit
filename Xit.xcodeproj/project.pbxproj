@@ -88,6 +88,7 @@
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
+		89DA1E2128898B7B00FA4644 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA1E2028898B7B00FA4644 /* NetworkTests.swift */; };
 		89DAE199267EAD61005AEA8F /* CloneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE198267EAD61005AEA8F /* CloneData.swift */; };
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
@@ -451,6 +452,7 @@
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
+		89DA1E2028898B7B00FA4644 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
@@ -1010,6 +1012,7 @@
 				C94107C8236A3BD100D4B0D7 /* fixtures.zip */,
 				C954C1642374BF5B000D5339 /* Components.swift */,
 				C90FD41C23845679006358C7 /* ModifyingUITests.swift */,
+				89DA1E2028898B7B00FA4644 /* NetworkTests.swift */,
 				C91727B523689F500023DC57 /* ReadOnlyUITests.swift */,
 				C9B3950624C0AA8A0084EB73 /* UnicodeRepoUITests.swift */,
 				C91727B723689F500023DC57 /* Info.plist */,
@@ -1779,6 +1782,7 @@
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C9C3014226A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
+				89DA1E2128898B7B00FA4644 /* NetworkTests.swift in Sources */,
 				891052D92523F3D30095E299 /* TestErrors.swift in Sources */,
 				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,
 				C9C3014426A5BBFD00EBBBC8 /* AXIDTest.swift in Sources */,

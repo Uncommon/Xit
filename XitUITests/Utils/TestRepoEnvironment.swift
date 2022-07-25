@@ -1,24 +1,43 @@
 import AppKit
 import XCTest
 
-/// Shared code for setting up, opening, and operating on a test repository.
-class TestRepoEnvironment
+class TestXitEnvironment
 {
-  let repo: TestRepo
-  let tempDir: TemporaryDirectory
-  let git: GitCLI
-  let repoURL: URL
-  let defaults: Defaults
-  private(set) var remotePath: String!
-  private(set) var remoteGit: GitCLI! = nil
-  private(set) var remoteURL: URL! = nil
-
   // Like the one in the app Testing enum, but there is no `standard` case
   enum Defaults: String
   {
     case tempEmpty, tempAccounts
   }
-  
+
+  let defaults: Defaults
+
+  init(defaults: Defaults = .tempEmpty)
+  {
+    self.defaults = defaults
+  }
+
+  /// Launches the app and opens this environment's repository.
+  func open(args: [String] = [])
+  {
+    XitApp.launchArguments = args +
+                            ["-ApplePersistenceIgnoreState", "YES",
+                              "--defaults", "\(defaults)"]
+    XitApp.launch()
+    XitApp.activate()
+  }
+}
+
+/// Shared code for setting up, opening, and operating on a test repository.
+class TestRepoEnvironment: TestXitEnvironment
+{
+  let repo: TestRepo
+  let tempDir: TemporaryDirectory
+  let git: GitCLI
+  let repoURL: URL
+  private(set) var remotePath: String!
+  private(set) var remoteGit: GitCLI! = nil
+  private(set) var remoteURL: URL! = nil
+
   init?(_ repo: TestRepo, testName: String, defaults: Defaults = .tempEmpty)
   {
     guard let tempDir = TemporaryDirectory(testName)
@@ -37,7 +56,8 @@ class TestRepoEnvironment
     self.repo = repo
     self.repoURL = tempDir.url.appendingPathComponent(repo.rawValue)
     self.git = GitCLI(repoURL: repoURL)
-    self.defaults = defaults
+
+    super.init(defaults: .tempEmpty)
   }
   
   /// Extracts the test repo again, to another location, and sets it as
@@ -96,13 +116,9 @@ class TestRepoEnvironment
   }
   
   /// Launches the app and opens this environment's repository.
-  func open()
+  override func open(args: [String] = [])
   {
-    XitApp.launchArguments = [repoURL.path,
-                              "-ApplePersistenceIgnoreState", "YES",
-                              "--defaults", "\(defaults)"]
-    XitApp.launch()
-    XitApp.activate()
+    open(args: [repoURL.path] + args)
 
     XCTAssertTrue(XitApp.windows[repo.rawValue].waitForExistence(timeout: 5.0))
   }

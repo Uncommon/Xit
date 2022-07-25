@@ -52,11 +52,13 @@ struct PathField: View
       TextField("", text: $path)
         .overlay(Color.clear.border(Color(NSColor.selectedControlColor),
                                     width: isDropTarget ? 2 : 0))
+        .accessibilityIdentifier(.PathField.path)
       Button {
         chooseFolder()
       } label: {
         Image(systemName: "folder")
       }.buttonStyle(BorderlessButtonStyle())
+        .accessibilityIdentifier(.PathField.chooseButton)
     }.onDrop(of: [.fileURL],
              delegate: FolderDropDelegate(path: $path,
                                           isDropTarget: $isDropTarget))

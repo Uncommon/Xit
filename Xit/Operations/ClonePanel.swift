@@ -21,9 +21,11 @@ struct ClonePanel: View
   {
     VStack {
       Form {
-        LabeledField(.sourceURL.colon, TextField("", text: $data.url))
+        LabeledField(.sourceURL.colon, TextField("", text: $data.url)
+          .accessibilityIdentifier(.Clone.Text.sourceURL))
         LabeledField(.cloneTo.colon, PathField(path: $data.destination))
-        LabeledField(.name.colon, TextField("", text: $data.name))
+        LabeledField(.name.colon, TextField("", text: $data.name)
+          .accessibilityIdentifier(.Clone.Text.name))
         LabeledField(.fullPath.colon, Text(data.destination +/ data.name))
         Divider()
         LabeledField(label: Text(.checkOutBranch.colon),
@@ -35,6 +37,7 @@ struct ClonePanel: View
                      }.labelsHidden()
                       .disabled(data.branches.isEmpty)
                       .fixedSize(horizontal: true, vertical: true))
+                      .accessibilityIdentifier(.Clone.Popup.checkOutBranch)
         // To be implemeted later
         // LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
       }.labelWidthGroup()
@@ -47,15 +50,18 @@ struct ClonePanel: View
           Image(systemName: "exclamationmark.triangle.fill")
             .renderingMode(.original)
           Text(error)
+            .accessibilityIdentifier(.Clone.Label.errorText)
         }
         Spacer()
         Button(.cancel) {
           close()
         }.keyboardShortcut(.cancelAction)
+          .accessibilityIdentifier(.Clone.Button.cancel)
         Button(.clone) {
           clone()
         }.keyboardShortcut(.defaultAction)
-         .disabled(!data.results.allSucceeded)
+          .disabled(!data.results.allSucceeded)
+          .accessibilityIdentifier(.Clone.Button.clone)
       }
     }.padding(20)
      .fixedSize(horizontal: false, vertical: true)
