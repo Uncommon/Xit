@@ -10,7 +10,7 @@ struct ProritizedResults<E>
   
   /// Evaluates the results in order, and returns the first error found provided
   /// all previous results were successful.
-  var firstError: Error?
+  var firstError: (any Error)?
   {
     for item in E.allCases {
       if let result = results[item] {
@@ -18,9 +18,6 @@ struct ProritizedResults<E>
           return error
         }
         // otherwise it was a success, so continue with the next result
-      }
-      else {
-        return nil
       }
     }
     return nil
@@ -44,7 +41,7 @@ struct ProritizedResults<E>
 protocol AbstractResult
 {
   var succeeded: Bool { get }
-  var error: Error? { get }
+  var error: (any Error)? { get }
 }
 
 extension Result: AbstractResult
@@ -57,7 +54,7 @@ extension Result: AbstractResult
     }
   }
   
-  var error: Error?
+  var error: (any Error)?
   {
     switch self {
       case .success: return nil
