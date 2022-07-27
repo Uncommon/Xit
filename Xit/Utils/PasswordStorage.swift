@@ -46,6 +46,7 @@ public protocol PasswordStorage
 
 extension PasswordStorage
 {
+  /// Finds a password using parameters extracted from a URL.
   func find(url: URL, account: String? = nil) -> String?
   {
     guard let host = url.host
@@ -63,6 +64,7 @@ extension PasswordStorage
                 account: user)
   }
   
+  /// Finds a password using parameters extracted from an account.
   func find(account: Account) -> String?
   {
     guard let host = account.location.host
@@ -82,6 +84,20 @@ extension PasswordStorage
     try save(host: host, path: url.path,
              port: (url as NSURL).port?.uint16Value ?? 80,
              account: account, password: password)
+  }
+}
+
+// `Self` is needed to access this as `.xit`
+extension PasswordStorage where Self == KeychainStorage
+{
+  static var xit: any PasswordStorage
+  {
+    #if DEBUG
+    return Testing.defaults == .standard ? KeychainStorage.shared
+                                         : MemoryPasswordStorage.shared
+    #else
+    return KeychainStorage.shared
+    #endif
   }
 }
 

@@ -131,7 +131,8 @@ extension BasicAuthService: AccountService
   {
     guard oldAccount == account
     else { return }
-    guard let password = KeychainStorage.shared.find(account: newAccount)
+    let passwordStorage: PasswordStorage = .xit
+    guard let password = passwordStorage.find(account: newAccount)
     else {
       authenticationStatus = .unknown
       return

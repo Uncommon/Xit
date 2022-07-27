@@ -73,7 +73,7 @@ final class AccountsManager: ObservableObject
        passwordStorage: (any PasswordStorage)? = nil)
   {
     self.defaults = defaults ?? .xit
-    self.passwordStorage = passwordStorage ?? KeychainStorage.shared
+    self.passwordStorage = passwordStorage ?? .xit
 
     readAccounts()
   }
