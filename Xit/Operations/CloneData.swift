@@ -22,13 +22,48 @@ class CloneData: ObservableObject
 
   enum CheckedValues: String, CaseIterable
   {
-    case url, path
+    case authentication, url, path
   }
+
+  enum AuthenticationStatus
+  {
+    case unknown, notNeeded, failure, success
+  }
+
+  enum AuthenticationError: LocalizedError
+  {
+    /// Credentials were rejected by the server
+    case rejected
+    /// Credentials have not been supplied
+    case missing
+    case keychain
+
+    var errorDescription: String?
+    {
+      switch self {
+        case .rejected: return "Authentication failed"
+        case .missing:  return "Authentication required"
+        case .keychain: return "Couldn't access keychain"
+      }
+    }
+  }
+
+  typealias AuthenticationResult = Result<Never, CloneData.AuthenticationError>
   
   @Published var results: ProritizedResults<CheckedValues> = .init()
+  @Published var authStatus: AuthenticationStatus = .unknown
   
   var errorString: String?
-  { results.firstError?.localizedDescription }
+  {
+    guard let error = results.firstError
+    else { return nil }
+    if let localized = error as? LocalizedError {
+      return localized.errorDescription
+    }
+    else {
+      return error.localizedDescription
+    }
+  }
   
   init(readURL: @escaping URLReader)
   {
@@ -47,28 +82,30 @@ class CloneData: ObservableObject
         readURL($0)
       }
       .receive(on: DispatchQueue.main)
-      .sink {
-        [self] result in
-        inProgress = false
-        switch result {
-          case .success((let name, let branches, let selectedBranch)):
-            self.name = name
-            results.name = nil
-            self.branches = branches
-            self.selectedBranch = selectedBranch
-            results.url = result
-          case .failure(.empty):
-            results.url = nil
-          default:
-            results.url = result
-        }
-        if case .failure(.empty) = result {
-          results.url = nil
-        }
-        else {
-          results.url = result
-        }
-      }
+      .sink(receiveValue: didReadURL(result:))
+  }
+
+  func didReadURL(result: URLResult)
+  {
+    inProgress = false
+    switch result {
+      case .success((let name, let branches, let selectedBranch)):
+        self.name = name
+        results.name = nil
+        self.branches = branches
+        self.selectedBranch = selectedBranch
+        results.url = result
+      case .failure(.empty):
+        results.url = nil
+      default:
+        results.url = result
+    }
+    if case .failure(.empty) = result {
+      results.url = nil
+    }
+    else {
+      results.url = result
+    }
   }
 }
 

@@ -20,14 +20,12 @@ class NetworkTests: XCTestCase
 
     Clone.urlField.click()
     Clone.urlField.typeText("https://github.com/Uncommon/Testing.git")
-    XCTAssert(PasswordPanel.sheet.waitForExistence(timeout: 5))
-    
+    XCTAssert(Clone.signInButton.waitForExistence(timeout: 5))
+
+    Clone.signInButton.click()
     PasswordPanel.cancel.click()
     wait(for: [absence(of: PasswordPanel.sheet)], timeout: 2)
     // Just to check that the app isn't frozen
     XCTAssert(XitApp.menuBars.menuBarItems["File"].exists)
-//    expectation(for: .init(format: "enabled == true"),
-//                evaluatedWith: Clone.cloneButton, handler: nil)
-//    waitForExpectations(timeout: 5)
   }
 }

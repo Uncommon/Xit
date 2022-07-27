@@ -3,6 +3,7 @@ import SwiftUI
 struct ClonePanel: View
 {
   @ObservedObject var data: CloneData
+  let authenticate: () -> Void
   let close: () -> Void
   let clone: () -> Void
   
@@ -20,7 +21,7 @@ struct ClonePanel: View
   var body: some View
   {
     VStack {
-      Form {
+      VStack(alignment: .leading) {
         LabeledField(.sourceURL.colon, TextField("", text: $data.url)
           .accessibilityIdentifier(.Clone.Text.sourceURL))
         LabeledField(.cloneTo.colon, PathField(path: $data.destination))
@@ -53,6 +54,12 @@ struct ClonePanel: View
             .accessibilityIdentifier(.Clone.Label.errorText)
         }
         Spacer()
+        if data.results.authentication?.error != nil {
+          Button("Sign in...") {
+            authenticate()
+          }.keyboardShortcut("S")
+            .accessibilityIdentifier(.Clone.Button.signIn)
+        }
         Button(.cancel) {
           close()
         }.keyboardShortcut(.cancelAction)
@@ -77,22 +84,27 @@ struct ClonePanel_Previews: PreviewProvider
     
     var body: some View
     {
-      ClonePanel(data: data, close: {}, clone: {})
+      ClonePanel(data: data, authenticate: {}, close: {}, clone: {})
     }
   }
   
+  static func readURL(_ string: String) -> CloneData.URLResult
+  { .success(("Repo", ["main", "master"], "main")) }
+  static func failURL(_ string: String) -> CloneData.URLResult
+  { .failure(.unexpected) }
+
   static var previews: some View
   {
     Group {
-      Preview(data: .init(readURL: {
-        _ in .success(("Repo", ["main", "master"], "main"))
-      }))
-      Preview(data: .init(readURL: { _ in .failure(.unexpected) })
+      Preview(data: .init(readURL: Self.readURL(_:)))
+      Preview(data: .init(readURL: Self.failURL(_:))
                 .path("/Users/Uncommon/Developer")
                 .name("Repo")
                 .urlResult(.failure(.invalid))
                 .branches(["main", "master"], "main")
                 .inProgress())
+      Preview(data: .init(readURL: Self.failURL(_:))
+                .authentication(.missing))
     }
   }
 }
@@ -113,4 +125,11 @@ extension CloneData
   
   func inProgress(_ p: Bool = true) -> CloneData
   { inProgress = p; return self }
+
+  func authentication(_ a: CloneData.AuthenticationError) -> CloneData
+  {
+    let result: Result<Never, CloneData.AuthenticationError> = .failure(a)
+    results.authentication = result
+    return self
+  }
 }

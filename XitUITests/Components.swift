@@ -13,6 +13,7 @@ enum Clone
   static let pathField = window.textFields[.PathField.path]
   static let pathButton = window.buttons[.PathField.chooseButton]
   static let errorText = window.staticTexts[.Clone.Label.errorText]
+  static let signInButton = window.buttons[.Clone.Button.signIn]
   static let cancelButton = window.buttons[.Clone.Button.cancel]
   static let cloneButton = window.buttons[.Clone.Button.clone]
 }

@@ -64,6 +64,7 @@ extension AXID
 
     public enum Button
     {
+      static let signIn = AXID("signIn")
       static let cancel = AXID("cancel")
       static let clone = AXID("clone")
     }

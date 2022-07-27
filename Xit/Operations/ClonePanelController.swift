@@ -35,6 +35,8 @@ final class ClonePanelController: NSWindowController
   let progressPublisher = RemoteProgressPublisher()
   var urlObserver: AnyCancellable?
   var pathObserver: AnyCancellable?
+
+  let passwordStorage: PasswordStorage
   
   private static var currentController: ClonePanelController?
   
@@ -46,7 +48,7 @@ final class ClonePanelController: NSWindowController
       return panel
     }
     else {
-      let controller = Self.init(cloner: GitCloner())
+      let controller = Self.init(cloner: GitCloner(), passwordStorage: .xit)
       
       currentController = controller
       controller.window?.center()
@@ -54,9 +56,10 @@ final class ClonePanelController: NSWindowController
     }
   }
   
-  init(cloner: any Cloning)
+  init(cloner: any Cloning, passwordStorage: PasswordStorage)
   {
     self.cloner = cloner
+    self.passwordStorage = passwordStorage
 
     let window = NSWindow(contentRect: .init(origin: .zero,
                                              size: .init(width: 300,
@@ -69,8 +72,9 @@ final class ClonePanelController: NSWindowController
     data = .init(readURL: readURL(_:))
 
     let panel = ClonePanel(data: data,
-                           close: { window.close() },
-                           clone: { self.clone() })
+                           authenticate: self.authenticate,
+                           close: window.close,
+                           clone: self.clone)
                 .environment(\.window, window)
     let host = ProgressHost(model: presentingModel,
                             message: "Cloning...",
@@ -97,21 +101,51 @@ final class ClonePanelController: NSWindowController
     progressPublisher.setPasswordBlock(getPassword)
   }
 
+  func authenticate()
+  {
+    Task {
+      guard let url = URL(string: self.data.url),
+            let creds = await getPassword()
+      else { return }
+
+      do {
+        try passwordStorage.save(url: url, account: creds.0, password: creds.1)
+        self.data.didReadURL(result: readURL(url.absoluteString))
+      }
+      catch {
+        let result: CloneData.AuthenticationResult = .failure(.keychain)
+
+        self.data.results.authentication = result
+      }
+    }
+  }
+
   @MainActor
   func getPassword() async -> (String, String)?
   {
-    guard let window = self.window
+    if let storedResult = readPassword() {
+      return storedResult
+    }
+
+    guard let window = self.window,
+          let url = URL(string: self.data.url)
     else { return nil }
     let panel = PasswordPanelController()
-    guard let url = URL(string: self.data.url)
-    else { return nil }
 
     return await panel.getPassword(
         parentWindow: window,
         host: url.host ?? "",
         path: url.path,
         port: UInt16(url.port ?? url.defaultPort))
+  }
 
+  func readPassword() -> (String, String)?
+  {
+    guard let url = data.flatMap({ URL(string: $0.url) }),
+          let password = passwordStorage.find(url: url)
+    else { return nil }
+
+    return (url.user ?? url.impliedUserName ?? "", password)
   }
 
   @objc required dynamic init?(coder: NSCoder)
@@ -230,13 +264,27 @@ final class ClonePanelController: NSWindowController
     let name: String
     let branches: [String]
     let selectedBranch: String
+    @MainActor
+    func tryGetPassword() -> (String, String)?
+    {
+      if let result = readPassword() {
+        data.results.authentication = nil
+        return result
+      }
+      else {
+        let result: CloneData.AuthenticationResult = .failure(.missing)
+
+        data.results.authentication = result
+        return nil
+      }
+    }
 
     name = url.path.lastPathComponent.deletingPathExtension
 
     do {
       let (heads, defaultBranchRef) = try
         remote.withConnection(direction: .fetch,
-                              callbacks: .init(passwordBlock: getPassword),
+                              callbacks: .init(passwordBlock: tryGetPassword),
                               action: {
         (try $0.referenceAdvertisements(), $0.defaultBranch)
       })
