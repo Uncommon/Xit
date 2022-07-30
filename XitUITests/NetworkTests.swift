@@ -25,7 +25,6 @@ class NetworkTests: XCTestCase
     Clone.signInButton.click()
     PasswordPanel.cancel.click()
     wait(for: [absence(of: PasswordPanel.sheet)], timeout: 2)
-    // Just to check that the app isn't frozen
-    XCTAssert(XitApp.menuBars.menuBarItems["File"].exists)
+    XCTAssertFalse(Clone.cloneButton.isEnabled)
   }
 }

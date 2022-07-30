@@ -85,6 +85,7 @@ public struct UIString: RawRepresentable, Sendable
   static let saveStash = ›"Save Stash..."
   static let showInFinder = ›"Show in Finder"
   static let showSidebar = ›"Show Sidebar"
+  static let signIn = ›"Sign in..."
   static let stage = ›"Stage"
   static let stageAll = ›"Stage All"
   static let staging = ›"Staging"

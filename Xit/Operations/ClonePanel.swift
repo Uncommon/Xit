@@ -40,14 +40,14 @@ struct ClonePanel: View
                       .fixedSize(horizontal: true, vertical: true))
                       .accessibilityIdentifier(.Clone.Popup.checkOutBranch)
         // To be implemeted later
-        // LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
+        // LabeledField("Submodules:", Toggle("Recursively check out", isOn: $data.recurse))
       }.labelWidthGroup()
       Spacer(minLength: 12)
       HStack {
         if data.inProgress {
-          ProgressView().controlSize(.small).padding(.trailing, 8)
+          ProgressView().controlSize(.small)
         }
-        if let error = data.errorString {
+        else if let error = data.errorString {
           Image(systemName: "exclamationmark.triangle.fill")
             .renderingMode(.original)
           Text(error)
@@ -55,18 +55,15 @@ struct ClonePanel: View
         }
         Spacer()
         if data.results.authentication?.error != nil {
-          Button("Sign in...") {
-            authenticate()
-          }.keyboardShortcut("S")
+          Button(.signIn, action: authenticate)
+            .keyboardShortcut("S")
             .accessibilityIdentifier(.Clone.Button.signIn)
         }
-        Button(.cancel) {
-          close()
-        }.keyboardShortcut(.cancelAction)
+        Button(.cancel, action: close)
+          .keyboardShortcut(.cancelAction)
           .accessibilityIdentifier(.Clone.Button.cancel)
-        Button(.clone) {
-          clone()
-        }.keyboardShortcut(.defaultAction)
+        Button(.clone, action: clone)
+          .keyboardShortcut(.defaultAction)
           .disabled(!data.results.allSucceeded)
           .accessibilityIdentifier(.Clone.Button.clone)
       }

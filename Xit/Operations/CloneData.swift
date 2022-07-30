@@ -36,6 +36,7 @@ class CloneData: ObservableObject
     case rejected
     /// Credentials have not been supplied
     case missing
+    /// Password could not be read from or written to the keychain
     case keychain
 
     var errorDescription: String?
