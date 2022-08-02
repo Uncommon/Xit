@@ -1,5 +1,8 @@
 import Foundation
+import os
 
+fileprivate let logger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                                category: "git callbacks")
 
 extension git_fetch_options
 {
@@ -39,12 +42,20 @@ extension git_index_entry
   }
 }
 
-fileprivate extension RemoteCallbacks
+extension String
 {
-  static func fromPayload(_ payload: UnsafeMutableRawPointer?)
-    -> UnsafeMutablePointer<RemoteCallbacks>?
+  init?(cchars: UnsafePointer<CChar>, length: Int,
+        encoding: String.Encoding = .utf8)
   {
-    return payload?.bindMemory(to: RemoteCallbacks.self, capacity: 1)
+    let data = Data(bytes: cchars, count: length)
+    self.init(data: data, encoding: encoding)
+  }
+
+  init?(cchars: UnsafePointer<CChar>, length: Int32,
+        encoding: String.Encoding = .utf8)
+  {
+    let data = Data(bytes: cchars, count: Int(length))
+    self.init(data: data, encoding: encoding)
   }
 }
 
@@ -78,7 +89,12 @@ extension git_remote_callbacks
 
     static let credentials: git_cred_acquire_cb = {
       (cred, urlCString, userCString, allowed, payload) in
-      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      #if DEBUG
+      let url = urlCString.flatMap { String(cString: $0) } ?? "?"
+      let user = userCString.flatMap { String(cString: $0) } ?? "?"
+      logger.debug("creds: \(user)@\(url) - \(allowed)")
+      #endif
+      guard let callbacks: RemoteCallbacks = payload.map({ fromContainer($0) })
       else { return -1 }
       let allowed = git_credential_t(allowed)
       
@@ -95,7 +111,7 @@ extension git_remote_callbacks
           else {
             let error = RepoError(gitCode: git_error_code(rawValue: result))
             
-            NSLog("Could not load ssh key for \(path): \(error))")
+            logger.info("Could not load ssh key for \(path): \(error))")
           }
         }
         if result == 0 {
@@ -108,20 +124,36 @@ extension git_remote_callbacks
         let urlObject = urlString.flatMap { URL(string: $0) }
         let userName = userCString.map { String(cString: $0) } ??
                        urlObject?.impliedUserName
-        
+
         if let url = urlObject,
-           let user = userName,
-           let password = keychain.find(url: url, account: userName) ??
-                          keychain.find(url: url.withPath(""),
-                                        account: userName) {
-          return git_cred_userpass_plaintext_new(cred, user, password)
+           let user = userName {
+          repeatCheck: do {
+            guard url != callbacks.lastKeychainURL,
+                  user != callbacks.lastKeychainUser
+            else {
+              logger.info("Repeat cred request, skipping keychain")
+              break repeatCheck
+            }
+            callbacks.lastKeychainURL = url
+            callbacks.lastKeychainUser = user
+
+            // Don't repeat if url already has no path
+            let urls: Set<URL> = [url, url.withPath("")]
+
+            if let password = urls.lazy.map({ keychain.find(url: $0,
+                                                         account: user) })
+                                  .first {
+              return git_cred_userpass_plaintext_new(cred, user, password)
+            }
+          }
         }
 
         let semaphore = DispatchSemaphore(value: 0)
         let resultBox = Box<(String, String)>()
 
+        assert(!Thread.isMainThread, "cred callback on main thread")
         Task.detached {
-          resultBox.value = await callbacks.pointee.passwordBlock?()
+          resultBox.value = await callbacks.passwordBlock?()
           semaphore.signal()
         }
         semaphore.wait()
@@ -137,50 +169,62 @@ extension git_remote_callbacks
     
     static let transferProgress: git_transfer_progress_cb = {
       (stats, payload) in
-      guard let callbacks = RemoteCallbacks.fromPayload(payload),
+      if let progress = stats?.pointee {
+        logger.debug("transfer: \(progress.received_objects)/\(progress.total_objects)")
+      }
+      guard let callbacks: RemoteCallbacks = payload.map({ fromContainer($0) }),
             let progress = stats?.pointee
       else { return -1 }
       let transferProgress = GitTransferProgress(gitProgress: progress)
+      let result = callbacks.downloadProgress?(transferProgress) ?? true
       
-      return callbacks.pointee.downloadProgress!(transferProgress) ? 0 : -1
+      return result ? 0 : -1
     }
     
     static let pushTransferProgress: git_push_transfer_progress = {
       (current, total, bytes, payload) in
-      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      logger.debug("push transfer: \(current)/\(total)")
+      guard let callbacks: RemoteCallbacks = payload.map({ fromContainer($0) })
       else { return -1 }
       let progress = PushTransferProgress(current: current, total: total,
                                           bytes: bytes)
-      
-      return callbacks.pointee.uploadProgress!(progress) ? 0 : -1
+      let result = callbacks.uploadProgress?(progress) ?? true
+
+      return result ? 0 : -1
     }
     
     static let sidebandMessage: git_transport_message_cb = {
       (cString, length, payload) in
-      guard let callbacks = RemoteCallbacks.fromPayload(payload)
+      #if DEBUG
+      if let message = cString.flatMap({ String(cchars: $0, length: length) }) {
+        logger.debug("sideband: \(message)")
+      }
+      #endif
+      guard let callbacks: RemoteCallbacks = payload.map({ fromContainer($0) })
       else { return -1 }
       guard let cString = cString
       else { return 0 }
       let stringData = Data(bytes: cString, count: Int(length))
       guard let message = String(data: stringData, encoding: .utf8)
       else { return 0 }
+      let result = callbacks.sidebandMessage?(message) ?? true
       
-      return callbacks.pointee.sidebandMessage!(message) ? 0 : -1
+      return result ? 0 : -1
     }
   }
   
   /// Calls the given action with a populated callbacks struct.
-  /// The "with" pattern is needed because of the need to make a mutable copy
-  /// of the given callbacks as a payload, and perform the action within the
-  /// scope of that copy.
+  /// The "with" pattern is needed because of the need to make a container
+  /// for the given callbacks as a payload, and perform the action within the
+  /// scope of that container.
   public static func withCallbacks<T>(_ callbacks: RemoteCallbacks,
                                       action: (git_remote_callbacks) throws -> T)
     rethrows -> T
   {
     var gitCallbacks = git_remote_callbacks.defaultOptions()
-    var mutableCallbacks = callbacks
+    var payload = ValueContainer(wrappedValue: callbacks)
     
-    return try withUnsafeMutableBytes(of: &mutableCallbacks) {
+    return try withUnsafeMutableBytes(of: &payload) {
       (buffer) in
       gitCallbacks.payload = buffer.baseAddress
 

@@ -123,10 +123,6 @@ final class ClonePanelController: NSWindowController
   @MainActor
   func getPassword() async -> (String, String)?
   {
-    if let storedResult = readPassword() {
-      return storedResult
-    }
-
     guard let window = self.window,
           let url = URL(string: self.data.url)
     else { return nil }
@@ -137,15 +133,6 @@ final class ClonePanelController: NSWindowController
         host: url.host ?? "",
         path: url.path,
         port: UInt16(url.port ?? url.defaultPort))
-  }
-
-  func readPassword() -> (String, String)?
-  {
-    guard let url = data.flatMap({ URL(string: $0.url) }),
-          let password = passwordStorage.find(url: url)
-    else { return nil }
-
-    return (url.user ?? url.impliedUserName ?? "", password)
   }
 
   @objc required dynamic init?(coder: NSCoder)
@@ -267,16 +254,10 @@ final class ClonePanelController: NSWindowController
     @MainActor
     func tryGetPassword() -> (String, String)?
     {
-      if let result = readPassword() {
-        data.results.authentication = nil
-        return result
-      }
-      else {
-        let result: CloneData.AuthenticationResult = .failure(.missing)
+      let result: CloneData.AuthenticationResult = .failure(.missing)
 
-        data.results.authentication = result
-        return nil
-      }
+      data.results.authentication = result
+      return nil
     }
 
     name = url.path.lastPathComponent.deletingPathExtension

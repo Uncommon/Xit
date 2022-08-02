@@ -89,6 +89,7 @@
 		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89DA1E2128898B7B00FA4644 /* NetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA1E2028898B7B00FA4644 /* NetworkTests.swift */; };
+		89DA1E232899D6D800FA4644 /* ValueContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DA1E222899D6D800FA4644 /* ValueContainer.swift */; };
 		89DAE199267EAD61005AEA8F /* CloneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE198267EAD61005AEA8F /* CloneData.swift */; };
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
@@ -453,6 +454,7 @@
 		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
 		89DA1E2028898B7B00FA4644 /* NetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTests.swift; sourceTree = "<group>"; };
+		89DA1E222899D6D800FA4644 /* ValueContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueContainer.swift; sourceTree = "<group>"; };
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
@@ -794,8 +796,9 @@
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
-				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				89009E5128820CB2004A684B /* Testing.swift */,
+				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
+				89DA1E222899D6D800FA4644 /* ValueContainer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1593,6 +1596,7 @@
 				C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */,
 				891260E6285D183B00053528 /* GeneralPrefsPane.swift in Sources */,
 				891260E8285D395900053528 /* ConfigValueWrappers.swift in Sources */,
+				89DA1E232899D6D800FA4644 /* ValueContainer.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */,
 				C90A09F722F4E55100B42EFE /* RefName.swift in Sources */,

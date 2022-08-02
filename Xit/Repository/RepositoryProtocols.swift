@@ -247,7 +247,7 @@ struct MockTransferProgress: TransferProgress
   var receivedBytes: Int
 }
 
-public struct RemoteCallbacks
+public class RemoteCallbacks
 {
   typealias PasswordBlock = @MainActor () async -> (String, String)?
   typealias DownloadProgressBlock = (any TransferProgress) -> Bool
@@ -263,6 +263,22 @@ public struct RemoteCallbacks
   var uploadProgress: UploadProgressBlock? = nil
   /// Message from the server
   var sidebandMessage: SidebandMessageBlock? = nil
+
+  // Remember the last query so we don't return the same keychain data over and
+  // over when the password is wrong.
+  var lastKeychainUser: String?
+  var lastKeychainURL: URL?
+  
+  init(passwordBlock: RemoteCallbacks.PasswordBlock? = nil,
+       downloadProgress: RemoteCallbacks.DownloadProgressBlock? = nil,
+       uploadProgress: RemoteCallbacks.UploadProgressBlock? = nil,
+       sidebandMessage: RemoteCallbacks.SidebandMessageBlock? = nil)
+  {
+    self.passwordBlock = passwordBlock
+    self.downloadProgress = downloadProgress
+    self.uploadProgress = uploadProgress
+    self.sidebandMessage = sidebandMessage
+  }
 }
 
 public struct FetchOptions
