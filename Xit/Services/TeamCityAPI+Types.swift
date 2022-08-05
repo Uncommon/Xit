@@ -164,4 +164,3 @@ public class BranchSpec
     return nil
   }
 }
-

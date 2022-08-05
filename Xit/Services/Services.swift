@@ -90,7 +90,9 @@ final class Services
           let user = service.account.user
 
           Task {
-            if await Self.shouldReauthenticate(service: serviceName, user: user, error: error?.localizedDescription) {
+            if await Self.shouldReauthenticate(service: serviceName,
+                                               user: user,
+                                               error: error?.localizedDescription) {
               service.attemptAuthentication()
             }
           }

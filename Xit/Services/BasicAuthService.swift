@@ -156,7 +156,7 @@ class MockAuthService: BasicAuthService
   {
     authenticationStatus = .inProgress
     Task {
-      _ = try? await Task.sleep(nanoseconds:1000000000)
+      _ = try? await Task.sleep(nanoseconds: 1000000000)
       authenticationStatus = .done
     }
   }
