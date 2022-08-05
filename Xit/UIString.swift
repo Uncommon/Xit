@@ -322,6 +322,7 @@ public struct UIString: RawRepresentable, Sendable
   { .init(format: UIString.noRemoteBranchesFormat, remote) }
 
   static let alreadyWriting = ›"A writing operation is already in progress."
+  static let authenticationFailed = ›"Authentication failed."
   static let invalidNameGiven = ›"The name is invalid"
   static let mergeInProgress = ›"A merge operation is already in progress."
   static let cherryPickInProgress = ›"A cherry-pick operation is already in progress."
