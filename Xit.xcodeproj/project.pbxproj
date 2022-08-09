@@ -209,6 +209,7 @@
 		C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6651FCF5D7A0020C51D /* CommitSelection.swift */; };
 		C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6671FCF5DBD0020C51D /* StashSelection.swift */; };
 		C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BF6691FCF5E370020C51D /* StagingSelection.swift */; };
+		C95CF2DF28A3011C00DD3B11 /* TrailersTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CF2DE28A3011C00DD3B11 /* TrailersTest.swift */; };
 		C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95ECD041EB11E310000DB78 /* WebViewController.swift */; };
 		C96256B2235A402800A625DC /* NewRemoteOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96256B1235A402800A625DC /* NewRemoteOpController.swift */; };
 		C966676625E6D3DF00E6B38C /* FileViewController+Split.swift in Sources */ = {isa = PBXBuildFile; fileRef = C966676525E6D3DF00E6B38C /* FileViewController+Split.swift */; };
@@ -581,6 +582,7 @@
 		C95BF6651FCF5D7A0020C51D /* CommitSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitSelection.swift; sourceTree = "<group>"; };
 		C95BF6671FCF5DBD0020C51D /* StashSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashSelection.swift; sourceTree = "<group>"; };
 		C95BF6691FCF5E370020C51D /* StagingSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagingSelection.swift; sourceTree = "<group>"; };
+		C95CF2DE28A3011C00DD3B11 /* TrailersTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailersTest.swift; sourceTree = "<group>"; };
 		C95ECD041EB11E310000DB78 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C96256B1235A402800A625DC /* NewRemoteOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRemoteOpController.swift; sourceTree = "<group>"; };
 		C966676525E6D3DF00E6B38C /* FileViewController+Split.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileViewController+Split.swift"; sourceTree = "<group>"; };
@@ -984,6 +986,7 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				89E42729285D6E3D00A17651 /* ConfigTest.swift */,
+				C95CF2DE28A3011C00DD3B11 /* TrailersTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1737,6 +1740,7 @@
 				C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */,
 				89E4272A285D6E3D00A17651 /* ConfigTest.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
+				C95CF2DF28A3011C00DD3B11 /* TrailersTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,
 				C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,

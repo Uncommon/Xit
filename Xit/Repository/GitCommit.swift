@@ -57,6 +57,34 @@ extension Commit
   { sha.firstSix() }
 }
 
+extension Commit
+{
+  func parseTrailers() -> [(String, String)]
+  {
+    guard let message = self.message,
+          let runner = XTRepository.globalCLIRunner()
+    else { return [] }
+
+    do {
+      let output = try runner.run(inputString: message,
+                                  args: ["interpret-trailers", "--parse"])
+      guard let text = String(data: output)
+      else { return [] }
+
+      return text.lineComponents().compactMap {
+        let parts = $0.components(separatedBy: ": ")
+        guard parts.count >= 2
+        else { return nil }
+
+        return (parts[0], parts[1...].joined(separator: ": "))
+      }
+    }
+    catch {
+      return []
+    }
+  }
+}
+
 public final class GitCommit: Commit
 {
   let commit: OpaquePointer

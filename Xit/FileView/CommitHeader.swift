@@ -55,7 +55,7 @@ struct CommitHeader: View
     if let commit = commit {
       ScrollView {
         VStack(alignment: .leading, spacing: Measurement.divider) {
-          VStack(spacing: 6) {
+          VStack(alignment: .leading, spacing: 6) {
             if let author = commit.authorSig {
               SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
                            help: "Author",
@@ -67,11 +67,14 @@ struct CommitHeader: View
                            help: "Committer",
                            signature: committer)
             }
+
+            let trailers = commit.parseTrailers()
+
             HStack(alignment: .firstTextBaseline) {
               VStack(alignment: .leading) {
                 ForEach(commit.parentOIDs, id: \.sha) { oid in
                   HStack {
-                    CommitHeaderLabel(text: "Parent:")
+                    CommitHeaderLabel("Parent:")
                     Text(messageLookup(oid))
                       .foregroundColor(.blue)
                       .onHover { isInside in
@@ -92,7 +95,7 @@ struct CommitHeader: View
                 .accessibilityElement(children: .contain)
                 .accessibility(identifier: "parents")
               Spacer()
-              CommitHeaderLabel(text: "SHA:")
+              CommitHeaderLabel("SHA:")
               Button {
                 let pasteboard = NSPasteboard.general
                 pasteboard.clearContents()
@@ -105,6 +108,16 @@ struct CommitHeader: View
               }
                 .buttonStyle(LinkButtonStyle())
                 .accessibility(identifier: "sha")
+            }
+            LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 2),
+                      alignment: .leading) {
+              ForEach(0..<trailers.count, id: \.self) { index in
+                HStack {
+                  CommitHeaderLabel(trailers[index].0
+                      .replacingOccurrences(of: "-", with: " ") + ":")
+                  Text(trailers[index].1)
+                }
+              }
             }
           }
             .padding([.top, .horizontal], Measurement.margin)
@@ -157,6 +170,11 @@ struct CommitHeaderLabel: View
   
   var body: some View {
     Text(text).font(.body).bold().foregroundColor(.gray)
+  }
+
+  init(_ text: String)
+  {
+    self.text = text
   }
 }
 
