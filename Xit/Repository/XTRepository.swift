@@ -61,6 +61,11 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     
     return paths.first { FileManager.default.fileExists(atPath: $0) }
   }
+
+  static func globalCLIRunner() -> CLIRunner?
+  {
+    gitPath().map { .init(toolPath: $0, workingDir: "~") }
+  }
   
   init(gitRepo: OpaquePointer) throws
   {
