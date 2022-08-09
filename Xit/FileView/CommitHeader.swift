@@ -121,7 +121,7 @@ struct CommitHeader: View
                       .replacingOccurrences(of: "-", with: " ") + ":")
                   VStack(alignment: .leading) {
                     ForEach(0..<values.count, id: \.self) {
-                      Text(values[$0])
+                      Text(values[$0]).textSelection(.enabled)
                     }
                   }
                 }
@@ -159,10 +159,12 @@ struct SignatureRow: View
       icon.foregroundColor(.secondary).help(help)
       if let name = signature.name {
         Text(name).bold()
+          .textSelection(.enabled)
           .accessibility(identifier: "name")
       }
       if let email = signature.email {
         Text("<\(email)>").bold().foregroundColor(.secondary)
+          .textSelection(.enabled)
           .accessibility(identifier: "email")
       }
       Spacer()
