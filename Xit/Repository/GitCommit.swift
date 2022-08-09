@@ -59,7 +59,7 @@ extension Commit
 
 extension Commit
 {
-  func parseTrailers() -> [(String, String)]
+  func parseTrailers() -> [(String, [String])]
   {
     guard let message = self.message,
           let runner = XTRepository.globalCLIRunner()
@@ -70,14 +70,24 @@ extension Commit
                                   args: ["interpret-trailers", "--parse"])
       guard let text = String(data: output)
       else { return [] }
+      var result: [(String, [String])] = []
 
-      return text.lineComponents().compactMap {
-        let parts = $0.components(separatedBy: ": ")
+      for line in text.lineComponents() {
+        let parts = line.components(separatedBy: ": ")
         guard parts.count >= 2
-        else { return nil }
+        else { continue }
+        let label = parts[0]
+        let value = parts[1...].joined(separator: ": ")
 
-        return (parts[0], parts[1...].joined(separator: ": "))
+        if let index = result.firstIndex(where: { $0.0 == label }) {
+          result[index].1.append(value)
+        }
+        else {
+          result.append((label, [value]))
+        }
+
       }
+      return result
     }
     catch {
       return []

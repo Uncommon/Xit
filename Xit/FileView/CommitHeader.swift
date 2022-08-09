@@ -109,13 +109,21 @@ struct CommitHeader: View
                 .buttonStyle(LinkButtonStyle())
                 .accessibility(identifier: "sha")
             }
-            LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 2),
+            LazyVGrid(columns: .init(repeating: .init(.flexible(),
+                                                      alignment: .topLeading),
+                                     count: 2),
                       alignment: .leading) {
               ForEach(0..<trailers.count, id: \.self) { index in
-                HStack {
-                  CommitHeaderLabel(trailers[index].0
+                HStack(alignment: .firstTextBaseline) {
+                  let (label, values) = trailers[index]
+
+                  CommitHeaderLabel(label
                       .replacingOccurrences(of: "-", with: " ") + ":")
-                  Text(trailers[index].1)
+                  VStack(alignment: .leading) {
+                    ForEach(0..<values.count, id: \.self) {
+                      Text(values[$0])
+                    }
+                  }
                 }
               }
             }
