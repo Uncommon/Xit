@@ -73,6 +73,11 @@ public class GitBranch
     self.config = config
   }
 
+  deinit
+  {
+    git_reference_free(branchRef)
+  }
+
   public var name: String
   {
     guard let name = git_reference_name(branchRef)

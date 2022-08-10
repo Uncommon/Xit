@@ -29,6 +29,10 @@ final class ConfigWatcher
     result = git_repository_item_path(&pathBuf, repository.gitRepo,
                                       GIT_REPOSITORY_ITEM_CONFIG)
     if result == 0 {
+      defer {
+        git_buf_free(&pathBuf)
+      }
+      
       let repoPath = String(cString: pathBuf.ptr)
       
       repoConfigStream = FileEventStream(path: repoPath,

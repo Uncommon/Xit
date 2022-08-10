@@ -90,6 +90,11 @@ final class GitPatch: Patch
     self.oldData = oldData
     self.newData = newData
   }
+
+  deinit
+  {
+    git_patch_free(patch)
+  }
   
   var hunkCount: Int { git_patch_num_hunks(patch) }
   var addedLinesCount: Int

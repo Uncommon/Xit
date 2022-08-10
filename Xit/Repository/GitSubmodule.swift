@@ -80,10 +80,17 @@ extension SubmoduleRecurse
 public final class GitSubmodule: Submodule
 {
   var submodule: OpaquePointer
-  
+
+  /// The object will assume ownership of `submodule` and will call
+  /// `git_submodule_free` when deinitialized.
   init(submodule: OpaquePointer)
   {
     self.submodule = submodule
+  }
+
+  deinit
+  {
+    git_submodule_free(submodule)
   }
   
   public var name: String { .init(cString: git_submodule_name(submodule)) }

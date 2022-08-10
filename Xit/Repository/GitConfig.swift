@@ -274,6 +274,9 @@ final class GitConfig: Config
       let result = git_config_get_string_buf(&buffer, operativeConfig, index)
       guard result == 0
       else { return nil }
+      defer {
+        git_buf_free(&buffer)
+      }
       
       return String(cString: buffer.ptr)
     }

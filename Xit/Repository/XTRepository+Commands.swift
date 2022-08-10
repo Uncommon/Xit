@@ -195,6 +195,9 @@ extension XTRepository: RemoteManagement
     var strArray = git_strarray()
     guard git_remote_list(&strArray, gitRepo) == 0
     else { return [] }
+    defer {
+      git_strarray_free(&strArray)
+    }
     
     return strArray.compactMap { $0 }
   }
