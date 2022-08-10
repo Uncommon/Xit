@@ -95,7 +95,7 @@ extension git_remote_callbacks
           else {
             let error = RepoError(gitCode: git_error_code(rawValue: result))
             
-            NSLog("Could not load ssh key for \(path): \(error))")
+            repoLogger.debug("Could not load ssh key for \(path): \(error))")
           }
         }
         if result == 0 {

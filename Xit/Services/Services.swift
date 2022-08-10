@@ -1,5 +1,9 @@
 import Cocoa
 import Siesta
+import os
+
+let serviceLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                           category: "services")
 
 protocol AccountService: AnyObject
 {
@@ -212,7 +216,7 @@ final class Services
     guard let password = passwordStorage.find(url: account.location,
                                               account: account.user)
     else {
-      NSLog("No password found for \(account.user)")
+      serviceLogger.info("No \(account.type.name) password for \(account.user)")
       return nil
     }
 

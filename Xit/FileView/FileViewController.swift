@@ -502,7 +502,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       alert.beginSheetModal(for: view.window!)
     }
     catch {
-      NSLog("Unexpected revert error")
+      repoLogger.debug("Unexpected revert error")
     }
   }
 }

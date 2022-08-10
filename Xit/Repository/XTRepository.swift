@@ -1,5 +1,9 @@
 import Foundation
 import Combine
+import os
+
+let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                        category: "repo")
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }

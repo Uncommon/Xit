@@ -44,7 +44,8 @@ class BasicAuthService: IdentifiableService, ObservableObject
         (resource, request) in
         request.onFailure {
           (error) in
-          NSLog("Request error: \(error.userMessage) \(resource.url)")
+          serviceLogger.debug(
+              "Request error: \(error.userMessage) \(resource.url)")
         }
       }
     }
@@ -70,8 +71,10 @@ class BasicAuthService: IdentifiableService, ObservableObject
       return true
     }
     else {
-      NSLog("Couldn't construct auth header for " +
-            "\(user) @ \(String(describing: baseURL))")
+      serviceLogger.debug("""
+          Couldn't construct auth header for \
+          \(user) @ \(self.baseURL?.absoluteString ?? "?")
+          """)
       return false
     }
   }
@@ -101,7 +104,7 @@ class BasicAuthService: IdentifiableService, ObservableObject
         case .error:
           guard let error = resource.latestError
           else {
-            NSLog("Error event with no error")
+            serviceLogger.debug("Error event with no error")
             self.authenticationStatus = .failed(nil)
             return
           }

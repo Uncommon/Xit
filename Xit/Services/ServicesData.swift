@@ -52,6 +52,11 @@ enum PullRequestApproval
   case unknown
 }
 
+extension PullRequestStatus: CustomStringConvertible
+{ var description: String { String(describing: self) } }
+extension PullRequestApproval: CustomStringConvertible
+{ var description: String { String(describing: self) } }
+
 /// A service that is related to specific remote repositories
 protocol RemoteService
 {

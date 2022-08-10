@@ -118,7 +118,7 @@ final class HistoryTableController: NSViewController,
       
       guard let walker = repository.walker()
       else {
-        NSLog("RevWalker failed")
+        repoLogger.debug("RevWalker failed")
         return
       }
       

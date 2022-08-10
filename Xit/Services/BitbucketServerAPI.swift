@@ -277,7 +277,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
       return try JSONDecoder().decode(T.self, from: entity.content)
     }
     catch let error as DecodingError {
-      print(error.context.debugDescription)
+      serviceLogger.debug("\(error.context.debugDescription)")
       throw error
     }
   }
@@ -379,7 +379,7 @@ extension BitbucketServerAPI: PullRequestService
 
       #if DEBUG
       for request in result {
-        print("\(request.status): \(request.sourceBranch)")
+        serviceLogger.debug("\(request.status): \(request.sourceBranch)")
       }
       #endif
       return result

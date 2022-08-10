@@ -339,7 +339,7 @@ extension FileViewController: HunkStaging
       let selectedChange = self.selectedChange,
       let fileURL = selection.unstagedFileList.fileURL(selectedChange.gitPath)
       else {
-        NSLog("Setup for discard hunk failed")
+        repoLogger.debug("Setup for discard hunk failed")
         return
     }
     
