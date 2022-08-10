@@ -51,6 +51,8 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   private var buildTypesCache: [String: [String]] = [:]
   /// Cached results for `vcsRootsForBuildType`
   private var vcsRootsCache: [String: [String]] = [:]
+
+  private let mutex = Mutex()
   
   required init?(account: Account, password: String)
   {
@@ -275,18 +277,20 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
             let name = propertyElement.attribute(forName: "name")?.stringValue,
             let value = propertyElement.attribute(forName: "value")?.stringValue
       else { continue }
-      
-      switch name {
-        case "url":
-          vcsRootMap[vcsRootID] = URL(string: value)
-        case "teamcity:branchSpec":
-          let specLines = value.components(separatedBy: .whitespacesAndNewlines)
-        
-          if let branchSpec = BranchSpec(ruleStrings: specLines) {
-            vcsBranchSpecs[vcsRootID] = branchSpec
-          }
-        default:
-          break
+
+      mutex.withLock {
+        switch name {
+          case "url":
+            vcsRootMap[vcsRootID] = URL(string: value)
+          case "teamcity:branchSpec":
+            let specLines = value.components(separatedBy: .whitespacesAndNewlines)
+
+            if let branchSpec = BranchSpec(ruleStrings: specLines) {
+              vcsBranchSpecs[vcsRootID] = branchSpec
+            }
+          default:
+            break
+        }
       }
     }
   }
@@ -322,7 +326,11 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
       }
       try await taskGroup.waitForAll()
     }
-    self.buildTypesStatus = .done
+    // buildTypeStatus is observed by SwiftUI, so it must be published from
+    // the main thread.
+    Thread.syncOnMain {
+      self.buildTypesStatus = .done
+    }
   }
   
   /// Parses an individual build type to see which VCS roots it uses.
@@ -345,15 +353,17 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     }
 
     let projectName = buildType.attribute(forName: "projectName")?.stringValue
-    
-    cachedBuildTypes.append(BuildType(id: buildTypeID,
-                                      name: name,
-                                      projectName: projectName ?? ""))
-    
-    let vcsIDs = rootEntries.childrenAttributes("id")
-    let urls = vcsIDs.compactMap { vcsRootMap[$0] }
 
-    buildTypeURLs[buildTypeID] = urls
+    mutex.withLock {
+      cachedBuildTypes.append(BuildType(id: buildTypeID,
+                                        name: name,
+                                        projectName: projectName ?? ""))
+      
+      let vcsIDs = rootEntries.childrenAttributes("id")
+      let urls = vcsIDs.compactMap { vcsRootMap[$0] }
+      
+      buildTypeURLs[buildTypeID] = urls
+    }
   }
 }
 

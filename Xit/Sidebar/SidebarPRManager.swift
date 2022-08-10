@@ -1,14 +1,16 @@
 import Foundation
 import Cocoa
+import Combine
 
 @MainActor
 final class SidebarPRManager
 {
-  let refreshInterval: TimeInterval = 5 * .minutes
+  let refreshStride = DispatchQueue.SchedulerTimeType.Stride(
+        floatLiteral: 5 * .minutes)
   
   let model: SidebarDataModel
   var pullRequestCache: PullRequestCache  // not `let` for testability
-  var refreshTimer: Timer?
+  var refreshScheduled: Cancellable?
 
   init(model: SidebarDataModel)
   {
@@ -20,16 +22,17 @@ final class SidebarPRManager
   
   func scheduleCacheRefresh()
   {
-    refreshTimer = Timer.scheduledTimer(withTimeInterval: refreshInterval,
-                                        repeats: true) {
-      [weak self] _ in
+    refreshScheduled = DispatchQueue.main.schedule(after: .init(.now()),
+                                                   interval: refreshStride) {
+      [weak self] in
       self?.pullRequestCache.refresh()
     }
   }
   
   func stopCacheRefresh()
   {
-    refreshTimer?.invalidate()
+    refreshScheduled?.cancel()
+    refreshScheduled = nil
   }
   
   func remoteItem(for pullRequest: any PullRequest) -> RemoteBranchSidebarItem?

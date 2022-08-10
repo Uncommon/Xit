@@ -105,10 +105,13 @@ final class BuildStatusCache: BuildStatusAccessor
             // failed to find matching branch; ignore and continue
             return
           }
-          var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
 
-          buildTypeStatuses[branchName] = build
-          self.statuses[buildType] = buildTypeStatuses
+          await MainActor.run {
+            var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
+
+            buildTypeStatuses[branchName] = build
+            self.statuses[buildType] = buildTypeStatuses
+          }
           for ref in self.clients {
             ref.client?.buildStatusUpdated(branch: branchName,
                                            buildType: buildType)

@@ -218,9 +218,9 @@ final class HistoryTableController: NSViewController,
     let tableView = view as! NSTableView
     
     objc_sync_enter(self)
-    objc_sync_enter(history)
+    history.syncMutex.lock()
     defer {
-      objc_sync_exit(history)
+      history.syncMutex.unlock()
       objc_sync_exit(self)
     }
     

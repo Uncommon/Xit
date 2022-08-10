@@ -153,10 +153,11 @@ extension BuildStatusViewController: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
   {
-    filterStatuses()
     DispatchQueue.main.async {
-      self.setProgressVisible(false)
-      self.tableView.reloadData()
+      [self] in
+      filterStatuses()
+      setProgressVisible(false)
+      tableView.reloadData()
     }
   }
 }
