@@ -68,7 +68,7 @@ struct CommitHeader: View
                            signature: committer)
             }
 
-            let trailers = commit.parseTrailers()
+            let trailers = commit.getTrailers()
 
             HStack(alignment: .firstTextBaseline) {
               VStack(alignment: .leading) {
@@ -206,6 +206,8 @@ struct CommitHeader_Previews: PreviewProvider
                                              when: Date())
 
     var isSigned: Bool { false }
+
+    func getTrailers() -> [(String, [String])] { [] }
   }
   
   static var parents: [String: String] = ["A": "First parent",

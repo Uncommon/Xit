@@ -22,6 +22,8 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var tree: (any Tree)? { get }
 
   var isSigned: Bool { get }
+
+  func getTrailers() -> [(String, [String])]
 }
 
 extension Commit
@@ -55,44 +57,6 @@ extension Commit
 
   public var description: String
   { sha.firstSix() }
-}
-
-extension Commit
-{
-  func parseTrailers() -> [(String, [String])]
-  {
-    guard let message = self.message,
-          let runner = XTRepository.globalCLIRunner()
-    else { return [] }
-
-    do {
-      let output = try runner.run(inputString: message,
-                                  args: ["interpret-trailers", "--parse"])
-      guard let text = String(data: output)
-      else { return [] }
-      var result: [(String, [String])] = []
-
-      for line in text.lineComponents() {
-        let parts = line.components(separatedBy: ": ")
-        guard parts.count >= 2
-        else { continue }
-        let label = parts[0]
-        let value = parts[1...].joined(separator: ": ")
-
-        if let index = result.firstIndex(where: { $0.0 == label }) {
-          result[index].1.append(value)
-        }
-        else {
-          result.append((label, [value]))
-        }
-
-      }
-      return result
-    }
-    catch {
-      return []
-    }
-  }
 }
 
 public final class GitCommit: Commit
@@ -243,6 +207,30 @@ public final class GitCommit: Commit
     else { return nil }
     
     self.init(gitCommit: gitObject)
+  }
+
+  public func getTrailers() -> [(String, [String])]
+  {
+    guard let message = self.message
+    else { return [] }
+    var trailers = git_message_trailer_array()
+    guard git_message_trailers(&trailers, message) == 0
+    else { return [] }
+
+    var result: [(String, [String])] = []
+
+    for i in 0..<trailers.count {
+      let key: String = .init(cString: trailers.trailers[i].key)
+      let value: String = .init(cString: trailers.trailers[i].value)
+
+      if let index = result.firstIndex(where: { $0.0 == key }) {
+        result[index].1.append(value)
+      }
+      else {
+        result.append((key, [value]))
+      }
+    }
+    return result
   }
   
   private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GitOID]
