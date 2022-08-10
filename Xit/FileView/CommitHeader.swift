@@ -207,7 +207,13 @@ struct CommitHeader_Previews: PreviewProvider
 
     var isSigned: Bool { false }
 
-    func getTrailers() -> [(String, [String])] { [] }
+    func getTrailers() -> [(String, [String])]
+    {
+      [
+        ("Previewed-by", ["This Guy"]),
+        ("Eaten-by", ["Dinosaurs", "Gentlemen"]),
+      ]
+    }
   }
   
   static var parents: [String: String] = ["A": "First parent",
