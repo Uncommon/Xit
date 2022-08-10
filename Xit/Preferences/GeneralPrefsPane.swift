@@ -27,8 +27,10 @@ struct GeneralPrefsPane: View
         Toggle("Workspace status in tabs", isOn: $tabStatus)
           .accessibilityIdentifier(.Preferences.Controls.tabStatus)
       }.fixedSize())
-      LabeledField("User name:", TextField(text: $userName, label: { EmptyView() }))
-      LabeledField("User email:", TextField(text: $userEmail, label: { EmptyView() }))
+      LabeledField("User name:",
+                   TextField(text: $userName, label: { EmptyView() }))
+      LabeledField("User email:",
+                   TextField(text: $userEmail, label: { EmptyView() }))
       LabeledField("Fetch options:", VStack(alignment: .leading) {
         Toggle("Download tags", isOn: $fetchTags)
         Toggle("Prune branches", isOn: $pruneBranches)

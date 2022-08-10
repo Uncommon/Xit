@@ -39,6 +39,7 @@ extension AccountInfo: Validating
 struct EditAccountPanel: DataModelView
 {
   typealias Model = AccountInfo
+  
   @ObservedObject var model: AccountInfo
 
   var body: some View
