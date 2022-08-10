@@ -216,6 +216,9 @@ public final class GitCommit: Commit
     var trailers = git_message_trailer_array()
     guard git_message_trailers(&trailers, message) == 0
     else { return [] }
+    defer {
+      git_message_trailer_array_free(&trailers)
+    }
 
     var result: [(String, [String])] = []
 
