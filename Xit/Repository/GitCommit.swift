@@ -30,6 +30,16 @@ public protocol Commit<ObjectIdentifier>: OIDObject, CustomStringConvertible
 
 extension Commit
 {
+  /// Because `tree` is a "generic" associated type the compiler wants an
+  /// explicit conversion to the unconstrained existential.
+  var anyTree: (any Xit.Tree)?
+  {
+    tree as (any Xit.Tree)?
+  }
+}
+
+extension Commit
+{
   var authorName: String? { authorSig?.name }
   var authorEmail: String? { authorSig?.email }
   var authorDate: Date? { authorSig?.when }

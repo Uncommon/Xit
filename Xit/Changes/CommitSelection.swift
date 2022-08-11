@@ -55,7 +55,7 @@ final class CommitFileList: FileListModel
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    guard let tree = commit.tree as (any Tree)?
+    guard let tree = commit.anyTree
     else { return NSTreeNode() }
     let changeList = repository.changes(for: commit.id, parent: diffParent)
     let loader = TreeLoader(fileChanges: changeList)

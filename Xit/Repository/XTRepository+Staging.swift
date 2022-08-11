@@ -373,7 +373,7 @@ extension XTRepository: FileStaging
     
     if let headOID = headReference?.resolve()?.targetOID {
       guard let headCommit = commit(forOID: headOID),
-            let headTree = headCommit.tree as (any Tree)?
+            let headTree = headCommit.anyTree
       else { throw RepoError.unexpected }
       
       try index.read(tree: headTree)
@@ -440,7 +440,7 @@ extension XTRepository: FileStaging
         else {
           throw RepoError.commitNotFound(sha: parentOID.sha)
         }
-        guard let entry = parentCommit.tree?.entry(path: file),
+        guard let entry = parentCommit.anyTree?.anyEntry(path: file),
               let blob = entry.object as? Blob
         else {
           throw RepoError.fileNotFound(path: file)
