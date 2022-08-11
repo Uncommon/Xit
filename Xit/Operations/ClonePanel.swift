@@ -57,6 +57,7 @@ struct ClonePanel: View
         if data.results.authentication?.error != nil {
           Button(.signIn, action: authenticate)
             .keyboardShortcut("S")
+            .disabled(data.inProgress)
             .accessibilityIdentifier(.Clone.Button.signIn)
         }
         Button(.cancel, action: close)
