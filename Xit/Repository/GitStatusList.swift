@@ -56,6 +56,6 @@ struct GitStatusEntry: Sendable
   var status: StatusFlags
   { StatusFlags(rawValue: Int32(entry.status.rawValue)) }
   
-  var headToIndex: DiffDelta? { entry.head_to_index?.pointee }
-  var indexToWorkdir: DiffDelta? { entry.index_to_workdir?.pointee }
+  var headToIndex: (any DiffDelta)? { entry.head_to_index?.pointee }
+  var indexToWorkdir: (any DiffDelta)? { entry.index_to_workdir?.pointee }
 }

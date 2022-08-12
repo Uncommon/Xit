@@ -2,17 +2,22 @@ import Foundation
 
 public protocol Diff: AnyObject
 {
+  associatedtype Delta: DiffDelta
+  associatedtype Patch: Xit.Patch
+  associatedtype Stats: DiffStats
+
   var deltaCount: Int { get }
   
-  func delta(at index: Int) -> (any DiffDelta)?
-  func patch(at index: Int) -> (any Patch)?
+  func delta(at index: Int) -> Delta?
+  func patch(at index: Int) -> Patch?
 
-  func stats() -> (any DiffStats)?
+  func stats() -> Stats?
 }
 
-public protocol DiffFile
+public protocol DiffFile<ObjectIdentifier>: OIDObject
 {
-  var oid: any OID { get }
+  associatedtype ObjectIdentifier
+
   var filePath: String { get }
   var size: UInt64 { get }
   var diffFlags: DiffFlags { get }
@@ -146,7 +151,7 @@ final class GitDiff: Diff
   
   var deltaCount: Int { git_diff_num_deltas(diff) }
   
-  func delta(at index: Int) -> (any DiffDelta)?
+  func delta(at index: Int) -> git_diff_delta?
   {
     switch index {
       case 0..<deltaCount:
@@ -156,7 +161,7 @@ final class GitDiff: Diff
     }
   }
   
-  func patch(at index: Int) -> (any Patch)?
+  func patch(at index: Int) -> GitPatch?
   {
     guard let patch = try? OpaquePointer.from({
       git_patch_from_diff(&$0, diff, index)
@@ -166,7 +171,7 @@ final class GitDiff: Diff
     return GitPatch(gitPatch: patch)
   }
 
-  func stats() -> (any DiffStats)?
+  func stats() -> GitDiffStats?
   {
     guard let stats = try? OpaquePointer.from({
       git_diff_get_stats(&$0, diff)
@@ -176,6 +181,31 @@ final class GitDiff: Diff
     return GitDiffStats(stats: stats)
   }
 
+  struct Deltas: Collection
+  {
+    let diff: GitDiff
+    
+    var startIndex: Int { 0 }
+    var endIndex: Int { diff.deltaCount }
+    
+    subscript(position: Int) -> any DiffDelta { diff.delta(at: position)! }
+    func index(after i: Int) -> Int { i + 1 }
+  }
+  
+  struct Patches: Collection
+  {
+    let diff: GitDiff
+    
+    var startIndex: Int { 0 }
+    var endIndex: Int { diff.deltaCount }
+    
+    subscript(position: Int) -> any Patch { diff.patch(at: position)! }
+    func index(after i: Int) -> Int { i + 1 }
+  }
+  
+  var deltas: Deltas { Deltas(diff: self) }
+  var patches: Patches { Patches(diff: self) }
+  
   deinit
   {
     git_diff_free(diff)
@@ -207,19 +237,24 @@ extension Diff
 }
 
 
-extension git_diff_file: DiffFile
+public struct GitDiffFile: DiffFile
 {
-  public var oid: any OID { GitOID(oid: id) }
+  public typealias ObjectIdentifier = GitOID
+
+  let diffFile: git_diff_file
+
+  public var id: GitOID { .init(oid: diffFile.id) }
+  public var size: UInt64 { diffFile.size }
   public var filePath: String
   {
-    if let path = self.path {
+    if let path = diffFile.path {
       return String(cString: path)
     }
     else {
       return ""
     }
   }
-  public var diffFlags: DiffFlags { DiffFlags(rawValue: flags) }
+  public var diffFlags: DiffFlags { DiffFlags(rawValue: diffFile.flags) }
 }
 
 extension git_diff_line: DiffLine

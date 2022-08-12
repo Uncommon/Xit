@@ -148,6 +148,9 @@ public protocol FileDiffing: AnyObject
   func diffMaker(forFile file: String,
                  commitOID: any OID,
                  parentOID: (any OID)?) -> PatchMaker.PatchResult?
+  func diff(for path: String,
+            commitSHA sha: String,
+            parentOID: (any OID)?) -> (any DiffDelta)?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?

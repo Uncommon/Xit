@@ -2,10 +2,12 @@ import Foundation
 
 public protocol DiffDelta
 {
+  associatedtype File: DiffFile
+
   var deltaStatus: DeltaStatus { get }
   var diffFlags: DiffFlags { get }
-  var oldFile: any DiffFile { get }
-  var newFile: any DiffFile { get }
+  var oldFile: File { get }
+  var newFile: File { get }
 }
 
 typealias GitDiffDelta = git_diff_delta
@@ -85,8 +87,10 @@ extension git_diff_delta
 
 extension git_diff_delta: DiffDelta
 {
+  public typealias File = GitDiffFile
+
   public var deltaStatus: DeltaStatus { DeltaStatus(gitDelta: status) }
   public var diffFlags: DiffFlags { DiffFlags(rawValue: flags) }
-  public var oldFile: DiffFile { old_file }
-  public var newFile: DiffFile { new_file }
+  public var oldFile: File { .init(diffFile: old_file) }
+  public var newFile: File { .init(diffFile: new_file) }
 }
