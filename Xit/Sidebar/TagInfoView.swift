@@ -41,7 +41,7 @@ struct TagInfoView: View
     }.padding().frame(minWidth: 400, maxWidth: 400, alignment: .leading)
   }
 
-  init(tag: Tag)
+  init(tag: any Tag)
   {
     if let signature = tag.signature {
       self.name = signature.name ?? "-"
@@ -66,8 +66,8 @@ struct TagInfoView_Previews: PreviewProvider
   {
     let name: String
     let signature: Signature?
-    let targetOID: (any OID)?
-    let commit: (any Commit)?
+    let targetOID: StringOID?
+    let commit: StringCommit?
     let message: String?
     let type: TagType
     let isSigned: Bool
