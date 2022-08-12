@@ -37,6 +37,7 @@ final class ClonePanelController: NSWindowController
   var pathObserver: AnyCancellable?
 
   let passwordStorage: PasswordStorage
+  var allowPasswordPrompt: Bool = false
   
   private static var currentController: ClonePanelController?
   
@@ -104,19 +105,17 @@ final class ClonePanelController: NSWindowController
   func authenticate()
   {
     Task {
-      guard let url = URL(string: self.data.url),
-            let creds = await getPassword()
-      else { return }
+      allowPasswordPrompt = true
 
-      do {
-        try passwordStorage.save(url: url, account: creds.0, password: creds.1)
-        self.data.didReadURL(result: readURL(url.absoluteString))
+      let url = data.url
+      let result = await withCheckedContinuation { continuation in
+        DispatchQueue.global(qos: .userInitiated).async {
+          continuation.resume(returning: self.readURL(url))
+        }
       }
-      catch {
-        let result: CloneData.AuthenticationResult = .failure(.keychain)
-
-        self.data.results.authentication = result
-      }
+      
+      data.didReadURL(result: result)
+      allowPasswordPrompt = true
     }
   }
 
@@ -183,6 +182,7 @@ final class ClonePanelController: NSWindowController
     }
   }
 
+  nonisolated
   func defaultDestination() -> String
   {
     let manager = FileManager.default
@@ -252,11 +252,16 @@ final class ClonePanelController: NSWindowController
     let branches: [String]
     let selectedBranch: String
     @MainActor
-    func tryGetPassword() -> (String, String)?
+    func tryGetPassword() async -> (String, String)?
     {
-      let result: CloneData.AuthenticationResult = .failure(.missing)
+      if allowPasswordPrompt,
+         let result = await getPassword() {
+        data.results.authentication = nil
+        return result
+      }
+      let missing: CloneData.AuthenticationResult = .failure(.missing)
 
-      data.results.authentication = result
+      data.results.authentication = missing
       return nil
     }
 

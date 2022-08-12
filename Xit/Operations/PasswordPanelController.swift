@@ -68,8 +68,8 @@ final class PasswordPanelController: SheetController
   {
     DispatchQueue.main.async {
       do {
-        try KeychainStorage.shared.save(host: host, path: path, port: port,
-                                   account: account, password: password)
+        try KeychainStorage.xit.save(host: host, path: path, port: port,
+                                     account: account, password: password)
       }
       catch let error as NSError {
         NSLog("Keychain save failed: error \(error.code)")
