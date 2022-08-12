@@ -1,7 +1,6 @@
 import Foundation
 
-// It would be nice to say this conforms to Sequence and IteratorProtocol,
-// but then it could only be used as a generic constraint.
+// Associated types for this can't happen until other types have them too.
 public protocol RevWalk
 {
   func reset()
@@ -63,7 +62,7 @@ final class GitRevWalk: RevWalk
   {
     guard let gitOID = oid as? GitOID
     else { return }
-    
+
     _ = gitOID.withUnsafeOID { git_revwalk_push(walker, $0) }
   }
   

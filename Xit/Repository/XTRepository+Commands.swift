@@ -102,7 +102,7 @@ extension XTRepository: Workspace
 
 extension XTRepository: Stashing
 {
-  public var stashes: AnyCollection<Stash>
+  public var stashes: AnyCollection<any Stash>
   { AnyCollection(StashCollection(repo: self)) }
   
   // TODO: Don't require the message parameter

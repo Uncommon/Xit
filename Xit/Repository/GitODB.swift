@@ -2,12 +2,15 @@ import Foundation
 
 protocol ObjectDatabase
 {
-  subscript(oid: any OID) -> ODBObject? { get }
+  associatedtype ID: OID
+
+  subscript(oid: ID) -> ODBObject? { get }
 }
 
 protocol ODBObject
 {
   var text: String { get }
+  var data: Data { get }
 }
 
 class GitODB: ObjectDatabase
@@ -31,14 +34,15 @@ class GitODB: ObjectDatabase
     git_odb_free(odb)
   }
 
-  subscript(oid: any OID) -> (any ODBObject)?
+  subscript(oid: GitOID) -> (any ODBObject)?
   {
-    guard let gitOID = oid as? GitOID,
-          let object = try? OpaquePointer.from({ item in
-            gitOID.withUnsafeOID { unsafeOID in
-              git_odb_read(&item, odb, unsafeOID)
-            }
-          })
+    guard let object = try? OpaquePointer.from({
+      (item) in
+      oid.withUnsafeOID {
+        (unsafeOID) in
+        git_odb_read(&item, odb, unsafeOID)
+      }
+    })
     else {
       return nil
     }

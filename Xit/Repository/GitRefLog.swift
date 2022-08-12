@@ -2,37 +2,42 @@ import Foundation
 
 protocol RefLog
 {
+  associatedtype ID: OID
+  associatedtype Entry: RefLogEntry<ID>
+
   var entryCount: Int { get }
   
-  func entry(atIndex index: Int) -> any RefLogEntry
+  func entry(atIndex index: Int) -> Entry
   func dropEntry(atIndex index: Int, rewrite: Bool) throws
   
   func write() throws
-  func append(oid: any OID, committer: Signature, message: String) throws
+  func append(oid: ID, committer: Signature, message: String) throws
 }
 
 extension RefLog
 {
-  var entries: RefLogEntryCollection
-  { RefLogEntryCollection(refLog: self) }
+  var entries: RefLogEntryCollection<Self>
+  { .init(refLog: self) }
 }
 
-protocol RefLogEntry: Sendable
+protocol RefLogEntry<ID>: Sendable
 {
-  var oldOID: any OID { get }
-  var newOID: any OID { get }
+  associatedtype ID: OID
+
+  var oldOID: ID { get }
+  var newOID: ID { get }
   var committer: Signature { get }
   var message: String { get }
 }
 
-struct RefLogEntryCollection: RandomAccessCollection
+struct RefLogEntryCollection<Log>: RandomAccessCollection where Log: RefLog
 {
-  let refLog: RefLog
+  let refLog: Log
   
   var startIndex: Int { 0 }
   var endIndex: Int { refLog.entryCount }
   
-  subscript(position: Int) -> any RefLogEntry
+  subscript(position: Int) -> Log.Entry
   {
     return refLog.entry(atIndex: position)
   }
@@ -43,8 +48,8 @@ struct GitRefLogEntry: RefLogEntry
 {
   let entry: OpaquePointer
   
-  var oldOID: any OID { GitOID(oidPtr: git_reflog_entry_id_old(entry)) }
-  var newOID: any OID { GitOID(oidPtr: git_reflog_entry_id_new(entry)) }
+  var oldOID: GitOID { GitOID(oidPtr: git_reflog_entry_id_old(entry)) }
+  var newOID: GitOID { GitOID(oidPtr: git_reflog_entry_id_new(entry)) }
   var committer: Signature
   {
     if let committer = git_reflog_entry_committer(entry) {
@@ -79,9 +84,12 @@ final class GitRefLog
 
 extension GitRefLog: RefLog
 {
+  typealias ID = GitOID
+  typealias Entry = GitRefLogEntry
+
   var entryCount: Int { git_reflog_entrycount(refLog) }
   
-  func entry(atIndex index: Int) -> any RefLogEntry
+  func entry(atIndex index: Int) -> GitRefLogEntry
   {
     let entry = git_reflog_entry_byindex(refLog, index)!
     
@@ -100,13 +108,10 @@ extension GitRefLog: RefLog
     try RepoError.throwIfGitError(git_reflog_write(refLog))
   }
   
-  func append(oid: any OID, committer: Signature, message: String) throws
+  func append(oid: GitOID, committer: Signature, message: String) throws
   {
-    guard var gitOID = (oid as? GitOID)?.oid
-    else {
-      throw RepoError.unexpected
-    }
-    
+    var gitOID = oid.oid
+
     let result = committer.withGitSignature {
       (signature) -> Int32 in
       var mutableSignature = signature

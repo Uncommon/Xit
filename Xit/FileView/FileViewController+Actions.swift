@@ -303,7 +303,7 @@ extension FileViewController
 // MARK: HunkStaging
 extension FileViewController: HunkStaging
 {
-  func patchIndexFile(hunk: DiffHunk, stage: Bool)
+  func patchIndexFile(hunk: any DiffHunk, stage: Bool)
   {
     guard let selectedChange = self.selectedChange
       else { return }
@@ -320,17 +320,17 @@ extension FileViewController: HunkStaging
     }
   }
   
-  func stage(hunk: DiffHunk)
+  func stage(hunk: any DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: true)
   }
   
-  func unstage(hunk: DiffHunk)
+  func unstage(hunk: any DiffHunk)
   {
     patchIndexFile(hunk: hunk, stage: false)
   }
   
-  func discard(hunk: DiffHunk)
+  func discard(hunk: any DiffHunk)
   {
     var encoding = String.Encoding.utf8
     

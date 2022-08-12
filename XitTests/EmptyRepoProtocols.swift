@@ -235,9 +235,9 @@ protocol EmptyStash: Stash {}
 extension EmptyStash
 {
   var message: String? { nil }
-  var mainCommit: (any Commit)? { nil }
-  var indexCommit: (any Commit)? { nil }
-  var untrackedCommit: (any Commit)? { nil }
+  var mainCommit: NullCommit? { nil }
+  var indexCommit: NullCommit? { nil }
+  var untrackedCommit: NullCommit? { nil }
 
   func indexChanges() -> [FileChange] { [] }
   func workspaceChanges() -> [FileChange] { [] }
@@ -245,7 +245,10 @@ extension EmptyStash
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
 }
 
-class NullStash: EmptyStash {}
+class NullStash: EmptyStash
+{
+  typealias ID = StringOID
+}
 
 protocol EmptyRemoteManagement: RemoteManagement {}
 
