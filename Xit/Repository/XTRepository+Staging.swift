@@ -372,8 +372,8 @@ extension XTRepository: FileStaging
     else { throw RepoError.unexpected }
     
     if let headOID = headReference?.resolve()?.targetOID {
-      guard let headCommit = commit(forOID: headOID),
-            let headTree = headCommit.anyTree
+      guard let headCommit = commit(forOID: headOID) as? GitCommit,
+            let headTree = headCommit.tree
       else { throw RepoError.unexpected }
       
       try index.read(tree: headTree)
