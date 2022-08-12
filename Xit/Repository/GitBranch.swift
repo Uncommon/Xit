@@ -193,7 +193,7 @@ public final class GitRemoteBranch: GitBranch, RemoteBranch
   public var remoteName: String?
   { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }
 
-  init?(repository: OpaquePointer, name: String, config: Config)
+  init?(repository: OpaquePointer, name: String, config: any Config)
   {
     guard let branch = GitBranch.lookUpBranch(
         name: name, repository: repository,
@@ -203,7 +203,7 @@ public final class GitRemoteBranch: GitBranch, RemoteBranch
     super.init(branch: branch, config: config)
   }
   
-  required public init(branch: OpaquePointer, config: Config)
+  required public init(branch: OpaquePointer, config: any Config)
   {
     super.init(branch: branch, config: config)
   }

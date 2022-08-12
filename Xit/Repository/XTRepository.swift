@@ -48,8 +48,8 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   }
   var cachedIgnored = false
 
-  let diffCache = Cache<String, Diff>(maxSize: 50)
-  public let config: Config
+  let diffCache = Cache<String, any Diff>(maxSize: 50)
+  public let config: any Config
   
   var gitDirectoryPath: String
   {
