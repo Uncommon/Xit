@@ -63,7 +63,7 @@ extension XTRepository: RemoteCommunication
     var mergeBranch = branch
     
     if let localBranch = branch as? GitLocalBranch,
-       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
+       let trackingBranch = localBranch.trackingBranch {
       mergeBranch = trackingBranch
     }
     
@@ -91,9 +91,9 @@ extension XTRepository: Merging
     let branchName: String
 
     switch remoteBranch {
-      case let localBranch as LocalBranch:
+      case let localBranch as any LocalBranch:
         branchName = localBranch.name
-      case let remoteBranch as RemoteBranch:
+      case let remoteBranch as any RemoteBranch:
         branchName = remoteBranch.shortName
       default:
         assertionFailure("unexpected branch type: \(remoteBranch)")
@@ -263,8 +263,9 @@ extension XTRepository: Merging
                                               name: currentBranchName,
                                               config: config)
       else { throw RepoError.detachedHead }
-      guard let targetCommit = targetBranch.targetCommit as? GitCommit,
-            let remoteCommit = branch.targetCommit as? GitCommit
+      guard let targetCommit = targetBranch.targetCommit,
+            let anyCommit = branch.targetCommit as (any Commit)?,
+            let remoteCommit = anyCommit as? GitCommit
       else { throw RepoError.unexpected }
       
       if targetCommit.id.equals(remoteCommit.id) {

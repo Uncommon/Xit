@@ -93,13 +93,16 @@ class FakePRService : PullRequestService
 
 class FakeLocalBranch: LocalBranch
 {
+  typealias ObjectIdentifier = StringOID
+  typealias Commit = StringCommit
+
   var trackingBranchName: String?
-  var trackingBranch: (any RemoteBranch)?
+  var trackingBranch: FakeRemoteBranch?
   var name: String
   var shortName: String { strippedName }
-  var oid: (any OID)?
-  var targetCommit: (any Commit)?
-  
+  var oid: StringOID?
+  var targetCommit: StringCommit?
+
   init(name: String)
   {
     self.name = RefPrefixes.heads +/ name
@@ -109,13 +112,16 @@ class FakeLocalBranch: LocalBranch
 
 class FakeRemoteBranch: RemoteBranch
 {
+  typealias ObjectIdentifier = StringOID
+  typealias Commit = StringCommit
+
   var remoteName: String?
   var name: String
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
-  var oid: (any OID)?
-  var targetCommit: (any Commit)?
-  
+  var oid: StringOID?
+  var targetCommit: StringCommit?
+
   init(remoteName: String, name: String)
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name

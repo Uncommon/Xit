@@ -39,19 +39,19 @@ extension EmptyBranching
 class NullLocalBranch: LocalBranch
 {
   var trackingBranchName: String? { get { nil } set {} }
-  var trackingBranch: (RemoteBranch)? { nil }
+  var trackingBranch: NullRemoteBranch? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (any OID)? { nil }
-  var targetCommit: (any Commit)? { nil }
+  var oid: StringOID? { nil }
+  var targetCommit: StringCommit? { nil }
 }
 
 class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (any OID)? { nil }
-  var targetCommit: (any Commit)? { nil }
+  var oid: StringOID? { nil }
+  var targetCommit: StringCommit? { nil }
   var remoteName: String? { nil }
 }
 

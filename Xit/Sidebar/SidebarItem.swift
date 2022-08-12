@@ -197,7 +197,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   
   override var remote: (any Remote)?
   {
-    guard let localBranch = branchObject() as? LocalBranch,
+    guard let localBranch = branchObject() as? (any LocalBranch),
           let remoteBranch = localBranch.trackingBranch,
           let repo = selection!.repository as? RemoteManagement
     else { return nil }

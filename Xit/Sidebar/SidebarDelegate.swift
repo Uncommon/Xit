@@ -94,7 +94,7 @@ final class SidebarDelegate: NSObject
     if let image = buildStatusController?.statusImage(for: item) {
       cell.statusButton.image = image
       if let localBranchItem = item as? LocalBranchSidebarItem,
-         let localBranch = localBranchItem.branchObject() as? LocalBranch,
+         let localBranch = localBranchItem.branchObject() as? (any LocalBranch),
          let tracked = localBranch.trackingBranchName {
         cell.statusButton.toolTip = tracked
       }
