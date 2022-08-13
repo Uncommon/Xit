@@ -2,7 +2,7 @@ import Foundation
 
 extension XTRepository: RemoteCommunication
 {
-  public func push(branches: [any LocalBranch],
+  public func push(branches: [any Xit.LocalBranch],
                    remote: any Remote,
                    callbacks: RemoteCallbacks) throws
   {
@@ -91,9 +91,9 @@ extension XTRepository: Merging
     let branchName: String
 
     switch remoteBranch {
-      case let localBranch as any LocalBranch:
+      case let localBranch as any Xit.LocalBranch:
         branchName = localBranch.name
-      case let remoteBranch as any RemoteBranch:
+      case let remoteBranch as any Xit.RemoteBranch:
         branchName = remoteBranch.shortName
       default:
         assertionFailure("unexpected branch type: \(remoteBranch)")
@@ -176,7 +176,7 @@ extension XTRepository: Merging
         throw RepoError.conflict
       }
       else {
-        let tree = try index.writeTree()
+        let tree = try index.writeTree() as! GitTree
         
         _ = try createCommit(with: tree,
                              message: "Merge branch \(fromBranch.name)",
@@ -264,7 +264,7 @@ extension XTRepository: Merging
                                               config: config)
       else { throw RepoError.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
-            let anyCommit = branch.targetCommit as (any Commit)?,
+            let anyCommit = branch.targetCommit as (any Xit.Commit)?,
             let remoteCommit = anyCommit as? GitCommit
       else { throw RepoError.unexpected }
       

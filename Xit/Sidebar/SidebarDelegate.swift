@@ -20,10 +20,7 @@ final class SidebarDelegate: NSObject
   {
     guard let repository = model?.repository,
           item is LocalBranchSidebarItem,
-          let localBranch = repository.localBranch(named: item.title),
-          let trackingBranch = localBranch.trackingBranch,
-          let graph = repository.graphBetween(localBranch: localBranch,
-                                              upstreamBranch: trackingBranch)
+          let graph = itemGraph(repo: repository, title: item.title)
     else { return nil }
     
     var numbers = [String]()
@@ -35,6 +32,18 @@ final class SidebarDelegate: NSObject
       numbers.append("↓\(graph.behind)")
     }
     return numbers.isEmpty ? nil : numbers.joined(separator: " ")
+  }
+
+  func itemGraph<R: SidebarDataModel.Repository>(repo: R, title: String)
+    -> (ahead: Int, behind: Int)?
+  {
+    guard let localBranch = repo.localBranch(named: title),
+          let trackingBranch = localBranch.trackingBranch,
+          let graph = repo.graphBetween(localBranch: localBranch,
+                                        upstreamBranch: trackingBranch)
+    else { return nil}
+
+    return graph
   }
 
   func cell(forItem item: SidebarItem) -> SidebarTableCellView?

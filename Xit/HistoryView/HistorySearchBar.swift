@@ -51,6 +51,6 @@ struct HistorySearchBar_Previews: PreviewProvider
 {
   static var previews: some View
   {
-    HistorySearchBar(searchUp: { (_, _) in }, searchDown: { (_, _) in} )
+    HistorySearchBar(searchUp: { (_, _) in }, searchDown: { (_, _) in })
   }
 }

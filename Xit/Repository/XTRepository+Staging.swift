@@ -54,6 +54,7 @@ extension XTRepository: FileStatusDetection
   {
     guard oid != SpecialOID.staging
     else {
+      let parentOID = parentOID as? GitOID
       if let parentCommit = parentOID.flatMap({ commit(forOID: $0) }) {
         return Array(amendingChanges(parent: parentCommit))
       }
@@ -62,7 +63,8 @@ extension XTRepository: FileStatusDetection
       }
     }
     
-    guard let commit = self.commit(forOID: oid)
+    guard let oid = oid as? GitOID,
+          let commit = self.commit(forOID: oid)
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
@@ -128,7 +130,7 @@ extension XTRepository: FileStatusDetection
   // Re-implementation of git_status_file with a given head commit
   func fileStatus(_ path: String,
                   show: StatusShow = .indexAndWorkdir,
-                  baseCommit: (any Commit)?)
+                  baseCommit: (any Xit.Commit)?)
     -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
     struct CallbackData: Sendable
@@ -372,7 +374,7 @@ extension XTRepository: FileStaging
     else { throw RepoError.unexpected }
     
     if let headOID = headReference?.resolve()?.targetOID {
-      guard let headCommit = commit(forOID: headOID) as? GitCommit,
+      guard let headCommit = commit(forOID: headOID),
             let headTree = headCommit.tree
       else { throw RepoError.unexpected }
       
@@ -436,7 +438,7 @@ extension XTRepository: FileStaging
         else {
           throw RepoError.commitNotFound(sha: headSHA)
         }
-        guard let parentCommit = commit(forOID: parentOID) as? GitCommit
+        guard let parentCommit = commit(forOID: parentOID)
         else {
           throw RepoError.commitNotFound(sha: parentOID.sha)
         }

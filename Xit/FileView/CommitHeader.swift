@@ -12,7 +12,7 @@ extension Font
 
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
-  weak var repository: CommitStorage?
+  weak var repository: (any CommitStorage)?
   var selectParent: ((any OID) -> Void)?
   
   var commit: (any Commit)?
@@ -26,7 +26,7 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
           commit: newValue,
           messageLookup: {
             [weak self] in
-            self?.repository?.commit(forOID: $0)?.messageSummary ?? ""
+            self?.repository?.anyCommit(forOID: $0)?.messageSummary ?? ""
           },
           selectParent: select)
     }

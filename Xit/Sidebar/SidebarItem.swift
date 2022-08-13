@@ -193,6 +193,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   override func branchObject() -> (any Branch)?
   {
     return selection!.repository.localBranch(named: title)
+        as (any LocalBranch & AnyObject)?
   }
   
   override var remote: (any Remote)?
@@ -208,7 +209,8 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   func hasTrackingBranch() -> Bool
   {
     let branch = selection!.repository.localBranch(named: title)
-    
+                 as (any LocalBranch & AnyObject)?
+
     return branch?.trackingBranchName != nil
   }
 }

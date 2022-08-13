@@ -5,6 +5,12 @@ class StringChangesRepo: StringRepository, FileChangesRepo,
     EmptyBasicRepository, EmptyCommitReferencing, EmptyFileContents,
     EmptyFileDiffing, EmptyFileStaging, EmptyFileStatusDetection
 {
+  typealias ID = StringOID
+  typealias LocalBranch = NullLocalBranch
+  typealias RemoteBranch = NullRemoteBranch
+  typealias Reference = NullReference
+  typealias Tag = NullTag
+  typealias Tree = NullTree
 }
 
 class FileListModelTest: XTTest

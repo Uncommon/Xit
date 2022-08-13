@@ -27,7 +27,8 @@ extension Stash
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
-  typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
+  typealias Repo = CommitStorage<ID> & FileContents &
+                   FileStatusDetection & Stashing
   public typealias ID = GitOID
   
   unowned var repo: any Repo
@@ -45,9 +46,11 @@ public final class GitStash: Stash
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
         self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
+                           as (any Xit.Commit)?
                            as? GitCommit
         if mainCommit.parentOIDs.count > 2 {
           self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
+                                 as (any Xit.Commit)?
                                  as? GitCommit
         }
       }
@@ -141,7 +144,7 @@ public final class GitStash: Stash
                                to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
-    if let mainCommit = self.mainCommit as? GitCommit,
+    if let mainCommit = self.mainCommit,
        let unstagedEntry = mainCommit.tree?.entry(path: path) {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }

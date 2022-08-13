@@ -1,6 +1,6 @@
 import Cocoa
 
-public protocol Tag
+public protocol Tag<ID>
 {
   associatedtype ID: OID
   associatedtype Commit: Xit.Commit<ID>
@@ -40,7 +40,7 @@ public final class GitTag: Tag
   public lazy var targetOID: GitOID? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
   public var commit: GitCommit?
-  { targetOID.flatMap { repository?.commit(forOID: $0) as? GitCommit } }
+  { targetOID.flatMap { repository?.commit(forOID: $0) } }
   public var type: TagType
   { tag == nil ? .lightweight : .annotated }
 

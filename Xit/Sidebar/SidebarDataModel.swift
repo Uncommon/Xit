@@ -130,7 +130,7 @@ final class SidebarDataModel
     
     for branch in localBranches {
       guard let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
+            let commit = commit(from: repo, forOID: oid)
       else { continue }
       
       let name = branch.name.droppingPrefix("refs/heads/")
@@ -150,7 +150,7 @@ final class SidebarDataModel
                                                     branch.remoteName }),
             let remoteName = branch.remoteName,
             let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
+            let commit = repo.anyCommit(forOID: oid)
       else { continue }
       let name = branch.name.droppingPrefix("refs/remotes/\(remote.title)/")
       let selection = CommitSelection(repository: repo, commit: commit)
@@ -162,7 +162,8 @@ final class SidebarDataModel
     }
     
     Signpost.interval(.loadTags) {
-      if let tags = try? repo.tags().sorted(by: { $0.name <~ $1.name }) {
+      if let tags = try? (repo.tags() as [any Tag])
+                    .sorted(by: { $0.name <~ $1.name }) {
         let tagsGroup = newRoots[SidebarGroupIndex.tags.rawValue]
         
         for tag in tags {

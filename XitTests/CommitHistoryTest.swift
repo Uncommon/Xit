@@ -2,26 +2,28 @@ import XCTest
 @testable import Xit
 
 
-class GenericRepository<ID: OID & Hashable>: CommitStorage
+class StringRepository: CommitStorage
 {
-  let commits: [any Commit]
+  typealias Commit = StringCommit
+
+  let commits: [StringCommit]
   
-  init(commits: [any Commit])
+  init(commits: [StringCommit])
   {
     self.commits = commits
   }
   
-  func oid(forSHA sha: String) -> (any OID)?
+  func oid(forSHA sha: String) -> StringOID?
   {
-    StringOID(rawValue: sha)
+    .init(rawValue: sha)
   }
   
-  func commit(forSHA sha: String) -> (any Commit)?
+  func commit(forSHA sha: String) -> StringCommit?
   {
     return commits.first { $0.id.sha == sha }
   }
 
-  func commit(forOID oid: any OID) -> (any Commit)?
+  func commit(forOID oid: StringOID) -> StringCommit?
   {
     return commits.first { $0.id.equals(oid) }
   }
@@ -30,9 +32,6 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
   
   func walker() -> (any RevWalk)? { nil }
 }
-
-typealias MockRepository = GenericRepository<GitOID>
-typealias StringRepository = GenericRepository<StringOID>
 
 
 extension Xit.CommitConnection: CustomDebugStringConvertible
@@ -68,7 +67,8 @@ class CommitHistoryTest: XCTestCase
     history.repository = repository
     
     if let heads = heads {
-      let headCommits = heads.compactMap { history.repository.commit(forOID: $0) }
+      let headCommits = heads.compactMap
+      { history.repository.commit(forOID: $0) as (any Commit)? }
       guard headCommits.count == heads.count
       else {
         XCTFail("can't get head commits")
@@ -190,11 +190,11 @@ class CommitHistoryTest: XCTestCase
          ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     else { return }
     
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b")
-      else {
-        XCTFail("Can't get starting commit")
-        return
+    guard let commitA = history.repository.commit(forSHA: "a") as (any Commit)?,
+          let commitB = history.repository.commit(forSHA: "b") as (any Commit)?
+    else {
+      XCTFail("Can't get starting commit")
+      return
     }
     
     history.process(commitA, afterCommit: nil)
@@ -312,10 +312,10 @@ class CommitHistoryTest: XCTestCase
          ("cc", ["dd"]), ("dd", ["ee"]), ("ee", [])])
     else { return }
     
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitD = history.repository.commit(forSHA: "d"),
-          let commitE = history.repository.commit(forSHA: "e"),
-          let commitAA = history.repository.commit(forSHA: "aa")
+    guard let commitA = history.repository.commit(forSHA: "a") as (any Commit)?,
+          let commitD = history.repository.commit(forSHA: "d") as (any Commit)?,
+          let commitE = history.repository.commit(forSHA: "e") as (any Commit)?,
+          let commitAA = history.repository.commit(forSHA: "aa") as (any Commit)?
     else {
       XCTFail("Can't get starting commit")
       return
@@ -389,9 +389,9 @@ class CommitHistoryTest: XCTestCase
          ("c", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     else { return }
     
-    guard let commitA = history.repository.commit(forSHA: "a"),
-          let commitB = history.repository.commit(forSHA: "b"),
-          let commitE = history.repository.commit(forSHA: "e")
+    guard let commitA = history.repository.commit(forSHA: "a") as (any Commit)?,
+          let commitB = history.repository.commit(forSHA: "b") as (any Commit)?,
+          let commitE = history.repository.commit(forSHA: "e") as (any Commit)?
     else {
       XCTFail("Can't get starting commit")
       return

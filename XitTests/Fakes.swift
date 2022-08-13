@@ -59,7 +59,6 @@ struct FakeRefSpec: RefSpec
 class FakeStash: Stash
 {
   typealias ID = StringOID
-  
   var message: String? = nil
   var mainCommit: StringCommit? = nil
   var indexCommit: StringCommit? = nil
@@ -71,6 +70,17 @@ class FakeStash: Stash
   { nil }
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   { nil }
+}
+
+struct FakeTag: Tag
+{
+  var targetOID: StringOID?
+  var commit: Xit.StringCommit?
+  var name: String
+  var signature: Xit.Signature?
+  var message: String?
+  var type: Xit.TagType
+  var isSigned: Bool
 }
 
 struct FakePullRequest: PullRequest
@@ -147,6 +157,18 @@ class FakeRemoteBranch: RemoteBranch
   }
 }
 
+struct FakeReference: Reference
+{
+  var targetOID: StringOID?
+  var peeledTargetOID: StringOID?
+  var symbolicTargetName: String?
+  var type: ReferenceType
+  var name: String
+
+  func setTarget(_ newOID: StringOID, logMessage: String) {}
+  func resolve() -> FakeReference? { nil }
+}
+
 class FakeRepoController: RepositoryController
 {
   var repository: BasicRepository
@@ -167,82 +189,4 @@ class FakeRepoController: RepositoryController
   }
 
   func waitForQueue() {}
-}
-
-class FakeFileChangesRepo: FileChangesRepo
-{
-  var controller: (any RepositoryController)?
-
-  var headRef: String? = nil
-  var currentBranch: String? = nil
-  
-  func sha(forRef: String) -> String? { nil }
-  
-  func tags() throws -> [any Tag] { [] }
-  func graphBetween(localBranch: any LocalBranch, upstreamBranch: any RemoteBranch)
-    -> (ahead: Int, behind: Int)?
-  { nil }
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
-  { nil }
-  func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: any OID) -> [String] { [] }
-  func allRefs() -> [String] { [] }
-  func rebuildRefsIndex() {}
-  func createCommit(with tree: any Tree, message: String, parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
-  { §"" }
-  func oid(forRef: String) -> (any OID)? { nil }
-
-  var repoURL: URL { URL(fileURLWithPath: "") }
-  
-  func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: String, path: String) -> (any Blob)? { nil }
-  func stagedBlob(file: String) -> (any Blob)? { nil }
-  func contentsOfFile(path: String, at commit: any Commit) -> Data? { nil }
-  func contentsOfStagedFile(path: String) -> Data? { nil }
-  func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
-  
-  func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
-    -> PatchMaker.PatchResult?
-  { nil }
-  func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
-  func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
-  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
-
-  func blame(for path: String, from startOID: (any OID)?, to endOID: (any OID)?) -> (any Blame)?
-  { nil }
-  func blame(for path: String, data fromData: Data?, to endOID: (any OID)?) -> (any Blame)?
-  { nil }
-  
-  var index: (any StagingIndex)? { nil }
-  
-  func stage(file: String) throws {}
-  func unstage(file: String) throws {}
-  func amendStage(file: String) throws {}
-  func amendUnstage(file: String) throws {}
-  func revert(file: String) throws {}
-  func stageAllFiles() throws {}
-  func unstageAllFiles() throws {}
-  func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws {}
-  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
-  { (.unmodified, .unmodified) }
-
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
-  { [] }
-  func stagedChanges() -> [FileChange] { [] }
-  func unstagedChanges(showIgnored: Bool,
-                       recurseUntracked: Bool,
-                       useCache: Bool) -> [FileChange]
-  { [] }
-  func amendingStagedChanges() -> [FileChange] { [] }
-  func amendingStagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func stagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func unstagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func isIgnored(path: String) -> Bool { false }
 }

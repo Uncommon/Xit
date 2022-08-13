@@ -62,7 +62,7 @@ extension XTRepository: FileContents
     return false
   }
   
-  public func contentsOfFile(path: String, at commit: any Commit) -> Data?
+  public func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data?
   {
     guard let entry = (commit as? GitCommit)?.tree?.entry(path: path),
           let blob = entry.object as? Blob
@@ -89,7 +89,7 @@ extension XTRepository: FileContents
     return blob
   }
   
-  func commitBlob(commit: (any Commit)?, path: String) -> (any Blob)?
+  func commitBlob(commit: (any Xit.Commit)?, path: String) -> (any Blob)?
   {
     (commit as? GitCommit)?.tree?.entry(path: path)?.object as? (any Blob)
   }
@@ -102,6 +102,8 @@ extension XTRepository: FileContents
   
   public func fileBlob(oid: any OID, path: String) -> (any Blob)?
   {
+    guard let oid = oid as? GitOID
+    else { return nil }
     return commitBlob(commit: commit(forOID: oid), path: path)
   }
   
@@ -121,10 +123,12 @@ extension XTRepository: FileDiffing
                         commitOID: any OID,
                         parentOID: (any OID)?) -> PatchMaker.PatchResult?
   {
-    guard let toCommit = commit(forOID: commitOID as! GitOID) as? GitCommit
+    guard let commitOID = commitOID as? GitOID,
+          let toCommit = commit(forOID: commitOID)
     else { return nil }
+    let parentOID = parentOID as? GitOID
     
-    let parentCommit = parentOID.flatMap { commit(forOID: $0) } as? GitCommit
+    let parentCommit = parentOID.flatMap { commit(forOID: $0) }
     guard isTextFile(file, context: .commit(toCommit)) ||
           parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
@@ -236,16 +240,16 @@ extension XTRepository
       return diff
     }
     else {
-      guard let commit = commit(forOID: oid) as? GitCommit
+      guard let oid = oid as? GitOID,
+            let commit = commit(forOID: oid)
       else { return nil }
       
       let parentOIDs = commit.parentOIDs
-      let parentOID: (any OID)? = parentOID == nil
+      let parentOID = parentOID == nil
             ? parentOIDs.first
             : parentOIDs.first { $0.equals(parentOID) }
       let parentCommit = parentOID.flatMap { self.commit(forOID: $0) }
-                         as? GitCommit
-      
+
       guard let diff = GitDiff(oldTree: parentCommit?.tree,
                                newTree: commit.tree,
                                repository: gitRepo)
@@ -330,7 +334,7 @@ extension XTRepository
     let statusList: OpaquePointer?
     var tree: OpaquePointer?
   
-    init(repo: XTRepository, head: (any Commit)?)
+    init(repo: XTRepository, head: (any Xit.Commit)?)
     {
       let headTree = ((head as? GitCommit)?.tree)?.tree
       var options = git_status_options()
@@ -403,7 +407,7 @@ extension XTRepository
   var stagingChanges: StatusCollection
   { .init(repo: self) }
   
-  func amendingChanges(parent: (any Commit)?) -> StatusCollection
+  func amendingChanges(parent: (any Xit.Commit)?) -> StatusCollection
   {
     .init(repo: self, head: parent)
   }

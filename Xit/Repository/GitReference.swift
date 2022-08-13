@@ -21,7 +21,7 @@ public protocol Reference
   func setTarget(_ newOID: ID, logMessage: String)
 }
 
-final class GitReference: Reference
+public final class GitReference: Reference
 {
   private(set) var ref: OpaquePointer
   

@@ -6,17 +6,17 @@ class FakeRepoUIController: RepositoryUIController
 {
   let reselectPublisher: AnyPublisher<Void, Never> = Just(()).eraseToAnyPublisher()
 
-  var selectionPublisher: AnyPublisher<RepositorySelection?, Never>
+  var selectionPublisher: AnyPublisher<(any RepositorySelection)?, Never>
   { Just(nil).eraseToAnyPublisher() }
 
   var repoController: GitRepositoryController!
-  var repository: FullRepository
+  var repository: any FullRepository
 
   var selectedCommitSHA: String = ""
-  var selection: RepositorySelection? = nil
+  var selection: (any RepositorySelection)? = nil
   var isAmending = false
 
-  init(repository: FullRepository)
+  init(repository: any FullRepository)
   {
     self.repository = repository
   }
@@ -56,7 +56,7 @@ class FileListDataSourceTest: XTTest
     
     for entry in history.entries {
       repoUIController.selection = CommitSelection(repository: repository,
-                                                 commit: entry.commit)
+                                                   commit: entry.commit)
       ftds.reload()
       waitForRepoQueue()
     

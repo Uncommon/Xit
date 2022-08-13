@@ -18,22 +18,22 @@ protocol EmptyBranching: Branching {}
 extension EmptyBranching
 {
   var currentBranch: String? { nil }
-  var localBranches: AnySequence<any LocalBranch>
+  var localBranches: AnySequence<any Xit.LocalBranch>
   { .init(Array<NullLocalBranch>()) }
-  var remoteBranches: AnySequence<any RemoteBranch>
+  var remoteBranches: AnySequence<any Xit.RemoteBranch>
   { .init(Array<NullRemoteBranch>()) }
 
   /// Creates a branch at the given target ref
   func createBranch(named name: String,
-                    target: String) throws -> (any LocalBranch)? { nil }
+                    target: String) throws -> LocalBranch? { nil }
   func rename(branch: String, to: String) throws {}
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String) -> (any RemoteBranch)? { nil }
-  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
+  func localBranch(named name: String) -> LocalBranch? { nil }
+  func remoteBranch(named name: String) -> RemoteBranch? { nil }
+  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
   { nil }
-  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
+  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   { nil }
-  func reset(toCommit target: any Commit, mode: ResetMode) throws {}
+  func reset(toCommit target: Commit, mode: ResetMode) throws {}
 }
 
 class NullLocalBranch: LocalBranch
@@ -60,8 +60,8 @@ protocol EmptyCommitStorage: CommitStorage {}
 extension EmptyCommitStorage
 {
   func oid(forSHA sha: String) -> (any OID)?  { nil }
-  func commit(forSHA sha: String) -> (any Commit)? { nil }
-  func commit(forOID oid: any OID) -> (any Commit)? { nil }
+  func commit(forSHA sha: String) -> Commit? { nil }
+  func commit(forOID oid: any OID) -> Commit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
@@ -75,29 +75,29 @@ extension EmptyCommitReferencing
   var headRef: String? { nil }
   var currentBranch: String? { nil }
 
-  func oid(forRef: String) -> (any OID)? { nil }
+  func oid(forRef: String) -> StringOID? { nil }
   func sha(forRef: String) -> String? { nil }
-  func tags() throws -> [any Tag] { [] }
-  func graphBetween(localBranch: any LocalBranch,
-                    upstreamBranch: any RemoteBranch) -> (ahead: Int,
+  func tags() throws -> [Tag] { [] }
+  func graphBetween(localBranch: LocalBranch,
+                    upstreamBranch: RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
   { nil }
 
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
+  func localBranch(named name: String) -> LocalBranch? { nil }
+  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   { nil }
 
-  func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: any OID) -> [String] { [] }
+  func reference(named name: String) -> Reference? { nil }
+  func refs(at oid: StringOID) -> [String] { [] }
   func allRefs() -> [String] { [] }
 
   func rebuildRefsIndex() {}
 
-  func createCommit(with tree: any Tree,
+  func createCommit(with tree: Tree,
                     message: String,
-                    parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
-  { §"" }
+                    parents: [Commit],
+                    updatingReference refName: String) throws -> StringOID
+  { "" }
 }
 
 class NullCommit: Commit
@@ -136,6 +136,20 @@ class NullTree: Tree
   func entry(named: String) -> Entry? { nil }
   func entry(path: String) -> Entry? { nil }
   func entry(at index: Int) -> Entry? { nil }
+}
+
+struct NullReference: Reference
+{
+  typealias ID = StringOID
+
+  var symbolicTargetName: String? { nil }
+  var type: ReferenceType { .invalid }
+  var name: String { "" }
+  var targetOID: StringOID? { nil }
+  var peeledTargetOID: StringOID? { nil }
+
+  func resolve() -> NullReference? { nil }
+  func setTarget(_ newOID: StringOID, logMessage: String) {}
 }
 
 protocol EmptyFileStatusDetection: FileStatusDetection {}
@@ -280,6 +294,20 @@ extension EmptyTagging
   func createTag(name: String, targetOID: any OID, message: String?) throws {}
   func createLightweightTag(name: String, targetOID: any OID) throws {}
   func deleteTag(name: String) throws {}
+}
+
+struct NullTag: Tag
+{
+  typealias ID = StringOID
+  typealias Commit = NullCommit
+
+  var name: String { "" }
+  var signature: Signature? { nil }
+  var message: String? { nil }
+  var type: TagType { .lightweight }
+  var isSigned: Bool { false }
+  var targetOID: StringOID? { nil }
+  var commit: NullCommit? { nil }
 }
 
 protocol EmptyWorkspace: Workspace {}

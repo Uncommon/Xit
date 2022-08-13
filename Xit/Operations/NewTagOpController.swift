@@ -6,7 +6,7 @@ final class NewTagOpController: OperationController
   {
     guard let selectedOID = windowController?.selection?.oidToSelect,
           let repository = repository,
-          let commit = repository.commit(forOID: selectedOID)
+          let commit = commit(from: repository, forOID: selectedOID)
     else { throw RepoError.unexpected }
     let config = repository.config
     let userName = config.userName
