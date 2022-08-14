@@ -132,6 +132,7 @@ final class ClonePanelController: NSWindowController
 
     return await panel.getPassword(
         parentWindow: window,
+        user: url.impliedUserName,
         host: url.host ?? "",
         path: url.path,
         port: UInt16(url.port ?? url.defaultPort))
