@@ -37,7 +37,8 @@ final class ClonePanelController: NSWindowController
   var pathObserver: AnyCancellable?
 
   let passwordStorage: PasswordStorage
-  var allowPasswordPrompt: Bool = false
+  // Use Box to de-isolate the value
+  private let needsPassword = Box<Bool>(false)
   
   private static var currentController: ClonePanelController?
   
@@ -61,6 +62,8 @@ final class ClonePanelController: NSWindowController
   {
     self.cloner = cloner
     self.passwordStorage = passwordStorage
+
+    needsPassword.value = false
 
     let window = NSWindow(contentRect: .init(origin: .zero,
                                              size: .init(width: 300,
@@ -105,7 +108,7 @@ final class ClonePanelController: NSWindowController
   func authenticate()
   {
     Task {
-      allowPasswordPrompt = true
+      needsPassword.value = true
 
       let url = data.url
       let result = await withCheckedContinuation { continuation in
@@ -115,12 +118,12 @@ final class ClonePanelController: NSWindowController
       }
       
       data.didReadURL(result: result)
-      allowPasswordPrompt = true
+      needsPassword.value = false
     }
   }
 
   @MainActor
-  func getPassword() async -> (String, String)?
+  private func getPassword() async -> (String, String)?
   {
     guard let window = self.window,
           let url = URL(string: self.data.url)
@@ -254,7 +257,7 @@ final class ClonePanelController: NSWindowController
     @MainActor
     func tryGetPassword() async -> (String, String)?
     {
-      if allowPasswordPrompt,
+      if needsPassword.value,
          let result = await getPassword() {
         data.results.authentication = nil
         return result
@@ -268,12 +271,17 @@ final class ClonePanelController: NSWindowController
     name = url.path.lastPathComponent.deletingPathExtension
 
     do {
+      let callbacks = RemoteCallbacks(passwordBlock: tryGetPassword)
+
+      if needsPassword.value {
+        callbacks.passwordStorage = nil
+      }
+
       let (heads, defaultBranchRef) = try
         remote.withConnection(direction: .fetch,
-                              callbacks: .init(passwordBlock: tryGetPassword),
-                              action: {
+                              callbacks: callbacks) {
         (try $0.referenceAdvertisements(), $0.defaultBranch)
-      })
+      }
       let defaultBranch = defaultBranchRef.map {
         $0.droppingPrefix(RefPrefixes.heads)
       }

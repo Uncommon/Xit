@@ -119,14 +119,11 @@ extension git_remote_callbacks
         }
       }
       if allowed.contains(GIT_CREDENTIAL_USERPASS_PLAINTEXT) {
-        let keychain: PasswordStorage = .xit
-        let urlString = urlCString.flatMap { String(cString: $0) }
-        let urlObject = urlString.flatMap { URL(string: $0) }
-        let userName = userCString.map { String(cString: $0) } ??
-                       urlObject?.impliedUserName
-
-        if let url = urlObject,
-           let user = userName {
+        if let keychain = callbacks.passwordStorage,
+           let urlString = urlCString.flatMap({ String(cString: $0) }),
+           let url = URL(string: urlString),
+           let user = userCString.map({ String(cString: $0) }) ??
+                      url.impliedUserName {
           repeatCheck: do {
             guard url != callbacks.lastKeychainURL,
                   user != callbacks.lastKeychainUser
@@ -141,7 +138,7 @@ extension git_remote_callbacks
             let urls: Set<URL> = [url, url.withPath("")]
 
             if let password = urls.lazy.map({ keychain.find(url: $0,
-                                                         account: user) })
+                                                            account: user) })
                                   .first {
               return git_cred_userpass_plaintext_new(cred, user, password)
             }
@@ -149,7 +146,7 @@ extension git_remote_callbacks
         }
 
         let semaphore = DispatchSemaphore(value: 0)
-        let resultBox = Box<(String, String)>()
+        let resultBox = Box<(String, String)?>()
 
         assert(!Thread.isMainThread, "cred callback on main thread")
         Task.detached {

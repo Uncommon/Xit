@@ -264,6 +264,9 @@ public class RemoteCallbacks
   /// Message from the server
   var sidebandMessage: SidebandMessageBlock? = nil
 
+  /// Store for retrieving passwords before calling `passwordBlock`
+  var passwordStorage: PasswordStorage? = .xit
+
   // Remember the last query so we don't return the same keychain data over and
   // over when the password is wrong.
   var lastKeychainUser: String?
@@ -272,12 +275,14 @@ public class RemoteCallbacks
   init(passwordBlock: RemoteCallbacks.PasswordBlock? = nil,
        downloadProgress: RemoteCallbacks.DownloadProgressBlock? = nil,
        uploadProgress: RemoteCallbacks.UploadProgressBlock? = nil,
-       sidebandMessage: RemoteCallbacks.SidebandMessageBlock? = nil)
+       sidebandMessage: RemoteCallbacks.SidebandMessageBlock? = nil,
+       passwordStorage: PasswordStorage = .xit)
   {
     self.passwordBlock = passwordBlock
     self.downloadProgress = downloadProgress
     self.uploadProgress = uploadProgress
     self.sidebandMessage = sidebandMessage
+    self.passwordStorage = passwordStorage
   }
 }
 
