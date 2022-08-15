@@ -137,8 +137,8 @@ extension git_remote_callbacks
             // Don't repeat if url already has no path
             let urls: Set<URL> = [url, url.withPath("")]
 
-            if let password = urls.lazy.map({ keychain.find(url: $0,
-                                                            account: user) })
+            if let password = urls.lazy.compactMap(
+                                      { keychain.find(url: $0, account: user) })
                                   .first {
               return git_cred_userpass_plaintext_new(cred, user, password)
             }
