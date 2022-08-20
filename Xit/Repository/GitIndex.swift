@@ -106,6 +106,11 @@ class GitIndex: StagingIndex
     git_index_read(index, 1)
     self.index = index
   }
+
+  deinit
+  {
+    git_index_free(index)
+  }
   
   func entry(atIndex index: Int) -> (any IndexEntry)!
   {
