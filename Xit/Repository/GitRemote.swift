@@ -122,6 +122,11 @@ final class GitRemote: Remote
     self.remote = remote
   }
 
+  deinit
+  {
+    git_remote_free(remote)
+  }
+
   func rename(_ name: String) throws
   {
     guard let oldName = git_remote_name(remote),

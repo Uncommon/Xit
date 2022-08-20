@@ -30,6 +30,8 @@ struct FakeCommit: Commit
     self.tree = tree
     self.id = oid
   }
+
+  func getTrailers() -> [(String, [String])] { [] }
 }
 
 extension FakeCommit

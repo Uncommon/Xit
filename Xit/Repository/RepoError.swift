@@ -3,6 +3,7 @@ import Foundation
 public enum RepoError: Swift.Error
 {
   case alreadyWriting
+  case authenticationFailed
   case cherryPickInProgress
   case commitNotFound(sha: String?)
   case conflict  // List of conflicted files?
@@ -34,6 +35,8 @@ public enum RepoError: Swift.Error
     switch self {
       case .alreadyWriting:
         return .alreadyWriting
+      case .authenticationFailed:
+        return .authenticationFailed
       case .mergeInProgress:
         return .mergeInProgress
       case .cherryPickInProgress:
@@ -86,6 +89,8 @@ public enum RepoError: Swift.Error
         self = .workspaceDirty
       case GIT_EINVALIDSPEC:
         self = .invalidNameGiven
+      case GIT_EAUTH:
+        self = .authenticationFailed
       default:
         self = .gitError(gitCode.rawValue)
     }

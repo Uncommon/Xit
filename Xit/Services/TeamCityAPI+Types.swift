@@ -102,7 +102,7 @@ public class BranchSpec
         case "-:":
           self.inclusion = .exclude
         default:
-          print("Unknown prefix in rule: \(content)")
+          serviceLogger.debug("Unknown prefix in rule: \(content)")
           return nil
       }
 
@@ -164,4 +164,3 @@ public class BranchSpec
     return nil
   }
 }
-

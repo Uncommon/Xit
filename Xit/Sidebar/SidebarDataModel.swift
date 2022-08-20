@@ -68,7 +68,7 @@ final class SidebarDataModel
       case let localBranchItem as LocalBranchSidebarItem:
         guard let branch = repo.localBranch(named: localBranchItem.title)
         else {
-          NSLog("Can't get branch for branch item: \(branchItem.title)")
+          repoLogger.debug("Can't get branch for branch item: \(branchItem.title)")
           return nil
         }
         

@@ -91,15 +91,16 @@ class DictionaryConfig: Config
   var store: [String: Any] = [:]
 
   subscript(index: String) -> Bool?
-  { get { store[index] as? Bool } set { store[index] = newValue} }
+  { get { store[index] as? Bool } set { store[index] = newValue } }
   subscript(index: String) -> String?
-  { get { store[index] as? String } set { store[index] = newValue} }
+  { get { store[index] as? String } set { store[index] = newValue } }
   subscript(index: String) -> Int?
-  { get { store[index] as? Int } set { store[index] = newValue} }
+  { get { store[index] as? Int } set { store[index] = newValue } }
 
   var entries: AnySequence<ConfigEntry>
   {
-    .init(store.map { Entry(name: $0.key, stringValue: $0.value as? String ?? "") })
+    .init(store.map { Entry(name: $0.key,
+                            stringValue: $0.value as? String ?? "") })
   }
 
   func invalidate() {}
@@ -273,6 +274,9 @@ final class GitConfig: Config
       let result = git_config_get_string_buf(&buffer, operativeConfig, index)
       guard result == 0
       else { return nil }
+      defer {
+        git_buf_free(&buffer)
+      }
       
       return String(cString: buffer.ptr)
     }

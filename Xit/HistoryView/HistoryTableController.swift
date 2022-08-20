@@ -23,7 +23,8 @@ final class HistoryTableController: NSViewController,
   
   var tableView: HistoryTableView { view as! HistoryTableView }
   let history = GitCommitHistory()
-  var repository: any Repository { repoController?.repository as! (any Repository) }
+  var repository: any Repository
+  { repoController?.repository as! (any Repository) }
   var sinks: [AnyCancellable] = []
   
   func finishLoad(repository: any Repository)
@@ -117,7 +118,7 @@ final class HistoryTableController: NSViewController,
       
       guard let walker = repository.walker()
       else {
-        NSLog("RevWalker failed")
+        repoLogger.debug("RevWalker failed")
         return
       }
       
@@ -217,9 +218,9 @@ final class HistoryTableController: NSViewController,
     let tableView = view as! NSTableView
     
     objc_sync_enter(self)
-    objc_sync_enter(history)
+    history.syncMutex.lock()
     defer {
-      objc_sync_exit(history)
+      history.syncMutex.unlock()
       objc_sync_exit(self)
     }
     

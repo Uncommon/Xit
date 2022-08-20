@@ -1,5 +1,9 @@
 import Foundation
 import Combine
+import os
+
+let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                        category: "repo")
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
@@ -60,6 +64,11 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     let paths = ["/usr/bin/git", "/usr/local/git/bin/git"]
     
     return paths.first { FileManager.default.fileExists(atPath: $0) }
+  }
+
+  static func globalCLIRunner() -> CLIRunner?
+  {
+    gitPath().map { .init(toolPath: $0, workingDir: "~") }
   }
   
   init(gitRepo: OpaquePointer) throws

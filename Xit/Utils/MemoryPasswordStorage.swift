@@ -9,9 +9,12 @@ final class MemoryPasswordStorage: PasswordStorage
     let url: URL
     let user: String
   }
+
   var store: [Key: String] = [:]
 
-  func find(host: String, path: String, protocol: PasswordProtocol?, port: UInt16, account: String?) -> String? {
+  func find(host: String, path: String,
+            protocol: PasswordProtocol?, port: UInt16,
+            account: String?) -> String? {
     guard let account = account,
           let url = URL(host: host, path: path,
                         protocol: `protocol`, port: port)
@@ -33,7 +36,8 @@ final class MemoryPasswordStorage: PasswordStorage
     store[Key(url: url, user: account)] = password
   }
 
-  func change(url: URL, newURL: URL?, account: String, newAccount: String?, password: String) throws
+  func change(url: URL, newURL: URL?,
+              account: String, newAccount: String?, password: String) throws
   {
     if newURL != nil || newAccount != nil {
       let newURL = newURL ?? url

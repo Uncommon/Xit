@@ -73,10 +73,3 @@ struct AccountStatusCell: View
     }
   }
 }
-
-
-//struct AccountStatusCell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AccountStatusCell()
-//    }
-//}

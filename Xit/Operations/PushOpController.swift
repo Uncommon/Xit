@@ -84,7 +84,7 @@ final class PushOpController: PasswordOpController
         guard let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName)
         else {
-          NSLog("Can't get current branch")
+          repoLogger.debug("Can't get current branch")
           throw RepoError.detachedHead
         }
         guard let remoteBranch = currentBranch.trackingBranch,

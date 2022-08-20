@@ -94,7 +94,7 @@ extension SidebarController
         }
       }
       catch {
-        NSLog("Unexpected error")
+        repoLogger.debug("Unexpected error")
       }
     }
   }

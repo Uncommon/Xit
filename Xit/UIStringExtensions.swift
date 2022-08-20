@@ -161,7 +161,7 @@ extension View
                                     isPresented: Binding<Bool>,
                                     titleVisibility: Visibility = .automatic,
                                     @ViewBuilder actions: () -> A)
-    -> some View where A : View
+    -> some View where A: View
   {
     confirmationDialog(title.rawValue,
                        isPresented: isPresented,

@@ -1,4 +1,8 @@
 import Foundation
+import os
+
+let cliLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                       category: "cli")
 
 let XTErrorDomainCLI = "cli"
 let XTErrorOutputKey = "output"
@@ -23,8 +27,8 @@ struct CLIRunner
   /// - Parameter args: Command arguments to be passed
   func run(inputData: Data? = nil, args: [String]) throws -> Data
   {
-    NSLog("""
-        *** command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))
+    cliLogger.debug("""
+        command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))
         """)
     
     let task = Process()
@@ -76,8 +80,8 @@ struct CLIRunner
       let errorOutput = errorPipe.fileHandleForReading.readDataToEndOfFile()
       let errorString = String(data: errorOutput, encoding: .utf8) ?? "-"
       
-      NSLog("**** output = \(string)")
-      NSLog("**** error = \(errorString)")
+      cliLogger.debug("output = \(string)")
+      cliLogger.debug("error = \(errorString)")
       throw NSError(domain: XTErrorDomainCLI, code: Int(task.terminationStatus),
                     userInfo: [XTErrorOutputKey: string,
                                XTErrorArgsKey: args.joined(separator: " ")])

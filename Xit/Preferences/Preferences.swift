@@ -115,7 +115,7 @@ extension UserDefaults
           result.append(account)
         }
         else {
-          NSLog("Couldn't read account: \(accountDict.description)")
+          serviceLogger.debug("Couldn't read account: \(accountDict.description)")
         }
       }
       return result

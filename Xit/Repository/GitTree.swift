@@ -173,4 +173,9 @@ class GitTreeEntry: TreeEntry
     self.entry = entry
     self.owner = owner
   }
+
+  deinit
+  {
+    git_tree_entry_free(entry)
+  }
 }

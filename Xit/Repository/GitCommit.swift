@@ -22,6 +22,8 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var tree: (any Tree)? { get }
 
   var isSigned: Bool { get }
+
+  func getTrailers() -> [(String, [String])]
 }
 
 extension Commit
@@ -205,6 +207,33 @@ public final class GitCommit: Commit
     else { return nil }
     
     self.init(gitCommit: gitObject)
+  }
+
+  public func getTrailers() -> [(String, [String])]
+  {
+    guard let message = self.message
+    else { return [] }
+    var trailers = git_message_trailer_array()
+    guard git_message_trailers(&trailers, message) == 0
+    else { return [] }
+    defer {
+      git_message_trailer_array_free(&trailers)
+    }
+
+    var result: [(String, [String])] = []
+
+    for i in 0..<trailers.count {
+      let key: String = .init(cString: trailers.trailers[i].key)
+      let value: String = .init(cString: trailers.trailers[i].value)
+
+      if let index = result.firstIndex(where: { $0.0 == key }) {
+        result[index].1.append(value)
+      }
+      else {
+        result.append((key, [value]))
+      }
+    }
+    return result
   }
   
   private static func calculateParentOIDs(_ rawCommit: OpaquePointer) -> [GitOID]

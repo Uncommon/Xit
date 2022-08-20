@@ -11,14 +11,14 @@ final class PullOpController: FetchOpController
           let branchName = repository.currentBranch,
           let branch = repository.localBranch(named: branchName)
     else {
-      NSLog("Can't get current branch")
+      repoLogger.debug("Can't get current branch")
       throw RepoError.detachedHead
     }
     guard let remoteBranch = branch.trackingBranch,
           let remoteName = remoteBranch.remoteName,
           let remote = repository.remote(named: remoteName)
     else {
-      NSLog("Can't pull - no tracking branch")
+      repoLogger.debug("Can't pull - no tracking branch")
       throw RepoError.unexpected
     }
     

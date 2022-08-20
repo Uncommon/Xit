@@ -4,7 +4,7 @@ import SwiftUI
 /// A view with a specific data model type.
 protocol DataModelView: View
 {
-  associatedtype Model: ObservableObject & Validating
+  associatedtype Model: ObservableObject, Validating
 
   init(model: Model)
 }

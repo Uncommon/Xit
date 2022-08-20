@@ -30,8 +30,7 @@ final class BuildStatusViewController: NSViewController
     super.init(nibName: .buildStatusNib, bundle: nil)
     
     cache.add(client: self)
-    if let remoteName = (branch as? RemoteBranch)?.remoteName ??
-                        (branch as? LocalBranch)?.trackingBranch?.remoteName,
+    if let remoteName = branch.remoteName,
        let (api, _) = matchBuildStatusService(remoteName) {
       self.api = api
     }
@@ -154,10 +153,11 @@ extension BuildStatusViewController: BuildStatusClient
 {
   func buildStatusUpdated(branch: String, buildType: String)
   {
-    filterStatuses()
     DispatchQueue.main.async {
-      self.setProgressVisible(false)
-      self.tableView.reloadData()
+      [self] in
+      filterStatuses()
+      setProgressVisible(false)
+      tableView.reloadData()
     }
   }
 }

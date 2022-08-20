@@ -55,7 +55,7 @@ struct CommitHeader: View
     if let commit = commit {
       ScrollView {
         VStack(alignment: .leading, spacing: Measurement.divider) {
-          VStack(spacing: 6) {
+          VStack(alignment: .leading, spacing: 6) {
             if let author = commit.authorSig {
               SignatureRow(icon: Image(systemName: "pencil.circle.fill"),
                            help: "Author",
@@ -67,11 +67,14 @@ struct CommitHeader: View
                            help: "Committer",
                            signature: committer)
             }
+
+            let trailers = commit.getTrailers()
+
             HStack(alignment: .firstTextBaseline) {
               VStack(alignment: .leading) {
                 ForEach(commit.parentOIDs, id: \.sha) { oid in
                   HStack {
-                    CommitHeaderLabel(text: "Parent:")
+                    CommitHeaderLabel("Parent:")
                     Text(messageLookup(oid))
                       .foregroundColor(.blue)
                       .onHover { isInside in
@@ -92,7 +95,7 @@ struct CommitHeader: View
                 .accessibilityElement(children: .contain)
                 .accessibility(identifier: "parents")
               Spacer()
-              CommitHeaderLabel(text: "SHA:")
+              CommitHeaderLabel("SHA:")
               Button {
                 let pasteboard = NSPasteboard.general
                 pasteboard.clearContents()
@@ -105,6 +108,24 @@ struct CommitHeader: View
               }
                 .buttonStyle(LinkButtonStyle())
                 .accessibility(identifier: "sha")
+            }
+            LazyVGrid(columns: .init(repeating: .init(.flexible(),
+                                                      alignment: .topLeading),
+                                     count: 2),
+                      alignment: .leading) {
+              ForEach(0..<trailers.count, id: \.self) { index in
+                HStack(alignment: .firstTextBaseline) {
+                  let (label, values) = trailers[index]
+
+                  CommitHeaderLabel(label
+                      .replacingOccurrences(of: "-", with: " ") + ":")
+                  VStack(alignment: .leading) {
+                    ForEach(0..<values.count, id: \.self) {
+                      Text(values[$0]).textSelection(.enabled)
+                    }
+                  }
+                }
+              }
             }
           }
             .padding([.top, .horizontal], Measurement.margin)
@@ -138,10 +159,12 @@ struct SignatureRow: View
       icon.foregroundColor(.secondary).help(help)
       if let name = signature.name {
         Text(name).bold()
+          .textSelection(.enabled)
           .accessibility(identifier: "name")
       }
       if let email = signature.email {
         Text("<\(email)>").bold().foregroundColor(.secondary)
+          .textSelection(.enabled)
           .accessibility(identifier: "email")
       }
       Spacer()
@@ -157,6 +180,11 @@ struct CommitHeaderLabel: View
   
   var body: some View {
     Text(text).font(.body).bold().foregroundColor(.gray)
+  }
+
+  init(_ text: String)
+  {
+    self.text = text
   }
 }
 
@@ -178,6 +206,14 @@ struct CommitHeader_Previews: PreviewProvider
                                              when: Date())
 
     var isSigned: Bool { false }
+
+    func getTrailers() -> [(String, [String])]
+    {
+      [
+        ("Previewed-by", ["This Guy"]),
+        ("Eaten-by", ["Dinosaurs", "Gentlemen"]),
+      ]
+    }
   }
   
   static var parents: [String: String] = ["A": "First parent",

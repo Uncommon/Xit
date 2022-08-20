@@ -59,9 +59,11 @@ class FileListController: NSViewController, RepositoryWindowViewController
   var actionImage: NSImage? { nil }
   var pressedImage: NSImage? { nil }
   var actionButtonSelector: Selector? { nil }
+
+  typealias Repository = any BasicRepository & FileStaging & FileContents
   
-  var repository: any BasicRepository & FileStaging & FileContents
-  { repoController?.repository as! any BasicRepository & FileStaging & FileContents }
+  var repository: Repository
+  { repoController?.repository as! Repository }
 
   var optionsCancellable: AnyCancellable?
 
