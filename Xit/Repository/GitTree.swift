@@ -52,7 +52,7 @@ final class GitTree: Tree
         return NullEntry()
       }
       
-      return GitTreeEntry(entry: result, owner: owner)
+      return GitTreeEntry(entry: result, owner: owner, owned: false)
     }
   }
   
@@ -99,7 +99,7 @@ final class GitTree: Tree
           let owner = git_tree_owner(tree)
     else { return nil }
     
-    return GitTreeEntry(entry: result, owner: owner)
+    return GitTreeEntry(entry: result, owner: owner, owned: false)
   }
   
   func entry(path: String) -> (any TreeEntry)?
@@ -110,7 +110,7 @@ final class GitTree: Tree
           })
     else { return nil }
     
-    return GitTreeEntry(entry: entry, owner: owner)
+    return GitTreeEntry(entry: entry, owner: owner, owned: true)
   }
   
   func entry(at index: Int) -> (any TreeEntry)?
@@ -128,6 +128,7 @@ class GitTreeEntry: TreeEntry
 {
   let entry: OpaquePointer
   let owner: OpaquePointer
+  let owned: Bool
   
   var id: any OID
   {
@@ -168,14 +169,17 @@ class GitTreeEntry: TreeEntry
     }
   }
   
-  init(entry: OpaquePointer, owner: OpaquePointer)
+  init(entry: OpaquePointer, owner: OpaquePointer, owned: Bool)
   {
     self.entry = entry
     self.owner = owner
+    self.owned = owned
   }
 
   deinit
   {
-    git_tree_entry_free(entry)
+    if owned {
+      git_tree_entry_free(entry)
+    }
   }
 }
