@@ -328,10 +328,24 @@ extension FileListController: NSOutlineViewDelegate
                                               owner: self) as? FileCellView
         else { break }
         let path = viewDataSource.path(for: item)
+        let isFolder: Bool
+        let name: String
 
-        cell.textField?.stringValue = path.lastPathComponent
-        cell.imageView?.image = viewDataSource.outlineView!(outlineView,
-                                                            isItemExpandable: item)
+        if path.hasSuffix("/") {
+          isFolder = true
+          name = path.pathComponents.dropLast().last ?? ""
+        }
+        else if viewDataSource.outlineView!(outlineView, isItemExpandable: item) {
+          isFolder = true
+          name = path.lastPathComponent
+        }
+        else {
+          isFolder = false
+          name = path.lastPathComponent
+        }
+
+        cell.textField?.stringValue = name
+        cell.imageView?.image = isFolder
             ? NSImage(named: NSImage.folderName)
             : NSWorkspace.shared.icon(for: .fromExtension(path.pathExtension))
         
