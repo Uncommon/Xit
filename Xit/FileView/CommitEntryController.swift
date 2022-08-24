@@ -125,8 +125,8 @@ final class CommitEntryController: NSViewController,
     
     stripCheckbox.boolValue = defaults.stripComments
     stripObserver = defaults.observe(\.stripComments) {
-      (defaults, _) in
-      self.stripCheckbox.boolValue = defaults.stripComments
+      [weak self] (defaults, _) in
+      self?.stripCheckbox.boolValue = defaults.stripComments
     }
   }
   

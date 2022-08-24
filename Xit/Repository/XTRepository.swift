@@ -21,7 +21,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
 
   let currentBranchSubject = CurrentValueSubject<String?, Never>(nil)
   
-  public var controller: RepositoryController? = nil
+  public weak var controller: RepositoryController? = nil
   
   fileprivate(set) public var isWriting = false
 

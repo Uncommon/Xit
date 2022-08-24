@@ -96,36 +96,44 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func makeMenus()
   {
     branchContextMenu = NSMenu {
-      NSMenuItem(.checkOut, checkOutBranch(_:)).axid(.BranchPopup.checkOut)
-      NSMenuItem(.rename, renameBranch(_:)).axid(.BranchPopup.rename)
-      NSMenuItem(.merge, mergeBranch(_:)).axid(.BranchPopup.merge)
+      NSMenuItem(.checkOut, target: self, action: #selector(checkOutBranch(_:)))
+          .axid(.BranchPopup.checkOut)
+      NSMenuItem(.rename,  target: self, action: #selector(renameBranch(_:)))
+        .axid(.BranchPopup.rename)
+      NSMenuItem(.merge,  target: self, action: #selector(mergeBranch(_:)))
+        .axid(.BranchPopup.merge)
       NSMenuItem.separator()
-      NSMenuItem(.delete, deleteBranch(_:)).axid(.BranchPopup.delete)
+      NSMenuItem(.delete, target: self, action: #selector(deleteBranch(_:)))
+        .axid(.BranchPopup.delete)
     }.axid(.Menu.branch)
     remoteBranchContextMenu = NSMenu {
-      NSMenuItem(.createTrackingBranch, createTrackingBranch(_:))
-      NSMenuItem(.rename, renameBranch(_:))
-      NSMenuItem(.merge, mergeBranch(_:))
+      NSMenuItem(.createTrackingBranch, target: self, action: #selector(createTrackingBranch(_:)))
+      NSMenuItem(.rename, target: self, action: #selector(renameBranch(_:)))
+      NSMenuItem(.merge, target: self, action: #selector(mergeBranch(_:)))
       NSMenuItem.separator()
-      NSMenuItem(.delete, deleteBranch(_:))
+      NSMenuItem(.delete, target: self, action: #selector(deleteBranch(_:)))
     }
     remoteContextMenu = NSMenu {
-      NSMenuItem(.rename, renameRemote(_:))
-      NSMenuItem(.edit, editRemote(_:))
-      NSMenuItem(.delete, deleteRemote(_:))
-      NSMenuItem(.copyURL, copyRemoteURL(_:))
+      NSMenuItem(.rename, target: self, action: #selector(renameRemote(_:)))
+      NSMenuItem(.edit, target: self, action: #selector(editRemote(_:)))
+      NSMenuItem(.delete, target: self, action: #selector(deleteRemote(_:)))
+      NSMenuItem(.copyURL, target: self, action: #selector(copyRemoteURL(_:)))
     }
     stashContextMenu = NSMenu {
-      NSMenuItem(.pop, popStash(_:)).axid(.StashPopup.pop)
-      NSMenuItem(.apply, applyStash(_:)).axid(.StashPopup.apply)
-      NSMenuItem(.drop, dropStash(_:)).axid(.StashPopup.drop)
+      NSMenuItem(.pop, target: self, action: #selector(popStash(_:)))
+        .axid(.StashPopup.pop)
+      NSMenuItem(.apply, target: self, action: #selector(applyStash(_:)))
+        .axid(.StashPopup.apply)
+      NSMenuItem(.drop, target: self, action: #selector(dropStash(_:)))
+        .axid(.StashPopup.drop)
     }
     submoduleContextMenu = NSMenu {
-      NSMenuItem(.showInFinder, showSubmodule(_:))
-      NSMenuItem(.update, updateSubmodule(_:))
+      NSMenuItem(.showInFinder, target: self, action: #selector(showSubmodule(_:)))
+      NSMenuItem(.update, target: self, action: #selector(updateSubmodule(_:)))
     }
     tagContextMenu = NSMenu {
-      NSMenuItem(.delete, deleteTag(_:)).axid(.TagPopup.delete)
+      NSMenuItem(.delete, target: self, action: #selector(deleteTag(_:)))
+        .axid(.TagPopup.delete)
     }.axid(.Menu.tag)
   }
   

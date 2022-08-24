@@ -10,8 +10,6 @@ final class DateCellView: NSTableCellView
     static let medium: CGFloat = 170
     static let short: CGFloat = 150
   }
-
-  var changeObserver: NSObjectProtocol?
   
   var date: Date?
   {
@@ -23,6 +21,14 @@ final class DateCellView: NSTableCellView
       updateDateStyle()
     }
   }
+
+  override var frame: NSRect
+  {
+    didSet
+    {
+      updateDateStyle()
+    }
+  }
   
   override func awakeFromNib()
   {
@@ -30,13 +36,6 @@ final class DateCellView: NSTableCellView
        cell.formatter == nil {
       cell.formatter = DateFormatter()
       updateDateStyle()
-    }
-    if changeObserver == nil {
-      changeObserver = NotificationCenter.default.addObserver(
-          forName: NSView.frameDidChangeNotification, object: self, queue: nil) {
-        [weak self] (_) in
-        self?.updateDateStyle()
-      }
     }
   }
   

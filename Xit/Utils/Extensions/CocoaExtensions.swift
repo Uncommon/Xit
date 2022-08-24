@@ -155,6 +155,12 @@ extension NSMenuItem
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
   }
 
+  convenience init(_ titleString: UIString, target: AnyObject, action: Selector)
+  {
+    self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
+    self.target = target
+  }
+
   func with(identifier: NSUserInterfaceItemIdentifier) -> NSMenuItem
   {
     self.identifier = identifier

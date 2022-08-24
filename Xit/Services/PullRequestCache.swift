@@ -21,7 +21,7 @@ final class PullRequestCache
   }
   
   private var clients = [WeakClientRef]()
-  private let repository: any RemoteManagement
+  private weak var repository: (any RemoteManagement)?
   
   var requests: [any PullRequest] = []
   
@@ -45,9 +45,11 @@ final class PullRequestCache
   
   func refresh()
   {
-    let remotes = repository.remotes()
+    let remotes = repository?.remotes() ?? []
 
     requests.removeAll()
+    guard !remotes.isEmpty
+    else { return }
 
     Task.detached {
       Signpost.intervalStart(.refreshPullRequests)
