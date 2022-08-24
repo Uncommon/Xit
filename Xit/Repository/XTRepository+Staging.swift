@@ -64,7 +64,7 @@ extension XTRepository: FileStatusDetection
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
-    guard let diff = self.diff(forSHA: commit.sha, parent: parentOID)
+    guard let diff = self.diff(forSHA: commit.id.sha, parent: parentOID)
     else { return [] }
     var result = [FileChange]()
     

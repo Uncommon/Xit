@@ -176,7 +176,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
         messageLookup: { _ in "" },
         selectParent: { _ in }))
     commitHeader.selectParent = { [weak self] oid in
-      self?.repoUIController?.select(sha: oid.sha)
+      self?.repoUIController?.select(oid: oid)
     }
     
     let scrollView = NSScrollView()

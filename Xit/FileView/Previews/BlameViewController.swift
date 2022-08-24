@@ -171,10 +171,11 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
   override func webMessage(_ params: [String: Any])
   {
     guard params["action"] as? String == "selectSHA",
-          let sha = params["sha"] as? String
+          let sha = params["sha"] as? String,
+          let oid = repoUIController?.repository.oid(forSHA: sha)
     else { return }
-    
-    repoUIController?.select(sha: sha)
+
+    repoUIController?.select(oid: oid)
   }
 }
 

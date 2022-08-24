@@ -213,8 +213,6 @@ class FakeFileChangesRepo: FileChangesRepo
   func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
     -> PatchMaker.PatchResult?
   { nil }
-  func diff(for path: String, commitSHA sha: String, parentOID: (any OID)?) -> DiffDelta?
-  { nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }

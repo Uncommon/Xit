@@ -18,30 +18,17 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
   
   func commit(forSHA sha: String) -> (any Commit)?
   {
-    for commit in commits {
-      if commit.sha == sha {
-        return commit
-      }
-    }
-    return nil
+    return commits.first { $0.id.sha == sha }
   }
 
   func commit(forOID oid: any OID) -> (any Commit)?
   {
-    for commit in commits {
-      if commit.id.equals(oid) {
-        return commit
-      }
-    }
-    return nil
+    return commits.first { $0.id.equals(oid) }
   }
   
   func commit(message: String, amend: Bool) throws {}
   
-  func walker() -> (any RevWalk)?
-  {
-    return nil
-  }
+  func walker() -> (any RevWalk)? { nil }
 }
 
 typealias MockRepository = GenericRepository<GitOID>
@@ -106,7 +93,7 @@ class CommitHistoryTest: XCTestCase
   /// Makes sure each commit precedes its parents.
   func check(_ history: TestCommitHistory, expectedLength: Int)
   {
-    print("\(history.entries.flatMap({ $0.commit.sha }))")
+    print("\(history.entries.flatMap({ $0.commit.id.sha }))")
     XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
@@ -118,7 +105,7 @@ class CommitHistoryTest: XCTestCase
         }
         
         XCTAssert(parentIndex > index,
-                  "\(entry.commit.sha.firstSix()) ≮ \(parentOID.sha.firstSix())")
+                  "\(entry.commit.id.sha.firstSix()) ≮ \(parentOID.sha.firstSix())")
       }
     }
   }
@@ -578,7 +565,7 @@ class CommitHistoryTest: XCTestCase
       heads: ["a", "b", "f"])
     else { return }
     
-    history.entries.sort(by: { $0.commit.sha < $1.commit.sha })
+    history.entries.sort(by: { $0.commit.id.sha < $1.commit.id.sha })
     
     let connections = generateConnections(history)
     

@@ -179,5 +179,5 @@ final class StashUnstagedList: StashFileList, FileListModel
 
 func == (a: StashSelection, b: StashSelection) -> Bool
 {
-  return a.stash.mainCommit?.id.sha == b.stash.mainCommit?.id.sha
+  return a.stash.mainCommit?.id == b.stash.mainCommit?.id
 }

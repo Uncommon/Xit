@@ -130,8 +130,8 @@ final class SidebarDataModel
     let localBranches = repo.localBranches.sorted { $0.name <~ $1.name }
     
     for branch in localBranches {
-      guard let sha = branch.oid?.sha,
-            let commit = repo.commit(forSHA: sha)
+      guard let oid = branch.oid,
+            let commit = repo.commit(forOID: oid)
       else { continue }
       
       let name = branch.name.droppingPrefix("refs/heads/")

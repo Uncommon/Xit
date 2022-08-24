@@ -3,7 +3,6 @@ import Cocoa
 
 public protocol Commit: OIDObject, CustomStringConvertible
 {
-  var sha: String { get }
   // Strictly speaking these should probably all be the same OID type
   var parentOIDs: [any OID] { get }
   
@@ -28,8 +27,6 @@ public protocol Commit: OIDObject, CustomStringConvertible
 
 extension Commit
 {
-  public var sha: String { id.sha }
-  
   var authorName: String? { authorSig?.name }
   var authorEmail: String? { authorSig?.email }
   var authorDate: Date? { authorSig?.when }
@@ -56,7 +53,7 @@ extension Commit
   }
 
   public var description: String
-  { sha.firstSix() }
+  { id.sha.firstSix() }
 }
 
 public final class GitCommit: Commit

@@ -10,7 +10,7 @@ protocol RepositoryUIController: AnyObject
   var reselectPublisher: AnyPublisher<Void, Never> { get }
   var isAmending: Bool { get set }
 
-  func select(sha: String)
+  func select(oid: any OID)
   func reselect()
   func updateForFocus()
   func showErrorMessage(error: RepoError)
@@ -206,15 +206,7 @@ final class XTWindowController: NSWindowController,
     updateNavButtons()
   }
   
-  func select(sha: String)
-  {
-    guard let commit = repository.commit(forSHA: sha)
-    else { return }
-  
-    selection = CommitSelection(repository: repository, commit: commit)
-  }
-  
-  func select(oid: GitOID)
+  func select(oid: any OID)
   {
     guard let repo = repoDocument?.repository,
           let commit = repo.commit(forOID: oid)

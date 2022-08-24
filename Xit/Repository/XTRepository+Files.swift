@@ -98,13 +98,8 @@ extension XTRepository: FileContents
   
   public func fileBlob(ref: String, path: String) -> (any Blob)?
   {
-    return commitBlob(commit: sha(forRef: ref).flatMap { commit(forSHA: $0) },
+    return commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
                       path: path)
-  }
-  
-  public func fileBlob(sha: String, path: String) -> (any Blob)?
-  {
-    return commitBlob(commit: commit(forSHA: sha), path: path)
   }
   
   public func fileBlob(oid: any OID, path: String) -> (any Blob)?
@@ -154,16 +149,6 @@ extension XTRepository: FileDiffing
     return .diff(PatchMaker(from: fromSource, to: toSource, path: file))
   }
   
-  // Returns a file diff for a given commit.
-  public func diff(for path: String,
-                   commitSHA sha: String,
-                   parentOID: (any OID)?) -> (any DiffDelta)?
-  {
-    let diff = self.diff(forSHA: sha, parent: parentOID)
-    
-    return diff?.delta(forNewPath: path)
-  }
-  
   /// Returns a diff maker for a file in the index, compared to HEAD
   public func stagedDiff(file: String) -> PatchMaker.PatchResult?
   {
@@ -188,8 +173,8 @@ extension XTRepository: FileDiffing
     
     guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
     else { return nil }
-    let blob = headCommit.parentSHAs.first
-                         .flatMap { fileBlob(sha: $0, path: file) }
+    let blob = headCommit.parentOIDs.first
+                         .flatMap { fileBlob(oid: $0, path: file) }
     let indexBlob = stagedBlob(file: file)
 
     return .diff(PatchMaker(from: PatchMaker.SourceType(blob),
@@ -265,7 +250,8 @@ extension XTRepository
             : parentSHAs.first { $0 == parentSHA }
       let parentCommit = parentSHA.map { self.commit(forSHA: $0) }
       
-      guard let diff = GitDiff(oldTree: parentCommit??.tree, newTree: commit.tree,
+      guard let diff = GitDiff(oldTree: parentCommit??.tree,
+                               newTree: commit.tree,
                                repository: gitRepo)
       else { return nil }
       

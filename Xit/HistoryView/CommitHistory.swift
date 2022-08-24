@@ -24,8 +24,7 @@ final class CommitEntry: CustomStringConvertible
 
 func == (left: CommitEntry, right: CommitEntry) -> Bool
 {
-  // TODO: Make OID equatable to compare commit.oid
-  return left.commit.sha == right.commit.sha
+  return left.commit.id == right.commit.id
 }
 
 
@@ -325,8 +324,8 @@ extension BranchResult: CustomStringConvertible
 {
   var description: String
   {
-    guard let first = entries.first?.commit.sha.firstSix(),
-          let last = entries.last?.commit.sha.firstSix()
+    guard let first = entries.first?.commit.id.sha.firstSix(),
+          let last = entries.last?.commit.id.sha.firstSix()
     else { return "empty" }
     
     return "\(first)..\(last)"
