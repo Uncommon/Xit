@@ -90,7 +90,7 @@ extension PasswordStorage
 // `Self` is needed to access this as `.xit`
 extension PasswordStorage where Self == KeychainStorage
 {
-  static var xit: any PasswordStorage
+  public static var xit: any PasswordStorage
   {
     #if DEBUG
     return Testing.defaults == .standard ? KeychainStorage.shared
@@ -120,7 +120,7 @@ extension URL
   }
 }
 
-final class KeychainStorage: PasswordStorage
+public final class KeychainStorage: PasswordStorage
 {
   static let shared: PasswordStorage = KeychainStorage()
   
@@ -165,9 +165,9 @@ final class KeychainStorage: PasswordStorage
   }
   
   /// Gets a password from the keychain.
-  func find(host: String, path: String,
-            protocol: PasswordProtocol?,
-            port: UInt16, account: String?) -> String?
+  public func find(host: String, path: String,
+                   protocol: PasswordProtocol?,
+                   port: UInt16, account: String?) -> String?
   {
     var item: CFTypeRef?
     let err = SecItemCopyMatching(passwordDataQuery(host: host, path: path,
@@ -184,9 +184,9 @@ final class KeychainStorage: PasswordStorage
   }
   
   /// Saves a password to the keychain.
-  func save(host: String, path: String,
-            port: UInt16, account: String,
-            password: String) throws
+  public func save(host: String, path: String,
+                   port: UInt16, account: String,
+                   password: String) throws
   {
     var attributes = passwordQueryBase(host: host, path: path, protocol: nil,
                                        port: port, account: account)
@@ -201,9 +201,9 @@ final class KeychainStorage: PasswordStorage
     }
   }
   
-  func change(url: URL, newURL: URL?,
-              account: String, newAccount: String?,
-              password: String) throws
+  public func change(url: URL, newURL: URL?,
+                     account: String, newAccount: String?,
+                     password: String) throws
   {
     guard let host = url.host
     else { throw PasswordError.invalidURL }

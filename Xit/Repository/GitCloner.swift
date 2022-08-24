@@ -6,12 +6,16 @@ public final class GitCloner: Cloning
   public func clone(from source: URL, to destination: URL,
                     branch: String,
                     recurseSubmodules: Bool,
+                    passwordStorage: any PasswordStorage,
                     publisher: RemoteProgressPublisher) throws
     -> (any FullRepository)?
   {
     try branch.withCString {
       (cBranch) in
-      try git_remote_callbacks.withCallbacks(publisher.callbacks) {
+      let callbacks = RemoteCallbacks(copying: publisher.callbacks)
+
+      callbacks.passwordStorage = passwordStorage
+      return try git_remote_callbacks.withCallbacks(callbacks) {
         (gitCallbacks) in
         var options = git_clone_options.defaultOptions()
         

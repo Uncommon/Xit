@@ -1,6 +1,10 @@
 import Foundation
+import os
 import XCTest
 @testable import Xit
+
+let xitTestLogger = Logger(subsystem: "com.uncommonplace.xit.test",
+                           category: "Xit test")
 
 class XTTest: XCTestCase
 {
@@ -15,7 +19,7 @@ class XTTest: XCTestCase
   
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
-    NSLog("[createRepo] repoName=\(repoPath)")
+    xitTestLogger.info("[createRepo] repoName=\(repoPath)")
     
     let fileManager = FileManager.default
     

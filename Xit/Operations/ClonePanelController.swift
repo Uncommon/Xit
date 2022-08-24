@@ -37,6 +37,8 @@ final class ClonePanelController: NSWindowController
   var pathObserver: AnyCancellable?
 
   let passwordStorage: PasswordStorage
+  /// For potentially storing the password between querying the remote and cloning
+  var tempPasswordStorage: MemoryPasswordStorage?
   // Use Box to de-isolate the value
   private let needsPassword = Box<Bool>(false)
   
@@ -130,12 +132,23 @@ final class ClonePanelController: NSWindowController
     else { return nil }
     let panel = PasswordPanelController()
 
-    return await panel.getPassword(
+    if let result = await panel.getPassword(
         parentWindow: window,
         user: url.impliedUserName,
         host: url.host ?? "",
         path: url.path,
-        port: UInt16(url.port ?? url.defaultPort))
+        port: UInt16(url.port ?? url.defaultPort)) {
+      let storage = MemoryPasswordStorage()
+
+      _ = try? storage.save(host: url.host ?? "", path: url.path,
+                            port: UInt16(url.defaultPort),
+                            account: result.0, password: result.1)
+      tempPasswordStorage = storage
+      return result
+    }
+    else {
+      return nil
+    }
   }
 
   @objc required dynamic init?(coder: NSCoder)
@@ -156,6 +169,9 @@ final class ClonePanelController: NSWindowController
     
     DispatchQueue.global(qos: .userInitiated).async {
       [self] in
+      if let tempPasswordStorage = tempPasswordStorage {
+        progressPublisher.callbacks.passwordStorage = tempPasswordStorage
+      }
       let result = Result(catching: {
         try cloner.clone(from: sourceURL,
                          to: destURL,

@@ -70,6 +70,9 @@
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* CommitEntryController.xib */; };
+		899FDCBD28AFC0FA00241BFD /* CredentialsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899FDCBC28AFC0FA00241BFD /* CredentialsTest.swift */; };
+		899FDCBF28AFE1F800241BFD /* External.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899FDCBE28AFE1F800241BFD /* External.swift */; };
+		899FDCC028AFE1F800241BFD /* External.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899FDCBE28AFE1F800241BFD /* External.swift */; };
 		89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21D9213DE5E300EF7507 /* StashOperationController.swift */; };
 		89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89AB952124DDE63E0029CECC /* PushNewPanelController.xib */; };
 		89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB953624DE064B0029CECC /* PushNewPanelController.swift */; };
@@ -433,6 +436,8 @@
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* CommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitEntryController.swift; sourceTree = "<group>"; };
 		899DB1A11CE5022400760270 /* CommitEntryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommitEntryController.xib; sourceTree = "<group>"; };
+		899FDCBC28AFC0FA00241BFD /* CredentialsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsTest.swift; sourceTree = "<group>"; };
+		899FDCBE28AFE1F800241BFD /* External.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = External.swift; sourceTree = "<group>"; };
 		89AB21D9213DE5E300EF7507 /* StashOperationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashOperationController.swift; sourceTree = "<group>"; };
 		89AB952124DDE63E0029CECC /* PushNewPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PushNewPanelController.xib; sourceTree = "<group>"; };
 		89AB953624DE064B0029CECC /* PushNewPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNewPanelController.swift; sourceTree = "<group>"; };
@@ -961,6 +966,7 @@
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
 				C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */,
 				89E42729285D6E3D00A17651 /* ConfigTest.swift */,
+				899FDCBE28AFE1F800241BFD /* External.swift */,
 				C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */,
 				C98EBC1C212CC56600EF739E /* Fakes.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
@@ -992,6 +998,7 @@
 				C924EFB4262F316500B13D31 /* RepoActions.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
+				899FDCBC28AFC0FA00241BFD /* CredentialsTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1760,12 +1767,14 @@
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9A0223822EF4BE8001EFD7E /* XTRepositoryHunkTest.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* TeamCityTest.swift in Sources */,
+				899FDCBD28AFC0FA00241BFD /* CredentialsTest.swift in Sources */,
 				C9FCC1D11D50EB1A00AC398E /* CommitHistoryTest.swift in Sources */,
 				C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */,
 				C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */,
 				C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */,
+				899FDCBF28AFE1F800241BFD /* External.swift in Sources */,
 				C94736881DF1DDDE000E3A05 /* XTRepositoryTest.swift in Sources */,
 				C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */,
 				C924EFB5262F316500B13D31 /* RepoActions.swift in Sources */,
@@ -1784,6 +1793,7 @@
 				C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */,
 				C9B3950724C0AA8A0084EB73 /* UnicodeRepoUITests.swift in Sources */,
 				C90FD41F23845FB8006358C7 /* TestRepoEnvironment.swift in Sources */,
+				899FDCC028AFE1F800241BFD /* External.swift in Sources */,
 				C99E38F4236B595300675F6A /* TestRepo.swift in Sources */,
 				C9C3014226A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				89DA1E2128898B7B00FA4644 /* NetworkTests.swift in Sources */,

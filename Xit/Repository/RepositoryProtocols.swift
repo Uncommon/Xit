@@ -53,7 +53,21 @@ public protocol Cloning
   func clone(from source: URL, to destination: URL,
              branch: String,
              recurseSubmodules: Bool,
+             passwordStorage: any PasswordStorage,
              publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
+}
+
+extension Cloning
+{
+  func clone(from source: URL, to destination: URL,
+             branch: String,
+             recurseSubmodules: Bool,
+             publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
+  {
+    try clone(from: source, to: destination, branch: branch,
+              recurseSubmodules: recurseSubmodules, passwordStorage: .xit,
+              publisher: publisher)
+  }
 }
 
 public protocol CommitStorage: AnyObject
@@ -283,6 +297,15 @@ public class RemoteCallbacks
     self.uploadProgress = uploadProgress
     self.sidebandMessage = sidebandMessage
     self.passwordStorage = passwordStorage
+  }
+
+  init(copying other: RemoteCallbacks)
+  {
+    self.passwordBlock = other.passwordBlock
+    self.downloadProgress = other.downloadProgress
+    self.uploadProgress = other.uploadProgress
+    self.sidebandMessage = other.sidebandMessage
+    self.passwordStorage = other.passwordStorage
   }
 }
 

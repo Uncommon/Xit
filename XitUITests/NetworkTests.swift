@@ -30,12 +30,9 @@ class NetworkTests: XCTestCase
     XCTAssertFalse(Clone.cloneButton.isEnabled)
   }
 
-  // Since this test involves authenticating for a private GitHub repository,
-  // it only works for me (David Catmull). If you know a good way to make it
-  // work for anyone, please let me know.
   func testTokenSignIn() throws
   {
-    guard let token = findToken()
+    guard let token = externalFileContent("github_token.txt")
     else {
       throw XCTSkip("token not available")
     }
@@ -54,12 +51,5 @@ class NetworkTests: XCTestCase
     PasswordPanel.ok.click()
     wait(for: [absence(of: Clone.signInButton)], timeout: 2)
     XCTAssertTrue(Clone.cloneButton.isEnabled)
-  }
-
-  func findToken() -> String?
-  {
-    let url = URL(fileURLWithPath: #file.deletingLastPathComponent
-        .appending(pathComponent: "../../github_token.txt"))
-    return try? String(contentsOf: url)
   }
 }
