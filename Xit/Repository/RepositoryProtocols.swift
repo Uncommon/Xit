@@ -83,7 +83,7 @@ public protocol CommitReferencing: AnyObject
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   
   func reference(named name: String) -> (any Reference)?
-  func refs(at sha: String) -> [String]
+  func refs(at oid: any OID) -> [String]
   func allRefs() -> [String]
   
   func rebuildRefsIndex()
@@ -104,7 +104,7 @@ extension CommitReferencing
 
 public protocol FileStatusDetection: AnyObject
 {
-  func changes(for sha: String, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
   func amendingStagedChanges() -> [FileChange]

@@ -5,7 +5,7 @@ final class CommitSelection: RepositorySelection
 {
   unowned var repository: any FileChangesRepo
   let commit: any Commit
-  var shaToSelect: String? { commit.sha }
+  var oidToSelect: (any OID)? { commit.id }
   var canCommit: Bool { false }
   var fileList: any FileListModel { commitFileList }
   
@@ -27,7 +27,7 @@ final class CommitSelection: RepositorySelection
 final class CommitFileList: FileListModel
 {
   lazy var changes: [FileChange] =
-      self.repository.changes(for: self.commit.id.sha,
+      self.repository.changes(for: self.commit.id,
                               parent: self.commit.parentOIDs.first)
   
   weak var commitSelection: CommitSelection!
@@ -45,7 +45,7 @@ final class CommitFileList: FileListModel
   {
     guard let tree = commit.tree
     else { return NSTreeNode() }
-    let changeList = repository.changes(for: commit.sha, parent: diffParent)
+    let changeList = repository.changes(for: commit.id, parent: diffParent)
     let loader = TreeLoader(fileChanges: changeList)
     let result = loader.treeRoot(tree: tree, oldTree: oldTree)
     

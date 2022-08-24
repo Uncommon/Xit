@@ -6,7 +6,7 @@ final class StashSelection: StagedUnstagedSelection
   unowned var repository: any FileChangesRepo
   let stash: any Stash
   var canCommit: Bool { false }
-  var shaToSelect: String? { stash.mainCommit?.parentSHAs[0] }
+  var oidToSelect: (any OID)? { stash.mainCommit?.parentOIDs.first }
   var fileList: any FileListModel { stagedList }
   var unstagedFileList: any FileListModel { unstagedList }
   
@@ -59,7 +59,7 @@ class StashStagedList: StashFileList, FileListModel
   var changes: [FileChange]
   {
     stash.indexCommit.map {
-      repository.changes(for: $0.sha, parent: nil)
+      repository.changes(for: $0.id, parent: nil)
     } ?? []
   }
 

@@ -364,7 +364,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     }
     showingStaged = newModel is StagedUnstagedSelection
     isCommitting = newModel is StagingSelection
-    if let commit = newModel.shaToSelect.flatMap({ repo?.commit(forSHA: $0) }) {
+    if let commit = newModel.oidToSelect.flatMap({ repo?.commit(forOID: $0) }) {
       commitHeader.commit = commit
     }
     clearPreviews()

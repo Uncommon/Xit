@@ -45,6 +45,7 @@
 		891260E6285D183B00053528 /* GeneralPrefsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891260E5285D183B00053528 /* GeneralPrefsPane.swift */; };
 		891260E8285D395900053528 /* ConfigValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891260E7285D395900053528 /* ConfigValueWrappers.swift */; };
 		891261B01F867FCC00C292B7 /* GitTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891261AF1F867FCC00C292B7 /* GitTree.swift */; };
+		891748D228B6B7B00091DF3B /* StringOID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891748D128B6B7B00091DF3B /* StringOID.swift */; };
 		891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891B02132666C36400E20F2B /* ClonePanelController.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
@@ -404,6 +405,7 @@
 		891260E5285D183B00053528 /* GeneralPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralPrefsPane.swift; sourceTree = "<group>"; };
 		891260E7285D395900053528 /* ConfigValueWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigValueWrappers.swift; sourceTree = "<group>"; };
 		891261AF1F867FCC00C292B7 /* GitTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTree.swift; sourceTree = "<group>"; };
+		891748D128B6B7B00091DF3B /* StringOID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOID.swift; sourceTree = "<group>"; };
 		891B02132666C36400E20F2B /* ClonePanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelController.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
@@ -1099,6 +1101,7 @@
 				C9063D092412B29700574A93 /* RepositoryController.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
+				891748D128B6B7B00091DF3B /* StringOID.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
@@ -1561,6 +1564,7 @@
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Staging.swift in Sources */,
 				C94E4EDE22A989BC00D5B2B1 /* CLIRunner.swift in Sources */,
 				C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */,
+				891748D228B6B7B00091DF3B /* StringOID.swift in Sources */,
 				C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
 				C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */,

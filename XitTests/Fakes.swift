@@ -20,7 +20,7 @@ struct FakeCommit: Commit
        committerSig: Signature? = nil,
        email: String? = nil,
        tree: (any Tree)? = nil,
-       oid: String)
+       oid: StringOID)
   {
     self.parentOIDs = parentOIDs
     self.message = message
@@ -133,7 +133,7 @@ class FakeLocalBranch: LocalBranch
   init(name: String)
   {
     self.name = RefPrefixes.heads +/ name
-    self.oid = UUID().uuidString
+    self.oid = StringOID(rawValue: UUID().uuidString)
   }
 }
 
@@ -150,7 +150,7 @@ class FakeRemoteBranch: RemoteBranch
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name
     self.remoteName = remoteName
-    self.oid = UUID().uuidString
+    self.oid = StringOID(rawValue: UUID().uuidString)
   }
 }
 
@@ -193,12 +193,12 @@ class FakeFileChangesRepo: FileChangesRepo
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at sha: String) -> [String] { [] }
+  func refs(at oid: any OID) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
                     updatingReference refName: String) throws -> any OID
-  { "" }
+  { §"" }
   func oid(forRef: String) -> (any OID)? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
@@ -237,7 +237,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   { (.unmodified, .unmodified) }
 
-  func changes(for sha: String, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
   { [] }
   func stagedChanges() -> [FileChange] { [] }
   func unstagedChanges(showIgnored: Bool,

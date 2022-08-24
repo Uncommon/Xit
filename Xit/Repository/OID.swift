@@ -7,7 +7,7 @@ public protocol OID: CustomDebugStringConvertible, Sendable
   
   // Making OID Equatable would cause cascading requirements that it, and
   // protocols that use it, only be used as a generic constraint.
-  func equals(_ other: any OID) -> Bool
+  func equals(_ other: (any OID)?) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
@@ -24,12 +24,28 @@ extension OID
     sha.hash(into: &hasher)
   }
 
-  public func equals(_ other: any OID) -> Bool
+  public func equals(_ other: (any OID)?) -> Bool
   {
-    return sha == other.sha
+    return sha == other?.sha
   }
 }
 
+func == (a: (any OID)?, b: (any OID)?) -> Bool
+{
+  switch (a, b) {
+    case (nil, nil):
+      return true
+    case (.some, .none), (.none, .some):
+      return false
+    case let (.some(a), .some(b)):
+      return a.equals(b)
+  }
+}
+
+func != (a: (any OID)?, b: (any OID)?) -> Bool
+{
+  return !(a == b)
+}
 
 public protocol OIDObject
 {

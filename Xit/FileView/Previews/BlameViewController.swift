@@ -114,8 +114,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     
     var htmlLines = [String]()
     let lines = text.lineComponents()
-    let selectOID: GitOID? = selection.shaToSelect.map { GitOID(sha: $0) }
-                             ?? nil
+    let selectOID = selection.oidToSelect as? GitOID
     let currentOID = selectOID ?? GitOID.zero()
     let dateFormatter = DateFormatter()
     let coloring = CommitColoring(firstOID: currentOID)

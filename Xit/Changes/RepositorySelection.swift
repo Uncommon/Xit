@@ -10,7 +10,7 @@ protocol RepositorySelection: AnyObject
 {
   var repository: any FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
-  var shaToSelect: String? { get }
+  var oidToSelect: (any OID)? { get }
   /// Is this used to stage and commit files? Differentiates between staging
   /// and stash changes, which both have unstaged lists.
   var canCommit: Bool { get }
@@ -45,6 +45,17 @@ extension RepositorySelection
   {
     return staged ? fileList :
         (self as? StagedUnstagedSelection)?.unstagedFileList ?? fileList
+  }
+
+  func equals(_ other: (any RepositorySelection)?) -> Bool
+  {
+    guard let other = other
+    else {
+      return false
+    }
+
+    return type(of: self) == type(of: other) &&
+           oidToSelect == other.oidToSelect
   }
 }
 
@@ -87,13 +98,12 @@ extension FileListModel
   var repository: any FileChangesRepo { selection.repository }
 }
 
-func == (a: any RepositorySelection, b: any RepositorySelection) -> Bool
+func == (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
 {
-  return type(of: a) == type(of: b) &&
-         a.shaToSelect == b.shaToSelect
+  return a?.equals(b) ?? (b == nil)
 }
 
-func != (a: any RepositorySelection, b: any RepositorySelection) -> Bool
+func != (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
 {
   return !(a == b)
 }

@@ -192,10 +192,10 @@ struct CommitHeader_Previews: PreviewProvider
 {
   struct PreviewCommit: Commit
   {
-    let parentOIDs: [any OID] = ["A", "B"]
+    let parentOIDs: [any OID] = [§"A", §"B"]
     let message: String? = "Single line"
     let tree: (any Tree)? = nil
-    let id: any OID = "45a608978"
+    let id: any OID = §"45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
@@ -216,22 +216,16 @@ struct CommitHeader_Previews: PreviewProvider
     }
   }
   
-  static var parents: [String: String] = ["A": "First parent",
-                                          "B": "Second parent"]
+  static var parents: [StringOID: String] = ["A": "First parent",
+                                             "B": "Second parent"]
   
   static var previews: some View {
     CommitHeader(commit: PreviewCommit(),
-                 messageLookup: { parents[$0.sha]! },
+                 messageLookup: { parents[$0 as! StringOID]! },
                  selectParent: { _ in })
     CommitHeader(commit: nil,
                  messageLookup: { _ in "" },
                  selectParent: { _ in })
       .frame(width: 300, height: 200)
   }
-}
-
-extension String: OID
-{
-  public var sha: String { self }
-  public var isZero: Bool { self == "00000000000000000000" }
 }

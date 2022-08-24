@@ -5,7 +5,7 @@ class CommitLinesTest: XCTestCase
 {
   // Only the SHA/OID matters
   let entry = CommitEntry(commit: FakeCommit(parentOIDs: [], oid: "a"))
-  let history = CommitHistory<String>()
+  let history = CommitHistory<StringOID>()
   
   override func setUp()
   {

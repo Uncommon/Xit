@@ -46,7 +46,7 @@ public final class GitStash: Stash
       return changes
     }
     
-    let changes = indexCommit.map { repo.changes(for: $0.sha, parent: nil) } ?? []
+    let changes = indexCommit.map { repo.changes(for: $0.id, parent: nil) } ?? []
     
     cachedIndexChanges = changes
     return changes
@@ -60,10 +60,10 @@ public final class GitStash: Stash
     
     guard let mainCommit = self.mainCommit
     else { return [] }
-    var changes = repo.changes(for: mainCommit.sha, parent: indexCommit?.id)
+    var changes = repo.changes(for: mainCommit.id, parent: indexCommit?.id)
     
     if let untrackedCommit = self.untrackedCommit {
-      let untrackedChanges = repo.changes(for: untrackedCommit.sha, parent: nil)
+      let untrackedChanges = repo.changes(for: untrackedCommit.id, parent: nil)
       
       changes.append(contentsOf: untrackedChanges)
     }

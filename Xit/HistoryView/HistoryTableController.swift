@@ -54,7 +54,7 @@ final class HistoryTableController: NSViewController,
           guard let selection = selection
           else { return }
 
-          self?.selectRow(sha: selection.shaToSelect)
+          self?.selectRow(oid: selection.oidToSelect)
         },
         controller.reselectPublisher.sink {
           [weak self] in
@@ -209,11 +209,11 @@ final class HistoryTableController: NSViewController,
     guard let selection = repoUIController?.selection
     else { return }
     
-    selectRow(sha: selection.shaToSelect, forceScroll: true)
+    selectRow(oid: selection.oidToSelect, forceScroll: true)
   }
   
   /// Selects the row for the given commit SHA.
-  func selectRow(sha: String?, forceScroll: Bool = false)
+  func selectRow(oid: (any OID)?, forceScroll: Bool = false)
   {
     let tableView = view as! NSTableView
     
@@ -224,8 +224,8 @@ final class HistoryTableController: NSViewController,
       objc_sync_exit(self)
     }
     
-    guard let sha = sha,
-          let row = history.entries.firstIndex(where: { $0.commit.sha == sha })
+    guard let oid = oid,
+          let row = history.entries.firstIndex(where: { $0.commit.id == oid })
     else {
       tableView.deselectAll(self)
       return
@@ -405,7 +405,7 @@ extension HistoryTableController: XTTableViewDelegate
                                        commit: entry.commit)
     
     if (controller.selection == nil) ||
-       (controller.selection?.shaToSelect != newSelection.shaToSelect) ||
+       (controller.selection?.oidToSelect != newSelection.oidToSelect) ||
        (type(of: controller.selection!) != type(of: newSelection)) {
       controller.selection = newSelection
     }

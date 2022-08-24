@@ -78,13 +78,13 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns a list of refs that point to the given commit.
-  public func refs(at sha: String) -> [String]
+  public func refs(at oid: OID) -> [String]
   {
     objc_sync_enter(self)
     defer {
       objc_sync_exit(self)
     }
-    return refsIndex[sha] ?? []
+    return refsIndex[oid.sha] ?? []
   }
   
   /// Returns a list of all ref names.
@@ -112,6 +112,9 @@ extension XTRepository: CommitReferencing
   
   var headSHA: String?
   { headRef.map { sha(forRef: $0) } ?? nil }
+
+  var headOID: (any OID)?
+  { headRef.flatMap { oid(forRef: $0) } }
   
   func calculateCurrentBranch() -> String?
   {

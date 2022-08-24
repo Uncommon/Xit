@@ -1,13 +1,18 @@
 import Foundation
 
-/// Fake SHA value for selecting staging view.
-let XTStagingSHA = ""
+enum SpecialOID: OID
+{
+  case staging
+
+  var isZero: Bool { false }
+  var sha: String { "" }
+}
 
 /// Staged and unstaged workspace changes
 class StagingSelection: StagedUnstagedSelection
 {
   unowned var repository: any FileChangesRepo
-  var shaToSelect: String? { XTStagingSHA }
+  var oidToSelect: (any OID)? { SpecialOID.staging }
   var canCommit: Bool { true }
   var fileList: any FileListModel { indexFileList }
   var unstagedFileList: any FileListModel { workspaceFileList }

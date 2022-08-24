@@ -47,10 +47,10 @@ class FileStagingChange: FileChange
 extension XTRepository: FileStatusDetection
 {
   /// Returns the changes for the given commit.
-  public func changes(for sha: String,
+  public func changes(for oid: any OID,
                       parent parentOID: (any OID)?) -> [FileChange]
   {
-    guard sha != XTStagingSHA
+    guard oid != SpecialOID.staging
     else {
       if let parentCommit = parentOID.flatMap({ commit(forOID: $0) }) {
         return Array(amendingChanges(parent: parentCommit))
@@ -60,7 +60,7 @@ extension XTRepository: FileStatusDetection
       }
     }
     
-    guard let commit = self.commit(forSHA: sha)
+    guard let commit = self.commit(forOID: oid)
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first

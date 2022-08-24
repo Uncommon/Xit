@@ -565,7 +565,7 @@ class XTRepositoryTest: XTTest
   
   func testAddedChange() throws
   {
-    let changes = repository.changes(for: repository.headSHA!, parent: nil)
+    let changes = repository.changes(for: repository.headOID!, parent: nil)
     
     XCTAssertEqual(changes.count, 1)
     
@@ -584,7 +584,7 @@ class XTRepositoryTest: XTTest
       }
     }
 
-    let changes2 = repository.changes(for: repository.headSHA!, parent: nil)
+    let changes2 = repository.changes(for: repository.headOID!, parent: nil)
     
     XCTAssertEqual(changes2.count, 2)
     
@@ -607,7 +607,7 @@ class XTRepositoryTest: XTTest
       }
     }
 
-    let changes3 = repository.changes(for: repository.headSHA!, parent: nil)
+    let changes3 = repository.changes(for: repository.headOID!, parent: nil)
     
     XCTAssertEqual(changes3.count, 1)
     

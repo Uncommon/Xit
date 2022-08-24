@@ -4,10 +4,9 @@ final class NewTagOpController: OperationController
 {
   override func start() throws
   {
-    guard let selectedSHA = windowController?.selection?.shaToSelect,
-          let selectedOID = repository?.oid(forSHA: selectedSHA),
+    guard let selectedOID = windowController?.selection?.oidToSelect,
           let repository = repository,
-          let commit = repository.commit(forSHA: selectedSHA)
+          let commit = repository.commit(forOID: selectedOID)
     else { throw RepoError.unexpected }
     let config = repository.config
     let userName = config.userName
@@ -20,7 +19,7 @@ final class NewTagOpController: OperationController
     }
 
     Task {
-      let dialog = NewTagDialog(commitMessage: commit.message ?? selectedSHA,
+      let dialog = NewTagDialog(commitMessage: commit.message ?? selectedOID.sha,
                                 signature: .init(name: userName,
                                                  email: userEmail,
                                                  when: .now))

@@ -93,7 +93,7 @@ class SidebarItem: NSObject
     else { return false }
     
     return displayTitle == otherItem.displayTitle &&
-           selection?.shaToSelect == otherItem.selection?.shaToSelect
+           selection?.oidToSelect == otherItem.selection?.oidToSelect
   }
 }
 

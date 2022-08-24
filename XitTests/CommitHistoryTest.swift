@@ -13,7 +13,7 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
   
   func oid(forSHA sha: String) -> (any OID)?
   {
-    sha
+    StringOID(rawValue: sha)
   }
   
   func commit(forSHA sha: String) -> (any Commit)?
@@ -45,7 +45,7 @@ class GenericRepository<ID: OID & Hashable>: CommitStorage
 }
 
 typealias MockRepository = GenericRepository<GitOID>
-typealias StringRepository = GenericRepository<String>
+typealias StringRepository = GenericRepository<StringOID>
 
 
 extension Xit.CommitConnection: CustomDebugStringConvertible
@@ -55,21 +55,22 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
 }
 
 
-typealias TestCommitHistory = CommitHistory<String>
+typealias TestCommitHistory = CommitHistory<StringOID>
+typealias StringConnection = CommitConnection<StringOID>
 
 class CommitHistoryTest: XCTestCase
 {
-  typealias StringConnection = CommitConnection<String>
+  typealias StringConnection = CommitConnection<StringOID>
   
   var repository: StringRepository? = nil
 
-  func makeHistory(_ commitData: [(String, [String])],
-                   heads: [String]? = nil) -> TestCommitHistory?
+  func makeHistory(_ commitData: [(StringOID, [StringOID])],
+                   heads: [StringOID]? = nil) -> TestCommitHistory?
   {
     let commits = commitData.map({
       (arg) -> FakeCommit in
-      let (sha, parents) = arg
-      return .init(parentOIDs: parents, oid: sha)
+      let (oid, parents) = arg
+      return .init(parentOIDs: parents, oid: oid)
     })
     
     // Reverse the input to better test the ordering.
@@ -80,7 +81,7 @@ class CommitHistoryTest: XCTestCase
     history.repository = repository
     
     if let heads = heads {
-      let headCommits = heads.compactMap { history.repository.commit(forSHA: $0) }
+      let headCommits = heads.compactMap { history.repository.commit(forOID: $0) }
       guard headCommits.count == heads.count
       else {
         XCTFail("can't get head commits")
@@ -133,8 +134,8 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 0)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 0)
     
     XCTAssertEqual(connections[0], [aToB])
     XCTAssertEqual(connections[1], [aToB, bToC])
@@ -155,9 +156,9 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 1)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 0)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 1)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 0)
     
     XCTAssertEqual(connections[0], [aToC])
     XCTAssertEqual(connections[1], [aToC, bToC])
@@ -179,10 +180,10 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 1)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 0)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 1)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 0)
   
     XCTAssertEqual(connections[0], [aToC, aToB])
     XCTAssertEqual(connections[1], [aToC, aToB, bToC])
@@ -230,14 +231,14 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let cToE = CommitConnection(parentOID: "e", childOID: "c", colorIndex: 0)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 2)
-    let bToD = CommitConnection(parentOID: "d", childOID: "b", colorIndex: 1)
-    let eToF = CommitConnection(parentOID: "f", childOID: "e", colorIndex: 0)
-    let dToF = CommitConnection(parentOID: "f", childOID: "d", colorIndex: 1)
-    let fToAA = CommitConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let cToE = StringConnection(parentOID: "e", childOID: "c", colorIndex: 0)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 2)
+    let bToD = StringConnection(parentOID: "d", childOID: "b", colorIndex: 1)
+    let eToF = StringConnection(parentOID: "f", childOID: "e", colorIndex: 0)
+    let dToF = StringConnection(parentOID: "f", childOID: "d", colorIndex: 1)
+    let fToAA = StringConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
     
     // Order is ["a", "c", "e", "b", "d", "f", "aa"]
     XCTAssertEqual(connections[0], [aToC, aToB])
@@ -263,14 +264,14 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let cToE = CommitConnection(parentOID: "e", childOID: "c", colorIndex: 0)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 2)
-    let bToD = CommitConnection(parentOID: "d", childOID: "b", colorIndex: 1)
-    let eToF = CommitConnection(parentOID: "f", childOID: "e", colorIndex: 0)
-    let dToF = CommitConnection(parentOID: "f", childOID: "d", colorIndex: 1)
-    let fToG = CommitConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let cToE = StringConnection(parentOID: "e", childOID: "c", colorIndex: 0)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 2)
+    let bToD = StringConnection(parentOID: "d", childOID: "b", colorIndex: 1)
+    let eToF = StringConnection(parentOID: "f", childOID: "e", colorIndex: 0)
+    let dToF = StringConnection(parentOID: "f", childOID: "d", colorIndex: 1)
+    let fToG = StringConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
     
     // Order is ["a", "b", "c", "e", "d", "f", "aa"]
     XCTAssertEqual(connections[0], [aToC, aToB])
@@ -358,13 +359,13 @@ class CommitHistoryTest: XCTestCase
 
     let connections = generateConnections(history)
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let cToE = CommitConnection(parentOID: "e", childOID: "c", colorIndex: 0)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 2)
-    let bToD = CommitConnection(parentOID: "d", childOID: "b", colorIndex: 1)
-    let eToF = CommitConnection(parentOID: "f", childOID: "e", colorIndex: 0)
-    let dToF = CommitConnection(parentOID: "f", childOID: "d", colorIndex: 1)
-    let fToAA = CommitConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let cToE = StringConnection(parentOID: "e", childOID: "c", colorIndex: 0)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 2)
+    let bToD = StringConnection(parentOID: "d", childOID: "b", colorIndex: 1)
+    let eToF = StringConnection(parentOID: "f", childOID: "e", colorIndex: 0)
+    let dToF = StringConnection(parentOID: "f", childOID: "d", colorIndex: 1)
+    let fToAA = StringConnection(parentOID: "aa", childOID: "f", colorIndex: 0)
     
     // Order is ["a", "b", "c", "e", "d", "f", "aa"]
     XCTAssertEqual(connections[0], [aToC])
@@ -458,8 +459,8 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 0)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 1)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 0)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 1)
     
     XCTAssertEqual(connections[0], [aToB])
     XCTAssertEqual(connections[1], [aToB])
@@ -481,11 +482,11 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToD = CommitConnection(parentOID: "d", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 2)
-    let bToD = CommitConnection(parentOID: "d", childOID: "b", colorIndex: 1)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 2)
+    let aToD = StringConnection(parentOID: "d", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 2)
+    let bToD = StringConnection(parentOID: "d", childOID: "b", colorIndex: 1)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 2)
 
     // Order is ["a", "c", "b", "d"]
     XCTAssertEqual(connections[0], [aToD, aToB, aToC])
@@ -507,12 +508,12 @@ class CommitHistoryTest: XCTestCase
         heads: ["a"])
     else { return }
     
-    let aToC = CommitConnection(parentOID: "c", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let bToE = CommitConnection(parentOID: "e", childOID: "b", colorIndex: 1)
-    let cToE = CommitConnection(parentOID: "e", childOID: "c", colorIndex: 0)
-    let cToD = CommitConnection(parentOID: "d", childOID: "c", colorIndex: 2)
-    let dToE = CommitConnection(parentOID: "e", childOID: "d", colorIndex: 2)
+    let aToC = StringConnection(parentOID: "c", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let bToE = StringConnection(parentOID: "e", childOID: "b", colorIndex: 1)
+    let cToE = StringConnection(parentOID: "e", childOID: "c", colorIndex: 0)
+    let cToD = StringConnection(parentOID: "d", childOID: "c", colorIndex: 2)
+    let dToE = StringConnection(parentOID: "e", childOID: "d", colorIndex: 2)
     
     let connections = generateConnections(history)
     
@@ -581,15 +582,15 @@ class CommitHistoryTest: XCTestCase
     
     let connections = generateConnections(history)
     
-    let aToD = CommitConnection(parentOID: "d", childOID: "a", colorIndex: 0)
-    let aToB = CommitConnection(parentOID: "b", childOID: "a", colorIndex: 1)
-    let bToC = CommitConnection(parentOID: "c", childOID: "b", colorIndex: 1)
-    let cToH = CommitConnection(parentOID: "h", childOID: "c", colorIndex: 1)
-    let dToE = CommitConnection(parentOID: "e", childOID: "d", colorIndex: 0)
-    let eToH = CommitConnection(parentOID: "h", childOID: "e", colorIndex: 0)
-    let eToF = CommitConnection(parentOID: "f", childOID: "e", colorIndex: 2)
-    let fToG = CommitConnection(parentOID: "g", childOID: "f", colorIndex: 2)
-    let gToH = CommitConnection(parentOID: "h", childOID: "g", colorIndex: 2)
+    let aToD = StringConnection(parentOID: "d", childOID: "a", colorIndex: 0)
+    let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
+    let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 1)
+    let cToH = StringConnection(parentOID: "h", childOID: "c", colorIndex: 1)
+    let dToE = StringConnection(parentOID: "e", childOID: "d", colorIndex: 0)
+    let eToH = StringConnection(parentOID: "h", childOID: "e", colorIndex: 0)
+    let eToF = StringConnection(parentOID: "f", childOID: "e", colorIndex: 2)
+    let fToG = StringConnection(parentOID: "g", childOID: "f", colorIndex: 2)
+    let gToH = StringConnection(parentOID: "h", childOID: "g", colorIndex: 2)
 
     XCTAssertEqual(connections[0], [aToD, aToB])
     XCTAssertEqual(connections[1], [aToD, aToB, bToC])

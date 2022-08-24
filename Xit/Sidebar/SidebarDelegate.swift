@@ -205,7 +205,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
           let controller = repoUIController
     else { return }
     
-    if controller.selection?.shaToSelect != selection.shaToSelect {
+    if controller.selection?.oidToSelect != selection.oidToSelect {
       controller.selection = selection
     }
   }
@@ -335,7 +335,7 @@ extension SidebarDelegate: XTOutlineViewDelegate
     
     if let oldSelection = repoUIController?.selection,
        let newSelection = newSelectedItem.selection,
-       oldSelection.shaToSelect == newSelection.shaToSelect {
+       oldSelection.oidToSelect == newSelection.oidToSelect {
       repoUIController?.reselect()
     }
     controller?.selectedItem = newSelectedItem
