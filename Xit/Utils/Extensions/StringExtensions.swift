@@ -89,6 +89,8 @@ extension String
   
   var fullNSRange: NSRange
   { NSRange(startIndex..., in: self) }
+
+  var lines: [SubSequence] { split(whereSeparator: \.isNewline) }
 }
 
 // MARK: Prefixes & Suffixes

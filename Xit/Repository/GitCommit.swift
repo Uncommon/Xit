@@ -59,23 +59,7 @@ extension Commit
 public final class GitCommit: Commit
 {
   let commit: OpaquePointer
-  let mutex = Mutex()
-  var storedSHA: String?
 
-  public var sha: String
-  {
-    mutex.withLock {
-      if let sha = storedSHA {
-        return sha
-      }
-      else {
-        let result = id.sha
-        
-        storedSHA = result
-        return result
-      }
-    }
-  }
   public let id: any OID
   public let parentOIDs: [any OID]
   
