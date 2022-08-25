@@ -140,13 +140,10 @@ public final class GitCommit: Commit
           let object = odb[id]
     else { return false }
     let text = object.text
-    var found = false
 
-    text.enumerateLines { line, stop in
-      found = line.hasPrefix("gpgsig")
-      stop = found
+    return text.lines.contains {
+      $0.hasPrefix("gpgsig")
     }
-    return found
   }
 
   init?(gitCommit: OpaquePointer)
