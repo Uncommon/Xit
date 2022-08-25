@@ -64,7 +64,7 @@ extension XTRepository: FileStatusDetection
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
-    guard let diff = self.diff(forSHA: commit.id.sha, parent: parentOID)
+    guard let diff = self.diff(forOID: commit.id, parent: parentOID)
     else { return [] }
     var result = [FileChange]()
     
@@ -280,7 +280,7 @@ extension XTRepository: FileStatusDetection
   func amendingStatus(for path: String, show: StatusShow) throws
     -> (index: DeltaStatus, workspace: DeltaStatus)
   {
-    guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
+    guard let headCommit = self.headCommit,
           let previousCommit = headCommit.parentOIDs.first
                                 .flatMap({ self.commit(forOID: $0) }),
           let status = fileStatus(path, show: show, baseCommit: previousCommit)
@@ -431,7 +431,7 @@ extension XTRepository: FileStaging
         try index.remove(path: file)
       
       case .modified, .deleted:
-        guard let headCommit = headSHA.flatMap({ self.commit(forSHA: $0) }),
+        guard let headCommit = self.headCommit,
               let parentOID = headCommit.parentOIDs.first
         else {
           throw RepoError.commitNotFound(sha: headSHA)

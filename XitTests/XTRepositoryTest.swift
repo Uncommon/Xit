@@ -109,8 +109,7 @@ class XTEmptyRepositoryTest: XTTest
       }
     }
 
-    let headSHA = try XCTUnwrap(repository.headSHA)
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: headSHA))
+    let headCommit = try XCTUnwrap(repository.headCommit)
 
     XCTAssertFalse(repository.isTextFile(tiffName.rawValue,
                                          context: .commit(headCommit)))
@@ -187,7 +186,7 @@ class XTAmendTest: XTTest
   // Check amend status with no changes relative to the last commit
   func testCleanAmendStatus() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     
     try addSecondCommit()
     
@@ -201,7 +200,7 @@ class XTAmendTest: XTTest
   // Modify a file added in the last commit, then check the amend status
   func testAmendModifyAdded() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
 
     try addSecondCommit()
     try execute(in: repository) {
@@ -218,7 +217,7 @@ class XTAmendTest: XTTest
   // Delete a file added in the last commit, then check the amend status
   func testAmendDeleteAdded() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file3.rawValue
 
     try addSecondCommit()
@@ -238,7 +237,7 @@ class XTAmendTest: XTTest
   // Test amend status for a file added in the head commit
   func testAddedInHead() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file3.rawValue
 
     try addSecondCommit()
@@ -254,7 +253,7 @@ class XTAmendTest: XTTest
   // Test amend status for a file deleted in the head commit
   func testUnstageDeleted() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file2.rawValue
 
     try addSecondCommit()
@@ -270,7 +269,7 @@ class XTAmendTest: XTTest
   // Stage & unstage a new file in amend mode
   func testAddedNew() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file4.rawValue
     let match = { (change: FileStagingChange) in change.path == fileName }
     
@@ -302,7 +301,7 @@ class XTAmendTest: XTTest
   // Stage & unstage a newly deleted file in amend mode
   func testDeletedNew() throws
   {
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file1.rawValue
     let match = { (change: FileStagingChange) in change.path == fileName }
     
@@ -544,9 +543,7 @@ class XTRepositoryTest: XTTest
   
   func testContents() throws
   {
-    let headSHA = try XCTUnwrap(repository.headSHA)
-    let headCommit = try XCTUnwrap(GitCommit(sha: headSHA,
-                                             repository: repository.gitRepo))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let contentData = repository.contentsOfFile(path: TestFileName.file1.rawValue,
                                                 at: headCommit)!
     let contentString = String(data: contentData, encoding: .utf8)
@@ -798,7 +795,7 @@ class XTRepositoryTest: XTTest
       }
     }
 
-    let headCommit = try XCTUnwrap(repository.commit(forSHA: repository.headSHA!))
+    let headCommit = try XCTUnwrap(repository.headCommit)
     let model = CommitSelection(repository: repository, commit: headCommit)
     let diff = try XCTUnwrap(model.fileList.diffForFile(imageName.rawValue))
     

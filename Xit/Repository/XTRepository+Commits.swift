@@ -110,12 +110,6 @@ extension XTRepository: CommitReferencing
     return cachedHeadRef
   }
   
-  var headSHA: String?
-  { headRef.map { sha(forRef: $0) } ?? nil }
-
-  var headOID: (any OID)?
-  { headRef.flatMap { oid(forRef: $0) } }
-  
   func calculateCurrentBranch() -> String?
   {
     return headReference?.resolve()?.name.droppingPrefix(RefPrefixes.heads)

@@ -175,7 +175,7 @@ final class CommitEntryController: NSViewController,
   
   func updateAmendingCommitMessage()
   {
-    guard let headCommit = repo.headSHA.flatMap({ repo.commit(forSHA: $0 ) }),
+    guard let headCommit = repo.headCommit,
           let headMessage = headCommit.message?.trimmingWhitespace
     else { return }
 

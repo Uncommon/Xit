@@ -100,6 +100,12 @@ extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
+  var headOID: (any OID)? { headRef.flatMap { self.oid(forRef: $0) } }
+}
+
+extension CommitReferencing where Self: CommitStorage
+{
+  var headCommit: (any Commit)? { headOID.flatMap { commit(forOID: $0) } }
 }
 
 public protocol FileStatusDetection: AnyObject

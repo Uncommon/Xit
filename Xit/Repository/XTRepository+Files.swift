@@ -171,7 +171,7 @@ extension XTRepository: FileDiffing
     guard isTextFile(file, context: .index)
     else { return .binary }
     
-    guard let headCommit = headSHA.flatMap({ commit(forSHA: $0) })
+    guard let headCommit = self.headCommit
     else { return nil }
     let blob = headCommit.parentOIDs.first
                          .flatMap { fileBlob(oid: $0, path: file) }
@@ -232,25 +232,24 @@ extension XTRepository
 {
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forSHA sha: String, parent parentOID: (any OID)?) -> (any Diff)?
+  func diff(forOID oid: any OID, parent parentOID: (any OID)?) -> (any Diff)?
   {
-    let parentSHA = parentOID?.sha ?? ""
-    let key = sha.appending(parentSHA)
+    let key = oid.sha.appending(parentOID?.sha ?? "")
     
     if let diff = diffCache[key] {
       return diff
     }
     else {
-      guard let commit = commit(forSHA: sha)
+      guard let commit = commit(forOID: oid)
       else { return nil }
       
-      let parentSHAs = commit.parentSHAs
-      let parentSHA: String? = parentSHA.isEmpty
-            ? parentSHAs.first
-            : parentSHAs.first { $0 == parentSHA }
-      let parentCommit = parentSHA.map { self.commit(forSHA: $0) }
+      let parentOIDs = commit.parentOIDs
+      let parentOID: (any OID)? = parentOID == nil
+            ? parentOIDs.first
+            : parentOIDs.first { $0.equals(parentOID) }
+      let parentCommit = parentOID.flatMap { self.commit(forOID: $0) }
       
-      guard let diff = GitDiff(oldTree: parentCommit??.tree,
+      guard let diff = GitDiff(oldTree: parentCommit?.tree,
                                newTree: commit.tree,
                                repository: gitRepo)
       else { return nil }
@@ -358,7 +357,7 @@ extension XTRepository
     convenience init(repo: XTRepository)
     {
       self.init(repo: repo,
-                head: repo.headSHA.flatMap { repo.commit(forSHA: $0) })
+                head: repo.headOID.flatMap { repo.commit(forOID: $0) })
     }
   
     static func emptyTree(repo: XTRepository) -> OpaquePointer?
