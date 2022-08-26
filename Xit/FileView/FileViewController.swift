@@ -236,9 +236,13 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       center.publisher(for: NSOutlineView.selectionDidChangeNotification,
                        object: listController.outlineView)
         .sink {
-          [weak self] _ in
-          self?.activeFileList = listController.outlineView
-          self?.refreshPreview()
+          [weak self] note in
+          guard let self = self,
+                let listController = (note.object as? NSOutlineView)?.delegate
+                                     as? FileListController
+          else { return }
+          self.activeFileList = listController.outlineView
+          self.refreshPreview()
         }
     })
     sinks.append(center.publisher(for: .xtFirstResponderChanged,

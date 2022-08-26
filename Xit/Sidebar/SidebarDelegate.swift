@@ -13,7 +13,7 @@ final class SidebarDelegate: NSObject
   @IBOutlet weak var controller: SidebarController?
   @IBOutlet weak var outline: NSOutlineView!
   weak var model: SidebarDataModel?
-  var buildStatusController: BuildStatusController?
+  weak var buildStatusController: BuildStatusController?
   var pullRequestManager: SidebarPRManager?
   
   func graphText(for item: SidebarItem) -> String?
