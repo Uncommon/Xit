@@ -341,25 +341,4 @@ class ModifyingUITests: XCTestCase
       WorkspaceFileList.assertFiles([newName, "UntrackedImage.png"])
     }
   }
-
-  func testRenamedFileOutline() throws
-  {
-    env.open()
-
-    let oldName = "README1.txt"
-    let newName = "RENAMED.txt"
-    let oldURL = env.repoURL.appendingPathComponent(oldName)
-    let newURL = env.repoURL.appendingPathComponent(newName)
-
-    try XCTContext.runActivity(named: "Rename") { _ in
-      try FileManager.default.moveItem(at: oldURL, to: newURL)
-
-      Sidebar.stagingCell.click()
-      StagedFileList.assertFiles([])
-      WorkspaceFileList.assertFiles([newName, "UntrackedImage.png"])
-      StagedFileList.outlineButton.click()
-      WorkspaceFileList.outlineButton.click()
-      WorkspaceFileList.list.cells[newName].click()
-    }
-  }
 }
