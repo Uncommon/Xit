@@ -107,7 +107,8 @@ final class GitDiff: Diff
       }
     })
     else { return nil }
-    
+
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
@@ -123,6 +124,7 @@ final class GitDiff: Diff
     })
     else { return nil }
     
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
@@ -138,6 +140,7 @@ final class GitDiff: Diff
     })
     else { return nil }
     
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
