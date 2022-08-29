@@ -7,6 +7,7 @@ enum TestFileName: String
   case file2 = "file2.txt"
   case file3 = "file3.txt"
   case file4 = "file4.txt"
+  case subFile1 = "folder/file1.txt"
   case subFile2 = "folder/file2.txt"
   case subSubFile2 = "folder/folder2/file2.txt"
   case added = "added.txt"
@@ -113,7 +114,13 @@ struct RenameFile: StageableAction
     self.newName = newName
   }
 
-  func execute(in repository: Repository) throws
+  init(_ file: TestFileName, to newName: TestFileName)
+  {
+    self.file = file.rawValue
+    self.newName = newName.rawValue
+  }
+
+  func execute(in repository: any FullRepository) throws
   {
     let fileURL = repository.fileURL(file)
     let newURL = repository.fileURL(newName)
