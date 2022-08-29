@@ -628,18 +628,16 @@ class XTRepositoryTest: XTTest
     
     var changes = repository.statusChanges(.indexOnly)
     
-    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes.count, 2);
     XCTAssertEqual(changes[0].status, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].status, DeltaStatus.added);
-    
+    XCTAssertEqual(changes[1].status, DeltaStatus.renamed);
+
     try repository.unstageAllFiles()
     changes = repository.statusChanges(.workdirOnly)
     
-    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes.count, 2);
     XCTAssertEqual(changes[0].status, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].status, DeltaStatus.untracked);
+    XCTAssertEqual(changes[1].status, DeltaStatus.renamed);
   }
 
   func assertUnstagedChanged(ignored: Bool, recurse: Bool,
