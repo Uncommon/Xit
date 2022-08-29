@@ -148,11 +148,15 @@ enum CommitEntry
 
 protocol FileList
 {
+  static var group: XCUIElement { get }
   static var list: XCUIElement { get }
 }
 
 extension FileList
 {
+  static var outlineButton: XCUIElement
+  { group.buttons["bulletest list indent"] }
+
   static func assertFiles(_ names: [String],
                           file: StaticString = #file,
                           line: UInt = #line)
@@ -173,23 +177,44 @@ extension FileList
                      file: file, line: line)
     }
   }
+
+  static func fileRow(named name: String) -> XCUIElement
+  {
+    list.outlineRows.containing(.staticText, identifier: name).firstMatch
+  }
 }
 
 enum CommitFileList: FileList
 {
-  static let list = XitApp.outlines["commitFiles"]
+  static let group = Window.window.groups[.FileList.Commit.group]
+  static let list = XitApp.outlines[.FileList.Commit.list]
 }
 
 enum StagedFileList: FileList
 {
-  static let list = XitApp.outlines["stagedFiles"]
-  
+  static let group = Window.window.groups[.FileList.Staged.group]
+  static let list = XitApp.outlines[.FileList.Staged.list]
+
   static let refreshButton = Window.window.buttons["WorkspaceRefresh"]
+  static let viewSelector = group.segmentedControls[.FileList.viewSelector]
+
+  static func unstage(item: Int)
+  {
+    list.outlineRows.element(boundBy: item).buttons["action"].click()
+  }
 }
 
 enum WorkspaceFileList: FileList
 {
-  static let list = XitApp.outlines["workspaceFiles"]
+  static let group = XitApp.groups[.FileList.Workspace.group]
+  static let list = XitApp.outlines[.FileList.Workspace.list]
+
+  static let viewSelector = group.segmentedControls[.FileList.viewSelector]
+
+  static func stage(item: Int)
+  {
+    list.outlineRows.element(boundBy: item).buttons["action"].click()
+  }
 }
 
 enum HistoryList

@@ -186,6 +186,25 @@ public protocol FileStaging: AnyObject
   func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws
 }
 
+extension FileStaging
+{
+  public func stage(change: FileChange) throws
+  {
+    try stage(file: change.gitPath)
+    if change.status == .renamed && !change.oldPath.isEmpty {
+      try stage(file: change.oldPath)
+    }
+  }
+
+  public func unstage(change: FileChange) throws
+  {
+    try unstage(file: change.gitPath)
+    if change.status == .renamed && !change.oldPath.isEmpty {
+      try unstage(file: change.oldPath)
+    }
+  }
+}
+
 public protocol Stashing: AnyObject
 {
   var stashes: AnyCollection<any Stash> { get }

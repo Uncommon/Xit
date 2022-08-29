@@ -29,6 +29,34 @@ public protocol DiffLine
   var text: String { get }
 }
 
+struct DiffDeltas: Collection
+{
+  let diff: any Diff
+
+  var startIndex: Int { 0 }
+  var endIndex: Int { diff.deltaCount }
+
+  subscript(position: Int) -> any DiffDelta { diff.delta(at: position)! }
+  func index(after i: Int) -> Int { i + 1 }
+}
+
+struct DiffPatches: Collection
+{
+  let diff: any Diff
+
+  var startIndex: Int { 0 }
+  var endIndex: Int { diff.deltaCount }
+
+  subscript(position: Int) -> any Patch { diff.patch(at: position)! }
+  func index(after i: Int) -> Int { i + 1 }
+}
+
+extension Diff
+{
+  var deltas: DiffDeltas { .init(diff: self) }
+  var patches: DiffPatches { .init(diff: self) }
+}
+
 typealias DiffOptions = git_diff_options
 
 extension git_diff_options
@@ -79,7 +107,8 @@ final class GitDiff: Diff
       }
     })
     else { return nil }
-    
+
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
@@ -95,6 +124,7 @@ final class GitDiff: Diff
     })
     else { return nil }
     
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
@@ -110,6 +140,7 @@ final class GitDiff: Diff
     })
     else { return nil }
     
+    _ = git_diff_find_similar(diff, nil)
     self.diff = diff
   }
   
@@ -144,32 +175,7 @@ final class GitDiff: Diff
 
     return GitDiffStats(stats: stats)
   }
-  
-  struct Deltas: Collection
-  {
-    let diff: GitDiff
-    
-    var startIndex: Int { 0 }
-    var endIndex: Int { diff.deltaCount }
-    
-    subscript(position: Int) -> DiffDelta { diff.delta(at: position)! }
-    func index(after i: Int) -> Int { i + 1 }
-  }
-  
-  struct Patches: Collection
-  {
-    let diff: GitDiff
-    
-    var startIndex: Int { 0 }
-    var endIndex: Int { diff.deltaCount }
-    
-    subscript(position: Int) -> any Patch { diff.patch(at: position)! }
-    func index(after i: Int) -> Int { i + 1 }
-  }
-  
-  var deltas: Deltas { Deltas(diff: self) }
-  var patches: Patches { Patches(diff: self) }
-  
+
   deinit
   {
     git_diff_free(diff)

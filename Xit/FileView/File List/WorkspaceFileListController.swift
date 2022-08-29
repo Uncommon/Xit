@@ -14,8 +14,12 @@ final class WorkspaceFileListController: StagingFileListController
   override func loadView()
   {
     super.loadView()
-    
-    outlineView.setAccessibilityIdentifier("workspaceFiles")
+
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier(.FileList.Workspace.group)
+    view.setAccessibilityRole(.group)
+    outlineView.setAccessibilityIdentifier(.FileList.Workspace.list)
+
     fileListDataSource.delegate = self
     fileTreeDataSource.delegate = self
     
@@ -39,7 +43,7 @@ final class WorkspaceFileListController: StagingFileListController
     else { return }
     
     for change in changes {
-      _ = try? repository.stage(file: change.gitPath)
+      _ = try? repository.stage(change: change)
     }
     repoUIController?.repoController.indexChanged()
   }

@@ -58,7 +58,7 @@ class FakeRepo: FakeFileChangesRepo
   }
 }
 
-extension FakeRepo: Branching
+extension FakeRepo: EmptyBranching
 {
   var localBranches: AnySequence<any LocalBranch>
   {
@@ -71,20 +71,9 @@ extension FakeRepo: Branching
     let array: [any RemoteBranch] = [remoteBranch1, remoteBranch2]
     return AnySequence(array)
   }
-  
-  func createBranch(named name: String, target: String) throws -> (any LocalBranch)?
-  { return nil }
-  func remoteBranch(named name: String) -> (any RemoteBranch)?
-  { return nil }
-  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
-  { return nil }
-  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
-  { return nil }
-  func rename(branch: String, to: String) throws {}
-  func reset(toCommit target: any Commit, mode: ResetMode) throws {}
 }
 
-extension FakeRepo: CommitStorage
+extension FakeRepo: EmptyCommitStorage
 {
   func oid(forSHA sha: String) -> (any OID)? { StringOID(rawValue: sha) }
   
@@ -97,22 +86,12 @@ extension FakeRepo: CommitStorage
   {
     return (oid as? StringOID).flatMap { commits[$0] }
   }
-  
-  func commit(message: String, amend: Bool) throws {}
-  
-  func walker() -> RevWalk? { return nil }
 }
 
-extension FakeRepo: Stashing
+extension FakeRepo: EmptyStashing
 {
   var stashes: AnyCollection<any Stash> { return AnyCollection([]) }
   func stash(index: UInt, message: String?) -> any Stash { return FakeStash() }
-  func popStash(index: UInt) throws {}
-  func applyStash(index: UInt) throws {}
-  func dropStash(index: UInt) throws {}
-  func commitForStash(at index: UInt) -> (any Commit)? { return nil }
-  func saveStash(name: String?, keepIndex: Bool,
-                 includeUntracked: Bool, includeIgnored: Bool) throws {}
 }
 
 extension FakeRepo: SubmoduleManagement

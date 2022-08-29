@@ -628,18 +628,16 @@ class XTRepositoryTest: XTTest
     
     var changes = repository.statusChanges(.indexOnly)
     
-    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes.count, 2);
     XCTAssertEqual(changes[0].status, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].status, DeltaStatus.added);
-    
+    XCTAssertEqual(changes[1].status, DeltaStatus.renamed);
+
     try repository.unstageAllFiles()
     changes = repository.statusChanges(.workdirOnly)
     
-    XCTAssertEqual(changes.count, 3);
+    XCTAssertEqual(changes.count, 2);
     XCTAssertEqual(changes[0].status, DeltaStatus.modified);
-    XCTAssertEqual(changes[1].status, DeltaStatus.deleted);
-    XCTAssertEqual(changes[2].status, DeltaStatus.untracked);
+    XCTAssertEqual(changes[1].status, DeltaStatus.renamed);
   }
 
   func assertUnstagedChanged(ignored: Bool, recurse: Bool,
@@ -676,6 +674,40 @@ class XTRepositoryTest: XTTest
                           expectedResult: [gitignore, folder1, folder2])
     assertUnstagedChanged(ignored: true, recurse: true,
                           expectedResult: [gitignore, subFile1, subFile2])
+  }
+
+  func testRename() throws
+  {
+    let newName = "renamed"
+    let change = FileChange(path: newName,
+                            oldPath: TestFileName.file1.rawValue,
+                            change: .renamed)
+
+    try XCTContext.runActivity(named: "Detect unstaged rename") { _ in
+      try execute(in: repository) {
+        RenameFile(.file1, to: newName)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [change])
+    }
+
+    try XCTContext.runActivity(named: "Stage renamed file") { _ in
+      try execute(in: repository) {
+        Stage(change)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [])
+      XCTAssertEqual(repository.stagedChanges(), [change])
+    }
+
+    try XCTContext.runActivity(named: "Unstage renamed file") { _ in
+      try execute(in: repository) {
+        Unstage(change)
+      }
+
+      XCTAssertEqual(repository.unstagedChanges(), [change])
+      XCTAssertEqual(repository.stagedChanges(), [])
+    }
   }
 
   func checkDeletedDiff(_ diffResult: PatchMaker.PatchResult?,

@@ -14,7 +14,11 @@ final class StagedFileListController: StagingFileListController
   {
     super.loadView()
     
-    outlineView.setAccessibilityIdentifier("stagedFiles")
+    view.setAccessibilityElement(true)
+    view.setAccessibilityIdentifier(.FileList.Staged.group)
+    view.setAccessibilityRole(.group)
+    outlineView.setAccessibilityIdentifier(.FileList.Staged.list)
+
     listTypeIcon.image = .xtStaged
     listTypeLabel.uiStringValue = .staged
     
@@ -31,7 +35,7 @@ final class StagedFileListController: StagingFileListController
     else { return }
     
     for change in changes {
-      _ = try? repository.unstage(file: change.gitPath)
+      _ = try? repository.unstage(change: change)
     }
     repoUIController?.repoController.indexChanged()
   }
