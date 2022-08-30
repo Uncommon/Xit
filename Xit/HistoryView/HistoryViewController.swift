@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// View controller for history view, with the history list on top and
 /// detail views below.
@@ -7,7 +8,9 @@ final class HistoryViewController: NSViewController
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!
 
-  var searchController: SearchAccessoryController!
+  @Bound var searchString: String = ""
+  @Bound var searchType: HistorySearchType = .summary
+  var searchController: HostingTitlebarController<HistorySearchBar>!
   weak var splitController: NSSplitViewController!
   var fileViewController: FileViewController!
 
@@ -29,10 +32,20 @@ final class HistoryViewController: NSViewController
   
   override func viewDidAppear()
   {
-    searchController =
-      SearchAccessoryController(nibName: "SearchAccessoryController", bundle: nil)
+    searchController = .init(rootView: .init(searchUp: {
+      [weak self] in
+      guard let self = self else { return }
+      self.search(for: $0,
+                  type: self.searchType,
+                  direction: .up)
+    }, searchDown: {
+      [weak self] in
+      guard let self = self else { return }
+      self.search(for: $0,
+                  type: self.searchType,
+                  direction: .down)
+    }))
     searchController.isHidden = true
-    searchController.delegate = self
     view.window?.addTitlebarAccessoryViewController(searchController)
   }
   
