@@ -66,20 +66,24 @@ class FetchOpController: PasswordOpController
   }
   
   /// Fetch progress callback
+  nonisolated
   func progressCallback(progress: TransferProgress) -> Bool
   {
-    guard !canceled,
-          let repository = repository
-    else { return true }
-    
-    let received = Float(progress.receivedObjects)
-    let indexed = Float(progress.indexedObjects)
-    let note = Notification.progressNotification(
-          repository: repository,
-          progress: (received + indexed) / 2,
-          total: Float(progress.totalObjects))
-    
-    NotificationCenter.default.post(note)
+    Task {
+      @MainActor in
+      guard !canceled,
+            let repository = repository
+      else { return }
+
+      let received = Float(progress.receivedObjects)
+      let indexed = Float(progress.indexedObjects)
+      let note = Notification.progressNotification(
+            repository: repository,
+            progress: (received + indexed) / 2,
+            total: Float(progress.totalObjects))
+
+      NotificationCenter.default.post(note)
+    }
     return true
   }
 
