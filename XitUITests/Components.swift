@@ -19,10 +19,20 @@ enum Window
   static let fetchMenu = XitApp.menus[.PopupMenu.fetch]
 }
 
+enum Search
+{
+  static let popup = Window.window.popUpButtons[.Search.typePopup]
+  static let field = Window.window.searchFields[.Search.field]
+  // No idea where these IDs come from but that's what they are
+  static let searchUp = Window.window.buttons["go up"]
+  static let searchDown = Window.window.buttons["go down"]
+}
+
 enum Toolbar
 {
   // Finding these items by ID rather than title doesn't work
   static let clean = Window.window.toolbars.buttons["Clean"]
+  static let search = Window.window.toolbars.buttons["Search"]
   static let stash = Window.window.toolbars.buttons["Stash"]
 }
 

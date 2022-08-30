@@ -38,21 +38,23 @@ struct HistorySearchBar: View
       } label: {
         EmptyView()
       }.fixedSize()
+        .accessibilityIdentifier(.Search.typePopup)
 
       SearchField($searchString, prompt: "Search")
         .onSearch(searchDown)
+        .accessibilityIdentifier(.Search.field)
 
       ControlGroup {
         Button {
           searchUp(searchString)
         } label: {
           Image(systemName: "chevron.up")
-        }
+        }.accessibilityIdentifier(.Search.up)
         Button {
           searchDown(searchString)
         } label: {
           Image(systemName: "chevron.down")
-        }
+        }.accessibilityIdentifier(.Search.down)
       }.fixedSize().disabled(searchString.isEmpty)
     }.padding()
   }

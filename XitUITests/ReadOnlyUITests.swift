@@ -321,6 +321,19 @@ class ReadOnlyUITests: XCTestCase
       CleanSheet.assertCleanFiles(allFiles)
     }
   }
+
+  func testSearch()
+  {
+    Toolbar.search.click()
+    Search.field.click()
+    Search.field.typeText("asd")
+    Search.searchDown.click()
+    XCTAssert(HistoryList.row(2).isSelected)
+    Search.searchDown.click()
+    XCTAssert(HistoryList.row(27).isSelected)
+    Search.searchUp.click()
+    XCTAssert(HistoryList.row(2).isSelected)
+  }
 }
 
 extension XCUIElement
