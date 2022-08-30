@@ -769,13 +769,13 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				89BA11E728BE43ED00A7999A /* SwiftUI */,
 				8983E1A5266596160075370C /* Extensions */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
 				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
 				C9B023521F61A06900896EA9 /* LibGitExtensions.h */,
 				C9B023511F61A06900896EA9 /* LibGitExtensions.m */,
 				C931A0E82762B8A9007F441C /* ArrayBuilder.swift */,
-				89BA11E328BE42D000A7999A /* Bound.swift */,
 				89ADB3BC283F2E6800EF508A /* Box.swift */,
 				C967C4AE1F96BA55002166F7 /* Cache.swift */,
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
@@ -785,20 +785,15 @@
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
 				89F411F428552A81009ECF7D /* DialogButtonRow.swift */,
-				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
-				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
-				C919B9D326B09F4D007952FA /* LabeledField.swift */,
 				89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */,
 				C931A0E627627E84007F441C /* MenuBuilder.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C957B8651D2D8D500040F858 /* PasswordStorage.swift */,
-				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
-				8983E1A6266596BD0075370C /* PathField.swift */,
 				891C5F7226715C8A0099695D /* PrioritizedResults.swift */,
 				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
@@ -806,7 +801,6 @@
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				89009E5128820CB2004A684B /* Testing.swift */,
-				89BA11E128BD576D00A7999A /* SearchField.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -851,6 +845,20 @@
 				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		89BA11E728BE43ED00A7999A /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				89BA11E328BE42D000A7999A /* Bound.swift */,
+				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
+				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
+				C919B9D326B09F4D007952FA /* LabeledField.swift */,
+				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
+				8983E1A6266596BD0075370C /* PathField.swift */,
+				89BA11E128BD576D00A7999A /* SearchField.swift */,
+			);
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		C3FA46F113D0F8E200AC4F9B = {
