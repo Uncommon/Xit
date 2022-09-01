@@ -6,7 +6,7 @@ typealias FileChangesRepo =
     FileStaging & FileStatusDetection
 
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
-protocol RepositorySelection: AnyObject
+protocol RepositorySelection
 {
   var repository: any FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list

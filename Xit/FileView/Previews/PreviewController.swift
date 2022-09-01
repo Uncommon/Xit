@@ -60,7 +60,7 @@ extension PreviewController: XTFileContentController
     }
     else {
       if let oldItem = qlView.previewItem as? PreviewItem,
-         oldItem.path == selection[0].path && oldItem.fileList == fileList {
+         oldItem.path == selection[0].path && oldItem.fileList.equals(fileList) {
         return
       }
       

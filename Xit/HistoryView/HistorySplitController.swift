@@ -2,7 +2,7 @@ import Cocoa
 
 final class HistorySplitController: NSSplitViewController
 {
-  var historyController: HistoryViewController!
+  weak var historyController: HistoryViewController!
 
   private var savedHistorySize: CGFloat?
   

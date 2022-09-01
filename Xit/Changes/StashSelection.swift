@@ -33,20 +33,39 @@ final class StashSelection: StagedUnstagedSelection
 /// Base class for stash file lists
 class StashFileList
 {
-  weak var stashSelection: StashSelection!
-  var selection: any RepositorySelection { stashSelection }
-  
+  unowned let repository: any FileChangesRepo
+
   let mainSelection: CommitSelection?
   let mainList: CommitFileList?
-
-  var stash: any Stash { stashSelection.stash }
+  let stash: any Stash
   
   init(selection: StashSelection)
   {
-    self.stashSelection = selection
-    self.mainSelection = selection.stash.mainCommit.map {
-        CommitSelection(repository: selection.repository, commit: $0) }
-    self.mainList = mainSelection.map { CommitFileList(selection: $0) }
+    self.repository = selection.repository
+    self.stash = selection.stash
+    if let mainCommit = selection.stash.mainCommit {
+      self.mainSelection = CommitSelection(repository: selection.repository,
+                                           commit: mainCommit)
+      self.mainList = CommitFileList(repository: selection.repository,
+                                     commit: mainCommit)
+    }
+    else {
+      self.mainSelection = nil
+      self.mainList = nil
+    }
+  }
+
+  func equals(_ other: any FileListModel) -> Bool
+  {
+    guard let other = other as? StashFileList
+    else { return false }
+    guard let mainCommit = stash.mainCommit,
+          let otherCommit = other.stash.mainCommit
+    else {
+      assertionFailure("main commit should not be missing")
+      return false
+    }
+    return mainCommit.id.equals(otherCommit.id)
   }
 }
 
@@ -67,7 +86,8 @@ class StashStagedList: StashFileList, FileListModel
   {
     self.indexSelection = selection.stash.indexCommit.map {
         CommitSelection(repository: selection.repository, commit: $0) }
-    self.indexList = indexSelection.map { CommitFileList(selection: $0) }
+    self.indexList = indexSelection.map {
+        CommitFileList(repository: $0.repository, commit: $0.commit) }
 
     super.init(selection: selection)
   }
@@ -116,7 +136,8 @@ final class StashUnstagedList: StashFileList, FileListModel
   {
     self.untrackedSelection = selection.stash.untrackedCommit.map {
         CommitSelection(repository: selection.repository, commit: $0) }
-    self.untrackedList = untrackedSelection.map { CommitFileList(selection: $0) }
+    self.untrackedList = untrackedSelection.map {
+        CommitFileList(repository: $0.repository, commit: $0.commit) }
     
     super.init(selection: selection)
   }
@@ -175,9 +196,4 @@ final class StashUnstagedList: StashFileList, FileListModel
   }
 
   func fileURL(_ path: String) -> URL? { return nil }
-}
-
-func == (a: StashSelection, b: StashSelection) -> Bool
-{
-  return a.stash.mainCommit?.id == b.stash.mainCommit?.id
 }

@@ -3,7 +3,7 @@ import Foundation
 
 protocol FileListModel: AnyObject
 {
-  var selection: any RepositorySelection { get }
+  var repository: any FileChangesRepo { get }
 
   /// Changes displayed in the file list
   var changes: [FileChange] { get }
@@ -23,22 +23,8 @@ protocol FileListModel: AnyObject
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
   func blame(for path: String) -> Blame?
-}
-
-extension FileListModel
-{
-  var repository: any FileChangesRepo { selection.repository }
-}
-
-func == (a: any FileListModel, b: any FileListModel) -> Bool
-{
-  return type(of: a) == type(of: b) &&
-         a.selection == b.selection
-}
-
-func != (a: any FileListModel, b: any FileListModel) -> Bool
-{
-  return !(a == b)
+  // in lieu of Equatable for now
+  func equals(_ other: any FileListModel) -> Bool
 }
 
 extension FileListModel

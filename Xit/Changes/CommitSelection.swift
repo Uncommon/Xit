@@ -20,25 +20,36 @@ final class CommitSelection: RepositorySelection
     self.repository = repository
     self.commit = commit
     
-    commitFileList = CommitFileList(selection: self)
+    commitFileList = CommitFileList(repository: repository,
+                                    commit: commit,
+                                    diffParent: diffParent)
   }
 }
 
 final class CommitFileList: FileListModel
 {
+  unowned var repository: any FileChangesRepo
   lazy var changes: [FileChange] =
       self.repository.changes(for: self.commit.id,
                               parent: self.commit.parentOIDs.first)
   
-  weak var commitSelection: CommitSelection!
-  var selection: RepositorySelection { commitSelection }
+  var commit: any Commit
+  var diffParent: (any OID)?
   
-  var commit: any Commit { commitSelection.commit }
-  var diffParent: (any OID)? { commitSelection.diffParent }
-  
-  init(selection: CommitSelection)
+  init(repository: any FileChangesRepo,
+       commit: any Commit,
+       diffParent: (any OID)? = nil)
   {
-    self.commitSelection = selection
+    self.repository = repository
+    self.commit = commit
+    self.diffParent = diffParent
+  }
+
+  func equals(_ other: FileListModel) -> Bool
+  {
+    guard let other = other as? CommitFileList
+    else { return false }
+    return commit.id == other.commit.id && diffParent == other.diffParent
   }
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode

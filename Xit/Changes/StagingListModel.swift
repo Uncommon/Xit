@@ -3,11 +3,11 @@ import Foundation
 /// Base class to consodidate the selection reference for FileListModel
 class StagingListModel
 {
-  unowned let selection: RepositorySelection
-  
-  init(selection: StagingSelection)
+  unowned let repository: any FileChangesRepo
+
+  init(repository: any FileChangesRepo)
   {
-    self.selection = selection
+    self.repository = repository
   }
 }
 
@@ -19,6 +19,11 @@ class IndexFileList: StagingListModel, FileListModel
     Signpost.interval(.loadIndex) {
       repository.stagedChanges()
     }
+  }
+
+  func equals(_ other: FileListModel) -> Bool
+  {
+    other is IndexFileList
   }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -74,13 +79,12 @@ final class AmendingIndexFileList: IndexFileList
   
   override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    return repository.amendingStagedDiff(file: path)
+    repository.amendingStagedDiff(file: path)
   }
   
   override func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    return treeRoot(changes: repository.amendingStagedChanges(),
-                    oldTree: oldTree)
+    treeRoot(changes: repository.amendingStagedChanges(), oldTree: oldTree)
   }
 }
 
@@ -95,10 +99,15 @@ final class WorkspaceFileList: StagingListModel, FileListModel
       repository.unstagedChanges(showIgnored: showingIgnored)
     }
   }
+
+  func equals(_ other: FileListModel) -> Bool
+  {
+    other is WorkspaceFileList
+  }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    return repository.unstagedDiff(file: path)
+    repository.unstagedDiff(file: path)
   }
   
   func dataForFile(_ path: String) -> Data?
@@ -110,12 +119,12 @@ final class WorkspaceFileList: StagingListModel, FileListModel
   
   func blame(for path: String) -> (any Blame)?
   {
-    return repository.blame(for: path, from: nil, to: nil)
+    repository.blame(for: path, from: nil, to: nil)
   }
   
   func fileURL(_ path: String) -> URL?
   {
-    return repository.fileURL(path)
+    repository.fileURL(path)
   }
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode

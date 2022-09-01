@@ -30,8 +30,8 @@ class StagingSelection: StagedUnstagedSelection
   
   func setFileLists()
   {
-    indexFileList = IndexFileList(selection: self)
-    workspaceFileList = WorkspaceFileList(selection: self)
+    indexFileList = IndexFileList(repository: repository)
+    workspaceFileList = WorkspaceFileList(repository: repository)
   }
 }
 
@@ -40,7 +40,7 @@ final class AmendingSelection: StagingSelection
 {
   override func setFileLists()
   {
-    indexFileList = AmendingIndexFileList(selection: self)
-    workspaceFileList = WorkspaceFileList(selection: self)
+    indexFileList = AmendingIndexFileList(repository: repository)
+    workspaceFileList = WorkspaceFileList(repository: repository)
   }
 }
