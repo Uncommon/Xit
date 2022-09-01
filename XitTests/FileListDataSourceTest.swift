@@ -108,7 +108,7 @@ class FileListDataSourceTest: XTTest
     waitForRepoQueue()
 
     XCTAssertTrue(wait(for: { flds.outlineView(outlineView,
-                                               numberOfChildrenOfItem: nil) == 3 },
+                                               numberOfChildrenOfItem: nil) == 2 },
                        timeout: 1.0),
                   "reload not completed")
     
