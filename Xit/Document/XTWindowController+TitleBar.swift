@@ -34,18 +34,15 @@ extension XTWindowController
   func configureTitleBarController(repository: XTRepository)
   {
     let viewController: TitleBarController = titleBarController!
-    let inverseBindingOptions =
-      [NSBindingOption.valueTransformerName:
-        NSValueTransformerName.negateBooleanTransformerName]
 
     // This can't be connected in the storyboard because TitleBarDelegate is
     // not objc compatible.
     viewController.delegate = self
     viewController.finishSetup()
-    viewController.bind(.progressHidden,
-                        to: queue,
-                        withKeyPath: #keyPath(TaskQueue.busy),
-                        options: inverseBindingOptions)
+    sinks.append(queue.publisher(for: \.busy).sink {
+      [weak viewController] in
+      viewController?.progressHidden = !$0
+    })
     viewController.selectedBranch = repository.currentBranch
     viewController.observe(repository: repository)
     updateBranchList()
