@@ -294,6 +294,8 @@ extension HistoryTableController: NSTableViewDelegate
                         viewFor tableColumn: NSTableColumn?,
                         row: Int) -> NSView?
   {
+    guard repoController != nil
+    else { return nil }
     let visibleRowCount =
           tableView.rows(in: tableView.enclosingScrollView!.bounds).length
     let (entryCount, batchStart) = history.withSync {
@@ -304,7 +306,7 @@ extension HistoryTableController: NSTableViewDelegate
     if firstProcessRow > batchStart
     {
       history.processBatches(throughRow: firstProcessRow,
-                             queue: repoUIController!.queue)
+                             queue: repoUIController?.queue)
     }
     
     guard (row >= 0) && (row < entryCount)

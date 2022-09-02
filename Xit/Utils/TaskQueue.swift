@@ -1,43 +1,35 @@
 import Foundation
+import Combine
 
-public class TaskQueue: NSObject
+public final class TaskQueue
 {
-  enum Error: Swift.Error
+  public enum Error: Swift.Error
   {
     /// Attempt to operate on a queue that is shut down
     case queueShutDown
   }
 
-  @objc let queue: DispatchQueue
+  let queue: DispatchQueue
   var queueCount: UInt = 0
+  {
+    didSet { busyValuePublisher.value = queueCount > 0 }
+  }
   fileprivate(set) var isShutDown = false
-  
-  @objc var busy: Bool
-  { queueCount > 0 }
+
+  private let busyValuePublisher = CurrentValueSubject<Bool, Never>(false)
+  public var busyPublisher: AnyPublisher<Bool, Never>
+  { busyValuePublisher.eraseToAnyPublisher() }
   
   init(id: String)
   {
     self.queue = DispatchQueue(label: id, attributes: [])
   }
   
-  private func updateQueueCount(_ delta: Int)
-  {
-    DispatchQueue.main.async {
-      [weak self] in
-      guard let self = self
-      else { return }
-      
-      self.changingValue(forKey: #keyPath(busy)) {
-        self.queueCount = UInt(Int(self.queueCount) + delta)
-      }
-    }
-  }
-  
   func executeTask(_ block: () -> Void)
   {
-    updateQueueCount(1)
+    queueCount += 1
     block()
-    updateQueueCount(-1)
+    queueCount -= 1
   }
   
   func executeOffMainThread(_ block: @escaping () -> Void)
@@ -72,13 +64,11 @@ public class TaskQueue: NSObject
     }
   }
   
-  @objc
   func wait()
   {
     WaitForQueue(queue)
   }
   
-  @objc
   func shutDown()
   {
     isShutDown = true

@@ -39,7 +39,7 @@ extension XTWindowController
     // not objc compatible.
     viewController.delegate = self
     viewController.finishSetup()
-    sinks.append(queue.publisher(for: \.busy).sink {
+    sinks.append(queue.busyPublisher.sinkOnMainQueue {
       [weak viewController] in
       viewController?.progressHidden = !$0
     })
