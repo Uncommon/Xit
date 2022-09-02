@@ -116,4 +116,6 @@ public enum RepoError: Swift.Error
 }
 
 extension RepoError: CustomStringConvertible
-{ public var description: String { message.rawValue } }
+{
+  public var description: String { message.rawValue }
+}

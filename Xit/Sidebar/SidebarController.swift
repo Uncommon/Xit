@@ -26,8 +26,8 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   {
     didSet
     {
-      model = SidebarDataModel(repository: repo, outlineView: sidebarOutline)
-      pullRequestManager = SidebarPRManager(model: model)
+      model = SidebarDataModel(repository: repo)
+      pullRequestManager = SidebarPRManager(model: model, outline: sidebarOutline)
       buildStatusController = BuildStatusController(model: model,
                                                     display: sidebarDelegate)
       if Services.xit.allServices

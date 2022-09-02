@@ -10,7 +10,6 @@ final class SidebarDataModel
                          SubmoduleManagement & Stashing
 
   private(set) weak var repository: (any Repository)?
-  private(set) weak var outline: NSOutlineView?
   var roots: [SideBarGroupItem] = []
 
   var stagingItem: SidebarItem { roots[0].children[0] }
@@ -27,11 +26,10 @@ final class SidebarDataModel
     return roots
   }
   
-  init(repository: any Repository, outlineView: NSOutlineView?)
+  init(repository: any Repository)
   {
     self.repository = repository
-    self.outline = outlineView
-    
+
     roots = makeRoots()
   }
   

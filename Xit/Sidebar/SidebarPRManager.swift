@@ -9,12 +9,14 @@ final class SidebarPRManager
         floatLiteral: 5 * .minutes)
   
   let model: SidebarDataModel
+  weak var outline: NSOutlineView?
   var pullRequestCache: PullRequestCache  // not `let` for testability
   var refreshScheduled: Cancellable?
 
-  init(model: SidebarDataModel)
+  init(model: SidebarDataModel, outline: NSOutlineView)
   {
     self.model = model
+    self.outline = outline
     self.pullRequestCache = PullRequestCache(repository: model.repository!)
     
     pullRequestCache.add(client: self)
@@ -182,7 +184,7 @@ extension SidebarPRManager: PullRequestClient
         guard let item = self.remoteItem(for: request)
         else { continue }
         
-        self.model.outline?.reloadItem(item)
+        self.outline?.reloadItem(item)
       }
     }
   }
@@ -247,7 +249,7 @@ extension SidebarPRManager: PullRequestActionDelegate
   
   private func prActionFailed(item: SidebarItem, error: Error)
   {
-    guard let window = model.outline?.window
+    guard let window = outline?.window
     else { return }
     let alert = NSAlert()
     
