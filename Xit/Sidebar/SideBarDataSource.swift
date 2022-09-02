@@ -86,6 +86,8 @@ final class SideBarDataSource: NSObject
       }
 
       DispatchQueue.main.async {
+        guard self?.repository != nil
+        else { return }
         self?.afterReload()
       }
     }

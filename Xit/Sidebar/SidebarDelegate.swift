@@ -245,6 +245,8 @@ extension SidebarDelegate: NSOutlineViewDelegate
                           viewFor tableColumn: NSTableColumn?,
                           item: Any) -> NSView?
   {
+    guard controller?.repo != nil
+    else { return nil }
     switch item {
       case let groupItem as SideBarGroupItem:
         guard let headerView = outlineView.makeView(

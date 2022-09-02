@@ -33,8 +33,8 @@ final class CommitFileList: FileListModel
       self.repository.changes(for: self.commit.id,
                               parent: self.commit.parentOIDs.first)
   
-  var commit: any Commit
-  var diffParent: (any OID)?
+  let commit: any Commit
+  let diffParent: (any OID)?
   
   init(repository: any FileChangesRepo,
        commit: any Commit,
