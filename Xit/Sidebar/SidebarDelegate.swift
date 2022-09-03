@@ -14,7 +14,7 @@ final class SidebarDelegate: NSObject
   @IBOutlet weak var outline: NSOutlineView!
   weak var model: SidebarDataModel?
   weak var buildStatusController: BuildStatusController?
-  var pullRequestManager: SidebarPRManager?
+  weak var pullRequestManager: SidebarPRManager?
   
   func graphText(for item: SidebarItem) -> String?
   {
@@ -245,8 +245,6 @@ extension SidebarDelegate: NSOutlineViewDelegate
                           viewFor tableColumn: NSTableColumn?,
                           item: Any) -> NSView?
   {
-    guard controller?.repo != nil
-    else { return nil }
     switch item {
       case let groupItem as SideBarGroupItem:
         guard let headerView = outlineView.makeView(

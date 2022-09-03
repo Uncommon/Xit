@@ -9,6 +9,7 @@ final class StashSelection: StagedUnstagedSelection
   var oidToSelect: (any OID)? { stash.mainCommit?.parentOIDs.first }
   var fileList: any FileListModel { stagedList }
   var unstagedFileList: any FileListModel { unstagedList }
+  var amending: Bool { false }
   
   // Initialization requires a reference to self
   private(set) var stagedList: StashStagedList! = nil

@@ -16,31 +16,25 @@ class StagingSelection: StagedUnstagedSelection
   var canCommit: Bool { true }
   var fileList: any FileListModel { indexFileList }
   var unstagedFileList: any FileListModel { workspaceFileList }
+
+  let amending: Bool
   
   // Initialization requires a reference to self
   fileprivate(set) var indexFileList: IndexFileList!
   fileprivate(set) var workspaceFileList: WorkspaceFileList!
   
-  init(repository: any FileChangesRepo)
+  init(repository: any FileChangesRepo, amending: Bool)
   {
     self.repository = repository
+    self.amending = amending
     
-    setFileLists()
-  }
-  
-  func setFileLists()
-  {
-    indexFileList = IndexFileList(repository: repository)
-    workspaceFileList = WorkspaceFileList(repository: repository)
-  }
-}
-
-/// Staging selection with Amend turned on
-final class AmendingSelection: StagingSelection
-{
-  override func setFileLists()
-  {
-    indexFileList = AmendingIndexFileList(repository: repository)
-    workspaceFileList = WorkspaceFileList(repository: repository)
+    if amending {
+      indexFileList = AmendingIndexFileList(repository: repository)
+      workspaceFileList = WorkspaceFileList(repository: repository)
+    }
+    else {
+      indexFileList = IndexFileList(repository: repository)
+      workspaceFileList = WorkspaceFileList(repository: repository)
+    }
   }
 }

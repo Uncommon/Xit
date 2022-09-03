@@ -21,7 +21,7 @@ class SidebarDataSourceTest: XTTest
   {
     super.setUp()
     
-    model = SidebarDataModel(repository: repository, outlineView: outline)
+    model = SidebarDataModel(repository: repository)
     sbds.model = model
     sbds.outline = outline
     outline.dataSource = sbds
@@ -194,7 +194,7 @@ class SidebarDSFakeRepoTest: XCTestCase
   {
     let repo = FakeRepo()
     let controller = FakeRepoController(repository: repo)
-    let model = SidebarDataModel(repository: repo, outlineView: nil)
+    let model = SidebarDataModel(repository: repo)
     let sidebarDS = SideBarDataSource()
     let outline = NSOutlineView()
 

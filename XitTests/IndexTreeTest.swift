@@ -20,8 +20,7 @@ class IndexTreeTest: XTTest
   {
     repository.invalidateIndex()
     
-    let selection = amending ? AmendingSelection(repository: repository)
-                             : StagingSelection(repository: repository)
+    let selection = StagingSelection(repository: repository, amending: amending)
     let root = selection.fileList.treeRoot(oldTree: nil)
     root.dump()
     guard let node = root.fileChangeNode(path: path)

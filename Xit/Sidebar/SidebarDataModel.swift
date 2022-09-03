@@ -21,7 +21,8 @@ final class SidebarDataModel
           [.workspace, .branches, .remotes, .tags, .stashes, .submodules]
     let roots = rootNames.map { SideBarGroupItem(titleString: $0) }
     
-    stagingItem.selection = StagingSelection(repository: repository!)
+    stagingItem.selection = StagingSelection(repository: repository!,
+                                             amending: false)
     roots[0].children.append(stagingItem)
     return roots
   }

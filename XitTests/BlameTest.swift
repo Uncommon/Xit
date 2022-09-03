@@ -81,7 +81,7 @@ class BlameTest: XTTest
       Write(elements5.joined(separator: "\n"), to: .blame)
     }
 
-    let stagingModel = StagingSelection(repository: repository)
+    let stagingModel = StagingSelection(repository: repository, amending: false)
     let unstagedBlame = try XCTUnwrap(stagingModel.unstagedFileList.blame(for: TestFileName.blame.rawValue),
                                       "can't get unstaged blame")
     let unstagedStarts = [1, 2, 3, 5, 6, 8]

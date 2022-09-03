@@ -162,10 +162,9 @@ final class XTWindowController: NSWindowController,
       return
     }
 
-    if selection is StagingSelection {
-      if isAmending != (selection is AmendingSelection) {
-        selection = isAmending ? AmendingSelection(repository: repo)
-                               : StagingSelection(repository: repo)
+    if let stagingSelection = selection as? StagedUnstagedSelection {
+      if isAmending != stagingSelection.amending {
+        selection = StagingSelection(repository: repo, amending: isAmending)
       }
       if defaults.collapseHistory {
         historyAutoCollapsed = true

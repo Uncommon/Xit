@@ -13,7 +13,7 @@ final class SidebarPRManager
   var pullRequestCache: PullRequestCache  // not `let` for testability
   var refreshScheduled: Cancellable?
 
-  init(model: SidebarDataModel, outline: NSOutlineView)
+  init(model: SidebarDataModel, outline: NSOutlineView?)
   {
     self.model = model
     self.outline = outline

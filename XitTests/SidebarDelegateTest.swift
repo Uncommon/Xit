@@ -14,7 +14,7 @@ class SidebarDelegateTest: XTTest
   {
     super.setUp()
     
-    model = SidebarDataModel(repository: repository, outlineView: outline)
+    model = SidebarDataModel(repository: repository)
     sbDelegate.model = model
   }
   
@@ -31,7 +31,7 @@ class SidebarDelegateTest: XTTest
       XCTAssertTrue(sbDelegate.outlineView(outline, isGroupItem: item))
     }
   }
-  
+
   func testTags() throws
   {
     let tagName = "t1"

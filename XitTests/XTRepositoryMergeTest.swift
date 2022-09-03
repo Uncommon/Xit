@@ -75,7 +75,7 @@ class XTRepositoryMergeTest: XTTest
   
   func isWorkspaceClean() -> Bool
   {
-    let selection = StagingSelection(repository: repository)
+    let selection = StagingSelection(repository: repository, amending: false)
     
     return selection.fileList.changes.isEmpty &&
            selection.unstagedFileList.changes.isEmpty
@@ -84,7 +84,7 @@ class XTRepositoryMergeTest: XTTest
   func assertWorkspaceContent(staged: [String], unstaged: [String],
                               file: StaticString = #file, line: UInt = #line)
   {
-    let selection = StagingSelection(repository: repository)
+    let selection = StagingSelection(repository: repository, amending: false)
     
     XCTAssertEqual(selection.fileList.changes.map { $0.path }, staged,
                    "staged", file: file, line: line)

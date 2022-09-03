@@ -7,7 +7,7 @@ class SidebarDataModelTest: XCTestCase
   {
     let repo = FakeRepo()
     let controller = FakeRepoController(repository: repo)
-    let model = SidebarDataModel(repository: repo, outlineView: nil)
+    let model = SidebarDataModel(repository: repo)
 
     _ = controller.repository // kill the warning
     model.reload()

@@ -14,13 +14,13 @@ class PullRequestManagerTest: XCTestCase
   {
     super.setUp()
     
-    model = SidebarDataModel(repository: fakeRepo, outlineView: nil)
+    model = SidebarDataModel(repository: fakeRepo)
     model.reload()
   }
   
   func testPullRequestForBranch()
   {
-    let prManager = SidebarPRManager(model: model)
+    let prManager = SidebarPRManager(model: model, outline: nil)
     let matchPR = FakePullRequest(
           serviceID: .init(),
           availableActions: [],

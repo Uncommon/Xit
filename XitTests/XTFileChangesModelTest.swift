@@ -102,7 +102,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStaging() throws
   {
-    let model = StagingSelection(repository: repository)
+    let model = StagingSelection(repository: repository, amending: false)
     var changes = model.unstagedFileList.changes
     
     XCTAssertEqual(changes.count, 0)
@@ -157,7 +157,7 @@ class XTFileChangesModelTest: XTTest
   
   func testStagingTreeSimple()
   {
-    let model = StagingSelection(repository: repository)
+    let model = StagingSelection(repository: repository, amending: false)
     let tree = model.fileList.treeRoot(oldTree: nil)
     guard let children = tree.children
     else {

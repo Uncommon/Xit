@@ -23,7 +23,8 @@ final class SideBarDataSource: NSObject
       guard let repo = model.repository
       else { return }
       
-      stagingItem.selection = StagingSelection(repository: repo)
+      stagingItem.selection = StagingSelection(repository: repo,
+                                               amending: false)
       
       if let repoController = viewController?.repoUIController?.repoController {
         sinks.append(contentsOf: [
@@ -59,8 +60,8 @@ final class SideBarDataSource: NSObject
   
   func setAmending(_ amending: Bool)
   {
-    stagingItem.selection = amending ? AmendingSelection(repository: repository)
-                                     : StagingSelection(repository: repository)
+    stagingItem.selection = StagingSelection(repository: repository,
+                                             amending: amending)
     outline.reloadItem(stagingItem)
   }
   
