@@ -13,7 +13,7 @@ final class CommitFileListController: FileListController
     let index = outlineView.column(withIdentifier: ColumnID.action)
 
     outlineView.tableColumns[index].isHidden = true
-    outlineView.setAccessibilityIdentifier("commitFiles")
+    outlineView.setAccessibilityIdentifier(.FileList.Commit.list)
 
     listTypeIcon.image = .xtFile
     listTypeLabel.uiStringValue = .files
