@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Cocoa
 
 /// Abstract base class for file list data sources.
 @MainActor

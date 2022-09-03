@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Cocoa
 
 /// Controller for staged/unstaged file lists. Conceptually (but not actually
 /// because of Swift) an abstract class.
