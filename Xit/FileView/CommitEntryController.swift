@@ -34,7 +34,7 @@ final class CommitEntryController: NSViewController,
       resetMessage()
     }
   }
-  private weak var config: Config!
+  private weak var config: (any Config)!
   var defaults: UserDefaults = .xit
 
   @IBOutlet weak var commitField: NSTextView!
