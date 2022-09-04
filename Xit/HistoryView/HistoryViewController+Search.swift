@@ -1,6 +1,6 @@
 import Foundation
 
-extension HistoryViewController: HistorySearchDelegate
+extension HistoryViewController
 {
   func toggleSearchBar()
   {
@@ -8,8 +8,8 @@ extension HistoryViewController: HistorySearchDelegate
   }
   
   func search(for text: String,
-              type: SearchAccessoryController.SearchType,
-              direction: SearchAccessoryController.SearchDirection)
+              type: HistorySearchType,
+              direction: SearchDirection)
   {
     let search = text.lowercased()
     let entries = tableController.history.entries
@@ -38,7 +38,7 @@ extension HistoryViewController: HistorySearchDelegate
   }
   
   func match(entry: CommitEntry, index: Int, text: String,
-             type: SearchAccessoryController.SearchType)
+             type: HistorySearchType)
     -> Bool
   {
     let commit = entry.commit

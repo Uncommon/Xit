@@ -49,6 +49,14 @@ extension AXID
     static let pruneCheck = AXID("pruneBranches")
   }
 
+  public enum Search
+  {
+    static let typePopup = AXID("searchType")
+    static let field = AXID("searchField")
+    static let up = AXID("searchUp")
+    static let down = AXID("searchDown")
+  }
+
   public enum FileList
   {
     public enum Commit

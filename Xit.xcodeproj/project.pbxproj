@@ -59,10 +59,9 @@
 		897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */; };
 		897AE64F28BACDA500CC165C /* FileListModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE64E28BACDA500CC165C /* FileListModelTest.swift */; };
 		897AE65128BAD14C00CC165C /* EmptyRepoProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */; };
+		897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */; };
 		8983E19126641BC20075370C /* ClonePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E19026641BC20075370C /* ClonePanel.swift */; };
 		8983E1A7266596BD0075370C /* PathField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E1A6266596BD0075370C /* PathField.swift */; };
-		8987EF30265840C5004FA509 /* SearchAccessoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */; };
-		8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8987EF422658558A004FA509 /* SearchAccessoryController.xib */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
 		89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ED020D02F9B007042F8 /* ClickableTextField.swift */; };
 		89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefTokenView.swift */; };
@@ -77,6 +76,12 @@
 		89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB953624DE064B0029CECC /* PushNewPanelController.swift */; };
 		89ADB3BD283F2E6800EF508A /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89ADB3BC283F2E6800EF508A /* Box.swift */; };
 		89B1C9B228778BE6006724EA /* MemoryPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */; };
+		89BA11E228BD576D00A7999A /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E128BD576D00A7999A /* SearchField.swift */; };
+		89BA11E428BE42D000A7999A /* Bound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E328BE42D000A7999A /* Bound.swift */; };
+		89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E528BE432200A7999A /* HostingTitlebarController.swift */; };
+		89BA11E928C4E26900A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
+		89BA11EA28C4E28000A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
+		89BA11EB28C4E2C000A7999A /* UIString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5334C2187608300B2432C /* UIString.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
 		89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* GitSubmodule.swift */; };
 		89C927781D36A5890074F71A /* GitTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* GitTag.swift */; };
@@ -424,10 +429,9 @@
 		897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStringExtensions.swift; sourceTree = "<group>"; };
 		897AE64E28BACDA500CC165C /* FileListModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListModelTest.swift; sourceTree = "<group>"; };
 		897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRepoProtocols.swift; sourceTree = "<group>"; };
+		897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchBar.swift; sourceTree = "<group>"; };
 		8983E19026641BC20075370C /* ClonePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanel.swift; sourceTree = "<group>"; };
 		8983E1A6266596BD0075370C /* PathField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathField.swift; sourceTree = "<group>"; };
-		8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAccessoryController.swift; sourceTree = "<group>"; };
-		8987EF422658558A004FA509 /* SearchAccessoryController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchAccessoryController.xib; sourceTree = "<group>"; };
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
 		89880ED020D02F9B007042F8 /* ClickableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickableTextField.swift; sourceTree = "<group>"; };
 		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
@@ -442,6 +446,10 @@
 		89AB953624DE064B0029CECC /* PushNewPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNewPanelController.swift; sourceTree = "<group>"; };
 		89ADB3BC283F2E6800EF508A /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryPasswordStorage.swift; sourceTree = "<group>"; };
+		89BA11E128BD576D00A7999A /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
+		89BA11E328BE42D000A7999A /* Bound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bound.swift; sourceTree = "<group>"; };
+		89BA11E528BE432200A7999A /* HostingTitlebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTitlebarController.swift; sourceTree = "<group>"; };
+		89BA11E828C4E26900A7999A /* HistorySearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchType.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		89C927741D36A2180074F71A /* GitSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSubmodule.swift; sourceTree = "<group>"; };
 		89C927771D36A5890074F71A /* GitTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTag.swift; sourceTree = "<group>"; };
@@ -767,6 +775,7 @@
 		31C7C12A13EC730500A65FE9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				89BA11E728BE43ED00A7999A /* SwiftUI */,
 				8983E1A5266596160075370C /* Extensions */,
 				DDDDAF1318162212009F8BA1 /* XTQueueUtils.c */,
 				DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */,
@@ -782,19 +791,15 @@
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
 				89F411F428552A81009ECF7D /* DialogButtonRow.swift */,
-				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
-				C919B9D326B09F4D007952FA /* LabeledField.swift */,
 				89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */,
 				C931A0E627627E84007F441C /* MenuBuilder.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */,
 				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C957B8651D2D8D500040F858 /* PasswordStorage.swift */,
-				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
-				8983E1A6266596BD0075370C /* PathField.swift */,
 				891C5F7226715C8A0099695D /* PrioritizedResults.swift */,
 				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
@@ -812,6 +817,7 @@
 				C9AA80351E2E7F370004D670 /* HistoryViewController.swift */,
 				C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */,
 				C934C239258ADBA2004197EB /* HistoryViewController.storyboard */,
+				897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */,
 				C9473B9025A64D3000DA95BF /* HistorySplitController.swift */,
 				C91E9A001D527A1300E128AC /* HistoryTableController.swift */,
 				C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */,
@@ -820,8 +826,7 @@
 				C92E30EE1D4FF358001985F7 /* CommitHistory.swift */,
 				C935BD7D1E8BFA4F00BE51F0 /* DateCellView.swift */,
 				89880EDA20D08674007042F8 /* RefTokenView.swift */,
-				8987EF2F265840C5004FA509 /* SearchAccessoryController.swift */,
-				8987EF422658558A004FA509 /* SearchAccessoryController.xib */,
+				89BA11E828C4E26900A7999A /* HistorySearchType.swift */,
 			);
 			path = HistoryView;
 			sourceTree = "<group>";
@@ -847,6 +852,20 @@
 				C9F1B5DD2217247E00293305 /* ViewExtensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		89BA11E728BE43ED00A7999A /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				89BA11E328BE42D000A7999A /* Bound.swift */,
+				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
+				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
+				C919B9D326B09F4D007952FA /* LabeledField.swift */,
+				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
+				8983E1A6266596BD0075370C /* PathField.swift */,
+				89BA11E128BD576D00A7999A /* SearchField.swift */,
+			);
+			path = SwiftUI;
 			sourceTree = "<group>";
 		};
 		C3FA46F113D0F8E200AC4F9B = {
@@ -1424,7 +1443,6 @@
 				C934C23A258ADBA2004197EB /* HistoryViewController.storyboard in Resources */,
 				899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */,
 				C957B8731D2DB44E0040F858 /* RemoteSheetController.xib in Resources */,
-				8987EF432658558A004FA509 /* SearchAccessoryController.xib in Resources */,
 				89039F561703A9FC000949A8 /* html in Resources */,
 				89AB952224DDE63E0029CECC /* PushNewPanelController.xib in Resources */,
 				DD997DF81746F40D00C7DF82 /* FileViewController.xib in Resources */,
@@ -1550,6 +1568,7 @@
 				C957B8721D2DB44E0040F858 /* RemoteSheetController.swift in Sources */,
 				C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */,
 				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
+				89BA11E428BE42D000A7999A /* Bound.swift in Sources */,
 				8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
@@ -1580,9 +1599,9 @@
 				891748D228B6B7B00091DF3B /* StringOID.swift in Sources */,
 				C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
+				897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */,
 				C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */,
 				C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */,
-				8987EF30265840C5004FA509 /* SearchAccessoryController.swift in Sources */,
 				C94154A31ED778980030E481 /* BuildStatusCache.swift in Sources */,
 				C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */,
 				C951EB051DD636B900B99FBE /* SidebarCheckedRowView.swift in Sources */,
@@ -1603,6 +1622,7 @@
 				C9DEA4AB1E4B7A4200DF4069 /* Blame.swift in Sources */,
 				C95BF6661FCF5D7A0020C51D /* CommitSelection.swift in Sources */,
 				891260E6285D183B00053528 /* GeneralPrefsPane.swift in Sources */,
+				89BA11E928C4E26900A7999A /* HistorySearchType.swift in Sources */,
 				891260E8285D395900053528 /* ConfigValueWrappers.swift in Sources */,
 				C98CAD841F9520D0005DB419 /* GitDiffHunk.swift in Sources */,
 				C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */,
@@ -1627,6 +1647,7 @@
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,
 				89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */,
 				C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */,
+				89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */,
 				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
 				C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */,
 				C9B023531F61A06900896EA9 /* LibGitExtensions.m in Sources */,
@@ -1691,6 +1712,7 @@
 				C931A0ED276BA65E007F441C /* StagingFileListController.swift in Sources */,
 				C92E30FB1D4FF4F0001985F7 /* GitCommit.swift in Sources */,
 				C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */,
+				89BA11E228BD576D00A7999A /* SearchField.swift in Sources */,
 				C9EA18F7234F8DB000DDAA25 /* ControlValueWrappers.swift in Sources */,
 				897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */,
 				C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */,
@@ -1797,8 +1819,10 @@
 				C9C3014226A5BB7D00EBBBC8 /* AXIdentifiers.swift in Sources */,
 				891052D92523F3D30095E299 /* TestErrors.swift in Sources */,
 				C90FD4212385A983006358C7 /* XCTestCaseExtensions.swift in Sources */,
+				89BA11EA28C4E28000A7999A /* HistorySearchType.swift in Sources */,
 				C9C3014426A5BBFD00EBBBC8 /* AXIDTest.swift in Sources */,
 				C954C1662374E493000D5339 /* CLIRunner.swift in Sources */,
+				89BA11EB28C4E2C000A7999A /* UIString.swift in Sources */,
 				C94107CB236B39C600D4B0D7 /* TemporaryDirectory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
