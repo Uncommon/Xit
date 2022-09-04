@@ -23,9 +23,16 @@ enum Search
 {
   static let popup = Window.window.popUpButtons[.Search.typePopup]
   static let field = Window.window.searchFields[.Search.field]
+  static let clearButton = field.buttons["cancel"]
   // No idea where these IDs come from but that's what they are
   static let searchUp = Window.window.buttons["go up"]
   static let searchDown = Window.window.buttons["go down"]
+
+  static func setSearchType(_ searchType: HistorySearchType)
+  {
+    popup.click()
+    XitApp.menuItems[searchType.displayName.rawValue].click()
+  }
 }
 
 enum Toolbar

@@ -8,8 +8,6 @@ final class HistoryViewController: NSViewController
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!
 
-  @Bound var searchString: String = ""
-  @Bound var searchType: HistorySearchType = .summary
   var searchController: HostingTitlebarController<HistorySearchBar>!
   weak var splitController: NSSplitViewController!
   var fileViewController: FileViewController!
@@ -36,13 +34,13 @@ final class HistoryViewController: NSViewController
       [weak self] in
       guard let self = self else { return }
       self.search(for: $0,
-                  type: self.searchType,
+                  type: $1,
                   direction: .up)
     }, searchDown: {
       [weak self] in
       guard let self = self else { return }
       self.search(for: $0,
-                  type: self.searchType,
+                  type: $1,
                   direction: .down)
     }))
     searchController.isHidden = true
