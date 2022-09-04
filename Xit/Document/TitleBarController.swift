@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 @MainActor
 protocol TitleBarDelegate: AnyObject
@@ -68,9 +69,7 @@ class TitleBarController: NSObject
 
   weak var delegate: (any TitleBarDelegate)?
   
-  var progressObserver: NSObjectProtocol?
-  var becomeKeyObserver: NSObjectProtocol?
-  var resignKeyObserver: NSObjectProtocol?
+  var progressSink: AnyCancellable?
   
   var separatorItem: NSToolbarItem?
   
@@ -82,6 +81,12 @@ class TitleBarController: NSObject
     {
       spinner.isIndeterminate = true
       spinner.isHidden = newValue
+      if newValue {
+        spinner.stopAnimation(nil)
+      }
+      else {
+        spinner.startAnimation(nil)
+      }
     }
   }
   
@@ -170,25 +175,6 @@ class TitleBarController: NSObject
   
   func finishSetup()
   {
-    let center = NotificationCenter.default
-    
-    if becomeKeyObserver == nil {
-      becomeKeyObserver = center.addObserver(
-          forName: NSWindow.didBecomeKeyNotification,
-          object: window,
-          queue: .main) {
-        (_) in
-      }
-    }
-    if resignKeyObserver == nil {
-      resignKeyObserver = center.addObserver(
-          forName: NSWindow.didResignKeyNotification,
-          object: window,
-          queue: .main) {
-        (_) in
-      }
-    }
-    
     remoteOpsMenu.items[0].submenu = pullMenu
     remoteOpsMenu.items[1].submenu = pushMenu
     remoteOpsMenu.items[2].submenu = fetchMenu
@@ -196,31 +182,31 @@ class TitleBarController: NSObject
   
   func observe(repository: XTRepository)
   {
-    progressObserver = NotificationCenter.default.addObserver(
-        forName: .XTProgress, object: repository, queue: .main) {
-      [weak self] (notification) in
-      guard let self = self,
-            let progress = notification.progress,
-            let total = notification.total
-      else { return }
-      
-      self.spinner.isIndeterminate = false
-      self.spinner.maxValue = Double(total)
-      self.spinner.doubleValue = Double(progress)
-      self.spinner.needsDisplay = true
+    progressSink = NotificationCenter.default.publisher(for: .XTProgress,
+                                                        object: repository)
+      .receive(on: DispatchQueue.main)
+      .sink {
+        [weak self] (notification) in
+        guard let self = self,
+              let progress = notification.progress,
+              let total = notification.total
+        else { return }
+
+        
+        if progress < total {
+          self.spinner.isIndeterminate = false
+          self.spinner.startAnimation(nil)
+          self.spinner.maxValue = Double(total)
+          self.spinner.doubleValue = Double(progress)
+          self.spinner.needsDisplay = true
+        }
+        else {
+          self.spinner.stopAnimation(nil)
+          self.spinner.isHidden = true
+        }
     }
   }
 
-  deinit
-  {
-    let observers = [progressObserver, becomeKeyObserver, resignKeyObserver]
-      .compactMap { $0 }
-
-    for observer in observers {
-      NotificationCenter.default.removeObserver(observer)
-    }
-  }
-  
   @IBAction
   func navigate(_ sender: Any?)
   {
