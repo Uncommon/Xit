@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 /// Base class to consodidate the selection reference for FileListModel
 class StagingListModel

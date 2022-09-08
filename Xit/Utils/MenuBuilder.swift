@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 /// Collects menu items into an array, for use with the `NSMenu(title:builder:)`
 /// initializer.

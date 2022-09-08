@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 /// Changes for a selected stash, merging workspace, index, and untracked
 final class StashSelection: StagedUnstagedSelection
