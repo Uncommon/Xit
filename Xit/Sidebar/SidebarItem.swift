@@ -354,8 +354,9 @@ final class TagSidebarItem: SidebarItem
     // to make sense to have a repository property in the Tag protocol.
     if let commit = tag.commit,
        let xtTag = tag as? GitTag {
-      self.selection = CommitSelection(repository: xtTag.repository,
-                                       commit: commit)
+      self.selection = xtTag.repository.map {
+        CommitSelection(repository: $0, commit: commit)
+      }
     }
   }
   

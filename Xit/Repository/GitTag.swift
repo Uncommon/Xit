@@ -23,7 +23,7 @@ public final class GitTag: Tag
   // TODO: Move this out because it's used by other classes
   static let tagPrefix = "refs/tags/"
 
-  let repository: XTRepository
+  weak var repository: XTRepository?
   private let ref: OpaquePointer
   private let tag: OpaquePointer?
   public let name: String
@@ -37,7 +37,7 @@ public final class GitTag: Tag
   public lazy var targetOID: (any OID)? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
   public var commit: (any Commit)?
-  { targetOID.flatMap { repository.commit(forOID: $0) } }
+  { targetOID.flatMap { repository?.commit(forOID: $0) } }
   public var type: TagType
   { tag == nil ? .lightweight : .annotated }
 
@@ -47,7 +47,7 @@ public final class GitTag: Tag
     // with "gpgsig".
     guard let tag = self.tag,
           let oid = git_tag_id(tag),
-          let odb = GitODB(repository: repository.gitRepo),
+          let odb = repository.flatMap({ GitODB(repository: $0.gitRepo) }),
           let object = odb[oid.pointee]
     else { return false }
     let text = object.text

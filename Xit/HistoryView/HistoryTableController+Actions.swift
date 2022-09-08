@@ -81,10 +81,11 @@ extension HistoryTableController: NSMenuDelegate
 
       menu.setItems {
         for item in menuData {
-          NSMenuItem(item.0) { _ in
-            self.toggleColumn(item.1)
+          NSMenuItem(item.0) {
+            [weak self] _ in
+            self?.toggleColumn(item.1)
             if item.1 == ColumnID.refs {
-              self.tableView.reloadData()
+              self?.tableView.reloadData()
             }
           }.with(state: tableView.tableColumn(withIdentifier: item.1)?.isHidden
                  ?? true ? .off : .on)

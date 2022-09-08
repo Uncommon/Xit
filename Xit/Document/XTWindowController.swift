@@ -229,7 +229,9 @@ final class XTWindowController: NSWindowController,
   func updateMiniwindowTitle()
   {
     DispatchQueue.main.async {
-      guard let window = self.window,
+      [weak self] in
+      guard let self = self,
+            let window = self.window,
             let repo = self.repoDocument?.repository
       else { return }
       
