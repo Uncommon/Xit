@@ -14,7 +14,7 @@ final class FileMonitor
     self.path = path
     
     makeSource()
-    if sourceMutex.withLock({ self.source }) == nil {
+    if sourceMutex.withLock({ source }) == nil {
       return nil
     }
   }

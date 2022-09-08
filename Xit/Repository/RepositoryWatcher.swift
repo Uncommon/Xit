@@ -76,7 +76,7 @@ final class RepositoryWatcher
   {
     stream.stop()
     mutex.withLock {
-      self.packedRefsWatcher = nil
+      packedRefsWatcher = nil
     }
   }
   
@@ -85,7 +85,7 @@ final class RepositoryWatcher
     let path = repository!.gitDirectoryPath
     let watcher = FileMonitor(path: path +/ "packed-refs")
     
-    mutex.withLock { self.packedRefsWatcher = watcher }
+    mutex.withLock { packedRefsWatcher = watcher }
     watcher?.notifyBlock = {
       [weak self] (_, _) in
       self?.checkRefs()
@@ -152,9 +152,9 @@ final class RepositoryWatcher
   func checkRefs(changedPaths: [String], repository: XTRepository)
   {
     mutex.withLock {
-      if self.packedRefsWatcher == nil,
+      if packedRefsWatcher == nil,
          changedPaths.contains(repository.gitDirectoryPath) {
-        self.makePackedRefsWatcher()
+        makePackedRefsWatcher()
       }
     }
 

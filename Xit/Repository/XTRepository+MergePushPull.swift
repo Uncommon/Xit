@@ -246,7 +246,7 @@ extension XTRepository: Merging
   public func merge(branch: any Branch) throws
   {
     try performWriting {
-      try self.writingMerge(branch: branch)
+      try writingMerge(branch: branch)
     }
   }
   
