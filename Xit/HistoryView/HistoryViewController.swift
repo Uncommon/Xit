@@ -33,13 +33,15 @@ final class HistoryViewController: NSViewController
   {
     searchController = .init(rootView: .init(searchUp: {
       [weak self] in
-      guard let self = self else { return }
+      guard let self = self
+      else { return }
       self.search(for: $0,
                   type: $1,
                   direction: .up)
     }, searchDown: {
       [weak self] in
-      guard let self = self else { return }
+      guard let self = self
+      else { return }
       self.search(for: $0,
                   type: $1,
                   direction: .down)
