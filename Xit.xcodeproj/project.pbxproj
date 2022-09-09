@@ -291,7 +291,6 @@
 		C9C3014426A5BBFD00EBBBC8 /* AXIDTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3014326A5BBFD00EBBBC8 /* AXIDTest.swift */; };
 		C9C3014526A5BC4800EBBBC8 /* AXID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C3013E26A2816F00EBBBC8 /* AXID.swift */; };
 		C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */; };
-		C9C7F03728BEADF300F71AD0 /* RepoDocumentTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C7F03628BEADF300F71AD0 /* RepoDocumentTest.swift */; };
 		C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */; };
 		C9CC6D2D237E064A00424A68 /* GitCLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CC6D2C237E064A00424A68 /* GitCLI.swift */; };
 		C9CCDC79242A68EA006C8CB1 /* HistoryTableController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */; };
@@ -668,7 +667,6 @@
 		C9C3014026A5BB7D00EBBBC8 /* AXIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXIdentifiers.swift; sourceTree = "<group>"; };
 		C9C3014326A5BBFD00EBBBC8 /* AXIDTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXIDTest.swift; sourceTree = "<group>"; };
 		C9C7730A1D26EE1C00329493 /* PrefsWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrefsWindowController.swift; sourceTree = "<group>"; };
-		C9C7F03628BEADF300F71AD0 /* RepoDocumentTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoDocumentTest.swift; sourceTree = "<group>"; };
 		C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModelTest.swift; sourceTree = "<group>"; };
 		C9CC6D2C237E064A00424A68 /* GitCLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCLI.swift; sourceTree = "<group>"; };
 		C9CCDC78242A68EA006C8CB1 /* HistoryTableController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryTableController+Actions.swift"; sourceTree = "<group>"; };
@@ -990,7 +988,6 @@
 				C9F5331C217A90B800B2432C /* KeychainTest.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C98EBC1E212CCC6D00EF739E /* PullRequestManagerTest.swift */,
-				C9C7F03628BEADF300F71AD0 /* RepoDocumentTest.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
 				C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */,
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
@@ -1771,7 +1768,6 @@
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
 				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
 				C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */,
-				C9C7F03728BEADF300F71AD0 /* RepoDocumentTest.swift in Sources */,
 				89E4272A285D6E3D00A17651 /* ConfigTest.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,

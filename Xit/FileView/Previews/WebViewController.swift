@@ -7,11 +7,13 @@ class WebViewController: NSViewController
   @IBOutlet weak var webView: WKWebView!
   var savedTabWidth: UInt = Default.tabWidth
   var savedWrapping: TextWrapping?
-  private var userContentController: UserContentController = .init()
+  private var userContentController: ControllerMessageHandler = .init()
   private var appearanceObserver: NSKeyValueObservation?
   private var cancellables: [AnyCancellable] = []
 
   var defaults: UserDefaults = .xit
+
+  let controllerHandlerName = "controller"
 
   enum Default
   {
@@ -35,7 +37,7 @@ class WebViewController: NSViewController
   {
     userContentController.controller = self
     webView.configuration.userContentController
-           .add(userContentController, name: "controller")
+           .add(userContentController, name: controllerHandlerName)
 #if DEBUG
     webView.configuration.preferences
            .setValue(true, forKey: "developerExtrasEnabled")
@@ -64,6 +66,8 @@ class WebViewController: NSViewController
   override func viewWillDisappear()
   {
     webView.navigationDelegate = nil
+    webView.configuration.userContentController
+           .removeScriptMessageHandler(forName: controllerHandlerName)
   }
   
   func updateFont()
@@ -154,8 +158,8 @@ class WebViewController: NSViewController
   }
 
   // This is a separate object so the web view doesn't have a strong reference
-  // back to the WebViewController.
-  class UserContentController: NSObject, WKScriptMessageHandler
+  // back to the WebViewController, creating a cycle.
+  class ControllerMessageHandler: NSObject, WKScriptMessageHandler
   {
     weak var controller: WebViewController?
 
