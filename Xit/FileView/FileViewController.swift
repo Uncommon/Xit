@@ -243,12 +243,12 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
           self.refreshPreview()
         }
     })
-    sinks.append(center.publisher(for: .xtFirstResponderChanged,
-                                  object: view.window!)
-      .sinkOnMainQueue {
+    if let window = view.window {
+      sinks.append(window.publisher(for: \.firstResponder).sinkOnMainQueue {
         [weak self] _ in
         self?.updatePreviewForActiveList()
       })
+    }
   }
   
   override func loadView()

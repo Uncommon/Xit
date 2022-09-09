@@ -232,7 +232,6 @@
 		C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31B120BF2A2100E74D2F /* RepoError.swift */; };
 		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
 		C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9864465207E9CAC0088209B /* StringIdentifiers.swift */; };
-		C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986447B208FBD990088209B /* ResponderNotifierWindow.swift */; };
 		C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986846F2334389A0026E70B /* SidebarItemFilter.swift */; };
 		C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */; };
 		C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* NewTagOpController.swift */; };
@@ -612,7 +611,6 @@
 		C97E31B120BF2A2100E74D2F /* RepoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoError.swift; sourceTree = "<group>"; };
 		C9800D7C2017FEB80045B05D /* FileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListController.swift; sourceTree = "<group>"; };
 		C9864465207E9CAC0088209B /* StringIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringIdentifiers.swift; sourceTree = "<group>"; };
-		C986447B208FBD990088209B /* ResponderNotifierWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponderNotifierWindow.swift; sourceTree = "<group>"; };
 		C986846F2334389A0026E70B /* SidebarItemFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemFilter.swift; sourceTree = "<group>"; };
 		C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitLinesTest.swift; sourceTree = "<group>"; };
 		C98925D41DB6D3D300E5645C /* NewTagOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTagOpController.swift; sourceTree = "<group>"; };
@@ -1163,7 +1161,6 @@
 				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
 				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
-				C986447B208FBD990088209B /* ResponderNotifierWindow.swift */,
 				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
 				898A381727136881002639CC /* RepoDocument.swift */,
 			);
@@ -1706,7 +1703,6 @@
 				C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */,
 				C951EAE11DD11BDD00B99FBE /* SidebarTableCellView.swift in Sources */,
 				C9F20AD02347C8C7002E8603 /* NewBranchOpController.swift in Sources */,
-				C986447C208FBD990088209B /* ResponderNotifierWindow.swift in Sources */,
 				89AB953724DE064B0029CECC /* PushNewPanelController.swift in Sources */,
 				C95ECD051EB11E310000DB78 /* WebViewController.swift in Sources */,
 				C931A0ED276BA65E007F441C /* StagingFileListController.swift in Sources */,
