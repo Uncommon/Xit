@@ -38,10 +38,10 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
-  @IBOutlet var diffController: FileDiffController!
-  @IBOutlet var blameController: BlameViewController!
-  @IBOutlet var previewController: PreviewController!
-  @IBOutlet var textController: TextPreviewController!
+  @IBOutlet weak var diffController: FileDiffController!
+  @IBOutlet weak var blameController: BlameViewController!
+  @IBOutlet weak var previewController: PreviewController!
+  @IBOutlet weak var textController: TextPreviewController!
   var commitHeader: CommitHeaderHostingView!
   var commitEntryController: CommitEntryController!
 
@@ -171,14 +171,12 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     
     qlTab.view = previewController.view
 
-    commitHeader = .init(rootView: CommitHeader(
-        commit: nil,
-        messageLookup: { _ in "" },
-        selectParent: { _ in }))
-    commitHeader.selectParent = { [weak self] oid in
+    commitHeader = .init(rootView: CommitHeader())
+    commitHeader.selectParent = {
+      [weak self] oid in
       self?.repoUIController?.select(oid: oid)
     }
-    
+
     let scrollView = NSScrollView()
 
     scrollView.documentView = commitHeader

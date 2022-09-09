@@ -11,7 +11,7 @@ final class HistoryViewController: NSViewController
 
   var searchController: HostingTitlebarController<HistorySearchBar>!
   weak var splitController: NSSplitViewController!
-  var fileViewController: FileViewController!
+  weak var fileViewController: FileViewController!
 
   var historyHidden: Bool
   { splitController.splitViewItems[0].isCollapsed }

@@ -25,7 +25,8 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
       rootView = CommitHeader(
           commit: newValue,
           messageLookup: {
-            self.repository?.commit(forOID: $0)?.messageSummary ?? ""
+            [weak self] in
+            self?.repository?.commit(forOID: $0)?.messageSummary ?? ""
           },
           selectParent: select)
     }
@@ -145,6 +146,22 @@ struct CommitHeader: View
     else {
       Text("No selection").foregroundColor(.secondary).bold()
     }
+  }
+
+  init()
+  {
+    self.commit = nil
+    self.messageLookup = { _ in "" }
+    self.selectParent = { _ in }
+  }
+
+  init(commit: (any Commit)?,
+       messageLookup: @escaping (any OID) -> String,
+       selectParent: @escaping (any OID) -> Void)
+  {
+    self.commit = commit
+    self.messageLookup = messageLookup
+    self.selectParent = selectParent
   }
 }
 

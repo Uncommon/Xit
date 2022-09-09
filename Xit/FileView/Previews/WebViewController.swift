@@ -7,6 +7,7 @@ class WebViewController: NSViewController
   @IBOutlet weak var webView: WKWebView!
   var savedTabWidth: UInt = Default.tabWidth
   var savedWrapping: TextWrapping?
+  private var userContentController: UserContentController = .init()
   private var appearanceObserver: NSKeyValueObservation?
   private var cancellables: [AnyCancellable] = []
 
@@ -32,8 +33,9 @@ class WebViewController: NSViewController
   
   override func awakeFromNib()
   {
+    userContentController.controller = self
     webView.configuration.userContentController
-           .add(self, name: "controller")
+           .add(userContentController, name: "controller")
 #if DEBUG
     webView.configuration.preferences
            .setValue(true, forKey: "developerExtrasEnabled")
@@ -150,17 +152,21 @@ class WebViewController: NSViewController
   {
     // override
   }
-}
 
-extension WebViewController: WKScriptMessageHandler
-{
-  func userContentController(_ userContentController: WKUserContentController,
-                             didReceive message: WKScriptMessage)
+  // This is a separate object so the web view doesn't have a strong reference
+  // back to the WebViewController.
+  class UserContentController: NSObject, WKScriptMessageHandler
   {
-    guard let params = message.body as? [String: Any]
-    else { return }
-    
-    webMessage(params)
+    weak var controller: WebViewController?
+
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage)
+    {
+      guard let params = message.body as? [String: Any]
+      else { return }
+
+      controller?.webMessage(params)
+    }
   }
 }
 
