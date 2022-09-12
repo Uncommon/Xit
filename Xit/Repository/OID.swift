@@ -152,8 +152,11 @@ extension GitOID: CustomStringConvertible
 
 public func == (left: GitOID, right: GitOID) -> Bool
 {
-  var l = left.oid
-  var r = right.oid
-  
-  return xit_oid_equal(&l, &r)
+  left.withUnsafeOID {
+    (leftOID) in
+    right.withUnsafeOID {
+      (rightOID) in
+      git_oid_equal(leftOID, rightOID) != 0
+    }
+  }
 }

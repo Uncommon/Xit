@@ -245,7 +245,8 @@ extension Data
   {
     return withUnsafeBytes {
       (data: UnsafeRawBufferPointer) -> Bool in
-      git_buffer_is_binary(data.bindMemory(to: Int8.self).baseAddress, count)
+      git_blob_data_is_binary(data.bindMemory(to: Int8.self).baseAddress,
+                              count) != 0
     }
   }
 }
