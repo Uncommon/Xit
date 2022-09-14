@@ -264,8 +264,7 @@ extension XTRepository: Merging
                                               config: config)
       else { throw RepoError.detachedHead }
       guard let targetCommit = targetBranch.targetCommit,
-            let anyCommit = branch.targetCommit as (any Xit.Commit)?,
-            let remoteCommit = anyCommit as? GitCommit
+            let remoteCommit = gitBranch.targetCommit
       else { throw RepoError.unexpected }
       
       if targetCommit.id.equals(remoteCommit.id) {

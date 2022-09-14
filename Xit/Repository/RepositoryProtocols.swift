@@ -157,6 +157,8 @@ extension CommitReferencing where Self: CommitStorage
   var anyHeadCommit: (any Xit.Commit)? { headCommit as (any Xit.Commit)? }
 }
 
+// This protocol does not have an associated OID type because changes()
+// needs to work with SpecialOID.
 public protocol FileStatusDetection: AnyObject
 {
   func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
