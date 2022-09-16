@@ -28,14 +28,14 @@ extension XTRepository: Branching
   public var currentBranchPublisher: AnyPublisher<String?, Never>
   { currentBranchSubject.eraseToAnyPublisher() }
   
-  public var localBranches: AnySequence<any LocalBranch>
+  public var localBranches: AnySequence<any Xit.LocalBranch>
   { AnySequence { LocalBranchIterator(repo: self) } }
   
-  public var remoteBranches: AnySequence<RemoteBranch>
+  public var remoteBranches: AnySequence<any Xit.RemoteBranch>
   { AnySequence { RemoteBranchIterator(repo: self) } }
 
   public func createBranch(named name: String,
-                           target: String) throws -> (any LocalBranch)?
+                           target: String) throws -> GitLocalBranch?
   {
     if isWriting {
       throw RepoError.alreadyWriting
@@ -70,7 +70,7 @@ extension XTRepository: Branching
     try RepoError.throwIfGitError(result)
   }
 
-  public func localBranch(named name: String) -> (any LocalBranch)?
+  public func localBranch(named name: String) -> GitLocalBranch?
   {
     let fullName = RefPrefixes.heads +/ name
     
@@ -88,12 +88,12 @@ extension XTRepository: Branching
   }
   
   public func remoteBranch(named name: String,
-                           remote: String) -> (any RemoteBranch)?
+                           remote: String) -> GitRemoteBranch?
   {
     return remoteBranch(named: remote +/ name)
   }
   
-  public func remoteBranch(named name: String) -> (any RemoteBranch)?
+  public func remoteBranch(named name: String) -> GitRemoteBranch?
   {
     let fullName = RefPrefixes.remotes +/ name
     
@@ -110,8 +110,8 @@ extension XTRepository: Branching
     }
   }
   
-  public func localBranch(tracking remoteBranch: any RemoteBranch)
-    -> (any LocalBranch)?
+  public func localBranch(tracking remoteBranch: GitRemoteBranch)
+    -> GitLocalBranch?
   {
     return localTrackingBranch(forBranchRef: remoteBranch.name)
   }
@@ -122,11 +122,12 @@ extension XTRepository: Branching
                           options: [])
 
   public func localTrackingBranch(forBranchRef branch: String)
-    -> (any LocalBranch)?
+    -> GitLocalBranch?
   {
     guard let ref = RefName(rawValue: branch),
           case let .remoteBranch(remote, branch) = ref
     else { return nil }
+    let config = self.config as! GitConfig
     
     // Looping through all the branches can be expensive
     for entry in config.entries {
@@ -152,13 +153,10 @@ extension XTRepository: Branching
     return nil
   }
   
-  public func reset(toCommit target: any Commit, mode: ResetMode) throws
+  public func reset(toCommit target: GitCommit, mode: ResetMode) throws
   {
-    guard let commit = target as? GitCommit
-    else { throw RepoError.unexpected }
-    
     let gitReset = mode.gitReset
-    let result = git_reset(gitRepo, commit.commit, gitReset, nil)
+    let result = git_reset(gitRepo, target.commit, gitReset, nil)
     
     try RepoError.throwIfGitError(result)
   }

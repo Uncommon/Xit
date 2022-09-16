@@ -5,7 +5,7 @@ final class HistoryTableController: NSViewController,
                                     RepositoryWindowViewController
 {
   typealias Repository = BasicRepository & FileChangesRepo &
-                         CommitStorage & FileContents
+                         CommitStorage<GitOID> & FileContents
   
   enum ColumnID
   {
@@ -29,7 +29,9 @@ final class HistoryTableController: NSViewController,
   
   func finishLoad(repository: any Repository)
   {
-    history.repository = repository
+    // TODO: make CommitHistory more general so we don't have to reference
+    // XTRepository here.
+    history.repository = repository as? XTRepository
 
     tableView.headerView?.menu = columnsMenu
     columnsMenu.delegate = self
@@ -132,7 +134,7 @@ final class HistoryTableController: NSViewController,
 
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = repository.commit(forOID: oid)
+          guard let commit = repository.anyCommit(forOID: oid)
           else { continue }
           
           history.appendCommit(commit)

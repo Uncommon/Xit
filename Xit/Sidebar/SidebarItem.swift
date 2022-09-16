@@ -193,11 +193,12 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   override func branchObject() -> (any Branch)?
   {
     return selection!.repository.localBranch(named: title)
+        as (any LocalBranch & AnyObject)?
   }
   
   override var remote: (any Remote)?
   {
-    guard let localBranch = branchObject() as? LocalBranch,
+    guard let localBranch = branchObject() as? (any LocalBranch),
           let remoteBranch = localBranch.trackingBranch,
           let repo = selection!.repository as? RemoteManagement
     else { return nil }
@@ -208,7 +209,8 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   func hasTrackingBranch() -> Bool
   {
     let branch = selection!.repository.localBranch(named: title)
-    
+                 as (any LocalBranch & AnyObject)?
+
     return branch?.trackingBranchName != nil
   }
 }
@@ -352,7 +354,7 @@ final class TagSidebarItem: SidebarItem
     
     // The cast to GitTag is unfortunate but hard to get around. It doesn't seem
     // to make sense to have a repository property in the Tag protocol.
-    if let commit = tag.commit,
+    if let commit = tag.commit as (any Commit)?,
        let xtTag = tag as? GitTag {
       self.selection = xtTag.repository.map {
         CommitSelection(repository: $0, commit: commit)
@@ -380,8 +382,8 @@ final class TagSidebarItem: SidebarItem
       name: "Mock",
       email: "mock@example.com",
       when: .init())
-    let targetOID: (any OID)? = nil
-    let commit: (any Commit)? = nil
+    let targetOID: StringOID? = nil
+    let commit: StringCommit? = nil
     let message: String? = nil
     let type: TagType = .annotated
     let isSigned: Bool = false

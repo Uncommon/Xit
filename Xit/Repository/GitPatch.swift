@@ -2,11 +2,13 @@ import Foundation
 
 public protocol Patch
 {
+  associatedtype Hunk: DiffHunk
+
   var hunkCount: Int { get }
   var addedLinesCount: Int { get }
   var deletedLinesCount: Int { get }
 
-  func hunk(at index: Int) -> (any DiffHunk)?
+  func hunk(at index: Int) -> Hunk?
 }
 
 
@@ -112,13 +114,13 @@ final class GitPatch: Patch
     return result
   }
 
-  func hunk(at index: Int) -> DiffHunk?
+  func hunk(at index: Int) -> GitDiffHunk?
   {
     guard let hunk: UnsafePointer<git_diff_hunk> = try? .from({
       git_patch_get_hunk(&$0, nil, patch, index)
     })
     else { return nil }
     
-    return GitDiffHunk(hunk: hunk.pointee, index: index, patch: self)
+    return .init(hunk: hunk.pointee, index: index, patch: self)
   }
 }

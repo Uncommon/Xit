@@ -1,10 +1,13 @@
 import Cocoa
 
 
-public protocol Commit: OIDObject, CustomStringConvertible
+public protocol Commit<ObjectIdentifier>: OIDObject, CustomStringConvertible
 {
+  associatedtype ObjectIdentifier
+  associatedtype Tree: Xit.Tree<ObjectIdentifier>
+
   // Strictly speaking these should probably all be the same OID type
-  var parentOIDs: [any OID] { get }
+  var parentOIDs: [ObjectIdentifier] { get }
   
   var message: String? { get }
   
@@ -18,11 +21,21 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var committerEmail: String? { get }
   var commitDate: Date { get }
   
-  var tree: (any Tree)? { get }
+  var tree: Tree? { get }
 
   var isSigned: Bool { get }
 
   func getTrailers() -> [(String, [String])]
+}
+
+extension Commit
+{
+  /// Because `tree` is a "generic" associated type the compiler wants an
+  /// explicit conversion to the unconstrained existential.
+  var anyTree: (any Xit.Tree)?
+  {
+    tree as (any Xit.Tree)?
+  }
 }
 
 extension Commit
@@ -58,10 +71,13 @@ extension Commit
 
 public final class GitCommit: Commit
 {
+  public typealias ObjectIdentifier = GitOID
+  public typealias Tree = GitTree
+
   let commit: OpaquePointer
 
-  public let id: any OID
-  public let parentOIDs: [any OID]
+  public let id: GitOID
+  public let parentOIDs: [GitOID]
   
   public var repository: OpaquePointer
   { git_commit_owner(commit) }
@@ -123,7 +139,7 @@ public final class GitCommit: Commit
   public var commitDate: Date
   { committerSig?.when ?? Date() }
 
-  public var tree: (any Tree)?
+  public var tree: GitTree?
   {
     guard let tree = try? OpaquePointer.from({
       git_commit_tree(&$0, commit)
@@ -227,9 +243,4 @@ public final class GitCommit: Commit
     }
     return result
   }
-}
-
-public func == (a: GitCommit, b: GitCommit) -> Bool
-{
-  return (a.id as! GitOID) == (b.id as! GitOID)
 }

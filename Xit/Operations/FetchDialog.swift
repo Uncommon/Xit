@@ -8,7 +8,7 @@ struct FetchDialog: SheetDialog
 
   var acceptButtonTitle: UIString { .fetch }
 
-  let repository: Repository
+  let repository: any Repository
 
   func createModel() -> FetchPanel.Options?
   {
@@ -34,6 +34,7 @@ struct FetchDialog: SheetDialog
   {
     if let branchName = repository.currentBranch {
       let currentBranch = repository.localBranch(named: branchName)
+                          as (any LocalBranch)?
 
       if let trackingBranch = currentBranch?.trackingBranch {
         return trackingBranch.remoteName

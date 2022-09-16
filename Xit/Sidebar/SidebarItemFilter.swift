@@ -31,7 +31,8 @@ struct SidebarDateFilter: SidebarItemFilter
     switch item {
       
       case let branchItem as BranchSidebarItem:
-        guard let commit = branchItem.branchObject()?.targetCommit,
+        guard let branch = branchItem.branchObject(),
+              let commit = branch.targetCommit as (any Commit)?,
               let date = commit.authorDate
         else { return false }
       

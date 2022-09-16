@@ -2,11 +2,13 @@ import Foundation
 
 public protocol Config: AnyObject
 {
+  associatedtype Entry: ConfigEntry
+
   subscript(index: String) -> Bool? { get set }
   subscript(index: String) -> String? { get set }
   subscript(index: String) -> Int? { get set }
   
-  var entries: AnySequence<ConfigEntry> { get }
+  var entries: AnySequence<Entry> { get }
   
   func invalidate()
 }
@@ -97,7 +99,7 @@ class DictionaryConfig: Config
   subscript(index: String) -> Int?
   { get { store[index] as? Int } set { store[index] = newValue } }
 
-  var entries: AnySequence<ConfigEntry>
+  var entries: AnySequence<Entry>
   {
     .init(store.map { Entry(name: $0.key,
                             stringValue: $0.value as? String ?? "") })
@@ -170,6 +172,8 @@ extension Config
 
 final class GitConfig: Config
 {
+  typealias Entry = GitConfigEntry
+
   let config: OpaquePointer
   var snapshot: OpaquePointer?
   
@@ -354,7 +358,7 @@ final class GitConfig: Config
       }
     }
     
-    func next() -> (any ConfigEntry)?
+    func next() -> GitConfigEntry?
     {
       guard let iterator = self.iterator,
             let entry: UnsafeMutablePointer<git_config_entry> = try? .from({
@@ -367,8 +371,8 @@ final class GitConfig: Config
     }
   }
   
-  var entries: AnySequence<ConfigEntry>
-  { AnySequence<ConfigEntry> { EntryIterator(config: self.operativeConfig) } }
+  var entries: AnySequence<Entry>
+  { AnySequence<Entry> { EntryIterator(config: self.operativeConfig) } }
 }
 
 class GitConfigEntry: ConfigEntry

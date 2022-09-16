@@ -2,10 +2,12 @@ import Foundation
 
 public protocol Reference
 {
+  associatedtype ID: OID
+
   /// For a direct reference, the target OID
-  var targetOID: (any OID)? { get }
+  var targetOID: ID? { get }
   /// Peels a tag reference
-  var peeledTargetOID: (any OID)? { get }
+  var peeledTargetOID: ID? { get }
   /// For a symbolic reference, the name of the target
   var symbolicTargetName: String? { get }
   /// Type of reference: oid (direct) or symbolic
@@ -14,12 +16,12 @@ public protocol Reference
   var name: String { get }
   
   /// Peels a symbolic reference until a direct reference is reached
-  func resolve() -> (any Reference)?
+  func resolve() -> Self?
   /// Changes the ref to point to a different object
-  func setTarget(_ newOID: any OID, logMessage: String)
+  func setTarget(_ newOID: ID, logMessage: String)
 }
 
-final class GitReference: Reference
+public final class GitReference: Reference
 {
   private(set) var ref: OpaquePointer
   
@@ -71,20 +73,20 @@ final class GitReference: Reference
     return GitReference(reference: ref)
   }
   
-  public var targetOID: (any OID)?
+  public var targetOID: GitOID?
   {
     guard let oid = git_reference_target(ref)
     else { return nil }
     
-    return GitOID(oid: oid.pointee)
+    return .init(oid: oid.pointee)
   }
   
-  public var peeledTargetOID: (any OID)?
+  public var peeledTargetOID: GitOID?
   {
     guard let oid = git_reference_target_peel(ref)
     else { return nil }
     
-    return GitOID(oid: oid.pointee)
+    return .init(oid: oid.pointee)
   }
   
   public var symbolicTargetName: String?
@@ -108,7 +110,7 @@ final class GitReference: Reference
     return String(cString: name)
   }
   
-  public func resolve() -> (any Reference)?
+  public func resolve() -> GitReference?
   {
     guard let ref = try? OpaquePointer.from({
       git_reference_resolve(&$0, self.ref)
@@ -118,12 +120,12 @@ final class GitReference: Reference
     return GitReference(reference: ref)
   }
   
-  public func setTarget(_ newOID: any OID, logMessage: String)
+  public func setTarget(_ newOID: GitOID, logMessage: String)
   {
-    guard var gitOID = (newOID as? GitOID)?.oid,
-          let newRef = try? OpaquePointer.from({
-            git_reference_set_target(&$0, ref, &gitOID, logMessage)
-          })
+    var gitOID = newOID.oid
+    guard let newRef = try? OpaquePointer.from({
+      git_reference_set_target(&$0, ref, &gitOID, logMessage)
+    })
     else { return }
     
     ref = newRef

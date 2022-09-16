@@ -13,6 +13,13 @@ let XTPathsKey = "paths"
 
 public final class XTRepository: BasicRepository, RepoConfiguring
 {
+  public typealias ID = GitOID
+  public typealias LocalBranch = GitLocalBranch
+  public typealias RemoteBranch = GitRemoteBranch
+  public typealias Reference = GitReference
+  public typealias Tag = GitTag
+  public typealias Tree = GitTree
+
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
   let gitRunner: CLIRunner
@@ -48,8 +55,8 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   }
   var cachedIgnored = false
 
-  let diffCache = Cache<String, Diff>(maxSize: 50)
-  public let config: Config
+  let diffCache = Cache<String, any Diff>(maxSize: 50)
+  public let config: any Config
   
   var gitDirectoryPath: String
   {
@@ -251,12 +258,9 @@ extension XTRepository: WritingManagement
 
 extension XTRepository
 {  
-  func graphBetween(local: any OID, upstream: any OID) -> (ahead: Int,
-                                                           behind: Int)?
+  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
+                                                         behind: Int)?
   {
-    guard let local = local as? GitOID,
-          let upstream = upstream as? GitOID
-    else { return nil }
     var ahead = 0
     var behind = 0
     let graphResult = local.withUnsafeOID { localOID in
@@ -274,9 +278,9 @@ extension XTRepository
     }
   }
   
-  public func graphBetween(localBranch: any LocalBranch,
-                           upstreamBranch: any RemoteBranch) ->(ahead: Int,
-                                                                behind: Int)?
+  public func graphBetween(localBranch: LocalBranch,
+                           upstreamBranch: RemoteBranch)
+    ->(ahead: Int, behind: Int)?
   {
     if let localOID = localBranch.oid,
        let upstreamOID = upstreamBranch.oid {

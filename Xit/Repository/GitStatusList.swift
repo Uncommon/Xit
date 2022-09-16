@@ -20,7 +20,7 @@ final class GitStatusList: RandomAccessCollection
        let headCommit = repo.headCommit,
        let previousCommit = headCommit.parentOIDs.first
                                       .flatMap({ repo.commit(forOID: $0) }) {
-      gitOptions.baseline = (previousCommit.tree as? GitTree)?.tree
+      gitOptions.baseline = previousCommit.tree?.tree
     }
     
     guard let list = try? OpaquePointer.from({
@@ -55,6 +55,6 @@ struct GitStatusEntry: Sendable
   var status: StatusFlags
   { StatusFlags(rawValue: Int32(entry.status.rawValue)) }
   
-  var headToIndex: DiffDelta? { entry.head_to_index?.pointee }
-  var indexToWorkdir: DiffDelta? { entry.index_to_workdir?.pointee }
+  var headToIndex: (any DiffDelta)? { entry.head_to_index?.pointee }
+  var indexToWorkdir: (any DiffDelta)? { entry.index_to_workdir?.pointee }
 }

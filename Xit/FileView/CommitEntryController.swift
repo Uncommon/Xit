@@ -175,7 +175,7 @@ final class CommitEntryController: NSViewController,
   
   func updateAmendingCommitMessage()
   {
-    guard let headCommit = repo.headCommit,
+    guard let headCommit = repo.anyHeadCommit,
           let headMessage = headCommit.message?.trimmingWhitespace
     else { return }
 

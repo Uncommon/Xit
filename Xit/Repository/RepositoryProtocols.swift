@@ -56,58 +56,109 @@ public protocol Cloning
              publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
 }
 
-public protocol CommitStorage: AnyObject
+public protocol CommitStorage<ID>: AnyObject
 {
-  func oid(forSHA sha: String) -> (any OID)?
-  func commit(forSHA sha: String) -> (any Commit)?
-  func commit(forOID oid: any OID) -> (any Commit)?
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+
+  func oid(forSHA sha: String) -> ID?
+  func commit(forSHA sha: String) -> Commit?
+  func commit(forOID oid: ID) -> Commit?
   
   func commit(message: String, amend: Bool) throws
   
   func walker() -> (any RevWalk)?
 }
 
-public protocol CommitReferencing: AnyObject
+extension CommitStorage
 {
+  // Helper for dealing with a `CommitStorage` existential because the caller
+  // doesn't know the OID type.
+  func anyCommit(forOID oid: any OID) -> (any Xit.Commit)?
+  {
+    guard let oid = oid as? ID
+    else {
+      assertionFailure("wrong OID type")
+      return nil
+    }
+    return commit(forOID: oid) as (any Xit.Commit)?
+  }
+}
+
+/// Convenience function to unwrap a `CommitStorage` existential.
+func commit<R>(from repo: R,
+               forOID id: (any OID)?) -> (any Commit)? where R: CommitStorage
+{
+  guard let id = id as? R.ID
+  else { return nil }
+  return repo.commit(forOID: id)
+}
+
+public protocol CommitReferencing<ID>: AnyObject
+{
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+  associatedtype LocalBranch: Xit.LocalBranch
+      where LocalBranch.ObjectIdentifier == ID
+  associatedtype RemoteBranch: Xit.RemoteBranch
+      where LocalBranch.ObjectIdentifier == ID
+  associatedtype Reference: Xit.Reference
+      where Reference.ID == ID
+  associatedtype Tag: Xit.Tag<ID>
+  associatedtype Tree: Xit.Tree<ID>
+
   var headRef: String? { get }
   var currentBranch: String? { get }
   
-  func oid(forRef: String) -> (any OID)?
+  func oid(forRef: String) -> ID?
   func sha(forRef: String) -> String?
-  func tags() throws -> [any Tag]
-  func graphBetween(localBranch: any LocalBranch,
-                    upstreamBranch: any RemoteBranch) -> (ahead: Int,
-                                                          behind: Int)?
+  func tags() throws -> [Tag]
+  func graphBetween(localBranch: LocalBranch,
+                    upstreamBranch: RemoteBranch) -> (ahead: Int,
+                                                      behind: Int)?
   
-  func localBranch(named name: String) -> (any LocalBranch)?
-  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
+  func localBranch(named name: String) -> LocalBranch?
+  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   
-  func reference(named name: String) -> (any Reference)?
-  func refs(at oid: any OID) -> [String]
+  func reference(named name: String) -> Reference?
+  func refs(at oid: ID) -> [String]
   func allRefs() -> [String]
   
   func rebuildRefsIndex()
   
   /// Creates a commit with the given content.
   /// - returns: The OID of the new commit.
-  func createCommit(with tree: any Tree,
+  func createCommit(with tree: Tree,
                     message: String,
-                    parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
+                    parents: [Commit],
+                    updatingReference refName: String) throws -> ID
+}
+
+/// Convenience function to unwrap a `CommitReferencing` existential.
+func refs<R>(from repo: R, at oid: any OID) -> [String]
+  where R: CommitReferencing
+{
+  guard let oid = oid as? R.ID
+  else { return [] }
+  return repo.refs(at: oid)
 }
 
 extension CommitReferencing
 {
-  var headReference: (any Reference)? { reference(named: "HEAD") }
+  var headReference: Reference? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
-  var headOID: (any OID)? { headRef.flatMap { self.oid(forRef: $0) } }
+  var headOID: ID? { headRef.flatMap { self.oid(forRef: $0) } }
 }
 
 extension CommitReferencing where Self: CommitStorage
 {
-  var headCommit: (any Commit)? { headOID.flatMap { commit(forOID: $0) } }
+  var headCommit: Commit? { headOID.flatMap { commit(forOID: $0) } }
+
+  var anyHeadCommit: (any Xit.Commit)? { headCommit as (any Xit.Commit)? }
 }
 
+// This protocol does not have an associated OID type because changes()
+// needs to work with SpecialOID.
 public protocol FileStatusDetection: AnyObject
 {
   func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
@@ -236,7 +287,7 @@ public protocol RemoteManagement: AnyObject
 
 extension RemoteManagement
 {
-  func remotes() -> [Remote]
+  func remotes() -> [any Remote]
   {
     return remoteNames().compactMap { remote(named: $0) }
   }
@@ -333,22 +384,39 @@ public protocol SubmoduleManagement: AnyObject
 
 public protocol Branching: AnyObject
 {
+  associatedtype Commit: Xit.Commit
+  associatedtype LocalBranch: Xit.LocalBranch
+  typealias RemoteBranch = LocalBranch.RemoteBranch
+
   /// Returns the current checked out branch, or nil if in a detached head state
   var currentBranch: String? { get }
-  var localBranches: AnySequence<any LocalBranch> { get }
-  var remoteBranches: AnySequence<any RemoteBranch> { get }
-  
+  // TODO: Convert to `any Sequence<LocalBranch>` once the deployment target
+  // is changed to macOS 13.
+  var localBranches: AnySequence<any Xit.LocalBranch> { get }
+  var remoteBranches: AnySequence<any Xit.RemoteBranch> { get }
+
   /// Creates a branch at the given target ref
   func createBranch(named name: String,
-                    target: String) throws -> (any LocalBranch)?
+                    target: String) throws -> LocalBranch?
   func rename(branch: String, to: String) throws
-  func localBranch(named name: String) -> (any LocalBranch)?
-  func remoteBranch(named name: String) -> (any RemoteBranch)?
-  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
-  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
+  func localBranch(named name: String) -> LocalBranch?
+  func remoteBranch(named name: String) -> RemoteBranch?
+  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
+  func localTrackingBranch(forBranchRef branch: String) -> LocalBranch?
   
   /// Resets the current branch to the specified commit
-  func reset(toCommit target: any Commit, mode: ResetMode) throws
+  func reset(toCommit target: Commit, mode: ResetMode) throws
+}
+
+extension Branching
+{
+  func anyLocalBranch(tracking remoteBranch: any Xit.RemoteBranch)
+    -> (any Xit.LocalBranch)?
+  {
+    guard let remoteBranch = remoteBranch as? RemoteBranch
+    else { return nil }
+    return localBranch(tracking: remoteBranch) as (any Xit.LocalBranch)?
+  }
 }
 
 public protocol Merging: AnyObject

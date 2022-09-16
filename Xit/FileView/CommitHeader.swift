@@ -12,7 +12,7 @@ extension Font
 
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
-  weak var repository: CommitStorage?
+  weak var repository: (any CommitStorage)?
   var selectParent: ((any OID) -> Void)?
   
   var commit: (any Commit)?
@@ -26,7 +26,7 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
           commit: newValue,
           messageLookup: {
             [weak self] in
-            self?.repository?.commit(forOID: $0)?.messageSummary ?? ""
+            self?.repository?.anyCommit(forOID: $0)?.messageSummary ?? ""
           },
           selectParent: select)
     }
@@ -209,15 +209,15 @@ struct CommitHeader_Previews: PreviewProvider
 {
   struct PreviewCommit: Commit
   {
-    let parentOIDs: [any OID] = [§"A", §"B"]
+    let parentOIDs: [StringOID] = ["A", "B"]
     let message: String? = "Single line"
-    let tree: (any Tree)? = nil
-    let id: any OID = §"45a608978"
+    let tree: StringTree? = nil
+    let id: StringOID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
                                           when: Date())
-    
+
     let committerSig: Signature? = Signature(name: "Committer Person",
                                              email: "commit@example.com",
                                              when: Date())
@@ -232,10 +232,10 @@ struct CommitHeader_Previews: PreviewProvider
       ]
     }
   }
-  
-  static var parents: [StringOID: String] = ["A": "First parent",
-                                             "B": "Second parent"]
-  
+
+  static var parents = [§"A": "First parent",
+                        §"B": "Second parent"]
+
   static var previews: some View {
     CommitHeader(commit: PreviewCommit(),
                  messageLookup: { parents[$0 as! StringOID]! },

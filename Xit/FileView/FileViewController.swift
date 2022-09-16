@@ -330,7 +330,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   
   func refreshPreview()
   {
-    DispatchQueue.main.async {
+    Dispatch.DispatchQueue.main.async {
       self.loadSelectedPreview(force: true)
       self.previewController.refreshPreviewItem()
     }
@@ -366,7 +366,8 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     }
     showingStaged = newModel is StagedUnstagedSelection
     isCommitting = newModel is StagingSelection
-    if let commit = newModel.oidToSelect.flatMap({ repo?.commit(forOID: $0) }) {
+    if let repo = self.repo,
+       let commit = commit(from: repo, forOID: newModel.oidToSelect) {
       commitHeader.commit = commit
     }
     clearPreviews()
@@ -375,7 +376,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       self.ensureFileSelection()
     }
   }
-  
+
   func ensureFileSelection()
   {
     let outlineViw = mainFileList

@@ -176,7 +176,7 @@ class CommitRootTest: XTTest
     checkCommitTrees(deletedPath: TestFileName.file1.rawValue)
   }
   
-  func makeSubFolderCommits() throws -> (Commit, Commit)
+  func makeSubFolderCommits() throws -> (any Commit, any Commit)
   {
     let subFilePath = subDirName +/ subFileNameA
 

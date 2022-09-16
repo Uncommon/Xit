@@ -1,7 +1,10 @@
 import Cocoa
 
-public protocol Branch: AnyObject
+public protocol Branch<ObjectIdentifier>: AnyObject
 {
+  associatedtype ObjectIdentifier: OID
+  associatedtype Commit: Xit.Commit<ObjectIdentifier>
+
   /// The full reference name
   var name: String { get }
   /// Like `strippedName` but including the remote name for remote branches
@@ -11,9 +14,9 @@ public protocol Branch: AnyObject
   /// Text that is not part of the specific branch name
   var prefix: String { get }
   /// OID of the branch's head commit
-  var oid: (any OID)? { get }
+  var oid: ObjectIdentifier? { get }
   /// The branch's head commit
-  var targetCommit: (any Commit)? { get }
+  var targetCommit: Commit? { get }
   /// The remote this branch relates to. If a remote branch, then that remote.
   /// Otherwise the remote for the tracking branch, if any.
   var remoteName: String? { get }
@@ -28,8 +31,11 @@ extension Branch
 
 public protocol LocalBranch: Branch
 {
+  associatedtype RemoteBranch: Xit.RemoteBranch
+      where ObjectIdentifier == Self.ObjectIdentifier
+
   var trackingBranchName: String? { get set }
-  var trackingBranch: (any RemoteBranch)? { get }
+  var trackingBranch: RemoteBranch? { get }
 }
 
 extension LocalBranch
@@ -86,7 +92,7 @@ public class GitBranch
     return String(cString: name)
   }
   
-  public var oid: (any OID)?
+  public var oid: GitOID?
   {
     guard let oid = git_reference_target(branchRef)
     else { return nil }
@@ -95,7 +101,7 @@ public class GitBranch
   }
 
   var sha: String? { oid?.sha }
-  public var targetCommit: (any Commit)?
+  public var targetCommit: GitCommit?
   {
     guard let oid = oid,
           let repo = git_reference_owner(branchRef)
@@ -174,7 +180,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   /// Returns a branch object for this branch's remote tracking branch,
   /// or `nil` if no tracking branch is set or if it references a non-existent
   /// branch.
-  public var trackingBranch: (any RemoteBranch)?
+  public var trackingBranch: GitRemoteBranch?
   {
     guard let upstream = try? OpaquePointer.from({
       git_branch_upstream(&$0, branchRef)
@@ -193,7 +199,7 @@ public final class GitRemoteBranch: GitBranch, RemoteBranch
   public var remoteName: String?
   { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }
 
-  init?(repository: OpaquePointer, name: String, config: Config)
+  init?(repository: OpaquePointer, name: String, config: any Config)
   {
     guard let branch = GitBranch.lookUpBranch(
         name: name, repository: repository,
@@ -203,7 +209,7 @@ public final class GitRemoteBranch: GitBranch, RemoteBranch
     super.init(branch: branch, config: config)
   }
   
-  required public init(branch: OpaquePointer, config: Config)
+  required public init(branch: OpaquePointer, config: any Config)
   {
     super.init(branch: branch, config: config)
   }

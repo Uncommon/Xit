@@ -37,16 +37,8 @@ struct CommitConnection<ID: OID>: Equatable, Sendable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
-  return left.parentOID.equals(right.parentOID) &&
-         left.childOID.equals(right.childOID) &&
-         (left.colorIndex == right.colorIndex)
-}
-
-// Specific version: compare the binary OIDs
-func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
-{
-  return left.parentOID.equals(right.parentOID) &&
-         left.childOID.equals(right.childOID) &&
+  return left.parentOID == right.parentOID &&
+         left.childOID == right.childOID &&
          (left.colorIndex == right.colorIndex)
 }
 
@@ -67,8 +59,9 @@ final class CommitHistory<ID: OID & Hashable>
 {
   typealias Entry = CommitEntry
   typealias Connection = CommitConnection<ID>
+  typealias Repository = CommitStorage<ID>
 
-  weak var repository: (any CommitStorage)!
+  weak var repository: (any Repository)!
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
@@ -219,7 +212,7 @@ final class CommitHistory<ID: OID & Hashable>
     result.reserveCapacity(batchSize)
     for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.id as! ID
-      let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
+      let incomingIndex = connections.firstIndex { $0.parentOID == commitOID }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {
@@ -353,7 +346,7 @@ extension CommitHistory
       defer { results.append(result) }
       if let nextOID = result.entries.last?.commit.parentOIDs.first as? ID,
          commitLookup[nextOID] == nil,
-         let nextCommit = repository.commit(forOID: nextOID) {
+         let nextCommit = repository.anyCommit(forOID: nextOID) {
         startCommit = nextCommit
       }
       else {
@@ -391,7 +384,7 @@ extension CommitHistory
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
-      if let afterIndex = afterIndex ,
+      if let afterIndex = afterIndex,
          afterIndex < insertBeforeIndex {
         #if DEBUGLOG
         print(" *** \(result) after \(afterCommit?.description ?? "")")
@@ -441,13 +434,13 @@ extension CommitHistory
     
     while let firstParentOID = commit.parentOIDs.first as? ID {
       for parentOID in commit.parentOIDs.dropFirst() {
-        if let parentCommit = repository.commit(forOID: parentOID as! ID) {
+        if let parentCommit = repository.anyCommit(forOID: parentOID as! ID) {
           queue.append((parentCommit, commit))
         }
       }
       
       guard commitLookup[firstParentOID] == nil,
-            let parentCommit = repository.commit(forOID: firstParentOID)
+            let parentCommit = repository.anyCommit(forOID: firstParentOID)
       else { break }
 
       if commit.parentOIDs.count > 1 {

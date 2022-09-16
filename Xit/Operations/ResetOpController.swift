@@ -38,7 +38,7 @@ final class ResetOpController: OperationController
     else { return }
     
     tryRepoOperation {
-      try repository.reset(toCommit: self.targetCommit, mode: mode)
+      try self.reset(repo: repository, mode: mode)
       
       // This doesn't get automatically sent because the index may have only
       // changed relative to the workspace.
@@ -46,5 +46,13 @@ final class ResetOpController: OperationController
 
       self.ended()
     }
+  }
+
+  func reset<R: Branching>(repo: R, mode: ResetMode) throws
+  {
+    guard let commit = targetCommit as? R.Commit
+    else { throw RepoError.unexpected }
+
+    try repo.reset(toCommit: commit, mode: mode)
   }
 }

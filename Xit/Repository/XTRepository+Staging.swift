@@ -54,6 +54,7 @@ extension XTRepository: FileStatusDetection
   {
     guard oid != SpecialOID.staging
     else {
+      let parentOID = parentOID as? GitOID
       if let parentCommit = parentOID.flatMap({ commit(forOID: $0) }) {
         return Array(amendingChanges(parent: parentCommit))
       }
@@ -62,7 +63,8 @@ extension XTRepository: FileStatusDetection
       }
     }
     
-    guard let commit = self.commit(forOID: oid)
+    guard let oid = oid as? GitOID,
+          let commit = self.commit(forOID: oid)
     else { return [] }
     
     let parentOID = parentOID ?? commit.parentOIDs.first
@@ -128,7 +130,7 @@ extension XTRepository: FileStatusDetection
   // Re-implementation of git_status_file with a given head commit
   func fileStatus(_ path: String,
                   show: StatusShow = .indexAndWorkdir,
-                  baseCommit: (any Commit)?)
+                  baseCommit: (any Xit.Commit)?)
     -> (index: DeltaStatus, workspace: DeltaStatus)?
   {
     struct CallbackData: Sendable
@@ -138,7 +140,7 @@ extension XTRepository: FileStatusDetection
     }
     
     var options = git_status_options.defaultOptions()
-    let tree = baseCommit?.tree as? GitTree
+    let tree = (baseCommit as? GitCommit)?.tree
 
     options.show = git_status_show_t(UInt32(show.rawValue))
     options.flags = GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue |

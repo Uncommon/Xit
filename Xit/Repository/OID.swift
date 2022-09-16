@@ -1,13 +1,9 @@
 import Foundation
 
-public protocol OID: CustomDebugStringConvertible, Sendable
+public protocol OID: CustomDebugStringConvertible, Hashable, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }
-  
-  // Making OID Equatable would cause cascading requirements that it, and
-  // protocols that use it, only be used as a generic constraint.
-  func equals(_ other: (any OID)?) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
@@ -15,8 +11,6 @@ extension OID // CustomDebugStringConvertible
   public var debugDescription: String { sha }
 }
 
-// Don't explicitly conform to Hashable here because that constrains how the
-// protocol can be used.
 extension OID
 {
   public func hash(into hasher: inout Hasher)
@@ -24,6 +18,7 @@ extension OID
     sha.hash(into: &hasher)
   }
 
+  /// For use when it isn't statically known that two OID values are the same type
   public func equals(_ other: (any OID)?) -> Bool
   {
     return sha == other?.sha
@@ -47,13 +42,25 @@ func != (a: (any OID)?, b: (any OID)?) -> Bool
   return !(a == b)
 }
 
-public protocol OIDObject
+
+public protocol OIDObject: Hashable, Identifiable where ID: OID
 {
-  var id: any OID { get }
+}
+
+extension OIDObject // Hashable
+{
+  public func hash(into hasher: inout Hasher)
+  { id.hash(into: &hasher) }
+}
+
+extension OIDObject // Equatable
+{
+  public static func == (a: Self, b: Self) -> Bool
+  { a.id == b.id }
 }
 
 
-public struct GitOID: OID, Equatable
+public struct GitOID: OID
 {
   var oid: git_oid
   
@@ -113,14 +120,6 @@ public struct GitOID: OID, Equatable
 
   public var isZero: Bool
   { withUnsafeOID { git_oid_iszero($0) } == 1 }
-  
-  public func equals(_ other: any OID) -> Bool
-  {
-    guard let otherGitOID = other as? GitOID
-    else { return false }
-    
-    return self == otherGitOID
-  }
   
   func withUnsafeOID<T>(_ block: (UnsafePointer<git_oid>) throws -> T) rethrows
     -> T

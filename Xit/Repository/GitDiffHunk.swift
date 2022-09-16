@@ -2,12 +2,14 @@ import Foundation
 
 public protocol DiffHunk
 {
+  associatedtype Line: DiffLine
+
   var oldStart: Int32 { get }
   var oldLines: Int32 { get }
   var newStart: Int32 { get }
   var newLines: Int32 { get }
   
-  func enumerateLines(_ callback: (any DiffLine) -> Void)
+  func enumerateLines(_ callback: (Line) -> Void)
   func canApply(to lines: [String]) -> Bool
 }
 
@@ -103,7 +105,7 @@ struct GitDiffHunk: DiffHunk
   public var newStart: Int32 { hunk.new_start }
   public var newLines: Int32 { hunk.new_lines }
   
-  public func enumerateLines(_ callback: (any DiffLine) -> Void)
+  public func enumerateLines(_ callback: (git_diff_line) -> Void)
   {
     let lineCount = git_patch_num_lines_in_hunk(patch.patch, index)
     

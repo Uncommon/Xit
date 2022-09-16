@@ -1,6 +1,6 @@
 import Cocoa
 
-public enum RemoteConnectionDirection
+public enum RemoteConnectionDirection: Sendable
 {
   case push
   case fetch
@@ -32,12 +32,13 @@ extension RemoteConnectionDirection
 public protocol Remote: AnyObject
 {
   typealias PushProgressCallback = (PushTransferProgress) -> Bool
+  associatedtype RefSpec: Xit.RefSpec
   
   var name: String? { get }
   var urlString: String? { get }
   var pushURLString: String? { get }
   
-  var refSpecs: AnyCollection<any RefSpec> { get }
+  var refSpecs: AnyCollection<RefSpec> { get }
   
   func rename(_ name: String) throws
   func updateURLString(_ URLString: String?) throws
@@ -100,7 +101,7 @@ final class GitRemote: Remote
     return String(cString: url)
   }
   
-  var refSpecs: AnyCollection<any RefSpec>
+  var refSpecs: AnyCollection<GitRefSpec>
   { AnyCollection(RefSpecCollection(remote: self)) }
   
   init?(name: String, repository: OpaquePointer)
@@ -223,9 +224,9 @@ extension GitRemote
       return RefSpecIterator(remote: remote)
     }
     
-    subscript(position: Int) -> any RefSpec
+    subscript(position: Int) -> GitRefSpec
     {
-      return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, position))
+      return .init(refSpec: git_remote_get_refspec(remote.remote, position))
     }
     
     public var startIndex: Int { 0 }
@@ -248,7 +249,7 @@ extension GitRemote
       self.remote = remote
     }
     
-    mutating func next() -> (any RefSpec)?
+    mutating func next() -> GitRefSpec?
     {
       guard index < git_remote_refspec_count(remote.remote)
       else { return nil }
@@ -256,7 +257,7 @@ extension GitRemote
       defer {
         index += 1
       }
-      return GitRefSpec(refSpec: git_remote_get_refspec(remote.remote, index))
+      return .init(refSpec: git_remote_get_refspec(remote.remote, index))
     }
   }
 }

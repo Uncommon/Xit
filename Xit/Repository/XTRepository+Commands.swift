@@ -70,7 +70,7 @@ extension XTRepository: Workspace
   public func checkOut(refName: String) throws
   {
     guard let ref = reference(named: refName),
-          let oid = ref.targetOID as? GitOID
+          let oid = ref.targetOID
     else { throw RepoError.notFound }
     
     let target = try OpaquePointer.from {
@@ -102,7 +102,7 @@ extension XTRepository: Workspace
 
 extension XTRepository: Stashing
 {
-  public var stashes: AnyCollection<Stash>
+  public var stashes: AnyCollection<any Stash>
   { AnyCollection(StashCollection(repo: self)) }
   
   // TODO: Don't require the message parameter
@@ -177,7 +177,7 @@ extension XTRepository: Stashing
     }
   }
   
-  public func commitForStash(at index: UInt) -> (any Commit)?
+  public func commitForStash(at index: UInt) -> (any Xit.Commit)?
   {
     guard let stashLog = GitRefLog(repository: gitRepo, refName: "refs/stash"),
           index < stashLog.entryCount
@@ -202,7 +202,7 @@ extension XTRepository: RemoteManagement
     return strArray.compactMap { $0 }
   }
   
-  public func remote(named name: String) -> (any Remote)?
+  public func remote(named name: String) -> (any Xit.Remote)?
   {
     return GitRemote(name: name, repository: gitRepo)
   }

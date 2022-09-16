@@ -55,7 +55,7 @@ final class SideBarDataSource: NSObject
   var displayItemList: [SideBarGroupItem] = []
   var stagingItem: SidebarItem { model.stagingItem }
 
-  var repository: SidebarDataModel.Repository!
+  var repository: (any SidebarDataModel.Repository)!
   { model?.repository }
   
   func setAmending(_ amending: Bool)

@@ -1,12 +1,15 @@
 import Cocoa
 
-public protocol Tag
+public protocol Tag<ID>
 {
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+
   /// Tag name (without "refs/tags/")
   var name: String { get }
   var signature: Signature? { get }
-  var targetOID: (any OID)? { get }
-  var commit: (any Commit)? { get }
+  var targetOID: ID? { get }
+  var commit: Commit? { get }
   /// Tag message; will be nil for lightweight tags.
   var message: String? { get }
   var type: TagType { get }
@@ -34,9 +37,9 @@ public final class GitTag: Tag
     else { return nil }
     return Signature(gitSignature: sig.pointee)
   }
-  public lazy var targetOID: (any OID)? = self.calculateOID()
+  public lazy var targetOID: GitOID? = self.calculateOID()
   public lazy var message: String? = self.calculateMessage()
-  public var commit: (any Commit)?
+  public var commit: GitCommit?
   { targetOID.flatMap { repository?.commit(forOID: $0) } }
   public var type: TagType
   { tag == nil ? .lightweight : .annotated }
@@ -91,7 +94,7 @@ public final class GitTag: Tag
     return tag.flatMap { String(cString: git_tag_message($0)) }
   }
   
-  func calculateOID() -> (any OID)?
+  func calculateOID() -> GitOID?
   {
     if let tag = self.tag {
       return GitOID(oid: git_tag_target_id(tag).pointee)

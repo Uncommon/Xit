@@ -1,11 +1,14 @@
 import Cocoa
 
-public protocol Stash: AnyObject
+public protocol Stash<ID>: AnyObject
 {
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+
   var message: String? { get }
-  var mainCommit: (any Commit)? { get }
-  var indexCommit: (any Commit)? { get }
-  var untrackedCommit: (any Commit)? { get }
+  var mainCommit: Commit? { get }
+  var indexCommit: Commit? { get }
+  var untrackedCommit: Commit? { get }
   
   func indexChanges() -> [FileChange]
   func workspaceChanges() -> [FileChange]
@@ -13,15 +16,25 @@ public protocol Stash: AnyObject
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
 }
 
+extension Stash
+{
+  var anyMainCommit: (any Xit.Commit)? { mainCommit as (any Xit.Commit)? }
+  var anyIndexCommit: (any Xit.Commit)? { indexCommit as (any Xit.Commit)? }
+  var anyUntrackedCommit: (any Xit.Commit)?
+  { untrackedCommit as (any Xit.Commit)? }
+}
+
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
-  typealias Repo = CommitStorage & FileContents & FileStatusDetection & Stashing
+  typealias Repo = CommitStorage<ID> & FileContents &
+                   FileStatusDetection & Stashing
+  public typealias ID = GitOID
   
   unowned var repo: any Repo
   public var message: String?
-  public var mainCommit: (any Commit)?
-  public var indexCommit, untrackedCommit: (any Commit)?
+  public private(set) var mainCommit: GitCommit?
+  public private(set) var indexCommit, untrackedCommit: GitCommit?
   private var cachedIndexChanges, cachedWorkspaceChanges: [FileChange]?
 
   init(repo: any Repo, index: UInt, message: String?)
@@ -29,12 +42,16 @@ public final class GitStash: Stash
     self.repo = repo
     self.message = message
     
-    if let mainCommit = repo.commitForStash(at: index) {
+    if let mainCommit = repo.commitForStash(at: index) as? GitCommit {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
         self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
+                           as (any Xit.Commit)?
+                           as? GitCommit
         if mainCommit.parentOIDs.count > 2 {
           self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
+                                 as (any Xit.Commit)?
+                                 as? GitCommit
         }
       }
     }
@@ -75,7 +92,7 @@ public final class GitStash: Stash
 
   func headBlobForPath(_ path: String) -> (any Blob)?
   {
-    guard let mainCommit = self.mainCommit as? GitCommit,
+    guard let mainCommit = self.mainCommit,
           let parentOID = mainCommit.parentOIDs.first,
           let parent = GitCommit(oid: parentOID,
                                  repository: mainCommit.repository),
@@ -87,7 +104,7 @@ public final class GitStash: Stash
 
   public func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit as? GitCommit
+    guard let indexCommit = self.indexCommit
     else { return nil }
     guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
@@ -103,19 +120,19 @@ public final class GitStash: Stash
 
   public func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
-    guard let indexCommit = self.indexCommit as? GitCommit
+    guard let indexCommit = self.indexCommit
     else { return nil }
 
     var indexBlob: (any Blob)?
     
-    if let indexEntry = indexCommit.tree!.entry(path: path) {
+    if let indexEntry = indexCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
       indexBlob = indexEntry.object as? Blob
     }
     
-    if let untrackedCommit = self.untrackedCommit as? GitCommit,
+    if let untrackedCommit = self.untrackedCommit,
        let untrackedEntry = untrackedCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary

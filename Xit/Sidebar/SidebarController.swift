@@ -191,8 +191,8 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
             byExtendingSelection: false)
       
       case let commitChanges as CommitSelection:
-        guard let ref = commitChanges.oidToSelect.map({ repo.refs(at: $0) })?
-                                                 .first
+        guard let oid = commitChanges.oidToSelect as? GitOID,
+              let ref = repo.refs(at: oid).first
         else { break }
       
         select(ref: ref)

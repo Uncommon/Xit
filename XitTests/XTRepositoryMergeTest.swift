@@ -162,7 +162,7 @@ class XTRepositoryMergeTest: XTTest
       XCTFail("No conflict detected")
     }
     catch RepoError.conflict {
-      let index = try XCTUnwrap(repository.index, "missing index")
+      let index = try XCTUnwrap(repository.index as? GitIndex, "missing index")
       
       XCTAssertTrue(index.hasConflicts)
       
