@@ -1,5 +1,4 @@
-// Date should be Sendable
-@preconcurrency import Foundation
+import Foundation
 
 public struct Signature: Equatable, Sendable
 {
