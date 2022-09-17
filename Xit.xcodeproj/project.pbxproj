@@ -249,6 +249,7 @@
 		C991732D1F91255200054154 /* GitPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C991732C1F91255200054154 /* GitPatch.swift */; };
 		C991904E20AE32150080687F /* IndexTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C991904D20AE32150080687F /* IndexTreeTest.swift */; };
 		C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */ = {isa = PBXBuildFile; fileRef = C994977C23107618004F06A5 /* XTRepository+Commits.swift */; };
+		C995E32D28D6086E00C66406 /* CleanList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C995E32C28D6086E00C66406 /* CleanList.swift */; };
 		C9999AC71E08712000DF3E11 /* HistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9999AC61E08712000DF3E11 /* HistoryTableView.swift */; };
 		C99A3C501F97A9E00037B431 /* CacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A3C4F1F97A9E00037B431 /* CacheTest.swift */; };
 		C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */; };
@@ -627,6 +628,7 @@
 		C991732C1F91255200054154 /* GitPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitPatch.swift; sourceTree = "<group>"; };
 		C991904D20AE32150080687F /* IndexTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexTreeTest.swift; sourceTree = "<group>"; };
 		C994977C23107618004F06A5 /* XTRepository+Commits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTRepository+Commits.swift"; sourceTree = "<group>"; };
+		C995E32C28D6086E00C66406 /* CleanList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanList.swift; sourceTree = "<group>"; };
 		C9999AC61E08712000DF3E11 /* HistoryTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableView.swift; sourceTree = "<group>"; };
 		C99A3C4F1F97A9E00037B431 /* CacheTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTest.swift; sourceTree = "<group>"; };
 		C99A6AEB1E48FA140030DC01 /* FileListDataSourceBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceBase.swift; sourceTree = "<group>"; };
@@ -1165,6 +1167,7 @@
 		C9790D0920EED4E10024D3EA /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				C995E32C28D6086E00C66406 /* CleanList.swift */,
 				C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */,
 				C9C30138269E2D8100EBBBC8 /* CleanPanelController.swift */,
 				C9C3013C269F771200EBBBC8 /* CleanOpController.swift */,
@@ -1653,6 +1656,7 @@
 				C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */,
 				89880ED120D02F9B007042F8 /* ClickableTextField.swift in Sources */,
 				C94A30241E311F3B00B4496B /* PreviewController.swift in Sources */,
+				C995E32D28D6086E00C66406 /* CleanList.swift in Sources */,
 				C92E30EF1D4FF358001985F7 /* CommitHistory.swift in Sources */,
 				89C927881D43B0460074F71A /* PullOpController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* FetchOpController.swift in Sources */,
