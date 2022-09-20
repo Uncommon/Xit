@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21223" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="21503.1" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21223"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21503.1"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -122,7 +122,7 @@
                                     <popUpButton key="view" verticalHuggingPriority="750" id="Fas-Ux-hUh">
                                         <rect key="frame" x="0.0" y="14" width="83" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="branchTemplate" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
+                                        <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="scm.branch" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
                                             <menu key="menu" identifier="branchMenu" id="6I7-ip-dfh">
@@ -139,10 +139,7 @@
                                         </connections>
                                     </popUpButton>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="293D5F15-AAC0-4597-80FB-FF420A1A59DB" explicitItemIdentifier="NSToolbarSidebarTrackingSeparatorItemIdentifier" label="SBSplit" paletteLabel="SBSplit" tag="-1" bordered="YES" id="f20-3I-3ft">
-                                    <size key="minSize" width="12" height="25"/>
-                                    <size key="maxSize" width="12" height="25"/>
-                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="293D5F15-AAC0-4597-80FB-FF420A1A59DB" explicitItemIdentifier="NSToolbarSidebarTrackingSeparatorItemIdentifier" label="SBSplit" paletteLabel="SBSplit" tag="-1" bordered="YES" sizingBehavior="auto" id="f20-3I-3ft"/>
                                 <toolbarItem implicitItemIdentifier="290444F5-1543-4AF2-B8AE-51333F9B09BC" explicitItemIdentifier="xit.clean" label="Clean" paletteLabel="Clean" sizingBehavior="auto" id="SEm-mB-BJY">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="4Bj-H4-LRj">
@@ -600,7 +597,6 @@
         <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSGoRightTemplate" width="10" height="14"/>
         <image name="NSLeftFacingTriangleTemplate" width="10" height="14"/>
-        <image name="branchTemplate" width="14" height="16"/>
         <image name="buildSucceeded" width="14" height="14"/>
         <image name="checkmark.circle.fill" catalog="system" width="15" height="15"/>
         <image name="exclamationmark.triangle.fill" catalog="system" width="17" height="15"/>

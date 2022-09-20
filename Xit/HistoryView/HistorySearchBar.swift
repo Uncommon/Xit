@@ -43,7 +43,7 @@ struct HistorySearchBar: View
           Image(systemName: "chevron.down")
         }.accessibilityIdentifier(.Search.down)
       }.fixedSize().disabled(searchString.isEmpty)
-    }.padding()
+    }.padding([.horizontal])
   }
 }
 

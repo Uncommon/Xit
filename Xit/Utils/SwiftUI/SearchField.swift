@@ -21,6 +21,7 @@ struct SearchField: NSViewRepresentable
   {
     let field = NSSearchField()
 
+    field.translatesAutoresizingMaskIntoConstraints = false
     field.delegate = context.coordinator
     field.target = context.coordinator
     field.action = #selector(Coordinator.searchAction(_:))
