@@ -116,6 +116,12 @@ extension CleanList.Coordinator: NSTableViewDelegate
         return nil
     }
 
+    func tableView(_ tableView: NSTableView,
+                   typeSelectStringFor tableColumn: NSTableColumn?,
+                   row: Int) -> String?
+    {
+      data.filteredItems[row].path.lastPathComponent
+    }
   }
 
   func tableViewSelectionDidChange(_ notification: Notification)
