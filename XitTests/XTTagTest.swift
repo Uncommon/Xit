@@ -21,7 +21,7 @@ class XTTagTest: XTTest
   }
   
   // The message comes through with an extra newline at the end
-  func trimmedMessage(tag: Tag) -> String
+  func trimmedMessage(tag: any Tag) -> String
   {
     return (tag.message! as NSString)
            .trimmingCharacters(in: CharacterSet.newlines)
