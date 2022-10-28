@@ -60,6 +60,6 @@ extension GitBlob: Blob
 
 extension GitBlob: OIDObject
 {
-  public var id: any OID
+  public var id: GitOID
   { GitOID(oidPtr: git_blob_id(blob)) }
 }

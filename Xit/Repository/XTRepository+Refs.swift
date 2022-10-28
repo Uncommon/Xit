@@ -127,6 +127,7 @@ extension XTRepository: Branching
     guard let ref = RefName(rawValue: branch),
           case let .remoteBranch(remote, branch) = ref
     else { return nil }
+    let config = self.config as! GitConfig
     
     // Looping through all the branches can be expensive
     for entry in config.entries {

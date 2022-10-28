@@ -6,11 +6,6 @@ struct StringOID: OID, RawRepresentable
 
   var sha: String { rawValue }
   var isZero: Bool { sha.isEmpty }
-
-  func equals(_ other: (OID)?) -> Bool
-  {
-    sha == other?.sha
-  }
 }
 
 extension StringOID: Hashable

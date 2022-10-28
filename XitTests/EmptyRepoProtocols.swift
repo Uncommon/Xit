@@ -2,6 +2,9 @@ import Foundation
 @testable import Xit
 
 /// Empty implementations of all the repository protocols.
+/// For these types, "Empty" is used for sub-protocols with default
+/// implementations that do nothing. "Null" is for concrete types whose
+/// instances represent null or empty values.
 
 protocol EmptyBasicRepository: BasicRepository {}
 
@@ -39,16 +42,16 @@ class NullLocalBranch: LocalBranch
   var trackingBranch: (RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (OID)? { nil }
-  var targetCommit: (Commit)? { nil }
+  var oid: (any OID)? { nil }
+  var targetCommit: (any Commit)? { nil }
 }
 
 class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (OID)? { nil }
-  var targetCommit: (Commit)? { nil }
+  var oid: (any OID)? { nil }
+  var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }
 
@@ -94,20 +97,45 @@ extension EmptyCommitReferencing
                     message: String,
                     parents: [any Commit],
                     updatingReference refName: String) throws -> any OID
-  { StringOID("") }
+  { §"" }
 }
 
 class NullCommit: Commit
 {
-  var id: OID { StringOID("") }
-  var parentOIDs: [OID] { [] }
+  typealias ObjectIdentifier = StringOID
+  typealias Tree = NullTree
+
+  var id:  StringOID { §"" }
+  var parentOIDs: [StringOID] { [] }
   var message: String? { nil }
   var authorSig: Signature? { nil }
   var committerSig: Signature? { nil }
-  var tree: (Tree)? { nil }
+  var tree: NullTree? { nil }
   var isSigned: Bool { false }
 
   func getTrailers() -> [(String, [String])] { [] }
+}
+
+class NullTree: Tree
+{
+  typealias ObjectIdentifier = StringOID
+
+  struct Entry: TreeEntry
+  {
+    typealias ObjectIdentifier = StringOID
+
+    var id: StringOID { §"" }
+    var type: GitObjectType { .invalid }
+    var name: String { "" }
+    var object: (any OIDObject)? { nil }
+  }
+
+  var id: StringOID { §"" }
+  var count: Int { 0 }
+
+  func entry(named: String) -> Entry? { nil }
+  func entry(path: String) -> Entry? { nil }
+  func entry(at index: Int) -> Entry? { nil }
 }
 
 protocol EmptyFileStatusDetection: FileStatusDetection {}

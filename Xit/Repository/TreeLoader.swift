@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 /// Used by RepositorySelection classes for efficiently loading
 /// new trees over old ones
@@ -36,12 +37,12 @@ public struct TreeLoader
     }
     else {
       for index in 0..<tree.count {
-        guard let entry = tree.entry(at: index)
+        guard let entry = tree.anyEntry(at: index)
         else { continue }
         let entryPath = path.appending(pathComponent: entry.name)
         
         if entry.type == .tree {
-          guard let entryTree = entry.object as? Tree
+          guard let entryTree = entry.object as? (any Tree)
           else { continue }
           let oldNode = oldTree?.children?.first {
             (node) in

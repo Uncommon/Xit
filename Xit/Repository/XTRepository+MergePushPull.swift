@@ -313,12 +313,9 @@ extension XTRepository: Merging
   /// - returns: An `OpaquePointer` wrapping a `git_annotated_commit`
   func annotatedCommit(_ commit: GitCommit) throws -> OpaquePointer
   {
-    guard let oid = commit.id as? GitOID
-    else { throw RepoError.unexpected }
-    
     return try OpaquePointer.from {
       (annotated) in
-      oid.withUnsafeOID {
+      commit.id.withUnsafeOID {
         git_annotated_commit_lookup(&annotated, gitRepo, $0)
       }
     }

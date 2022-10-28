@@ -37,16 +37,8 @@ struct CommitConnection<ID: OID>: Equatable, Sendable
 
 func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
 {
-  return left.parentOID.equals(right.parentOID) &&
-         left.childOID.equals(right.childOID) &&
-         (left.colorIndex == right.colorIndex)
-}
-
-// Specific version: compare the binary OIDs
-func == (left: CommitConnection<GitOID>, right: CommitConnection<GitOID>) -> Bool
-{
-  return left.parentOID.equals(right.parentOID) &&
-         left.childOID.equals(right.childOID) &&
+  return left.parentOID == right.parentOID &&
+         left.childOID == right.childOID &&
          (left.colorIndex == right.colorIndex)
 }
 
@@ -219,7 +211,7 @@ final class CommitHistory<ID: OID & Hashable>
     result.reserveCapacity(batchSize)
     for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.id as! ID
-      let incomingIndex = connections.firstIndex { $0.parentOID.equals(commitOID) }
+      let incomingIndex = connections.firstIndex { $0.parentOID == commitOID }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {

@@ -54,11 +54,11 @@ class CommitHistoryTest: XCTestCase
   func makeHistory(_ commitData: [(StringOID, [StringOID])],
                    heads: [StringOID]? = nil) -> TestCommitHistory?
   {
-    let commits = commitData.map({
-      (arg) -> FakeCommit in
-      let (oid, parents) = arg
-      return .init(parentOIDs: parents, oid: oid)
-    })
+    let commits = commitData.map {
+      (arg) -> StringCommit in
+      let (id, parents) = arg
+      return .init(parentOIDs: parents, id: id)
+    }
     
     // Reverse the input to better test the ordering.
     repository = StringRepository(commits: commits.reversed())

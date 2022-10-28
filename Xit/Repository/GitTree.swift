@@ -1,37 +1,45 @@
 import Foundation
 
-public protocol Tree: OIDObject
+public protocol Tree<ObjectIdentifier>: OIDObject
 {
+  associatedtype ObjectIdentifier
+  associatedtype Entry: TreeEntry<ObjectIdentifier>
+
+  /// Number of entries in the tree.
   var count: Int { get }
-  
-  func entry(named: String) -> (any TreeEntry)?
-  func entry(path: String) -> (any TreeEntry)?
-  func entry(at index: Int) -> (any TreeEntry)?
+
+  /// Finds an entry with the given name.
+  func entry(named: String) -> Entry?
+  /// Finds a descendent item matching a relative path.
+  func entry(path: String) -> Entry?
+  /// Finds an entry by index.
+  func entry(at index: Int) -> Entry?
 }
 
-public protocol TreeEntry: OIDObject
+extension Tree
 {
+  func anyEntry(path: String) -> (any TreeEntry)?
+  { entry(path: path) as (any TreeEntry)? }
+  func anyEntry(at index: Int) -> (any TreeEntry)?
+  { entry(at: index) as (any TreeEntry)? }
+}
+
+public protocol TreeEntry<ObjectIdentifier>: OIDObject
+{
+  associatedtype ObjectIdentifier: OID
+
   var type: GitObjectType { get }
   var name: String { get }
+  /// The object referenced by the entry is not a specific type because it
+  /// could be a blob or a sub-tree.
   var object: (any OIDObject)? { get }
 }
 
 
-/// Used as a return value when an entry can't be returned for a given subscript
-struct NullEntry: TreeEntry
+public final class GitTree: Tree
 {
-  var id: any OID
-  { GitOID.zero() }
-  var type: GitObjectType
-  { .invalid }
-  var name: String
-  { "" }
-  var object: (any OIDObject)?
-  { nil }
-}
+  public typealias ObjectIdentifier = GitOID
 
-final class GitTree: Tree
-{
   struct EntryCollection: Collection
   {
     let tree: GitTree
@@ -44,32 +52,33 @@ final class GitTree: Tree
       return i + 1
     }
     
-    subscript(position: Int) -> any TreeEntry
+    subscript(position: Int) -> GitTreeEntry
     {
       guard let result = git_tree_entry_byindex(tree.tree, position),
             let owner = git_tree_owner(tree.tree)
       else {
-        return NullEntry()
+        assertionFailure("can't get tree entry")
+        return .invalid
       }
       
-      return GitTreeEntry(entry: result, owner: owner, owned: false)
+      return .init(entry: result, owner: owner, owned: false)
     }
   }
   
   var entries: EntryCollection
-  { EntryCollection(tree: self) }
+  { .init(tree: self) }
   
   let tree: OpaquePointer
   
-  var id: any OID
+  public var id: GitOID
   {
     guard let result = git_tree_id(tree)
-    else { return GitOID.zero() }
+    else { return .zero() }
     
-    return GitOID(oidPtr: result)
+    return .init(oidPtr: result)
   }
   
-  var count: Int
+  public var count: Int
   { git_tree_entrycount(tree) }
   
   init(tree: OpaquePointer)
@@ -93,7 +102,7 @@ final class GitTree: Tree
     git_tree_free(tree)
   }
   
-  func entry(named name: String) -> (any TreeEntry)?
+  public func entry(named name: String) -> GitTreeEntry?
   {
     guard let result = git_tree_entry_byname(tree, name),
           let owner = git_tree_owner(tree)
@@ -102,7 +111,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: result, owner: owner, owned: false)
   }
   
-  func entry(path: String) -> (any TreeEntry)?
+  public func entry(path: String) -> GitTreeEntry?
   {
     guard let owner = git_tree_owner(tree),
           let entry = try? OpaquePointer.from({
@@ -113,7 +122,7 @@ final class GitTree: Tree
     return GitTreeEntry(entry: entry, owner: owner, owned: true)
   }
   
-  func entry(at index: Int) -> (any TreeEntry)?
+  public func entry(at index: Int) -> GitTreeEntry?
   {
     switch index {
       case 0..<count:
@@ -124,35 +133,39 @@ final class GitTree: Tree
   }
 }
 
-class GitTreeEntry: TreeEntry
+public final class GitTreeEntry: TreeEntry
 {
-  let entry: OpaquePointer
-  let owner: OpaquePointer
+  public typealias ObjectIdentifier = GitOID
+
+  let entry: OpaquePointer!
+  let owner: OpaquePointer!
   let owned: Bool
-  
-  var id: any OID
+
+  static var invalid: Self { .init() }
+
+  public var id: GitOID
   {
     guard let gitOID = git_tree_entry_id(entry)
-    else { return GitOID.zero() }
+    else { return .zero() }
     
-    return GitOID(oidPtr: gitOID)
+    return .init(oidPtr: gitOID)
   }
   
-  var type: GitObjectType
+  public var type: GitObjectType
   {
     let result = git_tree_entry_type(entry)
     
     return GitObjectType(rawValue: result.rawValue) ?? .invalid
   }
   
-  var name: String
+  public var name: String
   {
     let name = git_tree_entry_name(entry)
     
     return name.map { String(cString: $0) } ?? ""
   }
   
-  var object: (any OIDObject)?
+  public var object: (any OIDObject)?
   {
     guard let gitObject = try? OpaquePointer.from({
       git_tree_entry_to_object(&$0, owner, entry)
@@ -181,5 +194,12 @@ class GitTreeEntry: TreeEntry
     if owned {
       git_tree_entry_free(entry)
     }
+  }
+
+  private init()
+  {
+    self.entry = nil
+    self.owner = nil
+    self.owned = false
   }
 }

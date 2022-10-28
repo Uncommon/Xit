@@ -108,7 +108,7 @@ public final class GitStash: Stash
 
     var indexBlob: (any Blob)?
     
-    if let indexEntry = indexCommit.tree!.entry(path: path) {
+    if let indexEntry = indexCommit.tree?.entry(path: path) {
       if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
@@ -127,7 +127,7 @@ public final class GitStash: Stash
                                to: PatchMaker.SourceType(untrackedBlob),
                                path: path))
     }
-    if let mainCommit = self.mainCommit,
+    if let mainCommit = self.mainCommit as? GitCommit,
        let unstagedEntry = mainCommit.tree?.entry(path: path) {
       guard let unstagedBlob = unstagedEntry.object as? Blob
       else { return nil }
