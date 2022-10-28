@@ -27,8 +27,9 @@ class FakeRemote: Remote
   var urlString: String?
   var pushURLString: String? { urlString }
   
-  var refSpecs: AnyCollection<any RefSpec> { AnyCollection([any RefSpec]()) }
-  
+  var refSpecs: AnyCollection<FakeRefSpec>
+  { return AnyCollection([FakeRefSpec]()) }
+
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
   func updatePushURLString(_ URLString: String?) throws {}
@@ -41,12 +42,28 @@ class FakeRemote: Remote
   }
 }
 
+struct FakeRefSpec: RefSpec
+{
+  let source: String
+  let destination: String
+  let stringValue: String
+  let force: Bool
+  let direction: Xit.RemoteConnectionDirection
+
+  func sourceMatches(refName: String) -> Bool { false }
+  func destinationMatches(refName: String) -> Bool { false }
+  func transformToTarget(name: String) -> String? { nil }
+  func transformToSource(name: String) -> String? { nil }
+}
+
 class FakeStash: Stash
 {
+  typealias ID = StringOID
+  
   var message: String? = nil
-  var mainCommit: (any Commit)? = nil
-  var indexCommit: (any Commit)? = nil
-  var untrackedCommit: (any Commit)? = nil
+  var mainCommit: StringCommit? = nil
+  var indexCommit: StringCommit? = nil
+  var untrackedCommit: StringCommit? = nil
   
   func indexChanges() -> [FileChange] { [] }
   func workspaceChanges() -> [FileChange] { [] }

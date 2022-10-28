@@ -236,7 +236,7 @@ public protocol RemoteManagement: AnyObject
 
 extension RemoteManagement
 {
-  func remotes() -> [Remote]
+  func remotes() -> [any Remote]
   {
     return remoteNames().compactMap { remote(named: $0) }
   }
