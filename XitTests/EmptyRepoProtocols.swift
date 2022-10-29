@@ -60,8 +60,8 @@ protocol EmptyCommitStorage: CommitStorage {}
 extension EmptyCommitStorage
 {
   func oid(forSHA sha: String) -> (any OID)?  { nil }
-  func commit(forSHA sha: String) -> (any Commit)? { nil }
-  func commit(forOID oid: any OID) -> (any Commit)? { nil }
+  func commit(forSHA sha: String) -> NullCommit? { nil }
+  func commit(forOID oid: any OID) -> NullCommit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 

@@ -177,7 +177,7 @@ extension XTRepository: Stashing
     }
   }
   
-  public func commitForStash(at index: UInt) -> (any Commit)?
+  public func commitForStash(at index: UInt) -> (any Xit.Commit)?
   {
     guard let stashLog = GitRefLog(repository: gitRepo, refName: "refs/stash"),
           index < stashLog.entryCount

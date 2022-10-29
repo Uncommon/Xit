@@ -75,16 +75,16 @@ extension FakeRepo: EmptyBranching
 
 extension FakeRepo: EmptyCommitStorage
 {
-  func oid(forSHA sha: String) -> (any OID)? { StringOID(rawValue: sha) }
+  func oid(forSHA sha: String) -> StringOID? { StringOID(rawValue: sha) }
   
-  func commit(forSHA sha: String) -> (any Commit)?
+  func commit(forSHA sha: String) -> StringCommit?
   {
-    return commits[StringOID(rawValue: sha)]
+    commits[StringOID(rawValue: sha)]
   }
   
-  func commit(forOID oid: any OID) -> (any Commit)?
+  func commit(forOID oid: StringOID) -> StringCommit?
   {
-    return (oid as? StringOID).flatMap { commits[$0] }
+    commits[oid]
   }
 }
 

@@ -6,12 +6,12 @@ protocol RepoAction
 {
   /// Executes the action in the context of the given repository. It may be an
   /// actual git operation, or a file operation within the repository.
-  func execute(in repository: FullRepository) throws
+  func execute(in repository: any FullRepository) throws
 }
 
 /// Executes the given list of actions in the given repository. This is the
 /// primary consumer of RepoActions.
-func execute(in repository: FullRepository,
+func execute(in repository: any FullRepository,
              @RepoActionBuilder actions: () -> [any RepoAction]) throws
 {
   for action in actions() {

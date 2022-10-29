@@ -130,7 +130,7 @@ final class SidebarDataModel
     
     for branch in localBranches {
       guard let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
+            let commit = repo.anyCommit(forOID: oid)
       else { continue }
       
       let name = branch.name.droppingPrefix("refs/heads/")
@@ -150,7 +150,7 @@ final class SidebarDataModel
                                                     branch.remoteName }),
             let remoteName = branch.remoteName,
             let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
+            let commit = repo.anyCommit(forOID: oid)
       else { continue }
       let name = branch.name.droppingPrefix("refs/remotes/\(remote.title)/")
       let selection = CommitSelection(repository: repo, commit: commit)

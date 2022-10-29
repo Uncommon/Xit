@@ -17,10 +17,9 @@ final class GitStatusList: RandomAccessCollection
     gitOptions.show = git_status_show_t(rawValue: UInt32(show.rawValue))
     gitOptions.flags = UInt32(options.rawValue)
     if options.contains(.amending),
-       let headCommit = repo.headCommit as? GitCommit,
+       let headCommit = repo.headCommit,
        let previousCommit = headCommit.parentOIDs.first
-                                      .flatMap({ repo.commit(forOID: $0) })
-                            as? GitCommit {
+                                      .flatMap({ repo.commit(forOID: $0) }) {
       gitOptions.baseline = previousCommit.tree?.tree
     }
     

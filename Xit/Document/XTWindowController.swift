@@ -208,7 +208,8 @@ final class XTWindowController: NSWindowController,
   func select(oid: any OID)
   {
     guard let repo = repoDocument?.repository,
-          let commit = repo.commit(forOID: oid)
+          let gitOID = oid as? GitOID,
+          let commit = repo.commit(forOID: gitOID)
     else { return }
   
     selection = CommitSelection(repository: repo, commit: commit)

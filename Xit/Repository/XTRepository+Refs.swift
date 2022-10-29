@@ -153,7 +153,7 @@ extension XTRepository: Branching
     return nil
   }
   
-  public func reset(toCommit target: any Commit, mode: ResetMode) throws
+  public func reset(toCommit target: any Xit.Commit, mode: ResetMode) throws
   {
     guard let commit = target as? GitCommit
     else { throw RepoError.unexpected }

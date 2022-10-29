@@ -132,7 +132,7 @@ final class HistoryTableController: NSViewController,
 
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = repository.commit(forOID: oid)
+          guard let commit = repository.anyCommit(forOID: oid)
           else { continue }
           
           history.appendCommit(commit)

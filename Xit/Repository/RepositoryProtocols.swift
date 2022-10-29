@@ -56,16 +56,35 @@ public protocol Cloning
              publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
 }
 
-public protocol CommitStorage: AnyObject
+public protocol CommitStorage<ID>: AnyObject
 {
-  func oid(forSHA sha: String) -> (any OID)?
-  func commit(forSHA sha: String) -> (any Commit)?
-  func commit(forOID oid: any OID) -> (any Commit)?
-  
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+
+  func oid(forSHA sha: String) -> ID?
+  func commit(forSHA sha: String) -> Commit?
+  func commit(forOID oid: ID) -> Commit?
+
   func commit(message: String, amend: Bool) throws
   
   func walker() -> (any RevWalk)?
 }
+
+extension CommitStorage
+{
+  // Helper for dealing with a `CommitStorage` existential because the caller
+  // doesn't know the OID type.
+  func anyCommit(forOID oid: any OID) -> (any Xit.Commit)?
+  {
+    guard let oid = oid as? ID
+    else {
+      assertionFailure("wrong OID type")
+      return nil
+    }
+    return commit(forOID: oid) as (any Xit.Commit)?
+  }
+}
+
 
 public protocol CommitReferencing: AnyObject
 {
@@ -105,7 +124,7 @@ extension CommitReferencing
 
 extension CommitReferencing where Self: CommitStorage
 {
-  var headCommit: (any Commit)? { headOID.flatMap { commit(forOID: $0) } }
+  var headCommit: Commit? { (headOID as? ID).flatMap { commit(forOID: $0) } }
 }
 
 public protocol FileStatusDetection: AnyObject

@@ -2,17 +2,17 @@ import Foundation
 
 extension XTRepository: CommitStorage
 {
-  public func oid(forSHA sha: String) -> (any OID)?
+  public func oid(forSHA sha: String) -> GitOID?
   {
     return GitOID(sha: sha)
   }
   
-  public func commit(forSHA sha: String) -> (any Commit)?
+  public func commit(forSHA sha: String) -> GitCommit?
   {
     return GitCommit(sha: sha, repository: gitRepo)
   }
   
-  public func commit(forOID oid: any OID) -> (any Commit)?
+  public func commit(forOID oid: GitOID) -> GitCommit?
   {
     return GitCommit(oid: oid, repository: gitRepo)
   }
@@ -175,7 +175,7 @@ extension XTRepository: CommitReferencing
   }
   
   public func createCommit(with tree: any Tree, message: String,
-                           parents: [any Commit],
+                           parents: [any Xit.Commit],
                            updatingReference refName: String) throws -> any OID
   {
     var commitPtrs: [OpaquePointer?] =
