@@ -231,7 +231,9 @@ extension XTRepository: SubmoduleManagement
 {
   public func addSubmodule(path: String, url: String) throws
   {
-    _ = try executeGit(args: ["submodule", "add", "-f", url, path],
+    // By default, git doesn't allow adding submodules using file:// urls
+    _ = try executeGit(args: ["-c", "protocol.file.allow=always",
+                              "submodule", "add", "-f", url, path],
                        writes: true)
     /* still needs clone
     _ = try performWriting {
