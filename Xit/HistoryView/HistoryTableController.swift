@@ -29,7 +29,8 @@ final class HistoryTableController: NSViewController,
   
   func finishLoad(repository: any Repository)
   {
-    history.repository = repository
+    // TODO: use GitCommitHistory.Repository after targeting macOS 13
+    history.repository = repository as! XTRepository
 
     tableView.headerView?.menu = columnsMenu
     columnsMenu.delegate = self
@@ -132,7 +133,7 @@ final class HistoryTableController: NSViewController,
 
       history.withSync {
         while let oid = walker.next() {
-          guard let commit = repository.anyCommit(forOID: oid)
+          guard let commit = repository.anyCommit(forOID: oid) as? GitCommit
           else { continue }
           
           history.appendCommit(commit)

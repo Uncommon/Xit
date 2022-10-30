@@ -6,9 +6,9 @@ struct HistoryLine: Sendable
   let colorIndex: UInt
 }
 
-final class CommitEntry: CustomStringConvertible
+final class CommitEntry<C: Commit>: CustomStringConvertible
 {
-  let commit: any Commit
+  let commit: C
   fileprivate(set) var lines = [HistoryLine]()
   var dotOffset: UInt?
   var dotColorIndex: UInt?
@@ -16,15 +16,18 @@ final class CommitEntry: CustomStringConvertible
   public var description: String
   { commit.description }
   
-  init(commit: any Commit)
+  init(commit: C)
   {
     self.commit = commit
   }
 }
 
-func == (left: CommitEntry, right: CommitEntry) -> Bool
+extension CommitEntry: Equatable
 {
-  return left.commit.id == right.commit.id
+  static func == (left: CommitEntry<C>, right: CommitEntry<C>) -> Bool
+  {
+    left.commit.id == right.commit.id
+  }
 }
 
 
@@ -52,15 +55,17 @@ extension String
 }
 
 
-typealias GitCommitHistory = CommitHistory<GitOID>
+typealias GitCommitHistory = CommitHistory<GitCommit>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-final class CommitHistory<ID: OID & Hashable>
+final class CommitHistory<C: Commit>
 {
-  typealias Entry = CommitEntry
+  typealias ID = C.ObjectIdentifier
+  typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection<ID>
+  typealias Repository = CommitStorage<ID>
 
-  weak var repository: (any CommitStorage)!
+  weak var repository: (any Repository)!
   
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
@@ -72,7 +77,7 @@ final class CommitHistory<ID: OID & Hashable>
   var postProgress: ((Int, Int) -> Void)?
   
   /// Manually appends a commit.
-  func appendCommit(_ commit: any Commit)
+  func appendCommit(_ commit: C)
   {
     entries.append(Entry(commit: commit))
   }
@@ -211,11 +216,13 @@ final class CommitHistory<ID: OID & Hashable>
     result.reserveCapacity(batchSize)
     for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.id as! ID
-      let incomingIndex = connections.firstIndex { $0.parentOID == commitOID }
+      let incomingIndex = connections.firstIndex {
+        $0.parentOID.equalsSame(commitOID)
+      }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
       if let firstParentOID = entry.commit.parentOIDs.first {
-        let newConnection = Connection(parentOID: firstParentOID as! ID,
+        let newConnection = Connection(parentOID: firstParentOID,
                                        childOID: commitOID,
                                        colorIndex: incomingColor ??
                                                    nextColorIndex++)
@@ -227,13 +234,15 @@ final class CommitHistory<ID: OID & Hashable>
       
       // Add new connections for the commit's parents
       for parentOID in entry.commit.parentOIDs.dropFirst() {
-        connections.append(Connection(parentOID: parentOID as! ID,
+        connections.append(Connection(parentOID: parentOID,
                                       childOID: commitOID,
                                       colorIndex: nextColorIndex++))
       }
       
       result.append(connections)
-      connections = connections.filter { $0.parentOID != commitOID }
+      connections = connections.filter {
+        !$0.parentOID.equalsSame(commitOID)
+      }
     }
     
     return (result, connections)
@@ -247,19 +256,21 @@ final class CommitHistory<ID: OID & Hashable>
     return result == NSNotFound ? nil : UInt(result)
   }
   
-  func generateLines(entry: CommitEntry,
+  func generateLines(entry: Entry,
                      connections: [CommitConnection<ID>])
   {
+    // Seems like this cast shouldn't be necessary
+    let entryID = entry.commit.id as! ID
     var nextChildIndex: UInt = 0
     let parentOutlets = connections.compactMap {
-        ($0.parentOID.equals(entry.commit.id)) ? nil : $0.parentOID }.unique()
+        ($0.parentOID.equalsSame(entryID)) ? nil : $0.parentOID }.unique()
     var parentLines: [ID: (childIndex: UInt,
                            colorIndex: UInt)] = [:]
     var generatedLines: [HistoryLine] = []
-    
+
     for connection in connections {
-      let commitIsParent = connection.parentOID.equals(entry.commit.id)
-      let commitIsChild = connection.childOID.equals(entry.commit.id)
+      let commitIsParent = connection.parentOID.equalsSame(entryID)
+      let commitIsChild = connection.childOID.equalsSame(entryID)
       let parentIndexInt = commitIsParent
               ? nil : parentOutlets.firstIndex(of: connection.parentOID)
       let parentIndex = parentIndexInt.map { UInt($0) }
@@ -304,12 +315,12 @@ final class CommitHistory<ID: OID & Hashable>
 
 
 /// The result of processing a segment of a branch.
-struct BranchResult
+struct BranchResult<C: Commit>
 {
   /// The commit entries collected for this segment.
-  let entries: [CommitEntry]
+  let entries: [CommitEntry<C>]
   /// Other branches queued for processing.
-  let queue: [(commit: any Commit, after: any Commit)]
+  let queue: [(commit: C, after: C)]
 }
 
 extension BranchResult: CustomStringConvertible
@@ -330,22 +341,22 @@ extension BranchResult: CustomStringConvertible
 extension CommitHistory
 {
   /// Adds new commits to the list.
-  public func process(_ startCommit: any Commit, afterCommit: (any Commit)? = nil)
+  public func process(_ startCommit: C, afterCommit: C? = nil)
   {
     let startOID = startCommit.id as! ID
     guard commitLookup[startOID] == nil
     else { return }
     
-    var results = [BranchResult]()
+    var results = [BranchResult<C>]()
     var startCommit = startCommit
     
     repeat {
       let result = branchEntries(startCommit: startCommit)
       
       defer { results.append(result) }
-      if let nextOID = result.entries.last?.commit.parentOIDs.first as? ID,
+      if let nextOID = result.entries.last?.commit.parentOIDs.first,
          commitLookup[nextOID] == nil,
-         let nextCommit = repository.anyCommit(forOID: nextOID) {
+         let nextCommit = repository.anyCommit(forOID: nextOID) as? C {
         startCommit = nextCommit
       }
       else {
@@ -364,26 +375,30 @@ extension CommitHistory
     }
   }
   
-  private func processBranchResult(_ result: BranchResult,
-                                   after afterCommit: (any Commit)?)
+  private func processBranchResult(_ result: BranchResult<C>,
+                                   after afterCommit: C?)
   {
     for branchEntry in result.entries {
       commitLookup[branchEntry.commit.id as! ID] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap
-        { commit in entries.firstIndex { $0.commit.id.equals(commit.id) } }
+        { commit in entries.firstIndex { $0.commit.id.equalsSame(commit.id) } }
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
     
     if let insertBeforeIndex = lastParentOIDs.compactMap(
-           { oid in entries.firstIndex(where: { $0.commit.id.equals(oid) }) })
+           {
+             // Another seemingly unneeded cast
+             let oid = $0 as! C.ID
+             return entries.firstIndex(where: { $0.commit.id.equalsSame(oid) })
+           })
            .sorted().first {
       #if DEBUGLOG
       print(" ** \(insertBeforeIndex) before \(entries[insertBeforeIndex].commit)")
       #endif
-      if let afterIndex = afterIndex ,
+      if let afterIndex = afterIndex,
          afterIndex < insertBeforeIndex {
         #if DEBUGLOG
         print(" *** \(result) after \(afterCommit?.description ?? "")")
@@ -401,7 +416,7 @@ extension CommitHistory
     else if let lastSecondaryOID = result.queue.last?.after.id as? ID,
             let lastSecondaryEntry = commitLookup[lastSecondaryOID],
             let lastSecondaryIndex = entries.firstIndex(where:
-                { $0.commit.id.equals(lastSecondaryEntry.commit.id) }) {
+                { $0.commit.id.equalsSame(lastSecondaryEntry.commit.id) }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif
@@ -425,21 +440,21 @@ extension CommitHistory
   /// also a list of secondary parents that may start other branches. A branch
   /// segment ends when a commit has more than one parent, or its parent is
   /// already registered.
-  private func branchEntries(startCommit: any Commit) -> BranchResult
+  private func branchEntries(startCommit: C) -> BranchResult<C>
   {
     var commit = startCommit
     var result = [Entry(commit: startCommit)]
-    var queue = [(commit: any Commit, after: any Commit)]()
+    var queue = [(commit: C, after: C)]()
     
-    while let firstParentOID = commit.parentOIDs.first as? ID {
+    while let firstParentOID = commit.parentOIDs.first {
       for parentOID in commit.parentOIDs.dropFirst() {
-        if let parentCommit = repository.anyCommit(forOID: parentOID as! ID) {
+        if let parentCommit = repository.anyCommit(forOID: parentOID) as? C {
           queue.append((parentCommit, commit))
         }
       }
       
       guard commitLookup[firstParentOID] == nil,
-            let parentCommit = repository.anyCommit(forOID: firstParentOID)
+            let parentCommit = repository.anyCommit(forOID: firstParentOID) as? C
       else { break }
 
       if commit.parentOIDs.count > 1 {
@@ -447,11 +462,11 @@ extension CommitHistory
         break
       }
       
-      result.append(CommitEntry(commit: parentCommit))
+      result.append(CommitEntry<C>(commit: parentCommit))
       commit = parentCommit
     }
     
-    let branchResult = BranchResult(entries: result, queue: queue)
+    let branchResult = BranchResult<C>(entries: result, queue: queue)
     
 #if DEBUGLOG
     let before = entries.last?.commit.parentOIDs.map { $0.SHA.firstSix() }

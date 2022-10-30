@@ -3,7 +3,7 @@ import Cocoa
 /// Cell view that draws the graph lines next to the text.
 final class HistoryCellView: NSTableCellView
 {
-  private var entry: CommitEntry!
+  private var entry: CommitEntry<GitCommit>!
   private var currentBranch: String?
   private var refs = [String]()
 
@@ -92,7 +92,8 @@ final class HistoryCellView: NSTableCellView
     }
   }
 
-  func configure(entry: CommitEntry, repository: any Branching & CommitReferencing)
+  func configure(entry: CommitEntry<GitCommit>,
+                 repository: any Branching & CommitReferencing)
   {
     currentBranch = repository.currentBranch
     refs = repository.refs(at: entry.commit.id)

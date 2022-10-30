@@ -54,7 +54,8 @@ extension XTRepository: FileStatusDetection
   {
     guard oid != SpecialOID.staging
     else {
-      if let parentCommit = (parentOID as? GitOID).flatMap({ commit(forOID: $0) }) {
+      if let parentCommit = (parentOID as? GitOID)
+                            .flatMap({ commit(forOID: $0) }) {
         return Array(amendingChanges(parent: parentCommit))
       }
       else {
@@ -442,7 +443,7 @@ extension XTRepository: FileStaging
         else {
           throw RepoError.commitNotFound(sha: parentOID.sha)
         }
-        guard let entry = parentCommit.anyTree?.anyEntry(path: file),
+        guard let entry = parentCommit.tree?.entry(path: file),
               let blob = entry.object as? Blob
         else {
           throw RepoError.fileNotFound(path: file)

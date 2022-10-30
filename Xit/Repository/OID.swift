@@ -4,6 +4,11 @@ public protocol OID: CustomDebugStringConvertible, Hashable, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }
+  
+  /// This is a workaround for the compiler being too eager to use
+  /// `== (a: (any OID)?, b: (any OID)?)` when a more specific (and more
+  /// efficient) version is available.
+  func equalsSame(_ other: Self) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
@@ -22,6 +27,11 @@ extension OID
   public func equals(_ other: (any OID)?) -> Bool
   {
     return sha == other?.sha
+  }
+  
+  public func equalsSame(_ other: Self) -> Bool
+  {
+    return sha == other.sha
   }
 }
 
@@ -132,6 +142,17 @@ public struct GitOID: OID
   {
     try withUnsafeMutablePointer(to: &oid, block)
   }
+  
+  public func equalsSame(_ other: GitOID) -> Bool
+  {
+    withUnsafeOID {
+      (leftOID) in
+      other.withUnsafeOID {
+        (rightOID) in
+        git_oid_equal(leftOID, rightOID) != 0
+      }
+    }
+  }
 }
 
 extension GitOID: Hashable
@@ -159,3 +180,6 @@ public func == (left: GitOID, right: GitOID) -> Bool
     }
   }
 }
+
+public func != (left: GitOID, right: GitOID) -> Bool
+{ !(left == right) }

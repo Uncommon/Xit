@@ -45,7 +45,7 @@ class FileListDataSourceTest: XTTest
     let repoUIController = FakeRepoUIController(repository: repository)
     let ftds = FileTreeDataSource(useWorkspaceList: false)
     var expectedCount = 11
-    let history = CommitHistory<GitOID>()
+    let history = CommitHistory<GitCommit>()
     
     repoUIController.repoController = GitRepositoryController(repository: repository)
     history.repository = repository

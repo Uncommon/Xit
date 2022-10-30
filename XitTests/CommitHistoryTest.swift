@@ -39,7 +39,7 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
 }
 
 
-typealias TestCommitHistory = CommitHistory<StringOID>
+typealias TestCommitHistory = CommitHistory<StringCommit>
 typealias StringConnection = CommitConnection<StringOID>
 
 class CommitHistoryTest: XCTestCase
@@ -180,14 +180,14 @@ class CommitHistoryTest: XCTestCase
       \-f---/\-c\
         \-e------b
   */
-  func testMerge2()
+  func testMerge2() throws
   {
     guard let history = makeHistory(
         [("a", ["d"]), ("b", ["e", "c"]), ("c", ["d"]), ("d", ["aa", "f"]),
          ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     else { return }
-    let repository = history.repository as! StringRepository
-    
+    let repository = try XCTUnwrap(self.repository)
+
     guard let commitA = repository.commit(forSHA: "a"),
           let commitB = repository.commit(forSHA: "b")
       else {
@@ -302,14 +302,14 @@ class CommitHistoryTest: XCTestCase
       \j-i-+-\e--+-/  /
            \g---/--c-/
   */
-  func testCrossMerge5()
+  func testCrossMerge5() throws
   {
     guard let history = makeHistory(
         [("a", ["b", "c"]), ("b", ["d", "e"]), ("c", ["aa"]), ("d", ["f", "aa"]),
          ("e", ["cc", "f"]), ("f", ["bb"]), ("aa", ["bb"]), ("bb", ["ee"]),
          ("cc", ["dd"]), ("dd", ["ee"]), ("ee", [])])
     else { return }
-    let repository = history.repository as! StringRepository
+    let repository = try XCTUnwrap(self.repository)
 
     guard let commitA = repository.commit(forSHA: "a"),
           let commitD = repository.commit(forSHA: "d"),
@@ -381,13 +381,13 @@ class CommitHistoryTest: XCTestCase
          \-e-/  \--
          \-------c-\-b
   */
-  func testMergedFork3()
+  func testMergedFork3() throws
   {
     guard let history = makeHistory(
         [("a", ["d"]), ("b", ["d", "c"]), ("d", ["f", "e"]),
          ("c", ["f"]), ("e", ["f"]), ("f", ["aa"]), ("aa", [])])
     else { return }
-    let repository = history.repository as! StringRepository
+    let repository = try XCTUnwrap(self.repository)
 
     guard let commitA = repository.commit(forSHA: "a"),
           let commitB = repository.commit(forSHA: "b"),

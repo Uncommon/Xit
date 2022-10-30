@@ -37,7 +37,7 @@ extension HistoryViewController
     }
   }
   
-  func match(entry: CommitEntry, index: Int, text: String,
+  func match(entry: CommitEntry<GitCommit>, index: Int, text: String,
              type: HistorySearchType)
     -> Bool
   {
