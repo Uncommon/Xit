@@ -52,10 +52,12 @@ enum PullRequestApproval
   case unknown
 }
 
+// swiftlint:disable let_var_whitespace
 extension PullRequestStatus: CustomStringConvertible
 { var description: String { String(describing: self) } }
 extension PullRequestApproval: CustomStringConvertible
 { var description: String { String(describing: self) } }
+// swiftlint:enable let_var_whitespace
 
 /// A service that is related to specific remote repositories
 protocol RemoteService

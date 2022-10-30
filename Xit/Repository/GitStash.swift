@@ -27,7 +27,8 @@ extension Stash
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
-  typealias Repo = CommitStorage<GitOID> & FileContents & FileStatusDetection & Stashing
+  typealias Repo = CommitStorage<GitOID> & FileContents & FileStatusDetection &
+                   Stashing
   public typealias ID = GitOID
   
   unowned var repo: any Repo

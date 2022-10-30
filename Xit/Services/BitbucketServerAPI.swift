@@ -1,5 +1,4 @@
-// UUID should be Sendable
-@preconcurrency import Foundation
+import Foundation
 @preconcurrency import Siesta
 
 enum BitbucketServer

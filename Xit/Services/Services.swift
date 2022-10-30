@@ -58,50 +58,50 @@ final class Services
     serviceMakers[.teamCity] = teamCityMaker
     serviceMakers[.bitbucketServer] = bbsMaker
 
-    #if false // #available(macOS 13, *) {
-      Task {
-        let center = NotificationCenter.default
+#if false // #available(macOS 13, *) {
+    Task {
+      let center = NotificationCenter.default
 
-        for note in await center.notifications(named: .authenticationStatusChanged) {
-          guard let service = note.object as? BasicAuthService
-          else { return }
-
-          if case .failed(let error) = service.authenticationStatus {
-            let serviceName = service.account.type.displayName.rawValue
-            let user = service.account.user
-
-            if await Self.shouldReauthenticate(
-                service: serviceName,
-                user: user,
-                error: error?.localizedDescription) {
-              service.attemptAuthentication()
-            }
-          }
-        }
-      }
-#else
-      NotificationCenter.default.addObserver(
-          forName: .authenticationStatusChanged,
-          object: nil,
-          queue: .main)
-      {
-        (notification) in
-        guard let service = notification.object as? BasicAuthService
+      for note in await center.notifications(named: .authenticationStatusChanged) {
+        guard let service = note.object as? BasicAuthService
         else { return }
 
         if case .failed(let error) = service.authenticationStatus {
           let serviceName = service.account.type.displayName.rawValue
           let user = service.account.user
 
-          Task {
-            if await Self.shouldReauthenticate(service: serviceName,
-                                               user: user,
-                                               error: error?.localizedDescription) {
-              service.attemptAuthentication()
-            }
+          if await Self.shouldReauthenticate(
+              service: serviceName,
+              user: user,
+              error: error?.localizedDescription) {
+            service.attemptAuthentication()
           }
         }
       }
+    }
+#else
+    NotificationCenter.default.addObserver(
+        forName: .authenticationStatusChanged,
+        object: nil,
+        queue: .main)
+    {
+      (notification) in
+      guard let service = notification.object as? BasicAuthService
+      else { return }
+
+      if case .failed(let error) = service.authenticationStatus {
+        let serviceName = service.account.type.displayName.rawValue
+        let user = service.account.user
+
+        Task {
+          if await Self.shouldReauthenticate(service: serviceName,
+                                             user: user,
+                                             error: error?.localizedDescription) {
+            service.attemptAuthentication()
+          }
+        }
+      }
+    }
 #endif
   }
 
