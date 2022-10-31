@@ -42,7 +42,7 @@ class NullLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (any OID)? { nil }
+  var oid: StringOID? { nil }
   var targetCommit: (any Commit)? { nil }
 }
 
@@ -50,7 +50,7 @@ class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (any OID)? { nil }
+  var oid: StringOID? { nil }
   var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }

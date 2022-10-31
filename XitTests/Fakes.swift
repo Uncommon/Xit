@@ -113,7 +113,7 @@ class FakeLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)?
   var name: String
   var shortName: String { strippedName }
-  var oid: (any OID)?
+  var oid: StringOID?
   var targetCommit: (any Commit)?
   
   init(name: String)
@@ -129,7 +129,7 @@ class FakeRemoteBranch: RemoteBranch
   var name: String
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
-  var oid: (any OID)?
+  var oid: StringOID?
   var targetCommit: (any Commit)?
   
   init(remoteName: String, name: String)
