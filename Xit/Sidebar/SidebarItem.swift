@@ -197,9 +197,9 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   
   override var remote: (any Remote)?
   {
-    guard let localBranch = branchObject() as? LocalBranch,
+    guard let localBranch = branchObject() as? any LocalBranch,
           let remoteBranch = localBranch.trackingBranch,
-          let repo = selection!.repository as? RemoteManagement
+          let repo = selection!.repository as? any RemoteManagement
     else { return nil }
     
     return remoteBranch.remoteName.flatMap { repo.remote(named: $0) }
@@ -224,7 +224,7 @@ final class RemoteBranchSidebarItem: BranchSidebarItem
 {
   var remoteName: String
   override var remote: (any Remote)?
-  { (selection!.repository as? RemoteManagement)?.remote(named: remoteName) }
+  { (selection!.repository as? any RemoteManagement)?.remote(named: remoteName) }
   override var refType: RefType { .remoteBranch }
   
   override var fullName: String { "\(remoteName)/\(title)" }

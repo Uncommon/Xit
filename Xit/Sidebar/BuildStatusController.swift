@@ -120,7 +120,7 @@ final class BuildStatusController: NSObject
   {
     guard let branchItem = item as? BranchSidebarItem,
           let refName = (branchItem as? RefSidebarItem)?.refName,
-          let localBranch = branchItem.branchObject() as? LocalBranch ??
+          let localBranch = branchItem.branchObject() as? any LocalBranch ??
                             model.repository?
                                  .localTrackingBranch(forBranchRef: refName)
     else { return nil }

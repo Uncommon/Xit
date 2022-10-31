@@ -63,7 +63,7 @@ final class BuildStatusViewController: NSViewController
     guard let api = self.api
     else { return }
     
-    let branchName = (branch is RemoteBranch)
+    let branchName = (branch is any RemoteBranch)
           ? RefPrefixes.heads + branch.strippedName
           : branch.name
     
@@ -112,8 +112,8 @@ final class BuildStatusViewController: NSViewController
   @IBAction
   func refresh(_ sender: Any)
   {
-    if let localBranch = branch as? LocalBranch ??
-                         (branch as? RemoteBranch).flatMap({
+    if let localBranch = branch as? any LocalBranch ??
+                         (branch as? any RemoteBranch).flatMap({
                             repository.localBranch(tracking: $0) }),
        let remoteName = branch.remoteName {
       setProgressVisible(true)

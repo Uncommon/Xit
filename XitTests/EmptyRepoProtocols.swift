@@ -39,7 +39,7 @@ extension EmptyBranching
 class NullLocalBranch: LocalBranch
 {
   var trackingBranchName: String? { get { nil } set {} }
-  var trackingBranch: (RemoteBranch)? { nil }
+  var trackingBranch: (any RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
   var oid: (any OID)? { nil }

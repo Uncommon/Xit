@@ -98,7 +98,7 @@ public final class GitStash: Stash
           let headEntry = parent.tree?.entry(path: path)
     else { return nil }
     
-    return headEntry.object as? Blob
+    return headEntry.object as? any Blob
   }
 
   public func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -108,7 +108,7 @@ public final class GitStash: Stash
     guard repo.isTextFile(path, context: .commit(indexCommit))
     else { return .binary }
     guard let indexEntry = indexCommit.tree?.entry(path: path),
-          let indexBlob = indexEntry.object as? Blob
+          let indexBlob = indexEntry.object as? any Blob
     else { return nil }
     let headBlob = self.headBlobForPath(path)
     
@@ -128,7 +128,7 @@ public final class GitStash: Stash
       if !repo.isTextFile(path, context: .commit(indexCommit)) {
         return .binary
       }
-      indexBlob = indexEntry.object as? Blob
+      indexBlob = indexEntry.object as? any Blob
     }
     
     if let untrackedCommit = self.untrackedCommit,
@@ -136,7 +136,7 @@ public final class GitStash: Stash
       if !repo.isTextFile(path, context: .commit(untrackedCommit)) {
         return .binary
       }
-      guard let untrackedBlob = untrackedEntry.object as? Blob
+      guard let untrackedBlob = untrackedEntry.object as? any Blob
       else { return nil }
       
       return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),
@@ -145,7 +145,7 @@ public final class GitStash: Stash
     }
     if let mainCommit = self.mainCommit,
        let unstagedEntry = mainCommit.tree?.entry(path: path) {
-      guard let unstagedBlob = unstagedEntry.object as? Blob
+      guard let unstagedBlob = unstagedEntry.object as? any Blob
       else { return nil }
       
       return .diff(PatchMaker(from: PatchMaker.SourceType(indexBlob),

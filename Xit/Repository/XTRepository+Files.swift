@@ -43,7 +43,7 @@ extension XTRepository: FileContents
     switch context {
       case .commit(let commit):
         if let entry = (commit as? GitCommit)?.tree?.entry(path: path),
-           let blob = entry.object as? Blob {
+           let blob = entry.object as? any Blob {
           return !blob.isBinary
         }
       case .index:
@@ -65,7 +65,7 @@ extension XTRepository: FileContents
   public func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data?
   {
     guard let entry = (commit as? GitCommit)?.tree?.entry(path: path),
-          let blob = entry.object as? Blob
+          let blob = entry.object as? any Blob
     else { return nil }
     
     return blob.makeData()
@@ -78,7 +78,7 @@ extension XTRepository: FileContents
     }
   }
   
-  public func stagedBlob(file: String) -> Blob?
+  public func stagedBlob(file: String) -> (any Blob)?
   {
     guard let index = GitIndex(repository: gitRepo),
           let entry = index.entry(at: file),
