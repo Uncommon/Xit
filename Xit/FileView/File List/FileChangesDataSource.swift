@@ -123,9 +123,9 @@ extension FileChangesDataSource: FileListDataSource
     
     let newChanges = model?.changes ?? []
     
-    repoUIController.queue.executeOffMainThread {
+    repoUIController.queue.executeAsync {
       [weak self] in
-      self?.doReload(newChanges)
+      await self?.doReload(newChanges)
     }
   }
   

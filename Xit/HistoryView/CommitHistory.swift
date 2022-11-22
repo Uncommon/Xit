@@ -73,7 +73,8 @@ final class CommitHistory<C: Commit>
   private var abortMutex = Mutex()
   public var syncMutex = Mutex()
   
-  // start, end
+  /// Progress reporting callback. Parameters are start and end. Will be
+  /// called on the main thread.
   var postProgress: ((Int, Int) -> Void)?
   
   /// Manually appends a commit.
@@ -146,11 +147,21 @@ final class CommitHistory<C: Commit>
       
       generateLines(entry: entry, connections: connections[index])
     }
-    postProgress?(batchStart, batchStart + batchSize)
+
+    reportProgress(start: batchStart, end: batchStart + batchSize)
     Signpost.intervalEnd(.generateLines(batchStart))
     withSync {
       processingConnections = newConnections
       batchStart += batchSize
+    }
+  }
+
+  func reportProgress(start: Int, end: Int)
+  {
+    if let postProgress = self.postProgress {
+      DispatchQueue.main.async {
+        postProgress(start, end)
+      }
     }
   }
   
