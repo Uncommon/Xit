@@ -2,10 +2,14 @@
 
 set -e
 
-# augment path to help it find cmake installed in /usr/local/bin,
-# e.g. via brew. Xcode's Run Script phase doesn't seem to honor
+if [ -z "$ARCHS" ]; then
+  ARCHS=$(uname -m)
+fi
+
+# augment path to help it find cmake installed e.g. via brew.
+# Xcode's Run Script phase doesn't seem to honor
 # ~/.MacOSX/environment.plist
-if [[ $(uname -m) == 'arm64' ]]; then
+if [[ $ARCHS == 'arm64' ]]; then
   HOMEBREW_ROOT="/opt/homebrew"
   OPENSSL_DIR="openssl"
 else
