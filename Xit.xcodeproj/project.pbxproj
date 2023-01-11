@@ -2091,6 +2091,7 @@
 					/opt/homebrew/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
