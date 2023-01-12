@@ -12,11 +12,18 @@ struct CleanList: NSViewRepresentable
     static let status = ¶"status"
   }
 
+  enum ReuseID
+  {
+    static let fileCell = ¶"fileCell"
+  }
+
   func makeNSView(context: Context) -> NSScrollView
   {
     let tableView = NSTableView()
     let scrollView = NSScrollView()
+    let nib = NSNib(nibNamed: "CleanCell", bundle: nil)
 
+    tableView.register(nib, forIdentifier: ReuseID.fileCell)
     tableView.headerView = nil
     tableView.addTableColumn(.init(identifier: ColumnID.file))
     tableView.addTableColumn(.init(identifier: ColumnID.status))
@@ -74,30 +81,14 @@ extension CleanList.Coordinator: NSTableViewDelegate
 
     switch columnID {
       case CleanList.ColumnID.file:
-        let view = NSView()
-        let icon = item.icon
-        let iconView = NSImageView(image: icon)
+        guard let cell = tableView.makeView(
+            withIdentifier: CleanList.ReuseID.fileCell, owner: nil)
+            as? NSTableCellView
+        else { return nil }
 
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-          iconView.widthAnchor.constraint(equalToConstant: 16),
-          iconView.heightAnchor.constraint(equalToConstant: 16),
-        ])
-
-        let stack = NSStackView(views: [
-          iconView,
-          NSTextField(labelWithString: item.path.lastPathComponent),
-        ])
-
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stack)
-        NSLayoutConstraint.activate([
-          stack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-          stack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-          stack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
-        return view
+        cell.imageView?.image = item.icon
+        cell.textField?.stringValue = item.path.lastPathComponent
+        return cell
 
       case CleanList.ColumnID.status:
         let view = NSView()
@@ -115,13 +106,13 @@ extension CleanList.Coordinator: NSTableViewDelegate
       default:
         return nil
     }
+  }
 
-    func tableView(_ tableView: NSTableView,
-                   typeSelectStringFor tableColumn: NSTableColumn?,
-                   row: Int) -> String?
-    {
-      data.filteredItems[row].path.lastPathComponent
-    }
+  func tableView(_ tableView: NSTableView,
+                 typeSelectStringFor tableColumn: NSTableColumn?,
+                 row: Int) -> String?
+  {
+    data.filteredItems[row].path.lastPathComponent
   }
 
   func tableViewSelectionDidChange(_ notification: Notification)
