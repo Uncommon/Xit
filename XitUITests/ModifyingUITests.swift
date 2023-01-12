@@ -291,12 +291,18 @@ class ModifyingUITests: XCTestCase
     CleanSheet.FileMode.ignored.click()
 
     XCTContext.runActivity(named: "Clean selected") { _ in
+      let firstIgnoredURL = env.repoURL.appendingPathComponent(".DS_Store")
+
+      XCTAssertTrue(FileManager.default.fileExists(atPath: firstIgnoredURL.path))
+
       CleanSheet.window.cells.firstMatch.click()
       CleanSheet.cleanSelectedButton.click()
       XitApp.sheets.buttons["Delete"].click()
 
+      XCTAssertFalse(FileManager.default.fileExists(atPath: firstIgnoredURL.path))
       CleanSheet.assertCleanFiles(["joshaber.pbxuser", "joshaber.perspectivev3"])
-      XCTAssertFalse(CleanSheet.cleanSelectedButton.isEnabled)
+      XCTAssertTrue(CleanSheet.window.cells.firstMatch.isEnabled)
+      XCTAssertTrue(CleanSheet.cleanSelectedButton.isEnabled)
     }
 
     XCTContext.runActivity(named: "Clean all") { _ in

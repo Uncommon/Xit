@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21225" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21225"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <tableCellView id="JIo-Zd-M0R">
+            <rect key="frame" x="0.0" y="0.0" width="130" height="17"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t9C-UA-xdl">
+                    <rect key="frame" x="0.0" y="1" width="130" height="16"/>
+                    <subviews>
+                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nmx-tg-VxZ">
+                            <rect key="frame" x="0.0" y="-3.5" width="16" height="23"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="TKX-3a-58D"/>
+                                <constraint firstAttribute="width" constant="16" id="sgG-Bb-Ng2"/>
+                            </constraints>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="doc" catalog="system" id="eFr-Vx-kGc"/>
+                        </imageView>
+                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RyT-dV-28h">
+                            <rect key="frame" x="22" y="0.0" width="110" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="U4v-O7-z67">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                    </subviews>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="t9C-UA-xdl" secondAttribute="trailing" id="Ed2-qW-jCP"/>
+                <constraint firstItem="t9C-UA-xdl" firstAttribute="centerY" secondItem="JIo-Zd-M0R" secondAttribute="centerY" id="Op9-Ah-MVK"/>
+                <constraint firstItem="t9C-UA-xdl" firstAttribute="leading" secondItem="JIo-Zd-M0R" secondAttribute="leading" id="uKC-T6-oH4"/>
+            </constraints>
+            <connections>
+                <outlet property="imageView" destination="Nmx-tg-VxZ" id="8hW-KH-I3n"/>
+                <outlet property="textField" destination="RyT-dV-28h" id="yCv-8k-qy1"/>
+            </connections>
+            <point key="canvasLocation" x="-40" y="-88.5"/>
+        </tableCellView>
+    </objects>
+    <resources>
+        <image name="doc" catalog="system" width="14" height="16"/>
+    </resources>
+</document>

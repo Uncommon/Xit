@@ -19,11 +19,11 @@ extension FileTreeDataSource: FileListDataSource
   {
     let currentSelection = repoUIController.selection
 
-    repoUIController.queue.executeOffMainThread {
+    repoUIController.queue.executeAsync {
       [weak self] in
       guard let self = self
       else { return }
-      
+
       objc_sync_enter(self)
       defer { objc_sync_exit(self) }
 
@@ -32,21 +32,22 @@ extension FileTreeDataSource: FileListDataSource
               (selection as? StagingSelection)?.unstagedFileList :
               selection.fileList
       else { return }
-      
-      self.delegate?.configure(model: fileList)
-      
-      let newRoot = fileList.treeRoot(oldTree: self.root)
-      
-      DispatchQueue.main.async {
+      let (delegate, root) = await MainActor.run { (self.delegate, self.root) }
+
+      delegate?.configure(model: fileList)
+
+      let newRoot = fileList.treeRoot(oldTree: root)
+
+      await MainActor.run {
         self.root = newRoot
-        
+
         guard let outlineView = self.outlineView
         else { return }
-        
+
         let selectedRow = outlineView.selectedRow
         let selectedChange = self.fileChange(at: selectedRow)
         let expanded = self.expandedPaths()
-        
+
         outlineView.reloadData()
         self.expand(paths: expanded)
         self.reselect(item: selectedChange, oldRow: selectedRow)

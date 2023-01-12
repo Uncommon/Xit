@@ -47,6 +47,23 @@ public final class TaskQueue
     }
   }
 
+  /// Runs an asynchronous block as a queue task.
+  func executeAsync(_ block: @Sendable @escaping () async -> Void)
+  {
+    if isShutDown {
+      return
+    }
+    queue.async {
+      let semaphore = DispatchSemaphore(value: 0)
+
+      Task<Void, Never>.detached {
+        await block()
+        semaphore.signal()
+      }
+      semaphore.wait()
+    }
+  }
+
   /// Runs the block synchronously on the task queue when called from the main
   /// thread, or inline otherwise.
   func syncOffMainThread<T>(_ block: () throws -> T) throws -> T

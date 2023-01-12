@@ -88,17 +88,24 @@ class CleanData: ObservableObject
   }
 
   @Published var mode: CleanMode = .untracked
+  { didSet { refilter() } }
   @Published var folderMode: CleanFolderMode = .ignore
+  { didSet { refilter() } }
   @Published var filter: String = ""
+  { didSet { refilter() } }
   @Published var filterType: FilterType = .contains
+  { didSet { refilter() } }
   @Published var items: [CleanableItem] = []
+  { didSet { refilter() } }
 
-  var filteredItems: [CleanableItem]
+  var filteredItems: [CleanableItem] = []
+
+  private func refilter()
   {
     let predicate: NSPredicate? =
           filter.isEmpty ? nil : filterType.predicate(filter: filter)
 
-    return items.filter {
+    filteredItems = items.filter {
       (!$0.path.hasSuffix("/") || folderMode == .clean) &&
       ($0.ignored && mode.shouldCleanIgnored ||
        !$0.ignored && mode.shouldCleanUntracked) &&
@@ -162,27 +169,8 @@ struct CleanPanel: View
           .accessibilityIdentifier(.Clean.Controls.filterField)
       }
 
-      List(model.filteredItems, selection: $selection) { item in
-        HStack {
-          Image(nsImage: item.icon)
-            .resizable().frame(width: 16, height: 16)
-          Text(item.path.lastPathComponent)
-            .lineLimit(1)
-            .truncationMode(.tail)
-            .accessibilityIdentifier(.Clean.List.fileName)
-          Spacer()
-          Image(systemName: item.ignored ? "eye.slash" : "plus.circle")
-            .frame(width: 20)
-            // If the user drags to select multiple items, this doesn't update
-            // until the drag is finished.
-            .foregroundColor(selection.contains(item.path)
-                             ? .primary
-                             : item.ignored ? .secondary : .green)
-        }
-      }
-        .border(Color(.separatorColor))
+      CleanList(data: model, selection: $selection)
         .frame(minWidth: 200, minHeight: 100)
-        .accessibilityIdentifier(.Clean.Controls.fileList)
 
       ZStack(alignment: .leading) {
         // path must be non-nil or else the control will be a different size

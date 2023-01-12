@@ -85,8 +85,13 @@ final class HistoryTableController: NSViewController,
     tableView.setAccessibilityIdentifier("history")
 
     history.postProgress = {
-      [weak self] in
-      self?.batchFinished(start: $0, end: $1)
+      [weak self] (start, end) in
+      guard let self
+      else { return }
+
+      Task {
+        self.batchFinished(start: start, end: end)
+      }
     }
   }
   
@@ -111,7 +116,10 @@ final class HistoryTableController: NSViewController,
     history.withSync {
       history.reset()
     }
-    repoUIController?.queue.executeOffMainThread {
+
+    let queue = Thread.syncOnMain { repoUIController?.queue }
+
+    queue?.executeAsync {
       Signpost.intervalStart(.historyWalking, object: self)
       defer {
         Signpost.intervalEnd(.historyWalking, object: self)
@@ -143,7 +151,7 @@ final class HistoryTableController: NSViewController,
       DispatchQueue.global(qos: .utility).async {
         // Get off the queue thread, but run this as a queue task so that
         // progress will be displayed.
-        self.repoUIController?.queue.executeTask {
+        queue?.executeTask {
           Signpost.interval(.connectCommits) {
             history.processFirstBatch()
           }
