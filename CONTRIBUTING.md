@@ -6,6 +6,8 @@ Xit uses libgit2 (currently version 1.3.0) for most Git operations, which it exp
 
 [Homebrew]: http://brew.sh
 
+If you are building on an Apple Silicon computer (eg one with an M1 or M2 processor), you should have the build set to "My Mac" rather than "My Mac (Rosetta)" or "Any Mac". The Rosetta (Intel) build will only work if you also have the Intel versions of the Homebrew-installed libraries, and the libgit2 build script currently doesn't support a universal (Any Mac) build. 
+
 **IMPORTANT:** If you do not have an Apple ID with a developer account for code signing Mac apps, the build  will fail with a code signing error. To work around this, you can delete the "Code Signing Identity" build setting of the "Application" target to work around the issue.
 
 **Alternatively**, if you do have a developer account, you can create the file "Xcode-config/DEVELOPMENT_TEAM.xcconfig" with the following build setting as its content:
@@ -22,8 +24,6 @@ For larger tasks, there are two options:
 * Plenty of other ideas and plans have been written down in the [Issues] section. Feel free to comment and contribute there.
 * Just run the app and see what bugs you!
 
-Swift is preferred for new classes. Xit was originally written in Objective-C, and has been almost completely rewritten in Swift. That way the Swift/Objective-C bridging limitations don't get in the way, and Swift's features can be used to maximum advantage.
-
 [Issues]: https://github.com/Uncommon/Xit/issues
 
 If you decide to start working on something, please add a note in the issue (file a new one if needed). When you're ready to share your work (final or not), please follow the usual procedure for a GitHub pull request.
@@ -38,19 +38,3 @@ A SwiftLint settings file is included, and will be run every build if you have S
 * `else` always starts a new line, whether for `guard` or `if`.
 * Use blank lines to separate groups of variable declarations (`let` or `var`), `guard` statements, and other statements.
 * Otherwise, normal Swift style rules apply.
-
-For Objective-C, the coding style used is based on the [Google Objective-C Style Guide], with the following changes:
-
-[Google Objective-C Style Guide]: http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml
-
-* Line length is 80 columns.
-* The opening brace of a function goes on its own line.
-* No single-line `if` statements, like `if (x) return;` (you can't set a breakpoint on that `return`!)
-* No space before `*` when it is not immediately followed by an identifier, such as `(NSString*)`.
-* When wrapping function/method calls, a four-space indent may be used instead of aligning with the `:` or `(`.
-* Variable declarations are separated from other statements by one blank line.
-* Whitespace at the indentation level of the surrounding lines is allowed.
-* Doxygen style comments are encouraged because Xcode parses them.
-* Explicitly compare values with `0`, `nil`, or `NULL`. Only write `if (x)` if `x` is a Boolean value.
-
-Some of the code was written before these rules were put in place and may still need to be updated. Feel free to correct any instances you find.
