@@ -78,7 +78,9 @@ extension CommitStorage
   {
     guard let oid = oid as? ID
     else {
-      assertionFailure("wrong OID type")
+      if !(oid is SpecialOID) {
+        assertionFailure("wrong OID type")
+      }
       return nil
     }
     return commit(forOID: oid) as (any Xit.Commit)?
