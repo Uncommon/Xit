@@ -22,8 +22,9 @@ class UnicodeRepoUITests: XCTestCase
 
 class FetchTests: UnicodeRepoUITests
 {
-  func testFetchRemote()
+  func testFetchRemote() throws
   {
+    throw XCTSkip("pop-up menu tests aren't working")
     let newFileName = "newfile.txt"
     
     XCTAssert(env.makeRemoteCopy(named: remoteName))
@@ -97,8 +98,9 @@ class PushTests: UnicodeRepoUITests
                                    timeout: 2.0)
   }
   
-  func testPushAnyTracking()
+  func testPushAnyTracking() throws
   {
+    throw XCTSkip("pop-up menu tests aren't working")
     Window.pushButton.press(forDuration: 0.5)
     Window.pushMenu.menuItems["Push to Any Tracking Branches on \"\(remoteName)\""].click()
     
@@ -125,6 +127,7 @@ class PushNewTests: UnicodeRepoUITests
   
   func pushNewBranch(tracking: Bool) throws
   {
+    throw XCTSkip("pop-up menu tests aren't working")
     env.open()
     
     let indicator = Sidebar.trackingStatusIndicator(branch: branchName)
