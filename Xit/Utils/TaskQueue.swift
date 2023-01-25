@@ -56,7 +56,7 @@ public final class TaskQueue
     queue.async {
       let semaphore = DispatchSemaphore(value: 0)
 
-      Task<Void, Never>.detached {
+      Task<Void, Never>.detached(priority: .userInitiated) {
         await block()
         semaphore.signal()
       }
