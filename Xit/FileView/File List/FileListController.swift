@@ -209,7 +209,8 @@ class FileListController: NSViewController, RepositoryWindowViewController
   /// The file change item for the selected row in the list
   var selectedChange: FileChange?
   {
-    guard let index = outlineView.selectedRowIndexes.first
+    guard let index = outlineView.contextMenuRow ??
+                      outlineView.selectedRowIndexes.first
     else { return nil }
     
     return viewDataSource?.fileChange(at: index)
