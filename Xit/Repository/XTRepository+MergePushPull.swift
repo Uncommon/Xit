@@ -176,7 +176,7 @@ extension XTRepository: Merging
         throw RepoError.conflict
       }
       else {
-        let tree = try index.writeTree()
+        let tree = try index.writeTree() as! GitTree
         
         _ = try createCommit(with: tree,
                              message: "Merge branch \(fromBranch.name)",

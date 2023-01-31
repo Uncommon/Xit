@@ -164,6 +164,11 @@ class FakeRepoController: RepositoryController
 
 class FakeFileChangesRepo: FileChangesRepo
 {
+  typealias ID = StringOID
+  typealias Commit = NullCommit
+  typealias Tag = NullTag
+  typealias Tree = NullTree
+
   var controller: (any RepositoryController)?
 
   var headRef: String? = nil
@@ -171,7 +176,7 @@ class FakeFileChangesRepo: FileChangesRepo
   
   func sha(forRef: String) -> String? { nil }
   
-  func tags() throws -> [any Tag] { [] }
+  func tags() throws -> [Tag] { [] }
   func graphBetween(localBranch: any LocalBranch, upstreamBranch: any RemoteBranch)
     -> (ahead: Int, behind: Int)?
   { nil }
@@ -179,20 +184,20 @@ class FakeFileChangesRepo: FileChangesRepo
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: any OID) -> [String] { [] }
+  func refs(at oid: ID) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
-  func createCommit(with tree: any Tree, message: String, parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
+  func createCommit(with tree: Tree, message: String, parents: [Commit],
+                    updatingReference refName: String) throws -> ID
   { §"" }
-  func oid(forRef: String) -> (any OID)? { nil }
+  func oid(forRef: String) -> ID? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
   func fileBlob(ref: String, path: String) -> (any Blob)? { nil }
   func stagedBlob(file: String) -> (any Blob)? { nil }
-  func contentsOfFile(path: String, at commit: any Commit) -> Data? { nil }
+  func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   

@@ -1,6 +1,6 @@
 import Cocoa
 
-public protocol Tag
+public protocol Tag<ID>
 {
   associatedtype ID: OID
   associatedtype Commit: Xit.Commit<ID>

@@ -67,7 +67,7 @@ public protocol CommitStorage<ID>: AnyObject
 
   func commit(message: String, amend: Bool) throws
   
-  func walker() -> (any RevWalk)?
+  func walker() -> (any RevWalk<ID>)?
 }
 
 extension CommitStorage
@@ -88,14 +88,19 @@ extension CommitStorage
 }
 
 
-public protocol CommitReferencing: AnyObject
+public protocol CommitReferencing<ID>: AnyObject
 {
+  associatedtype ID: OID
+  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Tag: Xit.Tag<ID>
+  associatedtype Tree: Xit.Tree<ID>
+
   var headRef: String? { get }
   var currentBranch: String? { get }
   
-  func oid(forRef: String) -> (any OID)?
+  func oid(forRef: String) -> ID?
   func sha(forRef: String) -> String?
-  func tags() throws -> [any Tag]
+  func tags() throws -> [Tag]
   func graphBetween(localBranch: any LocalBranch,
                     upstreamBranch: any RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
@@ -104,29 +109,29 @@ public protocol CommitReferencing: AnyObject
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   
   func reference(named name: String) -> (any Reference)?
-  func refs(at oid: any OID) -> [String]
+  func refs(at oid: ID) -> [String]
   func allRefs() -> [String]
   
   func rebuildRefsIndex()
   
   /// Creates a commit with the given content.
   /// - returns: The OID of the new commit.
-  func createCommit(with tree: any Tree,
+  func createCommit(with tree: Tree,
                     message: String,
-                    parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
+                    parents: [Commit],
+                    updatingReference refName: String) throws -> ID
 }
 
 extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
-  var headOID: (any OID)? { headRef.flatMap { self.oid(forRef: $0) } }
+  var headOID: ID? { headRef.flatMap { self.oid(forRef: $0) } }
 }
 
 extension CommitReferencing where Self: CommitStorage
 {
-  var headCommit: Commit? { (headOID as? ID).flatMap { commit(forOID: $0) } }
+  var headCommit: Commit? { headOID.flatMap { commit(forOID: $0) } }
 }
 
 public protocol FileStatusDetection: AnyObject

@@ -162,15 +162,16 @@ final class SidebarDataModel
     }
     
     Signpost.interval(.loadTags) {
-      if let tags = try? repo.tags().sorted(by: { $0.name <~ $1.name }) {
-        let tagsGroup = newRoots[SidebarGroupIndex.tags.rawValue]
+      guard let tags = try? repo.tags() as [any Tag]
+      else { return }
+      let sortedTags = tags.sorted(by: { $0.name <~ $1.name })
+      let tagsGroup = newRoots[SidebarGroupIndex.tags.rawValue]
+      
+      for tag in sortedTags {
+        let tagItem = TagSidebarItem(tag: tag)
+        let tagParent = parent(for: tag.name, groupItem: tagsGroup)
         
-        for tag in tags {
-          let tagItem = TagSidebarItem(tag: tag)
-          let tagParent = parent(for: tag.name, groupItem: tagsGroup)
-          
-          tagParent.children.append(tagItem)
-        }
+        tagParent.children.append(tagItem)
       }
     }
     

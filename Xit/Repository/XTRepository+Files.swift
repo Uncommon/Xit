@@ -89,15 +89,14 @@ extension XTRepository: FileContents
     return blob
   }
   
-  func commitBlob(commit: (any Xit.Commit)?, path: String) -> (any Blob)?
+  func commitBlob(commit: GitCommit?, path: String) -> (any Blob)?
   {
-    (commit as? GitCommit)?.tree?.entry(path: path)?.object as? (any Blob)
+    commit?.tree?.entry(path: path)?.object as? (any Blob)
   }
   
   public func fileBlob(ref: String, path: String) -> (any Blob)?
   {
-    commitBlob(commit: (oid(forRef: ref) as? GitOID)
-                        .flatMap { commit(forOID: $0) },
+    commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
                path: path)
   }
   
@@ -360,8 +359,8 @@ extension XTRepository
     convenience init(repo: XTRepository)
     {
       self.init(repo: repo,
-                head: (repo.headOID as? GitOID)
-                       .flatMap { repo.commit(forOID: $0) })
+                head: repo.headOID
+                          .flatMap { repo.commit(forOID: $0) })
     }
   
     static func emptyTree(repo: XTRepository) -> OpaquePointer?

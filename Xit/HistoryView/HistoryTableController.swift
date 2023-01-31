@@ -5,7 +5,7 @@ final class HistoryTableController: NSViewController,
                                     RepositoryWindowViewController
 {
   typealias Repository = BasicRepository & FileChangesRepo &
-                         CommitStorage & FileContents
+                         CommitStorage<GitOID> & FileContents
   
   enum ColumnID
   {

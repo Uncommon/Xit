@@ -78,7 +78,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns a list of refs that point to the given commit.
-  public func refs(at oid: any OID) -> [String]
+  public func refs(at oid: GitOID) -> [String]
   {
     objc_sync_enter(self)
     defer {
@@ -130,7 +130,7 @@ extension XTRepository: CommitReferencing
     return oid(forRef: ref)?.sha
   }
   
-  public func oid(forRef ref: String) -> (any OID)?
+  public func oid(forRef ref: String) -> GitOID?
   {
     guard let object = try? OpaquePointer.from({
             git_revparse_single(&$0, gitRepo, ref)
@@ -156,7 +156,7 @@ extension XTRepository: CommitReferencing
   }
   
   /// Returns the list of tags, or throws if libgit2 hit an error.
-  public func tags() throws -> [any Tag]
+  public func tags() throws -> [GitTag]
   {
     var tagNames = git_strarray()
     let result = git_tag_list(&tagNames, gitRepo)
@@ -174,21 +174,19 @@ extension XTRepository: CommitReferencing
     return GitReference(name: name, repository: gitRepo)
   }
   
-  public func createCommit(with tree: any Tree, message: String,
-                           parents: [any Xit.Commit],
-                           updatingReference refName: String) throws -> any OID
+  public func createCommit(with tree: GitTree, message: String,
+                           parents: [GitCommit],
+                           updatingReference refName: String) throws -> GitOID
   {
-    var commitPtrs: [OpaquePointer?] =
-      parents.compactMap { ($0 as? GitCommit)?.commit }
-    guard commitPtrs.count == parents.count,
-          let gitTree = tree as? GitTree
+    var commitPtrs: [OpaquePointer?] = parents.compactMap { $0.commit }
+    guard commitPtrs.count == parents.count
     else { throw RepoError.unexpected }
     
     let signature = GitSignature(defaultFromRepo: gitRepo)
     var newOID = git_oid()
     let result = git_commit_create(&newOID, gitRepo, refName,
                                    signature?.signature, signature?.signature,
-                                   "UTF-8", message, gitTree.tree,
+                                   "UTF-8", message, tree.tree,
                                    parents.count, &commitPtrs)
     
     try RepoError.throwIfGitError(result)

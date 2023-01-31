@@ -59,25 +59,25 @@ protocol EmptyCommitStorage: CommitStorage {}
 
 extension EmptyCommitStorage
 {
-  func oid(forSHA sha: String) -> (any OID)?  { nil }
-  func commit(forSHA sha: String) -> NullCommit? { nil }
-  func commit(forOID oid: any OID) -> NullCommit? { nil }
+  func oid(forSHA sha: String) -> ID?  { nil }
+  func commit(forSHA sha: String) -> Commit? { nil }
+  func commit(forOID oid: ID) -> Commit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
   func walker() -> (any RevWalk)? { nil }
 }
 
-protocol EmptyCommitReferencing: CommitReferencing {}
+protocol EmptyCommitReferencing: CommitReferencing where ID == StringOID {}
 
 extension EmptyCommitReferencing
 {
   var headRef: String? { nil }
   var currentBranch: String? { nil }
 
-  func oid(forRef: String) -> (any OID)? { nil }
+  func oid(forRef: String) -> StringOID? { nil }
   func sha(forRef: String) -> String? { nil }
-  func tags() throws -> [any Tag] { [] }
+  func tags() throws -> [NullTag] { [] }
   func graphBetween(localBranch: any LocalBranch,
                     upstreamBranch: any RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
@@ -88,15 +88,15 @@ extension EmptyCommitReferencing
   { nil }
 
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: any OID) -> [String] { [] }
+  func refs(at oid: StringOID) -> [String] { [] }
   func allRefs() -> [String] { [] }
 
   func rebuildRefsIndex() {}
 
-  func createCommit(with tree: any Tree,
+  func createCommit(with tree: Tree,
                     message: String,
-                    parents: [any Commit],
-                    updatingReference refName: String) throws -> any OID
+                    parents: [NullCommit],
+                    updatingReference refName: String) throws -> StringOID
   { §"" }
 }
 
@@ -136,6 +136,17 @@ class NullTree: Tree
   func entry(named: String) -> Entry? { nil }
   func entry(path: String) -> Entry? { nil }
   func entry(at index: Int) -> Entry? { nil }
+}
+
+class NullTag: Tag
+{
+  var name: String = ""
+  let signature: Signature? = nil
+  let targetOID: StringOID? = nil
+  let commit: NullCommit? = nil
+  let message: String? = nil
+  let type: TagType = .annotated
+  let isSigned: Bool = false
 }
 
 protocol EmptyFileStatusDetection: FileStatusDetection {}

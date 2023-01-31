@@ -1,12 +1,13 @@
 import Foundation
 
-// Associated types for this can't happen until other types have them too.
-public protocol RevWalk
+public protocol RevWalk<ID>
 {
+  associatedtype ID: OID
+
   func reset()
   func setSorting(_ sort: RevWalkSorting)
-  func push(oid: any OID)
-  func next() -> (any OID)?
+  func push(oid: ID)
+  func next() -> ID?
 }
 
 public struct RevWalkSorting: OptionSet, Sendable
@@ -58,15 +59,12 @@ final class GitRevWalk: RevWalk
     git_revwalk_sorting(walker, sort.rawValue)
   }
   
-  public func push(oid: any OID)
+  public func push(oid: GitOID)
   {
-    guard let gitOID = oid as? GitOID
-    else { return }
-
-    _ = gitOID.withUnsafeOID { git_revwalk_push(walker, $0) }
+    _ = oid.withUnsafeOID { git_revwalk_push(walker, $0) }
   }
   
-  public func next() -> (any OID)?
+  public func next() -> GitOID?
   {
     var oid = git_oid()
     let result = git_revwalk_next(&oid, walker)

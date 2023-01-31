@@ -8,7 +8,7 @@ struct FetchDialog: SheetDialog
 
   var acceptButtonTitle: UIString { .fetch }
 
-  let repository: Repository
+  let repository: any Repository
 
   func createModel() -> FetchPanel.Options?
   {
