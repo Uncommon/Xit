@@ -24,7 +24,6 @@ class FetchTests: UnicodeRepoUITests
 {
   func testFetchRemote() throws
   {
-    throw XCTSkip("pop-up menu tests aren't working")
     let newFileName = "newfile.txt"
     
     XCTAssert(env.makeRemoteCopy(named: remoteName))
@@ -48,7 +47,7 @@ class FetchTests: UnicodeRepoUITests
     // doesn't know yet that it's behind.
     XCTAssertFalse(statusIndicator.exists)
     
-    Window.fetchButton.press(forDuration: 0.5)
+    Window.fetchButton.press(forDuration: 0.25)
     Window.fetchMenu.menuItems["Fetch Remote \"\(remoteName)\""].click()
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
     
@@ -100,8 +99,7 @@ class PushTests: UnicodeRepoUITests
   
   func testPushAnyTracking() throws
   {
-    throw XCTSkip("pop-up menu tests aren't working")
-    Window.pushButton.press(forDuration: 0.5)
+    Window.pushButton.press(forDuration: 0.25)
     Window.pushMenu.menuItems["Push to Any Tracking Branches on \"\(remoteName)\""].click()
     
     Window.window.sheets.buttons["Push"].click()
@@ -127,14 +125,13 @@ class PushNewTests: UnicodeRepoUITests
   
   func pushNewBranch(tracking: Bool) throws
   {
-    throw XCTSkip("pop-up menu tests aren't working")
     env.open()
     
     let indicator = Sidebar.trackingStatusIndicator(branch: branchName)
 
     XCTAssertFalse(indicator.exists)
     
-    Window.pushButton.press(forDuration: 0.5)
+    Window.pushButton.press(forDuration: 0.25)
     Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
     
     let trackingButton = PushNewSheet.setTrackingCheck

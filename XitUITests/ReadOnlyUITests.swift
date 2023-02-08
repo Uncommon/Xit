@@ -222,7 +222,7 @@ class ReadOnlyUITests: XCTestCase
                   file: StaticString = #file, line: UInt = #line)
   {
     XCTContext.runActivity(named: context) { _ in
-      button.press(forDuration: 0.5)
+      button.press(forDuration: 0.25)
 
       XCTAssertTrue(menu.isHittable)
       XCTAssertEqual(menu.menuItems.count, itemTitles.count,
@@ -238,7 +238,6 @@ class ReadOnlyUITests: XCTestCase
   
   func testRepoOpMenus() throws
   {
-    throw XCTSkip("pop-up menu tests aren't working")
     checkPopup("Fetch menu",
                button: Window.fetchButton, menu: Window.fetchMenu, itemTitles: [
       "Fetch All Remotes",
