@@ -6,7 +6,6 @@ public protocol Commit<ObjectIdentifier>: OIDObject, CustomStringConvertible
   associatedtype ObjectIdentifier
   associatedtype Tree: Xit.Tree<ObjectIdentifier>
 
-  // Strictly speaking these should probably all be the same OID type
   var parentOIDs: [ObjectIdentifier] { get }
   
   var message: String? { get }
