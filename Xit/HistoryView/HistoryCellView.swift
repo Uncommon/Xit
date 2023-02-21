@@ -147,7 +147,7 @@ final class HistoryCellView: NSTableCellView
     }
     else {
       mutex?.withLock {
-        let totalColumns = entry.lines.reduce(0) {
+        let totalColumns = entry.lines.reduce(entry.dotOffset ?? 0) {
           (oldMax, line) -> UInt in
           max(oldMax, line.parentIndex ?? 0, line.childIndex ?? 0)
         }
