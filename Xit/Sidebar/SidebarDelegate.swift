@@ -324,7 +324,7 @@ extension SidebarDelegate: BuildStatusDisplay
   }
 }
 
-extension SidebarDelegate: XTOutlineViewDelegate
+extension SidebarDelegate: ReselectingOutlineDelegate
 {
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
   {

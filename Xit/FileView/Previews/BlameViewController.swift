@@ -179,7 +179,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
   }
 }
 
-extension BlameViewController: XTFileContentController
+extension BlameViewController: FileContentLoading
 {
   func clear()
   {

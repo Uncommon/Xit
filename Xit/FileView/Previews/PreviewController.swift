@@ -21,7 +21,7 @@ final class PreviewController: NSViewController
   }
 }
 
-extension PreviewController: XTFileContentController
+extension PreviewController: FileContentLoading
 {
   public func clear()
   {

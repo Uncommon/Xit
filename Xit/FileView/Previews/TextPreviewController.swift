@@ -39,7 +39,7 @@ final class TextPreviewController: WebViewController
   }
 }
 
-extension TextPreviewController: XTFileContentController
+extension TextPreviewController: FileContentLoading
 {
   public func clear()
   {

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol XTOutlineViewDelegate: AnyObject
+protocol ReselectingOutlineDelegate: AnyObject
 {
   /// The user has clicked on the selected row.
   func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
@@ -43,7 +43,7 @@ final class SideBarOutlineView: ContextMenuOutlineView
     let newSelection = selectedRowIndexes
     
     if oldSelection == newSelection,
-       let xtDelegate = delegate as? XTOutlineViewDelegate {
+       let xtDelegate = delegate as? ReselectingOutlineDelegate {
       xtDelegate.outlineViewClickedSelectedRow(self)
     }
   }

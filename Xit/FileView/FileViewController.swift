@@ -49,13 +49,13 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   var savedSplit: CGFloat = 0
   var options: CurrentValueSubject<FileViewOptions, Never> = .init(.default)
 
-  var contentController: XTFileContentController!
+  var contentController: FileContentLoading!
   
   var fileWatcher: FileEventStream?
   var indexTimer: Timer?
   var sinks: [AnyCancellable] = []
   
-  var contentControllers: [XTFileContentController]
+  var contentControllers: [FileContentLoading]
   { [diffController, blameController, textController, previewController] }
   
   var inStagingView: Bool

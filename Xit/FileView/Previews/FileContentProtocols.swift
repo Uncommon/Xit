@@ -3,7 +3,7 @@ import AppKit
 
 /// Interface for a controller that displays file content in some form.
 @MainActor
-protocol XTFileContentController: NSViewController
+protocol FileContentLoading: NSViewController
 {
   /// Clears the display for when nothing is selected.
   func clear()

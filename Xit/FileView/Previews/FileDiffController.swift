@@ -269,7 +269,7 @@ final class FileDiffController: WebViewController,
   }
 }
 
-extension FileDiffController: XTFileContentController
+extension FileDiffController: FileContentLoading
 {
   var isLoaded: Bool
   {
