@@ -17,9 +17,16 @@ class OperationController
   /// Convenient reference to the repository from the window controller.
   weak var repository: (any FullRepository)?
   /// True if the operation is being canceled.
-  var canceled = false
+  nonisolated var canceled: Bool
+  {
+    get { canceledMutex.withLock { canceledBox.value } ?? false }
+    set { canceledMutex.withLock { canceledBox.value = newValue } }
+  }
   /// Actions to be executed after the operation succeeds.
   var successActions: [() -> Void] = []
+
+  private let canceledMutex = Mutex()
+  private let canceledBox = Box<Bool>(false)
   
   init(windowController: XTWindowController)
   {

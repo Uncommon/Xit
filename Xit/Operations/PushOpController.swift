@@ -18,18 +18,22 @@ final class PushOpController: PasswordOpController
     super.init(windowController: windowController)
   }
 
+  nonisolated
   func progressCallback(progress: PushTransferProgress) -> Bool
   {
-    guard !canceled,
-          let repository = repository
+    guard !canceled
     else { return true }
-    
-    let note = Notification.progressNotification(repository: repository,
-                                                 progress: Float(progress.current),
-                                                 total: Float(progress.total))
-    
-    NotificationCenter.default.post(note)
-    return !canceled
+
+    Task {
+      let repository = await self.repository
+      let note = Notification.progressNotification(
+        repository: repository as AnyObject,
+        progress: Float(progress.current),
+        total: Float(progress.total))
+
+      NotificationCenter.default.post(note)
+    }
+    return false
   }
 
   override func start() throws
