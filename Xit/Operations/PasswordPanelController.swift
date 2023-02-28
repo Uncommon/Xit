@@ -9,9 +9,7 @@ final class PasswordPanelController: SheetController
   @IBOutlet weak var userField: NSTextField!
   @IBOutlet weak var passwordField: NSSecureTextField!
   @IBOutlet weak var keychainCheck: NSButton!
-  
-  var semaphore = DispatchSemaphore(value: 0)
-  
+
   deinit
   {
     // Be sure to abort cleanly, especially since getPassword() may be waiting
@@ -39,6 +37,7 @@ final class PasswordPanelController: SheetController
   /// - parameter port: For keychain storage
   /// - Returns: A tuple containing the user name and password, or `nil` if the
   /// sheet was canceled.
+  nonisolated
   func getPassword(parentWindow: NSWindow,
                    host: String = "",
                    path: String = "",
@@ -49,8 +48,9 @@ final class PasswordPanelController: SheetController
       assertionFailure("getPassword called on the main thread")
       return nil
     }
-    var result: (String, String)?
-    
+    let result = Box<(String, String)>()
+    let semaphore = DispatchSemaphore(value: 0)
+
     DispatchQueue.main.async { [self] in
       if host.isEmpty {
         keychainCheck.isHidden = true
@@ -59,7 +59,7 @@ final class PasswordPanelController: SheetController
       parentWindow.beginSheet(window!) {
         [self] (response) in
         if response == .OK {
-          result = (userName, password)
+          result.value = (userName, password)
           if storeInKeychain {
             Self.storeKeychainPassword(host: host, path: path, port: port,
                                        account: userName,
@@ -71,7 +71,7 @@ final class PasswordPanelController: SheetController
     }
     _ = semaphore.wait(timeout: .distantFuture)
     
-    return result
+    return result.value
   }
   
   static func storeKeychainPassword(host: String, path: String, port: UInt16,

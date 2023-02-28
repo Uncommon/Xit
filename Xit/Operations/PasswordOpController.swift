@@ -3,9 +3,7 @@ import Cocoa
 /// An operation that may require a password.
 class PasswordOpController: SimpleOperationController
 {
-  var host = ""
-  var path = ""
-  var port = 80
+  let urlInfo: Box<(host: String, path: String, port: Int)> = .init(("", "", 80))
   private(set) var passwordController: PasswordPanelController?
   private var closeObserver: NSObjectProtocol?
 
@@ -34,28 +32,36 @@ class PasswordOpController: SimpleOperationController
   }
   
   /// User/password callback
+  nonisolated
   func getPassword() -> (String, String)?
   {
-    guard passwordController == nil
+    guard !Thread.isMainThread
+    else {
+      assertionFailure("password callback on main thread")
+      return nil
+    }
+    guard DispatchQueue.main.sync(execute: { passwordController == nil })
     else {
       assertionFailure("already have a password sheet")
       return nil
     }
     let (window, controller) = DispatchQueue.main.sync {
-      (windowController?.window, PasswordPanelController())
+      let controller = PasswordPanelController()
+      self.passwordController = controller
+      return (windowController?.window, controller)
     }
-    guard let window = window
+    guard let window = window,
+          let urlInfo = self.urlInfo.value
     else { return nil }
     
-    passwordController = controller
     return controller.getPassword(parentWindow: window,
-                                  host: host, path: path, port: UInt16(port))
+                                  host: urlInfo.host,
+                                  path: urlInfo.path,
+                                  port: UInt16(urlInfo.port))
   }
   
   func setKeychainInfo(from url: URL)
   {
-    host = url.host ?? ""
-    path = url.path
-    port = url.port ?? url.defaultPort
+    urlInfo.value = (url.host ?? "", url.path, url.port ?? url.defaultPort)
   }
 }
