@@ -5,8 +5,9 @@ import Quartz
 /// View controller for the file list and detail view.
 final class FileViewController: NSViewController, RepositoryWindowViewController
 {
-  typealias Repository = CommitStorage & CommitReferencing & FileContents &
-                         FileStaging & FileStatusDetection & RepoConfiguring
+  typealias Repository = BasicRepository & CommitStorage & CommitReferencing &
+                         FileContents & FileStaging & FileStatusDetection &
+                         RepoConfiguring
 
   /// Preview tab identifiers
   enum TabID

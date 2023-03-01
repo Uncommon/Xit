@@ -11,25 +11,23 @@ extension NSTouchBarItem.Identifier
 final class CommitEntryController: NSViewController,
                                    RepositoryWindowViewController
 {
-  typealias Repository = CommitStorage & CommitReferencing
-
-  private var sinks: [AnyCancellable] = []
+  typealias Repository = BasicRepository & CommitStorage & CommitReferencing
 
   private weak var repo: (any Repository)!
   {
     didSet
     {
-      if let controller = repoUIController?.repoController {
-        sinks.append(contentsOf: [
-          controller.indexPublisher.sinkOnMainQueue {
-            [weak self] in
-            self?.updateStagedStatus()
-          },
-          controller.headPublisher.sinkOnMainQueue {
-            [weak self] _ in
-            self?.resetAmend()
-          },
-        ])
+      if let controller = repo?.controller as? RepositoryPublishing {
+        Task {
+          for await _ in controller.indexPublisher.values {
+            updateStagedStatus()
+          }
+        }
+        Task {
+          for await _ in controller.headPublisher.values {
+            resetAmend()
+          }
+        }
       }
       resetMessage()
     }

@@ -17,6 +17,42 @@ class ModifyingUITests: XCTestCase
     
     self.env = env
   }
+
+  func testCommitUI()
+  {
+    env.open()
+
+    Sidebar.stagingCell.click()
+
+    XCTContext.runActivity(named: "Initial empty state") {
+      _ in
+      XCTAssertEqual(StagedFileList.list.cells.count, 0,
+                     "staged list should be empty")
+      // In practice there should be one particular file, but for this test it
+      // only matters that there is at least one.
+      XCTAssert(WorkspaceFileList.list.cells.firstMatch.exists,
+                "needs a file to stage")
+      XCTAssertFalse(CommitEntry.commitButton.isEnabled,
+                     "commit button should be disabled")
+    }
+
+    XCTContext.runActivity(named: "Commit message entered") {
+      _ in
+      CommitEntry.messageField.click()
+      CommitEntry.messageField.typeText("message")
+
+      XCTAssertFalse(CommitEntry.commitButton.isEnabled,
+                     "commit button should be disabled with no staged files")
+    }
+
+    XCTContext.runActivity(named: "File staged") {
+      _ in
+      WorkspaceFileList.stage(item: 0)
+
+      wait(for: [enabling(of: CommitEntry.commitButton)], timeout: 5.0)
+    }
+
+  }
   
   func testRenameBranch()
   {
