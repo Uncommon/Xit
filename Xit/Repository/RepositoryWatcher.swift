@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+/// Watches the repository for changes on disk, and publishes them.
 final class RepositoryWatcher
 {
   public enum RefKey

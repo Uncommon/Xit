@@ -28,23 +28,23 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   fileprivate(set) var cachedHeadRef, cachedHeadSHA: String?
   var cachedStagedChanges: [FileChange]?
   {
-    get { controller?.cachedStagedChanges }
-    set { controller?.cachedStagedChanges = newValue }
+    get { controller?.cache.stagedChanges }
+    set { controller?.cache.stagedChanges = newValue }
   }
   var cachedAmendChanges: [FileChange]?
   {
-    get { controller?.cachedAmendChanges }
-    set { controller?.cachedAmendChanges = newValue }
+    get { controller?.cache.amendChanges }
+    set { controller?.cache.amendChanges = newValue }
   }
   var cachedUnstagedChanges: [FileChange]?
   {
-    get { controller?.cachedUnstagedChanges }
-    set { controller?.cachedUnstagedChanges = newValue }
+    get { controller?.cache.unstagedChanges }
+    set { controller?.cache.unstagedChanges = newValue }
   }
   var cachedBranches: [String: GitBranch]
   {
-    get { controller?.cachedBranches ?? [:] }
-    set { controller?.cachedBranches = newValue }
+    get { controller?.cache.branches ?? [:] }
+    set { controller?.cache.branches = newValue }
   }
   var cachedIgnored = false
 
@@ -115,7 +115,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   
   func addCachedBranch(_ branch: GitBranch)
   {
-    controller?.cachedBranches[branch.name] = branch
+    controller?.cache.branches[branch.name] = branch
   }
   
   func updateIsWriting(_ writing: Bool)

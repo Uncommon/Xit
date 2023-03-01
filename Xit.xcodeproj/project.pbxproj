@@ -329,6 +329,7 @@
 		C9F20AE32347DB6F002E8603 /* NewBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */; };
 		C9F20AE42347DB6F002E8603 /* NewBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */; };
 		C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F4331526274FE200911A06 /* RepoActionBuilder.swift */; };
+		C9F43FCD29AFC30100F325BF /* MutexProtected.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F43FCC29AFC30100F325BF /* MutexProtected.swift */; };
 		C9F461DE1EF34826007BEBC9 /* BuildStatusCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */; };
 		C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5331C217A90B800B2432C /* KeychainTest.swift */; };
 		C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F533322183C7B100B2432C /* BasicAuthService.swift */; };
@@ -710,6 +711,7 @@
 		C9F20AE12347DB6F002E8603 /* NewBranchPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewBranchPanelController.swift; sourceTree = "<group>"; };
 		C9F20AE22347DB6F002E8603 /* NewBranchPanelController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewBranchPanelController.xib; sourceTree = "<group>"; };
 		C9F4331526274FE200911A06 /* RepoActionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoActionBuilder.swift; sourceTree = "<group>"; };
+		C9F43FCC29AFC30100F325BF /* MutexProtected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutexProtected.swift; sourceTree = "<group>"; };
 		C9F461DD1EF34826007BEBC9 /* BuildStatusCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildStatusCellView.swift; sourceTree = "<group>"; };
 		C9F5331C217A90B800B2432C /* KeychainTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTest.swift; sourceTree = "<group>"; };
 		C9F533322183C7B100B2432C /* BasicAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicAuthService.swift; sourceTree = "<group>"; };
@@ -804,6 +806,7 @@
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				89009E5128820CB2004A684B /* Testing.swift */,
+				C9F43FCC29AFC30100F325BF /* MutexProtected.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1600,6 +1603,7 @@
 				C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */,
 				C9C7730C1D26EE1C00329493 /* PrefsWindowController.swift in Sources */,
 				897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */,
+				C9F43FCD29AFC30100F325BF /* MutexProtected.swift in Sources */,
 				C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */,
 				C98925F91DBFCE7000E5645C /* SidebarController.swift in Sources */,
 				C94154A31ED778980030E481 /* BuildStatusCache.swift in Sources */,

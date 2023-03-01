@@ -6,12 +6,27 @@ public protocol RepositoryController: AnyObject
   var repository: any BasicRepository { get }
   var queue: TaskQueue { get }
 
-  var cachedStagedChanges: [FileChange]? { get set }
-  var cachedAmendChanges: [FileChange]? { get set }
-  var cachedUnstagedChanges: [FileChange]? { get set }
-  var cachedBranches: [String: GitBranch] { get set }
+  var cache: RepositoryCache { get set }
 
   func invalidateIndex()
+}
+
+public struct RepositoryCache
+{
+  var stagedChanges: [FileChange]?
+  var amendChanges: [FileChange]?
+  var unstagedChanges: [FileChange]?
+  var branches: [String: GitBranch] = [:]
+
+  init() {}
+
+  // Set them all together so the mutex only has to be used once
+  mutating func invalidateIndex()
+  {
+    stagedChanges = nil
+    amendChanges = nil
+    unstagedChanges = nil
+  }
 }
 
 /// Manages tasks and data related to working with a repository, such as cached
@@ -29,33 +44,10 @@ final class GitRepositoryController: RepositoryController
   fileprivate let configWatcher: ConfigWatcher
   fileprivate var workspaceWatcher: WorkspaceWatcher?
   private var workspaceSink: AnyCancellable?
-  
-  // Named with an underscore because the public accessors use the mutex
-  private var _cachedStagedChanges, _cachedAmendChanges,
-              _cachedUnstagedChanges: [FileChange]?
-  private var _cachedBranches: [String: GitBranch] = [:]
-  
-  var cachedStagedChanges: [FileChange]?
-  {
-    get { mutex.withLock { _cachedStagedChanges } }
-    set { mutex.withLock { _cachedStagedChanges = newValue } }
-  }
-  var cachedAmendChanges: [FileChange]?
-  {
-    get { mutex.withLock { _cachedAmendChanges } }
-    set { mutex.withLock { _cachedAmendChanges = newValue } }
-  }
-  var cachedUnstagedChanges: [FileChange]?
-  {
-    get { mutex.withLock { _cachedUnstagedChanges } }
-    set { mutex.withLock { _cachedUnstagedChanges = newValue } }
-  }
-  var cachedBranches: [String: GitBranch]
-  {
-    get { mutex.withLock { _cachedBranches } }
-    set { mutex.withLock { _cachedBranches = newValue } }
-  }
-  
+
+  @MutexProtected(wrappedValue: .init())
+  public var cache: RepositoryCache
+
   static func taskQueueID(path: String) -> String
   {
     let identifier = Bundle.main.bundleIdentifier ?? "com.uncommonplace.xit"
@@ -132,17 +124,11 @@ extension GitRepositoryController
 {
   func addCachedBranch(_ branch: GitBranch)
   {
-    mutex.withLock {
-      _cachedBranches[branch.name] = branch
-    }
+    cache.branches[branch.name] = branch
   }
 
   func invalidateIndex()
   {
-    mutex.withLock {
-      cachedStagedChanges = nil
-      cachedAmendChanges = nil
-      cachedUnstagedChanges = nil
-    }
+    cache.invalidateIndex()
   }
 }

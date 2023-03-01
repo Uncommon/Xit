@@ -146,10 +146,7 @@ class FakeRepoController: RepositoryController
 
   var queue: TaskQueue = TaskQueue(id: "testing")
 
-  var cachedStagedChanges: [FileChange]? = nil
-  var cachedAmendChanges: [FileChange]? = nil
-  var cachedUnstagedChanges: [FileChange]? = nil
-  var cachedBranches: [String : GitBranch] = [:]
+  var cache: RepositoryCache = .init()
 
   func invalidateIndex() {}
 
