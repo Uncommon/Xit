@@ -10,7 +10,7 @@ enum Testing
 
   static var defaults: Defaults = .standard
 
-  static let accounts: [Account] = [
+  static let tempAccountsData: [Account] = [
     .init(type: .gitHub, user: "This guy",
           location: .init(string: "https://github.com")!, id: .init()),
     .init(type: .teamCity, user: "Person",
@@ -36,7 +36,7 @@ enum Testing
     }
 
     if defaults == .tempAccounts {
-      UserDefaults.testing.accounts = accounts
+      UserDefaults.testing.accounts = tempAccountsData
     }
   }
 }

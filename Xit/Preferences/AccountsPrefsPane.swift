@@ -192,6 +192,9 @@ struct AccountsPrefsPane: View
     else { return }
 
     accountsManager.delete(account: account)
+    accountsManager.saveAccounts()
+
+    // Offer to delete the item from the keychain?
   }
 
   func editAccount()
@@ -220,7 +223,7 @@ struct AccountsPrefsPane_Previews: PreviewProvider
     let manager = AccountsManager(defaults: defaults,
                                   passwordStorage: MemoryPasswordStorage.shared)
 
-    defaults.accounts = Testing.accounts
+    defaults.accounts = Testing.tempAccountsData
     manager.readAccounts()
     return manager
   }()
