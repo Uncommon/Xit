@@ -168,6 +168,18 @@ class FileListController: NSViewController, RepositoryWindowViewController
       NSWorkspace.shared.open(url)
     }
   }
+
+  @IBAction
+  func openInApp(_ sender: NSMenuItem)
+  {
+    guard let url = sender.representedObject as? URL,
+          let item = selectedChange
+    else { return }
+    let itemURL = repository.fileURL(item.path)
+
+    NSWorkspace.shared.open([itemURL], withApplicationAt: url,
+                            configuration: NSWorkspace.OpenConfiguration())
+  }
   
   @IBAction
   func showInFinder(_ sender: Any)
@@ -284,9 +296,41 @@ extension FileListController: NSUserInterfaceValidations
   func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool
   {
     switch item.action {
-      case #selector(showInFinder(_:)),
-           #selector(open(_:)):
+
+      case #selector(showInFinder(_:)):
         return selectedChange != nil
+
+      case #selector(open(_:)):
+        guard let change = selectedChange
+        else { return false }
+        guard let openMenuItem = item as? NSMenuItem
+        else { return true }
+
+        openMenuItem.submenu = nil
+
+        let fileExtension = change.path.pathExtension
+        guard let type = UTType(filenameExtension: fileExtension)
+        else { return false }
+        let urls = NSWorkspace.shared.urlsForApplications(toOpen: type)
+        let items = urls.map {
+          let appName = $0.lastPathComponent.deletingPathExtension
+          let item = NSMenuItem(title: appName,
+                                action: #selector(self.openInApp(_:)),
+                                keyEquivalent: "")
+          item.representedObject = $0
+          return item
+        }
+        guard !items.isEmpty
+        else { return false }
+        let menu = NSMenu(title: "Open")
+
+        menu.items = items
+        openMenuItem.submenu = menu
+        return true
+
+      case #selector(self.openInApp(_:)):
+        return true
+
       case #selector(FileViewController.sortFilesBy(_:)):
         if let parent = self.parent as? NSUserInterfaceValidations {
           return parent.validateUserInterfaceItem(item)
@@ -294,6 +338,7 @@ extension FileListController: NSUserInterfaceValidations
         else {
           return false
         }
+
       default:
         return false
     }

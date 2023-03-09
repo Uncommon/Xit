@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21507" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21507"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -352,7 +352,7 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="5dV-b7-Pzm"/>
-                <menuItem title="Open" id="EG1-a7-JgJ">
+                <menuItem title="Open With" id="EG1-a7-JgJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="open:" target="-2" id="y1m-9a-Sgt"/>
@@ -390,7 +390,7 @@
         </menu>
     </objects>
     <resources>
-        <image name="NSActionTemplate" width="15" height="15"/>
+        <image name="NSActionTemplate" width="20" height="20"/>
         <image name="NSFolder" width="32" height="32"/>
         <image name="circle" catalog="system" width="15" height="15"/>
         <image name="doc" catalog="system" width="14" height="16"/>
