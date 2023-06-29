@@ -54,6 +54,8 @@
 		8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8959E6E02856E35400AD88C4 /* TagPanel.swift */; };
 		895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52126507E3E0073F15A /* FakePullRequest.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
+		895ED19329BBC82A00757AEA /* CheckOutRemotePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */; };
+		895ED19529BBD23500757AEA /* CheckOutRemoteOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895ED19429BBD23500757AEA /* CheckOutRemoteOpController.swift */; };
 		896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A29F61E4C3620002C5EC8 /* PreviewItem.swift */; };
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
 		897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */; };
@@ -425,6 +427,8 @@
 		8959E6E02856E35400AD88C4 /* TagPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPanel.swift; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
 		895CD52D265379450073F15A /* CommitPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitPanel.swift; sourceTree = "<group>"; };
+		895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutRemotePanel.swift; sourceTree = "<group>"; };
+		895ED19429BBD23500757AEA /* CheckOutRemoteOpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutRemoteOpController.swift; sourceTree = "<group>"; };
 		896A29F61E4C3620002C5EC8 /* PreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewItem.swift; sourceTree = "<group>"; };
 		897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickThroughImageView.swift; sourceTree = "<group>"; };
 		897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStringExtensions.swift; sourceTree = "<group>"; };
@@ -1257,6 +1261,8 @@
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
+				895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */,
+				895ED19429BBD23500757AEA /* CheckOutRemoteOpController.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1651,6 +1657,7 @@
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,
 				89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */,
 				C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */,
+				895ED19529BBD23500757AEA /* CheckOutRemoteOpController.swift in Sources */,
 				89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */,
 				89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */,
 				C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */,
@@ -1693,6 +1700,7 @@
 				C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */,
 				C9B68A5E27B425BC00EE4C3A /* GitODB.swift in Sources */,
 				C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */,
+				895ED19329BBC82A00757AEA /* CheckOutRemotePanel.swift in Sources */,
 				8983E1A7266596BD0075370C /* PathField.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */,

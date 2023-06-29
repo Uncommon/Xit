@@ -56,8 +56,8 @@ extension SidebarController
     else { return }
     
     controller.startOperation {
-      CheckOutRemoteOperationController(windowController: controller,
-                                        branch: item.fullName)
+      CheckOutRemoteOpController(windowController: controller,
+                                 branch: item.fullName)
     }
   }
   
