@@ -57,6 +57,7 @@ extension SidebarController
     
     controller.startOperation {
       CheckOutRemoteOpController(windowController: controller,
+                                 remote: item.remoteName,
                                  branch: item.fullName)
     }
   }

@@ -69,6 +69,8 @@
 		89880EDB20D08674007042F8 /* RefTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880EDA20D08674007042F8 /* RefTokenView.swift */; };
 		89880EED20D17D1E007042F8 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89880EEC20D17D1E007042F8 /* Media.xcassets */; };
 		898A381827136881002639CC /* RepoDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898A381727136881002639CC /* RepoDocument.swift */; };
+		898F75842A4E42DA00C157D7 /* RepositoryOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */; };
+		898F75862A51D8C700C157D7 /* OperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75852A51D8C700C157D7 /* OperationTests.swift */; };
 		8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992E23E26BF45F500DD5357 /* MiscExtensions.swift */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
@@ -442,6 +444,8 @@
 		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
 		89880EEC20D17D1E007042F8 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		898A381727136881002639CC /* RepoDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoDocument.swift; sourceTree = "<group>"; };
+		898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryOperation.swift; sourceTree = "<group>"; };
+		898F75852A51D8C700C157D7 /* OperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTests.swift; sourceTree = "<group>"; };
 		8992E23E26BF45F500DD5357 /* MiscExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscExtensions.swift; sourceTree = "<group>"; };
 		899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceTreeBuilder.swift; sourceTree = "<group>"; };
 		899DB1A01CE5022400760270 /* CommitEntryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitEntryController.swift; sourceTree = "<group>"; };
@@ -1019,6 +1023,7 @@
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				89E42729285D6E3D00A17651 /* ConfigTest.swift */,
 				897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */,
+				898F75852A51D8C700C157D7 /* OperationTests.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1216,6 +1221,7 @@
 				891260E1285BD11300053528 /* StashDialog.swift */,
 				8959E6E02856E35400AD88C4 /* TagPanel.swift */,
 				C9C4ECB42970D0EC0023C239 /* CleanCell.xib */,
+				898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1759,6 +1765,7 @@
 				8983E19126641BC20075370C /* ClonePanel.swift in Sources */,
 				C98AFFB22502CF6700AD20EC /* GitBuffer.swift in Sources */,
 				C94154A01ED4ECF40030E481 /* BuildStatusViewController.swift in Sources */,
+				898F75842A4E42DA00C157D7 /* RepositoryOperation.swift in Sources */,
 				C954ABFD1D34455000302160 /* GitBranch.swift in Sources */,
 				C9063D1C24169DAF00574A93 /* RepositoryUIAccessor.swift in Sources */,
 				C929D0601D42785B00D7DC52 /* TeamCityAPI.swift in Sources */,
@@ -1780,6 +1787,7 @@
 				C98EBC032125D22D00EF739E /* BitbucketServerTests.swift in Sources */,
 				897AE64F28BACDA500CC165C /* FileListModelTest.swift in Sources */,
 				C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */,
+				898F75862A51D8C700C157D7 /* OperationTests.swift in Sources */,
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				C9A05432227CF61D002BFFF5 /* CommitRootTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,

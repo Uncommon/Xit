@@ -3,10 +3,12 @@ import SwiftUI
 
 final class CheckOutRemoteOpController: OperationController
 {
+  let remoteName: String
   let remoteBranch: String
   
-  init(windowController: XTWindowController, branch: String)
+  init(windowController: XTWindowController, remote: String, branch: String)
   {
+    self.remoteName = remote
     self.remoteBranch = branch
     
     super.init(windowController: windowController)
@@ -49,15 +51,11 @@ final class CheckOutRemoteOpController: OperationController
     else { return }
     
     do {
-      let fullTarget = RefPrefixes.remotes + remoteBranch
+      let operation = CheckOutRemoteOperation(repository: repository,
+                                              remoteName: remoteName,
+                                              remoteBranch: remoteBranch)
       
-      if let branch = try repository.createBranch(named: model.branchName,
-                                                  target: fullTarget) {
-        branch.trackingBranchName = remoteBranch
-        if model.checkOut {
-          try repository.checkOut(branch: model.branchName)
-        }
-      }
+      try operation.perform(using: model)
     }
     catch let error as RepoError {
       windowController?.showErrorMessage(error: error)

@@ -30,16 +30,14 @@ final class NewBranchOpController: OperationController
                      track: Bool, checkOut: Bool)
   {
     do {
-      guard let branch = try repository?.createBranch(named: name,
-                                                      target: startPoint)
+      guard let repository
       else { throw RepoError.unexpected }
       
-      if track {
-        branch.trackingBranchName = startPoint
-      }
-      if checkOut {
-        try repository?.checkOut(branch: name)
-      }
+      let operation = NewBranchOperation(repository: repository)
+      let parameters = NewBranchOperation.Parameters(
+        name: name, startPoint: startPoint, track: track, checkOut: checkOut)
+      
+      try operation.perform(using: parameters)
     }
     catch let error as RepoError where error.isExpected {
       windowController?.showErrorMessage(error: error)

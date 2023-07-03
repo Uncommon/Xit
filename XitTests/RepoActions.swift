@@ -1,5 +1,5 @@
 import Foundation
-import Xit
+@testable import Xit
 
 enum TestFileName: String
 {
@@ -393,5 +393,43 @@ struct Merge: RepoAction
     else { throw RepoError.unexpected }
 
     try repository.merge(branch: branch)
+  }
+}
+
+struct AddRemote: RepoAction
+{
+  let remoteName: String
+  let url: URL
+  
+  init(named remoteName: String = "origin", url: URL)
+  {
+    self.remoteName = remoteName
+    self.url = url
+  }
+  
+  func execute(in repository: any FullRepository) throws
+  {
+    try repository.addRemote(named: remoteName, url: url)
+  }
+}
+
+struct Fetch: RepoAction
+{
+  let remoteName: String
+  
+  init(_ name: String = "origin")
+  {
+    self.remoteName = name
+  }
+  
+  func execute(in repository: any FullRepository) throws
+  {
+    guard let remote = repository.remote(named: remoteName)
+    else { throw RepoError.notFound }
+    let options = FetchOptions(downloadTags: false,
+                               pruneBranches: false,
+                               callbacks: .init())
+    
+    try repository.fetch(remote: remote, options: options)
   }
 }
