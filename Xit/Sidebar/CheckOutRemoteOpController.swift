@@ -51,9 +51,14 @@ final class CheckOutRemoteOpController: OperationController
     else { return }
     
     do {
+      guard let branchName = RemoteBranchRefName(remote: remoteName,
+                                              branch: remoteBranch)
+      else {
+        assertionFailure("bad branch name")
+        throw RepoError.unexpected
+      }
       let operation = CheckOutRemoteOperation(repository: repository,
-                                              remoteName: remoteName,
-                                              remoteBranch: remoteBranch)
+                                              remoteBranch: branchName)
       
       try operation.perform(using: model)
     }
@@ -67,14 +72,16 @@ final class CheckOutRemoteOpController: OperationController
 
   func validateBranch(_ branchName: String) -> CheckOutRemotePanel.BranchNameStatus
   {
-    let refName = "refs/heads/" + branchName
-    
-    if !GitReference.isValidName(refName) {
+    guard let refName = LocalBranchRefName(branchName)
+    else {
       return .invalid
     }
-    if repository?.localBranch(named: branchName) != nil {
+    
+    if repository?.localBranch(named: refName) != nil {
       return .conflict
     }
-    return .valid
+    else {
+      return .valid
+    }
   }
 }

@@ -19,9 +19,10 @@ final class OperationTests: XTTest
       Fetch()
     }
 
+    let remoteBranchName = try XCTUnwrap(
+      RemoteBranchRefName(remote: "origin", branch: branchName))
     let operation = CheckOutRemoteOperation(repository: repository,
-                                            remoteName: "origin",
-                                            remoteBranch: branchName)
+                                            remoteBranch: remoteBranchName)
     let model = CheckOutRemotePanel.Model()
     
     model.branchName = branchName
@@ -29,9 +30,37 @@ final class OperationTests: XTTest
     
     try operation.perform(using: model)
     
-    let localBranch = try XCTUnwrap(repository.localBranch(named: branchName))
     let currentBranch = repository.currentBranch
     
     XCTAssertEqual(currentBranch, branchName)
+  }
+  
+  func testNewBranch() throws
+  {
+    let operation = NewBranchOperation(repository: repository)
+    let parameters = NewBranchOperation.Parameters(
+          name: "branch",
+          startPoint: "master",
+          track: true,
+          checkOut: true)
+    
+    try operation.perform(using: parameters)
+    
+    XCTAssertEqual(repository.currentBranch, "branch")
+  }
+  
+  func testNewBranchNoCheckout() throws
+  {
+    let operation = NewBranchOperation(repository: repository)
+    let parameters = NewBranchOperation.Parameters(
+          name: "branch",
+          startPoint: "master",
+          track: true,
+          checkOut: false)
+    
+    try operation.perform(using: parameters)
+
+    XCTAssertEqual(repository.currentBranch, "master")
+    XCTAssertNotNil(repository.localBranch(named: .init("branch")!))
   }
 }

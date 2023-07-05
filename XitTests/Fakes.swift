@@ -177,7 +177,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func graphBetween(localBranch: any LocalBranch, upstreamBranch: any RemoteBranch)
     -> (ahead: Int, behind: Int)?
   { nil }
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
+  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }

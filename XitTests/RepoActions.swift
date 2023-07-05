@@ -389,7 +389,7 @@ struct Merge: RepoAction
   func execute(in repository: any FullRepository) throws
   {
     guard let branch = sourceBranch ??
-                       branchName.flatMap({ repository.localBranch(named: $0) })
+            branchName.flatMap({ repository.localBranch(named: .init($0)!) })
     else { throw RepoError.unexpected }
 
     try repository.merge(branch: branch)

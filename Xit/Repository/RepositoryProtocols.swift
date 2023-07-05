@@ -105,7 +105,7 @@ public protocol CommitReferencing<ID>: AnyObject
                     upstreamBranch: any RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
   
-  func localBranch(named name: String) -> (any LocalBranch)?
+  func localBranch(named refName: LocalBranchRefName) -> (any LocalBranch)?
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   
   func reference(named name: String) -> (any Reference)?
@@ -124,6 +124,8 @@ public protocol CommitReferencing<ID>: AnyObject
 
 extension CommitReferencing
 {
+  var currentBranchRefName: LocalBranchRefName?
+  { currentBranch.flatMap { .init($0) } }
   var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
   var headOID: ID? { headRef.flatMap { self.oid(forRef: $0) } }
@@ -368,10 +370,11 @@ public protocol Branching: AnyObject
   func createBranch(named name: String,
                     target: String) throws -> (any LocalBranch)?
   func rename(branch: String, to: String) throws
-  func localBranch(named name: String) -> (any LocalBranch)?
+  func localBranch(named refName: LocalBranchRefName) -> (any LocalBranch)?
   func remoteBranch(named name: String) -> (any RemoteBranch)?
   func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
-  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
+  func localTrackingBranch(forBranch branch: RemoteBranchRefName)
+    -> (any LocalBranch)?
   
   /// Resets the current branch to the specified commit
   func reset(toCommit target: any Commit, mode: ResetMode) throws
@@ -417,7 +420,8 @@ extension Branching
 {
   func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
   {
-    if let localBranch = localBranch(named: branch),
+    if let localBranchRef = LocalBranchRefName(branch),
+       let localBranch = localBranch(named: localBranchRef),
        let trackingBranchName = localBranch.trackingBranchName {
       return remoteBranch(named: trackingBranchName) == nil
           ? .missing(trackingBranchName)

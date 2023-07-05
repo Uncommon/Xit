@@ -348,7 +348,8 @@ extension XTWindowController: NSMenuItemValidation
   func trackingBranchInfo() -> (String, String)?
   {
     if let branchName = repository.currentBranch,
-       let branch = repository.localBranch(named: branchName),
+       let refName = LocalBranchRefName(branchName),
+       let branch = repository.localBranch(named: refName),
        let trackingBranch = branch.trackingBranch,
        let remote = trackingBranch.remoteName {
       return (branch.shortName, remote)

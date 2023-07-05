@@ -250,9 +250,10 @@ extension SidebarController
       switch response {
         
         case .alertFirstButtonReturn: // Clear
-          let branch = self.repo.localBranch(named: item.title)
-          
-          branch?.trackingBranchName = nil
+          if let refName = LocalBranchRefName(item.title),
+             let branch = self.repo.localBranch(named: refName) {
+            branch.trackingBranchName = nil
+          }
           self.sidebarOutline.reloadItem(item)
         
         case .alertSecondButtonReturn: // Delete

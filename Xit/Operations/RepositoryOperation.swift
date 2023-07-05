@@ -15,12 +15,11 @@ protocol RepositoryOperation
 struct CheckOutRemoteOperation: RepositoryOperation
 {
   let repository: any Workspace & Branching
-  let remoteName: String
-  let remoteBranch: String
+  let remoteBranch: RemoteBranchRefName
   
   func perform(using parameters: CheckOutRemotePanel.Model) throws
   {
-    let fullTarget = RefPrefixes.remotes +/ remoteName +/ remoteBranch
+    let fullTarget = remoteBranch.rawValue
     
     if let branch = try repository.createBranch(named: parameters.branchName,
                                                 target: fullTarget) {
@@ -49,7 +48,7 @@ struct NewBranchOperation: RepositoryOperation
   {
     guard let branch = try repository.createBranch(
         named: parameters.name,
-        target: parameters.startPoint)
+        target: RefPrefixes.heads + parameters.startPoint)
     else { throw RepoError.unexpected }
     
     if parameters.track {
