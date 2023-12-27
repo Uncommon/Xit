@@ -51,7 +51,8 @@ struct PreviewsPrefsPane: View
           fontChanger = FontChanger(font: $font)
           manager.target = fontChanger
         }.controlSize(.small)
-          .onChange(of: font) { newValue in
+          .onChange(of: font) {
+            (newValue, _) in
             fontName = newValue.displayName ?? newValue.fontName
             fontSize = Int(newValue.pointSize)
           }

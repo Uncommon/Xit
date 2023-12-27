@@ -253,26 +253,10 @@ extension Data
 
 extension String
 {
-  init?(gitBufferNoCopy: git_buf)
-  {
-    guard let result = String(
-        bytesNoCopy: gitBufferNoCopy.ptr,
-        length: strnlen(gitBufferNoCopy.ptr, gitBufferNoCopy.size),
-        encoding: .utf8,
-        freeWhenDone: false)
-    else { return nil }
-    
-    self = result
-  }
-  
   /// Creates a string with a copy of the buffer's contents.
   init?(gitBuffer: git_buf)
   {
-    guard let target = String(gitBufferNoCopy: gitBuffer)
-    else { return nil }
-    
-    // Make a copy because target points to the buffer
-    self = String(target)
+    self.init(cString: gitBuffer.ptr, encoding: .utf8)
   }
   
   /// Calls `action` with a string pointing to the given buffer. If the string
@@ -280,9 +264,12 @@ extension String
   static func withGitBuffer<T>(_ buffer: git_buf,
                                action: (String?) throws -> T) rethrows -> T
   {
-    let string = String(gitBufferNoCopy: buffer)
+    let nsString = NSString(bytesNoCopy: buffer.ptr,
+                            length: strnlen(buffer.ptr, buffer.size),
+                            encoding: NSUTF8StringEncoding,
+                            freeWhenDone: false)
     
-    return try action(string)
+    return try action(nsString as String?)
   }
   
   /// Normalizes whitespace and optionally strips comment lines.

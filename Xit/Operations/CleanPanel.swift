@@ -233,7 +233,7 @@ struct CleanPanel: View
       }
     }.labelWidthGroup().frame(minWidth: 400).padding(20)
       .onChange(of: model.filteredItems) {
-        (newValue) in
+        (newValue, _) in
         selection.formIntersection(newValue.map { $0.path })
       }
   }
