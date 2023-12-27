@@ -20,7 +20,7 @@ extension git_diff_delta
     else { return GIT_ERROR.rawValue }
     let target = payload!.bindMemory(to: git_diff_delta.self, capacity: 1)
     
-    target.assign(from: delta, count: 1)
+    target.update(from: delta, count: 1)
     return GIT_OK.rawValue
   }
   

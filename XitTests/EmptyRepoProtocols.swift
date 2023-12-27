@@ -27,11 +27,11 @@ extension EmptyBranching
   func createBranch(named name: String,
                     target: String) throws -> (any LocalBranch)? { nil }
   func rename(branch: String, to: String) throws {}
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
+  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
   func remoteBranch(named name: String) -> (any RemoteBranch)? { nil }
   func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
   { nil }
-  func localTrackingBranch(forBranchRef branch: String) -> (any LocalBranch)?
+  func localTrackingBranch(forBranch branch: RemoteBranchRefName) -> (any LocalBranch)?
   { nil }
   func reset(toCommit target: any Commit, mode: ResetMode) throws {}
 }
@@ -83,7 +83,7 @@ extension EmptyCommitReferencing
                                                           behind: Int)?
   { nil }
 
-  func localBranch(named name: String) -> (any LocalBranch)? { nil }
+  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
 

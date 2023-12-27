@@ -119,10 +119,11 @@ final class BuildStatusController: NSObject
   func statusImage(for item: SidebarItem) -> NSImage?
   {
     guard let branchItem = item as? BranchSidebarItem,
-          let refName = (branchItem as? RefSidebarItem)?.refName,
+          let refString = (branchItem as? RefSidebarItem)?.refName,
+          let remoteName = RemoteBranchRefName(rawValue: refString),
           let localBranch = branchItem.branchObject() as? any LocalBranch ??
                             model.repository?
-                                 .localTrackingBranch(forBranchRef: refName)
+                                 .localTrackingBranch(forBranch: remoteName)
     else { return nil }
 
     guard let remoteName = model.remoteName(forBranchItem: item),

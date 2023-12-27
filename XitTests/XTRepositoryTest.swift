@@ -838,8 +838,8 @@ class XTRepositoryTest: XTTest
   {
     let remoteName = "origin"
     let masterBranchName = "master"
-    let remoteBranchName = remoteName +/ masterBranchName
-    
+    let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remoteName +/ masterBranchName))
+
     makeRemoteRepo()
     try execute(in: remoteRepository) {
       CommitFiles {
@@ -849,17 +849,17 @@ class XTRepositoryTest: XTTest
     try repository.addRemote(named: remoteName,
                              url: URL(fileURLWithPath: remoteRepoPath))
     _ = try repository.executeGit(args: ["fetch", remoteName], writes: true)
-    _ = try repository.executeGit(args: ["branch", "-u", remoteBranchName],
+    _ = try repository.executeGit(args: ["branch", "-u", remoteBranchName.name],
                                   writes: true)
     
     repository.config.invalidate()
     
-    let masterBranch = try XCTUnwrap(repository.localBranch(named: masterBranchName))
+    let masterBranch = try XCTUnwrap(repository.localBranch(named: .init(masterBranchName)!))
     
-    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName)
+    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName.name)
     
     let localBranch = try XCTUnwrap(repository.localTrackingBranch(
-          forBranchRef: RefPrefixes.remotes +/ remoteName +/ masterBranchName))
+      forBranch: remoteBranchName))
     
     XCTAssertEqual(localBranch.name, RefPrefixes.heads + "master")
   }

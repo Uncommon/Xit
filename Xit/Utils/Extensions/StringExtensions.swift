@@ -84,7 +84,7 @@ extension String
   {
     CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault,
                                         self as CFString,
-                                        [:] as CFDictionary) as String
+                                        nil) as String
   }
   
   var fullNSRange: NSRange

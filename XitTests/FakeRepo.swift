@@ -45,9 +45,9 @@ class FakeRepo: FakeFileChangesRepo
     remote1.urlString = "https://example.com/repo2.git"
   }
   
-  override func localBranch(named name: String) -> (any LocalBranch)?
+  override func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)?
   {
-    switch name {
+    switch name.name {
       case "branch1":
         return localBranch1
       case "branch2":

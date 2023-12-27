@@ -148,7 +148,8 @@ extension XTRepository: CommitReferencing
   func deleteBranch(_ name: String) -> Bool
   {
     return writing {
-      guard let branch = localBranch(named: name) as? GitLocalBranch
+      guard let refName = LocalBranchRefName(name),
+            let branch = localBranch(named: refName) as? GitLocalBranch
       else { return false }
       
       return git_branch_delete(branch.branchRef) == 0

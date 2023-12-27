@@ -20,7 +20,8 @@ final class SidebarDelegate: NSObject
   {
     guard let repository = model?.repository,
           item is LocalBranchSidebarItem,
-          let localBranch = repository.localBranch(named: item.title),
+          let refName = LocalBranchRefName(item.title),
+          let localBranch = repository.localBranch(named: refName),
           let trackingBranch = localBranch.trackingBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
                                               upstreamBranch: trackingBranch)
@@ -301,7 +302,8 @@ extension SidebarDelegate: NSOutlineViewDelegate
       case let remoteBranchItem as RemoteBranchSidebarItem:
         guard let repository = model?.repository,
               let branchName = repository.currentBranch,
-              let currentBranch = repository.localBranch(named: branchName),
+              let refName = LocalBranchRefName(branchName),
+              let currentBranch = repository.localBranch(named: refName),
               currentBranch.trackingBranchName == remoteBranchItem.remoteName +/
                                                   remoteBranchItem.title
         else { return nil }

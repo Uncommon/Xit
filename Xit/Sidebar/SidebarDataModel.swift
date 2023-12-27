@@ -65,7 +65,8 @@ final class SidebarDataModel
       case let remoteBranchItem as RemoteBranchSidebarItem:
         return remoteBranchItem.remoteName
       case let localBranchItem as LocalBranchSidebarItem:
-        guard let branch = repo.localBranch(named: localBranchItem.title)
+        guard let refName = LocalBranchRefName(localBranchItem.title),
+              let branch = repo.localBranch(named: refName)
         else {
           repoLogger.debug("Can't get branch for branch item: \(branchItem.title)")
           return nil

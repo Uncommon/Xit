@@ -110,16 +110,18 @@ class CheckOutRemoteWindowController: NSWindowController
   func updateCreateButton()
   {
     let branchName = nameField.stringValue
-    let refName = "refs/heads/" + branchName
+    let refName = LocalBranchRefName(branchName)
     var errorText = UIString.empty
     
-    if !GitReference.isValidName(refName) {
+    if let refName {
+      if repo.localBranch(named: refName) != nil {
+        errorText = .branchNameExists
+      }
+    }
+    else {
       errorText = .branchNameInvalid
     }
-    if repo.localBranch(named: branchName) != nil {
-      errorText = .branchNameExists
-    }
-    
+
     errorLabel.uiStringValue = errorText
     createButton.isEnabled = errorText.rawValue.isEmpty
   }

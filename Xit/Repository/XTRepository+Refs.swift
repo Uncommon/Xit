@@ -70,15 +70,16 @@ extension XTRepository: Branching
     try RepoError.throwIfGitError(result)
   }
 
-  public func localBranch(named name: String) -> (any LocalBranch)?
+  public func localBranch(named refName: LocalBranchRefName) -> (any LocalBranch)?
   {
-    let fullName = RefPrefixes.heads +/ name
+    let fullName = refName.rawValue
     
     if let branch = cachedBranches[fullName] as? GitLocalBranch {
       return branch
     }
     else {
-      guard let branch = GitLocalBranch(repository: gitRepo, name: name,
+      guard let branch = GitLocalBranch(repository: gitRepo,
+                                        name: refName.name,
                                         config: config)
       else { return nil }
       
@@ -113,7 +114,13 @@ extension XTRepository: Branching
   public func localBranch(tracking remoteBranch: any RemoteBranch)
     -> (any LocalBranch)?
   {
-    return localTrackingBranch(forBranchRef: remoteBranch.name)
+    guard let remoteBranchName = RemoteBranchRefName(rawValue: remoteBranch.name)
+    else {
+      assertionFailure("remote branch had invalid name")
+      return nil
+    }
+    
+    return localTrackingBranch(forBranch: remoteBranchName)
   }
   
   // swiftlint:disable:next force_try
@@ -121,12 +128,9 @@ extension XTRepository: Branching
       NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
                           options: [])
 
-  public func localTrackingBranch(forBranchRef branch: String)
+  public func localTrackingBranch(forBranch branch: RemoteBranchRefName)
     -> (any LocalBranch)?
   {
-    guard let ref = RefName(rawValue: branch),
-          case let .remoteBranch(remote, branch) = ref
-    else { return nil }
     let config = self.config as! GitConfig
     
     // Looping through all the branches can be expensive
@@ -137,17 +141,17 @@ extension XTRepository: Branching
                                                 range: name.fullNSRange),
             match.numberOfRanges == 2,
             let branchRange = Range(match.range(at: 1), in: name),
-            entry.stringValue == remote
+            entry.stringValue == branch.remoteName
       else { continue }
       let entryBranch = String(name[branchRange])
       guard let mergeName = config.branchMerge(entryBranch)
       else { continue }
 
-      let stripped = branch.droppingPrefix(RefPrefixes.remotes +/ remote)
-      let expectedMergeName = RefPrefixes.heads +/ stripped
+      let expectedMergeName = RefPrefixes.heads +/ branch.branchName
       
-      if mergeName == expectedMergeName {
-        return localBranch(named: entryBranch)
+      if mergeName == expectedMergeName,
+         let refName = LocalBranchRefName(entryBranch) {
+        return localBranch(named: refName)
       }
     }
     return nil
