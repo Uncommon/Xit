@@ -424,15 +424,16 @@ class SubmoduleSidebarItem: SidebarItem
     super.init(title: title)
   }
   
-  private class MockSubmodule: Submodule
+  // swiftlint:disable unused_setter_value
+  private final class MockSubmodule: Submodule
   {
     let name = ""
     let path = ""
     let url: URL? = nil
     
-    var ignoreRule: SubmoduleIgnore = .none
-    var updateStrategy: SubmoduleUpdate = .none
-    var recurse: SubmoduleRecurse = .no
+    var ignoreRule: SubmoduleIgnore { get { .none } set {} }
+    var updateStrategy: SubmoduleUpdate { get { .none } set {} }
+    var recurse: SubmoduleRecurse { get { .no } set {} }
 
     func update(initialize: Bool, callbacks: RemoteCallbacks) throws {}
   }

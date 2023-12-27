@@ -40,15 +40,19 @@ class PasswordOpController: SimpleOperationController
       assertionFailure("password callback on main thread")
       return nil
     }
-    guard DispatchQueue.main.sync(execute: { passwordController == nil })
+    guard DispatchQueue.main.sync(execute: { 
+      MainActor.assumeIsolated { passwordController == nil }
+    })
     else {
       assertionFailure("already have a password sheet")
       return nil
     }
     let (window, controller) = DispatchQueue.main.sync {
-      let controller = PasswordPanelController()
-      self.passwordController = controller
-      return (windowController?.window, controller)
+      MainActor.assumeIsolated {
+        let controller = PasswordPanelController()
+        self.passwordController = controller
+        return (windowController?.window, controller)
+      }
     }
     guard let window = window,
           let urlInfo = self.urlInfo.value

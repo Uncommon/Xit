@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Submodule
+public protocol Submodule: Sendable
 {
   var name: String { get }
   var path: String { get }
@@ -79,7 +79,7 @@ extension SubmoduleRecurse
 
 public final class GitSubmodule: Submodule
 {
-  var submodule: OpaquePointer
+  let submodule: OpaquePointer
 
   /// The object will assume ownership of `submodule` and will call
   /// `git_submodule_free` when deinitialized.
