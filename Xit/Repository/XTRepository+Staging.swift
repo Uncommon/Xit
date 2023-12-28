@@ -171,7 +171,9 @@ extension XTRepository: FileStatusDetection
       (paths: inout [UnsafeMutablePointer<CChar>?]) -> Int32 in
       paths.withUnsafeMutableBufferPointer {
         options.pathspec.strings = $0.baseAddress
-        return git_status_foreach_ext(gitRepo, &options, callback, &data)
+        return withUnsafeMutablePointer(to: &data) {
+          git_status_foreach_ext(gitRepo, &options, callback, $0)
+        }
       }
     }
     guard result == 0 || result == GIT_EUSER.rawValue

@@ -74,7 +74,9 @@ extension XTRepository: CommitReferencing
       objc_sync_exit(self)
     }
     refsIndex.removeAll()
-    git_reference_foreach(gitRepo, callback, &payload)
+    withUnsafeMutablePointer(to: &payload) {
+      _ = git_reference_foreach(gitRepo, callback, $0)
+    }
   }
   
   /// Returns a list of refs that point to the given commit.

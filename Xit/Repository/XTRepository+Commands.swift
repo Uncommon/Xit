@@ -273,7 +273,9 @@ extension XTRepository: SubmoduleManagement
       return 0
     }
     
-    git_submodule_foreach(gitRepo, callback, &payload)
+    withUnsafeMutablePointer(to: &payload) {
+      _ = git_submodule_foreach(gitRepo, callback, $0)
+    }
     return payload.submodules
   }
 }
