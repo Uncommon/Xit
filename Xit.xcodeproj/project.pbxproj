@@ -1392,9 +1392,10 @@
 		C3FA46F313D0F8E200AC4F9B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = XT;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C3FA46FB13D0F8E200AC4F9B = {
