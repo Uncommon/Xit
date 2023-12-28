@@ -10,7 +10,7 @@ public enum RepoError: Swift.Error
   case detachedHead
   case duplicateName
   case fileNotFound(path: String)
-  case gitError(Int32)
+  case gitError(Int32, git_error?)
   case invalidName(String)
   case invalidNameGiven
   case localConflict
@@ -19,6 +19,9 @@ public enum RepoError: Swift.Error
   case patchMismatch
   case unexpected
   case workspaceDirty
+  
+  static func gitError(_ code: Int32) -> Self
+  { .gitError(code, nil) }
   
   var isExpected: Bool
   {
@@ -49,8 +52,13 @@ public enum RepoError: Swift.Error
         return .localConflict
       case .detachedHead:
         return .detachedHead
-      case .gitError(let code):
-        return .gitError(code)
+      case .gitError(let code, let error):
+        if let error, let message = error.message.map({ String(cString: $0) }) {
+          return .gitErrorMsg(code, message)
+        }
+        else {
+          return .gitError(code)
+        }
       case .invalidName(let name):
         return .invalidName(name)
       case .invalidNameGiven:
@@ -92,14 +100,14 @@ public enum RepoError: Swift.Error
       case GIT_EAUTH:
         self = .authenticationFailed
       default:
-        self = .gitError(gitCode.rawValue)
+        self = .gitError(gitCode.rawValue, git_error_last()?.pointee)
     }
   }
   
   func isGitError(_ code: git_error_code) -> Bool
   {
     switch self {
-      case .gitError(let myCode):
+      case .gitError(let myCode, _):
         return myCode == code.rawValue
       default:
         return false

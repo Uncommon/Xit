@@ -250,7 +250,7 @@ final class ClonePanelController: NSWindowController
     }
     catch let error as RepoError {
       switch error {
-        case .gitError(let code) where code == GIT_ERROR.rawValue:
+        case .gitError(let code, _) where code == GIT_ERROR.rawValue:
           return .failure(.cantAccess)
         default:
           return .failure(.gitError(error))

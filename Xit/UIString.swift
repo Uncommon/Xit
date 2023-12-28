@@ -305,6 +305,7 @@ public struct UIString: RawRepresentable, Sendable
 
   // Repository errors
   static private let gitErrorFormat = "An internal git error (%d) occurred."
+  static private let gitErrorMsgFormat = "An internal git error (%d, %@) occurred."
   static private let commitNotFoundFormat = "The commit %@ was not found."
   static private let fileNotFoundFormat = "The file %@ was not found."
   static private let invalidNameFormat = "The name %@ is not valid."
@@ -312,6 +313,8 @@ public struct UIString: RawRepresentable, Sendable
 
   static func gitError(_ error: Int32) -> UIString
   { .init(format: UIString.gitErrorFormat, error) }
+  static func gitErrorMsg(_ error: Int32, _ message: String) -> UIString
+  { .init(format: UIString.gitErrorMsgFormat, error, message) }
   static func commitNotFound(_ sha: String?) -> UIString
   { .init(format: UIString.commitNotFoundFormat, sha ?? "-") }
   static func fileNotFound(_ file: String) -> UIString
