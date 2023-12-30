@@ -21,7 +21,9 @@ extension XTRepository: RemoteCommunication
           var options = git_push_options.defaultOptions()
 
           options.callbacks = gitCallbacks
-          return git_remote_push(gitRemote.remote, &mutableArray, &options)
+          return Signpost.interval(.networkOperation) {
+            git_remote_push(gitRemote.remote, &mutableArray, &options)
+          }
         }
       }
       try RepoError.throwIfGitError(result)
@@ -47,7 +49,10 @@ extension XTRepository: RemoteCommunication
       
       result = git_fetch_options.withOptions(options) {
         withUnsafePointer(to: $0) {
-          git_remote_fetch(gitRemote.remote, &refspecs, $0, message)
+          (options) in
+          Signpost.interval(.networkOperation) {
+            git_remote_fetch(gitRemote.remote, &refspecs, options, message)
+          }
         }
       }
       try RepoError.throwIfGitError(result)

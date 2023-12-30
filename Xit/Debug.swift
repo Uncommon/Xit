@@ -5,6 +5,8 @@ enum Signpost
 {
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
                             category: .pointsOfInterest)
+  static let debugLogger = Logger(subsystem: "com.uncommonplace.xit",
+                                  category: "debug")
 
   enum Event
   {
@@ -37,6 +39,7 @@ enum Signpost
     case teamCityQuery
     case teamCityProcess
     case buildStatusUpdate(String)
+    case networkOperation
     
     var name: StaticString
     {
@@ -54,6 +57,7 @@ enum Signpost
         case .teamCityQuery: return "query TeamCity"
         case .teamCityProcess: return "process TeamCity response"
         case .buildStatusUpdate: return "build status update"
+        case .networkOperation: return "network operation"
       }
     }
   }
@@ -61,6 +65,7 @@ enum Signpost
   static func event(_ code: Event)
   {
     os_signpost(.event, log: Signpost.logger, name: code.name)
+    Signpost.debugLogger.debug("\(code.name)")
   }
 
   static func intervalStart(_ code: Interval, id: OSSignpostID = .exclusive)
@@ -86,11 +91,13 @@ enum Signpost
   static func intervalStart(_ code: Interval, object: AnyObject)
   {
     intervalStart(code, id: OSSignpostID(log: Signpost.logger, object: object))
+    Signpost.debugLogger.debug("» \(code.name)")
   }
 
   static func intervalEnd(_ code: Interval, object: AnyObject)
   {
     intervalEnd(code, id: OSSignpostID(log: Signpost.logger, object: object))
+    Signpost.debugLogger.debug("« \(code.name)")
   }
 
   static func interval<T>(_ code: Interval,
