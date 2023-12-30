@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,13 +21,13 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="397" height="245"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
-            <view key="contentView" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="397" height="187"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1069"/>
+            <view key="contentView" misplaced="YES" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="397" height="245"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Eif-DY-U8Z">
-                        <rect key="frame" x="256" y="13" width="127" height="32"/>
+                        <rect key="frame" x="263" y="13" width="121" height="32"/>
                         <buttonCell key="cell" type="push" title="Create Branch" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GUs-UQ-9ZL">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -41,7 +40,7 @@ DQ
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1ZZ-KV-Qrk">
-                        <rect key="frame" x="174" y="13" width="82" height="32"/>
+                        <rect key="frame" x="189" y="13" width="76" height="32"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="TKU-2u-gGI">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -54,7 +53,7 @@ Gw
                         </connections>
                     </button>
                     <gridView xPlacement="trailing" yPlacement="fill" rowAlignment="none" rowSpacing="12" columnSpacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="hoO-9s-Vtj">
-                        <rect key="frame" x="20" y="61" width="357" height="106"/>
+                        <rect key="frame" x="20" y="60" width="357" height="110"/>
                         <rows>
                             <gridRow rowAlignment="firstBaseline" id="WDU-Q6-6c3"/>
                             <gridRow rowAlignment="firstBaseline" id="5BL-Tz-cAg"/>
@@ -67,8 +66,8 @@ Gw
                         </columns>
                         <gridCells>
                             <gridCell row="WDU-Q6-6c3" column="vdU-5k-F2r" id="LAQ-WY-P7N">
-                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UZZ-c6-MgT">
-                                    <rect key="frame" x="-2" y="88" width="91" height="16"/>
+                                <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UZZ-c6-MgT">
+                                    <rect key="frame" x="-2" y="92" width="91" height="16"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="New branch:" id="CMX-bB-Hne">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -77,8 +76,8 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="WDU-Q6-6c3" column="pd6-d3-MeE" id="K8h-ds-KMj">
-                                <textField key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Oj-06-Qzi">
-                                    <rect key="frame" x="95" y="85" width="262" height="21"/>
+                                <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Oj-06-Qzi">
+                                    <rect key="frame" x="95" y="89" width="262" height="21"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="Gb9-kn-zPu">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -90,8 +89,8 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="5BL-Tz-cAg" column="vdU-5k-F2r" id="6a1-aR-Hs9">
-                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9gi-S5-Gpu">
-                                    <rect key="frame" x="-2" y="54" width="91" height="16"/>
+                                <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9gi-S5-Gpu">
+                                    <rect key="frame" x="-2" y="58" width="91" height="16"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Starting point:" id="bBL-Bd-g7K">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -100,8 +99,8 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="5BL-Tz-cAg" column="pd6-d3-MeE" id="wAp-Vw-v20">
-                                <textField key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FcF-9i-uh6">
-                                    <rect key="frame" x="95" y="52" width="262" height="21"/>
+                                <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FcF-9i-uh6">
+                                    <rect key="frame" x="95" y="56" width="262" height="21"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="sgH-o9-xTX">
                                         <font key="font" usesAppearanceFont="YES"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -115,7 +114,7 @@ Gw
                             <gridCell row="wlI-ev-GnJ" column="vdU-5k-F2r" id="2ld-no-RMN"/>
                             <gridCell row="wlI-ev-GnJ" column="pd6-d3-MeE" id="uA0-b9-3qQ">
                                 <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zz8-vU-knG">
-                                    <rect key="frame" x="93" y="24" width="266" height="18"/>
+                                    <rect key="frame" x="93" y="27" width="264" height="18"/>
                                     <buttonCell key="cell" type="check" title="Check out new branch" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="4Q3-oV-A3J">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -125,7 +124,7 @@ Gw
                             <gridCell row="42n-np-YKK" column="vdU-5k-F2r" id="N1M-oj-7W1"/>
                             <gridCell row="42n-np-YKK" column="pd6-d3-MeE" id="DAs-tB-hMu">
                                 <button key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZDK-m6-Wgk">
-                                    <rect key="frame" x="93" y="-2" width="266" height="18"/>
+                                    <rect key="frame" x="93" y="-1" width="264" height="18"/>
                                     <buttonCell key="cell" type="check" title="Track starting point" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="pjS-jj-9BF">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>

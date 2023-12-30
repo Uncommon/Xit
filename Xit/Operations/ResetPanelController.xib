@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,13 +20,13 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="578" height="270"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
-            <view key="contentView" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="465" height="158"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1069"/>
+            <view key="contentView" misplaced="YES" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="578" height="270"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wMp-9V-WKN">
-                        <rect key="frame" x="376" y="13" width="75" height="32"/>
+                        <rect key="frame" x="383" y="13" width="69" height="32"/>
                         <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Elg-H5-uVX">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -37,7 +36,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2lG-si-4AY">
-                        <rect key="frame" x="294" y="13" width="82" height="32"/>
+                        <rect key="frame" x="309" y="13" width="76" height="32"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ApS-jg-Bhn">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -50,7 +49,7 @@ Gw
                         </connections>
                     </button>
                     <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sBl-eI-Kgh">
-                        <rect key="frame" x="102" y="115" width="161" height="24"/>
+                        <rect key="frame" x="102" y="115" width="135" height="24"/>
                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="hJz-R1-aK7">
                             <font key="font" metaFont="system"/>
                             <segments>
@@ -63,8 +62,8 @@ Gw
                             <action selector="modeSelected:" target="-2" id="vME-Kf-QIG"/>
                         </connections>
                     </segmentedControl>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G1o-x2-wHq">
-                        <rect key="frame" x="18" y="77" width="429" height="32"/>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="G1o-x2-wHq">
+                        <rect key="frame" x="18" y="76" width="429" height="32"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="425" id="wlG-Da-JCC"/>
                         </constraints>
@@ -76,15 +75,15 @@ Gw
                         <accessibility identifier="Description"/>
                     </textField>
                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="X5l-IS-zdJ">
-                        <rect key="frame" x="20" y="53" width="16" height="16"/>
+                        <rect key="frame" x="20" y="52" width="16" height="16"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="HzC-Vg-9uz"/>
                             <constraint firstAttribute="width" constant="16" id="dwZ-Z9-6Ub"/>
                         </constraints>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusUnavailable" id="OdO-g6-NET"/>
                     </imageView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nRk-Tg-V4Z">
-                        <rect key="frame" x="38" y="53" width="409" height="16"/>
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nRk-Tg-V4Z">
+                        <rect key="frame" x="38" y="52" width="409" height="16"/>
                         <textFieldCell key="cell" title="You have uncommitted changes that will be lost with this option." id="aNB-Iu-fVx">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -92,7 +91,7 @@ Gw
                         </textFieldCell>
                         <accessibility identifier="Status"/>
                     </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nhe-OJ-ahC">
+                    <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nhe-OJ-ahC">
                         <rect key="frame" x="18" y="120" width="80" height="16"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Reset mode:" id="adH-ua-skc">
                             <font key="font" metaFont="system"/>
