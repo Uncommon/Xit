@@ -37,7 +37,8 @@ cd build
 export PKG_CONFIG_PATH="${HOMEBREW_ROOT}/opt/${OPENSSL_DIR}/lib/pkgconfig"
 
 cmake -DBUILD_SHARED_LIBS:BOOL=OFF \
-    -DLIBSSH2_INCLUDE_DIRS:PATH=${HOMEBREW_ROOT}/include/ \
+    -DUSE_SSH=ON \
+    -DCMAKE_PREFIX_PATH="${HOMEBREW_ROOT}/opt/libssh2" \
     -DBUILD_CLAR:BOOL=OFF \
     -DTHREADSAFE:BOOL=ON \
     ..

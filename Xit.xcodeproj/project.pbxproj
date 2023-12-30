@@ -52,6 +52,7 @@
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
 		892F408D27ECCD2700659BF9 /* NoOpKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */; };
 		8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8959E6E02856E35400AD88C4 /* TagPanel.swift */; };
+		895CBA382B4061E70094D534 /* LibGit2Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CBA372B4061E70094D534 /* LibGit2Test.swift */; };
 		895CD52226507E3E0073F15A /* FakePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52126507E3E0073F15A /* FakePullRequest.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
 		895ED19329BBC82A00757AEA /* CheckOutRemotePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */; };
@@ -428,6 +429,7 @@
 		892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpKeychain.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		8959E6E02856E35400AD88C4 /* TagPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPanel.swift; sourceTree = "<group>"; };
+		895CBA372B4061E70094D534 /* LibGit2Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibGit2Test.swift; sourceTree = "<group>"; };
 		895CD52126507E3E0073F15A /* FakePullRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakePullRequest.swift; sourceTree = "<group>"; };
 		895CD52D265379450073F15A /* CommitPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitPanel.swift; sourceTree = "<group>"; };
 		895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutRemotePanel.swift; sourceTree = "<group>"; };
@@ -993,6 +995,7 @@
 				C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
 				C9A05431227CF61D002BFFF5 /* CommitRootTest.swift */,
+				89E42729285D6E3D00A17651 /* ConfigTest.swift */,
 				C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */,
 				C98EBC1C212CC56600EF739E /* Fakes.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
@@ -1000,8 +1003,10 @@
 				C94736751DEF28F8000E3A05 /* GitSwiftTests.swift */,
 				C991904D20AE32150080687F /* IndexTreeTest.swift */,
 				C9F5331C217A90B800B2432C /* KeychainTest.swift */,
+				898F75852A51D8C700C157D7 /* OperationTests.swift */,
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C98EBC1E212CCC6D00EF739E /* PullRequestManagerTest.swift */,
+				898F75892A55CDCA00C157D7 /* ReferenceNameTests.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
 				C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */,
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
@@ -1023,10 +1028,8 @@
 				C924EFB4262F316500B13D31 /* RepoActions.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
-				89E42729285D6E3D00A17651 /* ConfigTest.swift */,
 				897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */,
-				898F75852A51D8C700C157D7 /* OperationTests.swift */,
-				898F75892A55CDCA00C157D7 /* ReferenceNameTests.swift */,
+				895CBA372B4061E70094D534 /* LibGit2Test.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1810,6 +1813,7 @@
 				C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */,
 				C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */,
 				C94D9E0222A031BE00E46A28 /* SidebarDelegateTest.swift in Sources */,
+				895CBA382B4061E70094D534 /* LibGit2Test.swift in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
 				C9A0223822EF4BE8001EFD7E /* XTRepositoryHunkTest.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* TeamCityTest.swift in Sources */,
