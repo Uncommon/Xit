@@ -19,12 +19,12 @@
         <window title="Remote Settings" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="351" height="155"/>
+            <rect key="contentRect" x="196" y="240" width="351" height="151"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1069"/>
-            <value key="minSize" type="size" width="351" height="155"/>
+            <value key="minSize" type="size" width="351" height="151"/>
             <value key="maxSize" type="size" width="500" height="196"/>
-            <view key="contentView" misplaced="YES" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="351" height="155"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="351" height="151"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BP4-lR-keK">
