@@ -245,5 +245,12 @@ class RemoteBranchTests: UnicodeRepoUITests
       XCTAssertFalse(CreateTrackingSheet.window.exists,
                      "sheet stayed open")
     }
+    
+    XCTContext.runActivity(named: "verify branch is checked out") { _ in
+      let currentBranch = env.git.run(args: ["branch", "--show-current"])
+      
+      XCTAssertEqual(currentBranch, newBranchName)
+      Sidebar.assertCurrentBranch(newBranchName)
+    }
   }
 }

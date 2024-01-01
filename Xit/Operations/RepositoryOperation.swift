@@ -28,6 +28,9 @@ struct CheckOutRemoteOperation: RepositoryOperation
         try repository.checkOut(branch: parameters.branchName)
       }
     }
+    else {
+      throw RepoError.unexpected // could not resolve target
+    }
   }
 }
 

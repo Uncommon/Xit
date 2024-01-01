@@ -54,11 +54,15 @@ extension SidebarController
     guard let item = targetItem() as? RemoteBranchSidebarItem,
           let controller = view.window?.windowController as? XTWindowController
     else { return }
+    guard let refName = RemoteBranchRefName(item.fullName)
+    else {
+      assertionFailure("can't resolve item ref name")
+      return
+    }
     
     controller.startOperation {
       CheckOutRemoteOpController(windowController: controller,
-                                 remote: item.remoteName,
-                                 branch: item.fullName)
+                                 branch: refName)
     }
   }
   

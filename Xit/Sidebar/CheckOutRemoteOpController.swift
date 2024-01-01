@@ -3,12 +3,11 @@ import SwiftUI
 
 final class CheckOutRemoteOpController: OperationController
 {
-  let remoteName: String
-  let remoteBranch: String
+  let remoteBranch: RemoteBranchRefName
   
-  init(windowController: XTWindowController, remote: String, branch: String)
+  init(windowController: XTWindowController,
+       branch: RemoteBranchRefName)
   {
-    self.remoteName = remote
     self.remoteBranch = branch
     
     super.init(windowController: windowController)
@@ -18,11 +17,10 @@ final class CheckOutRemoteOpController: OperationController
   {
     guard let window = windowController?.window
     else { throw RepoError.unexpected }
-    let bareBranchName = remoteBranch.droppingPrefix(remoteName + "/")
-    let model = CheckOutRemotePanel.Model(branchName: bareBranchName)
+    let model = CheckOutRemotePanel.Model(branchName: remoteBranch.name)
     var sheet: NSWindow! = nil
     let panel = CheckOutRemotePanel(model: model,
-                                    originBranch: remoteBranch,
+                                    originBranch: remoteBranch.rawValue,
                                     validateBranch: validateBranch(_:),
                                     cancelAction: {
                                       window.endSheet(sheet, returnCode: .cancel)
@@ -51,14 +49,8 @@ final class CheckOutRemoteOpController: OperationController
     else { return }
     
     do {
-      guard let branchName = RemoteBranchRefName(remote: remoteName,
-                                                 branch: remoteBranch)
-      else {
-        assertionFailure("bad branch name")
-        throw RepoError.unexpected
-      }
       let operation = CheckOutRemoteOperation(repository: repository,
-                                              remoteBranch: branchName)
+                                              remoteBranch: remoteBranch)
       
       try operation.perform(using: model)
     }

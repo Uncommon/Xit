@@ -106,6 +106,23 @@ enum Sidebar
     }
   }
   
+  static func assertCurrentBranch(_ branch: String,
+                                  file: StaticString = #file,
+                                  line: UInt = #line)
+  {
+    let currentBranchID = AXID.Sidebar.currentBranch.rawValue
+    guard let predicate = NSPredicate(fromMetadataQueryString: "identifier == \(currentBranchID) AND stringValue == \(branch)")
+    else {
+      XCTFail("could not construct predicate")
+      return
+    }
+    let item = Sidebar.list.staticTexts.matching(predicate)
+    
+    XCTAssert(item.element.waitForExistence(timeout: 2),
+              "current branch did not match",
+              file: file, line: line)
+  }
+  
   static func workspaceStatusIndicator(branch: String) -> XCUIElement
   {
     let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
