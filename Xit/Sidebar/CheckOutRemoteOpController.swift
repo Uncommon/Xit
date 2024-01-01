@@ -18,24 +18,24 @@ final class CheckOutRemoteOpController: OperationController
   {
     guard let window = windowController?.window
     else { throw RepoError.unexpected }
-    let model = CheckOutRemotePanel.Model()
-    let panel = CheckOutRemotePanel(
-      model: model,
-      originBranch: remoteBranch,
-      validateBranch: validateBranch(_:),
-      cancelAction: {
-        window.endSheet(window, returnCode: .OK)
-      },
-      createAction: {
-        
-        window.endSheet(window, returnCode: .cancel)
-      })
+    let bareBranchName = remoteBranch.droppingPrefix(remoteName + "/")
+    let model = CheckOutRemotePanel.Model(branchName: bareBranchName)
+    var sheet: NSWindow! = nil
+    let panel = CheckOutRemotePanel(model: model,
+                                    originBranch: remoteBranch,
+                                    validateBranch: validateBranch(_:),
+                                    cancelAction: {
+                                      window.endSheet(sheet, returnCode: .cancel)
+                                    },
+                                    createAction: {
+                                      window.endSheet(sheet, returnCode: .OK)
+                                    }).padding()
     let controller = NSHostingController(rootView: panel)
-    let sheet = NSWindow(contentViewController: controller)
     
-    window.beginSheet(sheet) {
-      [self] in
-      if $0 == .OK {
+    sheet = NSWindow(contentViewController: controller)
+      .axid(.CreateTracking.window)
+    Task {
+      if await window.beginSheet(sheet) == .OK {
         ended()
         performOperation(model: model)
       }
@@ -52,7 +52,7 @@ final class CheckOutRemoteOpController: OperationController
     
     do {
       guard let branchName = RemoteBranchRefName(remote: remoteName,
-                                              branch: remoteBranch)
+                                                 branch: remoteBranch)
       else {
         assertionFailure("bad branch name")
         throw RepoError.unexpected
@@ -72,7 +72,9 @@ final class CheckOutRemoteOpController: OperationController
 
   func validateBranch(_ branchName: String) -> CheckOutRemotePanel.BranchNameStatus
   {
-    guard let refName = LocalBranchRefName(branchName)
+    guard !branchName.isEmpty,
+          let refName = LocalBranchRefName(branchName),
+          refName.isValid
     else {
       return .invalid
     }

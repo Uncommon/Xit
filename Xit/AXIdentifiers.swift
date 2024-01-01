@@ -85,6 +85,7 @@ extension AXID
   enum Menu
   {
     static let branch = AXID("branchPopup")
+    static let remoteBranch = AXID("remoteBranchPopup")
     static let tag = AXID("tagPopup")
   }
 
@@ -94,6 +95,11 @@ extension AXID
     static let rename = AXID("renameBranch")
     static let merge = AXID("mergeBranch")
     static let delete = AXID("deleteBranch")
+  }
+  
+  enum RemoteBranchPopup
+  {
+    static let createTracking = AXID("createTrackingBranch")
   }
 
   enum StashPopup
@@ -141,5 +147,14 @@ extension AXID
     static let list = AXID("sidebar")
     static let trackingStatus = AXID("trackingStatus")
     static let workspaceStatus = AXID("workspaceStatus")
+  }
+  
+  enum CreateTracking
+  {
+    static let window = AXID("checkOutBranch")
+    static let prompt = AXID("prompt")
+    static let branchName = AXID("branchName")
+    static let checkOut = AXID("checkOut")
+    static let errorMessage = AXID("error")
   }
 }

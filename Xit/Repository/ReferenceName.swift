@@ -30,6 +30,11 @@ public struct ReferenceName<T>: RawRepresentable where T: ReferenceKind
   /// The fully qualified reference name.
   public var rawValue: String { T.prefix +/ name }
   
+  var isValid: Bool
+  {
+    Self.validate(name: rawValue)
+  }
+
   static func validate(name: String) -> Bool
   {
     GitReference.isValidName(name)
@@ -66,7 +71,7 @@ extension ReferenceName where T == RemoteBranchReference
 
     return String(name[index...])
   }
-  
+
   static func validate(name: String) -> Bool
   {
     GitReference.isValidName(name) &&

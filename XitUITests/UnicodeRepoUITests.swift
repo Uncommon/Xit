@@ -174,3 +174,76 @@ class PushNewTests: UnicodeRepoUITests
     try pushNewBranch(tracking: false)
   }
 }
+
+class RemoteBranchTests: UnicodeRepoUITests
+{
+  let newBranchName = "newBranch"
+  
+  override func setUp()
+  {
+    super.setUp()
+    
+    XCTAssert(env.makeRemoteCopy(named: remoteName))
+    env.remoteGit.checkOut(newBranch: newBranchName)
+    env.git.run(args: ["fetch", remoteName])
+  }
+  
+  func openCreateTrackingSheet()
+  {
+    XCTContext.runActivity(named: "open Create Tracking Branch sheet") {
+      _ in
+      Sidebar.cell(named: newBranchName).rightClick()
+      Sidebar.remoteBranchPopup
+             .menuItems[.RemoteBranchPopup.createTracking].tap()
+    }
+  }
+  
+  func testCreateTrackingBranch()
+  {
+    env.open()
+    openCreateTrackingSheet()
+
+    XCTContext.runActivity(named: "check initial setup") { _ in
+      XCTAssert(CreateTrackingSheet.window.exists, "sheet did not open")
+      XCTAssertEqual(CreateTrackingSheet.prompt.stringValue,
+                     "Create a local branch tracking \"\(remoteName)/\(newBranchName)\"")
+      XCTAssertEqual(CreateTrackingSheet.branchName.stringValue, newBranchName)
+      XCTAssert(CreateTrackingSheet.cancelButton.isEnabled)
+      XCTAssert(CreateTrackingSheet.createButton.isEnabled)
+    }
+
+    XCTContext.runActivity(named: "test cancel") { _ in
+      CreateTrackingSheet.cancelButton.tap()
+      XCTAssert(!CreateTrackingSheet.window.exists, "sheet did not open")
+    }
+
+    openCreateTrackingSheet()
+    
+    XCTContext.runActivity(named: "check empty name") { _ in
+      CreateTrackingSheet.branchName.typeKey(.delete, modifierFlags: [])
+      XCTAssertFalse(CreateTrackingSheet.createButton.isEnabled,
+                     "create button should be disabled with empty name")
+    }
+    XCTContext.runActivity(named: "check invalid name") { _ in
+      CreateTrackingSheet.branchName.typeText("/")
+      XCTAssertFalse(CreateTrackingSheet.createButton.isEnabled,
+                     "create button should be disabled with invalid name")
+      XCTAssertEqual(CreateTrackingSheet.errorMessage.stringValue,
+                     "Not a valid name")
+    }
+    XCTContext.runActivity(named: "check conflicting name") { _ in
+      CreateTrackingSheet.branchName.typeKey("a", modifierFlags: .command)
+      CreateTrackingSheet.branchName.typeText("master")
+      XCTAssertFalse(CreateTrackingSheet.createButton.isEnabled,
+                     "create button should be disabled with conflicting name")
+    }
+    
+    XCTContext.runActivity(named: "create with same name") { _ in
+      CreateTrackingSheet.branchName.typeKey("a", modifierFlags: .command)
+      CreateTrackingSheet.branchName.typeText(newBranchName)
+      CreateTrackingSheet.createButton.tap()
+      XCTAssertFalse(CreateTrackingSheet.window.exists,
+                     "sheet stayed open")
+    }
+  }
+}

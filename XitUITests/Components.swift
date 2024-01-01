@@ -79,6 +79,7 @@ enum Sidebar
                             identifier: .Sidebar.currentBranch).firstMatch
 
   static let branchPopup = XitApp.menus[.Menu.branch]
+  static let remoteBranchPopup = XitApp.menus[.Menu.remoteBranch]
   static let tagPopup = XitApp.menus[.Menu.tag]
 
   static func cell(named name: String) -> XCUIElement
@@ -319,4 +320,17 @@ enum PushNewSheet
   
   static let setTrackingCheck = window.checkBoxes["Set as tracking branch"]
   static let pushButton = window.buttons["Push"]
+}
+
+enum CreateTrackingSheet
+{
+  static let window = XitApp.sheets[.CreateTracking.window]
+  
+  static let prompt = window.staticTexts[.CreateTracking.prompt]
+  static let branchName = window.textFields[.CreateTracking.branchName]
+  static let checkOut = window.checkBoxes[.CreateTracking.checkOut]
+  static let errorMessage = window.staticTexts[.CreateTracking.errorMessage]
+  
+  static let cancelButton = window.buttons[.Button.cancel]
+  static let createButton = window.buttons[.Button.accept]
 }

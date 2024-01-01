@@ -97,7 +97,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   {
     branchContextMenu = NSMenu {
       NSMenuItem(.checkOut, target: self, action: #selector(checkOutBranch(_:)))
-          .axid(.BranchPopup.checkOut)
+        .axid(.BranchPopup.checkOut)
       NSMenuItem(.rename, target: self, action: #selector(renameBranch(_:)))
         .axid(.BranchPopup.rename)
       NSMenuItem(.merge, target: self, action: #selector(mergeBranch(_:)))
@@ -109,11 +109,14 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
     remoteBranchContextMenu = NSMenu {
       NSMenuItem(.createTrackingBranch, target: self,
                  action: #selector(createTrackingBranch(_:)))
+        .axid(.RemoteBranchPopup.createTracking)
       NSMenuItem(.rename, target: self, action: #selector(renameBranch(_:)))
+        .axid(.BranchPopup.merge)
       NSMenuItem(.merge, target: self, action: #selector(mergeBranch(_:)))
       NSMenuItem.separator()
       NSMenuItem(.delete, target: self, action: #selector(deleteBranch(_:)))
-    }
+        .axid(.BranchPopup.delete)
+    }.axid(.Menu.remoteBranch)
     remoteContextMenu = NSMenu {
       NSMenuItem(.rename, target: self, action: #selector(renameRemote(_:)))
       NSMenuItem(.edit, target: self, action: #selector(editRemote(_:)))

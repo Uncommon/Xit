@@ -232,8 +232,6 @@
 		C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */; };
 		C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* HistoryCellView.swift */; };
-		C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9790D0F20F537E10024D3EA /* CheckOutRemote.xib */; };
-		C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9790D2120F53A030024D3EA /* CheckOutRemote.swift */; };
 		C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */; };
 		C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
 		C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31B120BF2A2100E74D2F /* RepoError.swift */; };
@@ -619,8 +617,6 @@
 		C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitVersionedOptions.swift; sourceTree = "<group>"; };
 		C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* HistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryCellView.swift; sourceTree = "<group>"; };
-		C9790D0F20F537E10024D3EA /* CheckOutRemote.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CheckOutRemote.xib; sourceTree = "<group>"; };
-		C9790D2120F53A030024D3EA /* CheckOutRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutRemote.swift; sourceTree = "<group>"; };
 		C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTreeNode+FileChange.swift"; sourceTree = "<group>"; };
 		C97E31AF20BF271300E74D2F /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		C97E31B120BF2A2100E74D2F /* RepoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoError.swift; sourceTree = "<group>"; };
@@ -1268,13 +1264,11 @@
 				C959CDE81F859D3D00C1E282 /* BuildStatusController.swift */,
 				C941549E1ED4ECF30030E481 /* BuildStatusViewController.swift */,
 				C941549F1ED4ECF30030E481 /* BuildStatusViewController.xib */,
-				C9790D0F20F537E10024D3EA /* CheckOutRemote.xib */,
-				C9790D2120F53A030024D3EA /* CheckOutRemote.swift */,
+				895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */,
+				895ED19429BBD23500757AEA /* CheckOutRemoteOpController.swift */,
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
-				895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */,
-				895ED19429BBD23500757AEA /* CheckOutRemoteOpController.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1456,7 +1450,6 @@
 				C9BD02FD226A278900172C0B /* MainMenu.xib in Resources */,
 				C9FE06C720178A8C0001EB2B /* FileListView.xib in Resources */,
 				C90703752326C944002DF393 /* XTWindowController.storyboard in Resources */,
-				C9790D1020F537E10024D3EA /* CheckOutRemote.xib in Resources */,
 				C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */,
 				C94154A11ED4ECF40030E481 /* BuildStatusViewController.xib in Resources */,
 				DD00725613E76DFB003B4120 /* Xit.icns in Resources */,
@@ -1633,7 +1626,6 @@
 				C9D3EA1220CB2D1B0087C958 /* StagingListModel.swift in Sources */,
 				C94866C01D25861E000BDB0A /* PasswordPanelController.swift in Sources */,
 				C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */,
-				C9790D2220F53A030024D3EA /* CheckOutRemote.swift in Sources */,
 				C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */,
 				C9BAE61E1D303A8100A87F13 /* RemoteOptionsOpController.swift in Sources */,
 				890F7BE32853A90F005C24A7 /* FetchPanel.swift in Sources */,

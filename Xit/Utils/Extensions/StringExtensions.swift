@@ -179,7 +179,15 @@ extension String
 {
   static func +/ (left: String, right: String) -> String
   {
-    return left.appending(pathComponent: right)
+    let right = right.droppingPrefix("/")
+    
+    // String.appending(pathComponent:) strips trailing slashes from `right`
+    if left.hasSuffix("/") {
+      return left + right
+    }
+    else {
+      return "\(left)/\(right)"
+    }
   }
 }
 
