@@ -170,12 +170,12 @@ class ModifyingUITests: XCTestCase
     let folderName = "folder"
     let subBranchName = "and-why"
     
-    _ = env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
+    env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
     env.open()
     
     let newBranchCell = Sidebar.cell(named: "new")
 
-    XCTAssertTrue(newBranchCell.exists)
+    XCTAssertTrue(newBranchCell.waitForExistence(timeout: 1))
     
     Sidebar.filter.click()
     Sidebar.filter.typeText("a")
