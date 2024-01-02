@@ -17,10 +17,10 @@ final class CheckOutRemoteOpController: OperationController
   {
     guard let window = windowController?.window
     else { throw RepoError.unexpected }
-    let model = CheckOutRemotePanel.Model(branchName: remoteBranch.name)
+    let model = CheckOutRemotePanel.Model(branchName: remoteBranch.branchName)
     var sheet: NSWindow! = nil
     let panel = CheckOutRemotePanel(model: model,
-                                    originBranch: remoteBranch.rawValue,
+                                    originBranch: remoteBranch,
                                     validateBranch: validateBranch(_:),
                                     cancelAction: {
                                       window.endSheet(sheet, returnCode: .cancel)

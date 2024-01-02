@@ -28,14 +28,14 @@ struct CheckOutRemotePanel: View {
   }
   
   @ObservedObject var model: Model
-  let originBranch: String
+  let originBranch: RemoteBranchRefName
   let validateBranch: (String) -> BranchNameStatus
   let cancelAction, createAction: () -> Void
   @State private var status: BranchNameStatus
   
   var body: some View {
     VStack(alignment: .leading) {
-      Text("Create a local branch tracking \"\(originBranch)\"")
+      Text("Create a local branch tracking \"\(originBranch.name)\"")
         .accessibilityIdentifier(.CreateTracking.prompt)
       HStack(alignment: .firstTextBaseline) {
         Text(.name.colon)
@@ -67,7 +67,7 @@ struct CheckOutRemotePanel: View {
   }
   
   init(model: Model,
-       originBranch: String,
+       originBranch: RemoteBranchRefName,
        validateBranch: @escaping (String) -> BranchNameStatus,
        cancelAction: @escaping () -> Void,
        createAction: @escaping () -> Void) {
@@ -86,7 +86,7 @@ struct CheckOutRemotePanel_Previews: PreviewProvider {
   static var previews: some View {
     CheckOutRemotePanel(
         model: .init(),
-        originBranch: "origin/something/branch",
+        originBranch: .init("origin/something/branch")!,
         validateBranch: { _ in .valid },
         cancelAction: {},
         createAction: {}).padding()
@@ -97,7 +97,7 @@ struct CheckOutRemotePanel_Previews: PreviewProvider {
           model.branchName = "name"
           return model
         }(),
-        originBranch: "origin/something/branch",
+        originBranch: .init("origin/something/branch")!,
         validateBranch: { _ in .invalid },
         cancelAction: {},
         createAction: {}).padding()
