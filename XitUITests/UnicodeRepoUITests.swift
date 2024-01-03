@@ -247,7 +247,7 @@ class RemoteBranchTests: UnicodeRepoUITests
     }
     
     XCTContext.runActivity(named: "verify branch is checked out") { _ in
-      let currentBranch = env.git.run(args: ["branch", "--show-current"])
+      let currentBranch = env.git.currentBranch()
       
       XCTAssertEqual(currentBranch, newBranchName)
       Sidebar.assertCurrentBranch(newBranchName)

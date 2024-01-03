@@ -11,7 +11,7 @@ enum Window
   static let pushButton = remoteOpSegControl.buttons.element(boundBy: 1)
   static let fetchButton = remoteOpSegControl.buttons.element(boundBy: 2)
   static let progressSpinner = window.progressIndicators["progress"]
-  static let branchPopup = window.popUpButtons["branchPopup"]
+  static let branchPopup = window.popUpButtons["branchPopup"].firstMatch
   static let tabStatus = window.buttons["tabStatus"]
   
   static let pullMenu = XitApp.menus[.PopupMenu.pull]
@@ -258,7 +258,15 @@ enum HistoryList
 
   static func row(_ index: Int) -> XCUIElement
   {
-    return list.tableRows.element(boundBy: index)
+    list.tableRows.element(boundBy: index)
+  }
+  
+  /// Returns the first row containing the given commit message
+  static func row(_ message: String) -> XCUIElement
+  {
+    list.tableRows
+        .containing(.init(format: "label == '\(message)'"))
+        .firstMatch
   }
   
   enum ContextMenu

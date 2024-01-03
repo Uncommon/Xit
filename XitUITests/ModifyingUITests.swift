@@ -22,6 +22,7 @@ class ModifyingUITests: XCTestCase
   {
     env.open()
 
+    XCTAssert(Window.window.waitForExistence(timeout: 2))
     Sidebar.stagingCell.click()
 
     XCTContext.runActivity(named: "Initial empty state") {
@@ -79,6 +80,7 @@ class ModifyingUITests: XCTestCase
     let branchName = "and-how"
     let sheet = XitApp.sheets.firstMatch
 
+    XCTAssert(Window.window.waitForExistence(timeout: 2))
     XCTContext.runActivity(named: "Cancel delete branch") {
       _ in
       Sidebar.list.staticTexts[branchName].rightClick()
@@ -158,7 +160,9 @@ class ModifyingUITests: XCTestCase
     
     Window.branchPopup.click()
     XitApp.menuItems[otherBranch].click()
-    XCTAssertEqual(Window.branchPopup.value as? String, otherBranch)
+    wait(for: [expectation(for: .init(format: "value == '\(otherBranch)'"),
+                           evaluatedWith: Window.branchPopup)],
+         timeout: 2)
     
     let currentBranch = env.git.currentBranch()
     
@@ -203,7 +207,8 @@ class ModifyingUITests: XCTestCase
       env.write("some stuff", to: "README1.txt")
       env.write("other stuff", to: "REAME_")
       env.git.run(args: ["add", "REAME_"])
-      HistoryList.row(1).rightClick()
+      
+      HistoryList.row(2).rightClick()
       HistoryList.ContextMenu.resetItem.click()
       XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
       modeButton.click()
@@ -291,7 +296,7 @@ class ModifyingUITests: XCTestCase
     CommitEntry.messageField.click()
     CommitEntry.messageField.typeText(enteredText)
     CommitEntry.commitButton.click()
-    HistoryList.row(0).click()
+    HistoryList.row("First line ⋯").click()
     XCTAssertEqual(CommitHeader.messageField.stringValue, expectedText)
   }
   
@@ -314,7 +319,7 @@ class ModifyingUITests: XCTestCase
     CommitEntry.messageField.click()
     CommitEntry.messageField.typeText(enteredText)
     CommitEntry.commitButton.click()
-    HistoryList.row(0).click()
+    HistoryList.row("First line ⋯").click()
     XCTAssertEqual(CommitHeader.messageField.stringValue, enteredText)
   }
 
