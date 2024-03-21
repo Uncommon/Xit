@@ -41,7 +41,7 @@ class FileListModelTest: XTTest
     let model = selection.fileList
     let change = try XCTUnwrap(model.changes.first)
 
-    XCTAssertEqual(headCommit.message, "second\n")
+    XCTAssertEqual(headCommit.message, "second")
     XCTAssertEqual(model.changes.count, 1)
     XCTAssertEqual(change.path, TestFileName.subFile2.rawValue)
     XCTAssertEqual(change.oldPath, TestFileName.subFile1.rawValue)

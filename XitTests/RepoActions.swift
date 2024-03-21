@@ -202,6 +202,7 @@ struct Stage: RepoAction
       case .change(let change):
         try repository.stage(change: change)
     }
+    try repository.index?.save()
   }
 }
 
@@ -254,6 +255,7 @@ struct CommitFiles: RepoAction
   {
     for action in actions {
       try executeAndStage(action, in: repository)
+      try repository.index?.save()
     }
     try repository.commit(message: message, amend: amend)
   }

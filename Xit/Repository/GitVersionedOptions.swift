@@ -43,6 +43,22 @@ extension git_checkout_options: GitVersionedOptions
   }
 }
 
+extension git_commit_create_options: GitVersionedOptions
+{
+  static var version: Int32 { GIT_COMMIT_CREATE_OPTIONS_VERSION }
+  static var initializer: Initializer { initialize(options:version:) }
+
+  // There is not git_commit_create_init_options() and the macro that is
+  // supposed to be used instead doesn't translate to Swift.
+  static func initialize(options: UnsafeMutablePointer<Self>?,
+                         version: UInt32) -> Int32
+  {
+    options?.pointee = Self(version: version, allow_empty_commit: 0,
+                            author: nil, committer: nil, message_encoding: nil)
+    return 0
+  }
+}
+
 extension git_clone_options: GitVersionedOptions
 {
   static var version: Int32 { GIT_CLONE_OPTIONS_VERSION }

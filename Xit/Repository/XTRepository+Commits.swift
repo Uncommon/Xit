@@ -19,11 +19,32 @@ extension XTRepository: CommitStorage
   
   public func commit(message: String, amend: Bool) throws
   {
-    let baseArgs = ["commit", "-F", "-"]
-    let args = amend ? baseArgs + ["--amend"] : baseArgs
-    
-    _ = try executeGit(args: args, stdIn: message, writes: true)
-    invalidateIndex()
+    if amend { // git_commit_create_from_stage doesn't support amend
+      _ = try executeGit(args: ["commit", "-F", "--amend", "-"],
+                         stdIn: message, writes: true)
+      invalidateIndex()
+    }
+    else {
+      try writing {
+        var options = git_commit_create_options.defaultOptions()
+        guard let signature = GitSignature(defaultFromRepo: gitRepo)
+        else { throw RepoError.unexpected }
+
+        // git_commit_create_from_stage() has a bug where it crashes if author
+        // and committer are both null.
+        try withUnsafePointer(to: &signature.signature.pointee) { sig in
+          options.author = sig
+          options.committer = sig
+
+          var commitOID: git_oid = .init()
+          let result = git_commit_create_from_stage(&commitOID,
+                                                    gitRepo, message, &options)
+
+          try RepoError.throwIfGitError(result)
+          invalidateIndex()
+        }
+      }
+    }
   }
   
   public func walker() -> (any RevWalk<GitOID>)?
