@@ -171,7 +171,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     controller?.invalidateIndex()
   }
   
-  func writing(_ block: () -> Bool) -> Bool
+  func writing<T>(_ block: () throws -> T) throws -> T
   {
     objc_sync_enter(self)
     defer {
@@ -179,13 +179,13 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     }
     
     guard !isWriting
-    else { return false }
-    
+    else { throw RepoError.alreadyWriting }
+
     isWriting = true
     defer {
       isWriting = false
     }
-    return block()
+    return try block()
   }
   
   func executeGit(args: [String],

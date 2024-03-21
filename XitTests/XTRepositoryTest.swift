@@ -465,8 +465,8 @@ class XTRepositoryTest: XTTest
     assertWriteAction(name: "checkout") {
       CheckOut(branch: masterBranch)
     }
-    assertWriteBool(name: "delete") {
-      repository.deleteBranch(testBranch2)
+    assertWriteSucceeds(name: "delete") {
+      try repository.deleteBranch(testBranch2)
     }
   }
   

@@ -147,14 +147,14 @@ extension XTRepository: CommitReferencing
     return GitOID(oidPtr: oid)
   }
   
-  func deleteBranch(_ name: String) -> Bool
+  func deleteBranch(_ name: String) throws
   {
-    return writing {
+    return try writing {
       guard let refName = LocalBranchRefName(name),
             let branch = localBranch(named: refName) as? GitLocalBranch
-      else { return false }
-      
-      return git_branch_delete(branch.branchRef) == 0
+      else { throw RepoError.notFound }
+
+      try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))
     }
   }
   
