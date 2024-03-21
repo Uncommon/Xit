@@ -277,7 +277,7 @@ extension NSTreeNode
     let relativePath = path.droppingPrefix(root + "/")
     guard let topFolderName = relativePath.firstPathComponent
     else { return nil }
-    let folderPath = root +/ topFolderName
+    let folderPath = root.isEmpty ? topFolderName : root +/ topFolderName
     guard let node = children?.first(where:
       { ($0.representedObject as? CommitTreeItem)?.path == folderPath}),
           let item = node.representedObject as? CommitTreeItem

@@ -389,10 +389,8 @@ class GitConfigEntry: ConfigEntry
   
   deinit
   {
-    if let free = entry.free {
-      var mutableEntry = entry
-      
-      free(&mutableEntry)
-    }
+    var mutableEntry = entry
+
+    git_config_entry_free(&mutableEntry)
   }
 }
