@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Submodule: Sendable
+public protocol Submodule
 {
   var name: String { get }
   var path: String { get }

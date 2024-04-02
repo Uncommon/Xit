@@ -131,6 +131,7 @@ extension NSMenuItem
 
   /// Constructs a menu item using a callback block instead of a target
   /// and action.
+  @MainActor
   convenience init(_ title: String,
                    keyEquivalent: String = "",
                    _ block: @escaping ActionBlock)
@@ -143,6 +144,7 @@ extension NSMenuItem
     representedObject = block
   }
 
+  @MainActor
   convenience init(_ titleString: UIString,
                    keyEquivalent: String = "",
                    _ block: @escaping ActionBlock)

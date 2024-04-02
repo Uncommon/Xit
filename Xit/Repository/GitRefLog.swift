@@ -20,7 +20,7 @@ extension RefLog
   { .init(refLog: self) }
 }
 
-protocol RefLogEntry<ID>: Sendable
+protocol RefLogEntry<ID>
 {
   associatedtype ID: OID
 

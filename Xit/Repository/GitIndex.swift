@@ -66,7 +66,7 @@ struct EntryCollection<Index>: RandomAccessCollection where Index: StagingIndex
 }
 
 /// An individual file entry in an index.
-public protocol IndexEntry: Sendable
+public protocol IndexEntry
 {
   var oid: any OID { get }
   var path: String { get }
