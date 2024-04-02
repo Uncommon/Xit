@@ -86,6 +86,9 @@ final class RefTokenView: NSView
   
   private func makePath() -> NSBezierPath
   {
+    let bounds = self.bounds
+    guard !bounds.isEmpty
+    else { return .init(rect: .zero) }
     // Inset because the stroke will be centered on the path border
     var rect = bounds.insetBy(dx: 0.5, dy: 1.5)
     
