@@ -201,9 +201,11 @@ final class CommitHistory<C: Commit>
   
   private func processBatch()
   {
-    while self.batchStart < min(self.withSync { self.batchTargetRow },
-                                self.entries.count) {
-      self.processNextConnectionBatch()
+    Signpost.interval(.processBatches) {
+      while self.batchStart < min(self.withSync { self.batchTargetRow },
+                                  self.entries.count) {
+        self.processNextConnectionBatch()
+      }
     }
     self.withSync { self.batchTargetRow = 0 }
   }

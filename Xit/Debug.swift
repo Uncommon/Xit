@@ -6,7 +6,7 @@ enum Signpost
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
                             category: .pointsOfInterest)
   static let debugLogger = Logger(subsystem: "com.uncommonplace.xit",
-                                  category: "debug")
+                                  category: "signpost")
 
   enum Event
   {
@@ -27,6 +27,7 @@ enum Signpost
   enum Interval
   {
     case historyWalking
+    case processBatches
     case connectCommits
     case generateConnections(Int)
     case generateLines(Int)
@@ -45,6 +46,7 @@ enum Signpost
     {
       switch self {
         case .historyWalking: return "history walking"
+        case .processBatches: return "process batches"
         case .connectCommits: return "connect commits"
         case .generateConnections: return "generate connenctions"
         case .generateLines: return "generate lines"
