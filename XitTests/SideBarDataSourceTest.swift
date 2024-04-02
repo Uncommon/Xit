@@ -2,12 +2,11 @@ import Foundation
 import XCTest
 @testable import Xit
 
-@MainActor
 class SidebarDataSourceTest: XTTest
 {
   var outline = MockSidebarOutline()
   var model: SidebarDataModel!
-  var sbds = SideBarDataSource()
+  var sbds: SideBarDataSource!
   var runLoop: CFRunLoop?
 
   func groupItem(_ row: SidebarGroupIndex) -> SideBarGroupItem
@@ -22,12 +21,14 @@ class SidebarDataSourceTest: XTTest
     super.setUp()
     
     model = SidebarDataModel(repository: repository)
+    sbds = .init()
     sbds.model = model
     sbds.outline = outline
     outline.dataSource = sbds
   }
 
   /// Add a tag and make sure it gets loaded correctly
+  @MainActor
   func testTags() throws
   {
     guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
@@ -57,6 +58,7 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Add a branch and make sure both branches are loaded correctly
+  @MainActor
   func testBranches() throws
   {
     try execute(in: repository) {
@@ -81,6 +83,7 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Create two stashes and check that they are listed
+  @MainActor
   func testStashes() throws
   {
     try execute(in: repository) {
@@ -100,6 +103,7 @@ class SidebarDataSourceTest: XTTest
   }
   
   /// Check that a remote and its branches are displayed correctly
+  @MainActor
   func testRemotes() throws
   {
     makeRemoteRepo()
@@ -139,6 +143,7 @@ class SidebarDataSourceTest: XTTest
     }
   }
   
+  @MainActor
   func testSubmodules() throws
   {
     let repoParentPath = (repoPath as NSString).deletingLastPathComponent
@@ -187,9 +192,9 @@ extension SidebarItem
   var childrenTitles: [String] { return children.map { $0.title } }
 }
 
-@MainActor
 class SidebarDSFakeRepoTest: XCTestCase
 {
+  @MainActor
   func testFilter()
   {
     let repo = FakeRepo()

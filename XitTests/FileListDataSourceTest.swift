@@ -28,9 +28,9 @@ class FakeRepoUIController: RepositoryUIController
   func postIndexNotification() {}
 }
 
-@MainActor
 class FileListDataSourceTest: XTTest
 {
+  @MainActor
   func testHistoricFileList() throws
   {
     try execute(in: repository) {
@@ -77,6 +77,7 @@ class FileListDataSourceTest: XTTest
     return CFAbsoluteTimeGetCurrent() < deadline
   }
   
+  @MainActor
   func testMulipleFileList() throws
   {
     let text = "some text"

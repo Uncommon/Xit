@@ -3,7 +3,6 @@ import XCTest
 @testable import Xit
 
 
-@MainActor
 class PullRequestManagerTest: XCTestCase
 {
   let fakeRepo = FakeRepo()
@@ -18,6 +17,7 @@ class PullRequestManagerTest: XCTestCase
     model.reload()
   }
   
+  @MainActor
   func testPullRequestForBranch()
   {
     let prManager = SidebarPRManager(model: model, outline: nil)

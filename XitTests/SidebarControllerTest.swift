@@ -28,10 +28,9 @@ class TestingSidebarHandler : SidebarCommandHandler
   }
 }
 
-@MainActor
 class SidebarHandlerTest: XTTest
 {
-  let handler = TestingSidebarHandler()
+  var handler: TestingSidebarHandler!
 
   @MainActor
   override func setUp()
@@ -40,6 +39,7 @@ class SidebarHandlerTest: XTTest
     
     let controller = FakeRepoUIController(repository: repository)
     
+    handler = .init()
     handler.repo = repository
     handler.repoUIController = controller
     controller.repoController = GitRepositoryController(repository: repository)
@@ -59,6 +59,7 @@ class SidebarHandlerTest: XTTest
     return LocalBranchSidebarItem(title: branch, selection: selection)
   }
   
+  @MainActor
   func checkDeleteBranch(named branch: String) -> Bool
   {
     let menuItem = NSMenuItem(
@@ -70,11 +71,13 @@ class SidebarHandlerTest: XTTest
     return handler.validate(sidebarCommand: menuItem)
   }
   
+  @MainActor
   func testDeleteCurrentBranch()
   {
     XCTAssertFalse(checkDeleteBranch(named: "master"))
   }
   
+  @MainActor
   func testDeleteOtherBranch() throws
   {
     _ = try repository.createBranch(named: "other",
@@ -103,6 +106,7 @@ class SidebarHandlerTest: XTTest
     return expectedStashes.map { "On master: \($0)" }
   }
   
+  @MainActor
   func doStashAction(index: UInt, expectedRemains: [String],
                      expectedText: String, action: () -> Void) throws
   {
@@ -124,6 +128,7 @@ class SidebarHandlerTest: XTTest
     XCTAssertEqual(text, expectedText)
   }
   
+  @MainActor
   func testPopStash1() throws
   {
     try doStashAction(index: 1,
@@ -132,6 +137,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.popStash() })
   }
   
+  @MainActor
   func testPopStash2() throws
   {
     try doStashAction(index: 0,
@@ -140,6 +146,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.popStash() })
   }
   
+  @MainActor
   func testApplyStash1() throws
   {
     try doStashAction(index: 1,
@@ -148,6 +155,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.applyStash() })
   }
   
+  @MainActor
   func testApplyStash2() throws
   {
     try doStashAction(index: 0,
@@ -156,6 +164,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.applyStash() })
   }
   
+  @MainActor
   func testDropStash1() throws
   {
     try doStashAction(index: 1,
@@ -164,6 +173,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.dropStash() })
   }
   
+  @MainActor
   func testDropStash2() throws
   {
     try doStashAction(index: 0,
@@ -172,6 +182,7 @@ class SidebarHandlerTest: XTTest
                       action: { handler.dropStash() })
   }
   
+  @MainActor
   func testMergeText() throws
   {
     let menuItem = NSMenuItem(
@@ -188,6 +199,7 @@ class SidebarHandlerTest: XTTest
     XCTAssertEqual(menuItem.title, "Merge \"branch\" into \"master\"")
   }
   
+  @MainActor
   func testMergeDisabled()
   {
     let menuItem = NSMenuItem(
