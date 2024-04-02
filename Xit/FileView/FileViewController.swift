@@ -470,10 +470,23 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     confirmAlert.addButton(withString: .revert)
     confirmAlert.addButton(withString: .cancel)
     confirmAlert.buttons[0].hasDestructiveAction = true
-    confirmAlert.beginSheetModal(for: view.window!) {
-      (response) in
-      if response == .alertFirstButtonReturn {
-        self.revertConfirmed(path: path)
+    
+    Task {
+      if await confirmAlert.beginSheetModal(for: view.window!) ==
+          .alertFirstButtonReturn {
+        do {
+          try repo?.revert(file: path)
+        }
+        catch let error as RepoError {
+          let alert = NSAlert()
+          
+          alert.messageString = error.message
+          alert.beginSheetModal(for: view.window!,
+                                completionHandler: nil)
+        }
+        catch {
+          repoLogger.debug("Unexpected revert error")
+        }
       }
     }
   }
@@ -491,21 +504,5 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     
     alert.messageString = error.message
     alert.beginSheetModal(for: view.window!)
-  }
-
-  func revertConfirmed(path: String)
-  {
-    do {
-      try repo?.revert(file: path)
-    }
-    catch let error as RepoError {
-      let alert = NSAlert()
-      
-      alert.messageString = error.message
-      alert.beginSheetModal(for: view.window!)
-    }
-    catch {
-      repoLogger.debug("Unexpected revert error")
-    }
   }
 }

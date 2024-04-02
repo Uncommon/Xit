@@ -392,7 +392,8 @@ class GitConfigEntry: ConfigEntry
   
   deinit
   {
-    guard owner else { return }
+    guard owner
+    else { return }
     var mutableEntry = entry
 
     git_config_entry_free(&mutableEntry)

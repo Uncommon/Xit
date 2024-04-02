@@ -7,16 +7,24 @@ public protocol ReferenceKind
 }
 
 public struct LocalBranchReference: ReferenceKind
-{ public static var prefix: String { RefPrefixes.heads } }
+{
+  public static var prefix: String { RefPrefixes.heads }
+}
 
 public struct RemoteReference: ReferenceKind
-{ public static var prefix: String { RefPrefixes.remotes } }
+{
+  public static var prefix: String { RefPrefixes.remotes }
+}
 
 public struct RemoteBranchReference: ReferenceKind
-{ public static var prefix: String { RefPrefixes.remotes } }
+{
+  public static var prefix: String { RefPrefixes.remotes }
+}
 
 public struct TagReference: ReferenceKind
-{ public static var prefix: String { RefPrefixes.tags} }
+{
+  public static var prefix: String { RefPrefixes.tags}
+}
 
 /// A type that wraps a full reference name for a specific kind of reference.
 ///
