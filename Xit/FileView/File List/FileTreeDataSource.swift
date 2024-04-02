@@ -13,6 +13,13 @@ final class FileTreeDataSource: FileListDataSourceBase
   }
 }
 
+// NSTreeNode is not Sendable, but we're sending it across contexts in very
+// limited ways, so it should be safe.
+struct TreeNodeContainer: @unchecked Sendable
+{
+  let node: NSTreeNode
+}
+
 extension FileTreeDataSource: FileListDataSource
 {
   func reload()
@@ -32,14 +39,18 @@ extension FileTreeDataSource: FileListDataSource
               (selection as? StagingSelection)?.unstagedFileList :
               selection.fileList
       else { return }
-      let (delegate, root) = await MainActor.run { (self.delegate, self.root) }
+      let (delegate, rootContainer) = await MainActor.run {
+        (self.delegate, TreeNodeContainer(node: self.root))
+      }
+      let root = rootContainer.node
 
       delegate?.configure(model: fileList)
 
       let newRoot = fileList.treeRoot(oldTree: root)
+      let container = TreeNodeContainer(node: newRoot)
 
       await MainActor.run {
-        self.root = newRoot
+        self.root = container.node
 
         guard let outlineView = self.outlineView
         else { return }
