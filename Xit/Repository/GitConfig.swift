@@ -367,7 +367,8 @@ final class GitConfig: Config
       else { return nil }
       
       self.iterator = iterator
-      return GitConfigEntry(entry: entry.pointee)
+      // Iterator owns the entry, so we shouldn't free it
+      return GitConfigEntry(entry: entry.pointee, owner: false)
     }
   }
   
@@ -378,17 +379,20 @@ final class GitConfig: Config
 class GitConfigEntry: ConfigEntry
 {
   let entry: git_config_entry
-  
+  let owner: Bool
+
   var name: String { String(cString: entry.name) }
   var stringValue: String { String(cString: entry.value) }
   
-  init(entry: git_config_entry)
+  init(entry: git_config_entry, owner: Bool = true)
   {
     self.entry = entry
+    self.owner = owner
   }
   
   deinit
   {
+    guard owner else { return }
     var mutableEntry = entry
 
     git_config_entry_free(&mutableEntry)
