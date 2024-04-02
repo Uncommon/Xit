@@ -84,7 +84,6 @@
 		89ADB3BD283F2E6800EF508A /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89ADB3BC283F2E6800EF508A /* Box.swift */; };
 		89B1C9B228778BE6006724EA /* MemoryPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */; };
 		89BA11E228BD576D00A7999A /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E128BD576D00A7999A /* SearchField.swift */; };
-		89BA11E428BE42D000A7999A /* Bound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E328BE42D000A7999A /* Bound.swift */; };
 		89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E528BE432200A7999A /* HostingTitlebarController.swift */; };
 		89BA11E928C4E26900A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
 		89BA11EA28C4E28000A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
@@ -459,7 +458,6 @@
 		89ADB3BC283F2E6800EF508A /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryPasswordStorage.swift; sourceTree = "<group>"; };
 		89BA11E128BD576D00A7999A /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
-		89BA11E328BE42D000A7999A /* Bound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bound.swift; sourceTree = "<group>"; };
 		89BA11E528BE432200A7999A /* HostingTitlebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTitlebarController.swift; sourceTree = "<group>"; };
 		89BA11E828C4E26900A7999A /* HistorySearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchType.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -865,7 +863,6 @@
 		89BA11E728BE43ED00A7999A /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				89BA11E328BE42D000A7999A /* Bound.swift */,
 				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
 				C919B9D326B09F4D007952FA /* LabeledField.swift */,
@@ -1583,7 +1580,6 @@
 				C957B8721D2DB44E0040F858 /* RemoteSheetController.swift in Sources */,
 				C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */,
 				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
-				89BA11E428BE42D000A7999A /* Bound.swift in Sources */,
 				8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
