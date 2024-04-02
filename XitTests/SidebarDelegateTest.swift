@@ -2,11 +2,10 @@ import Foundation
 import XCTest
 @testable import Xit
 
-@MainActor
 class SidebarDelegateTest: XTTest
 {
   var outline = MockSidebarOutline()
-  let sbDelegate = SidebarDelegate()
+  var sbDelegate: SidebarDelegate!
   var model: SidebarDataModel!
   
   @MainActor
@@ -15,6 +14,7 @@ class SidebarDelegateTest: XTTest
     super.setUp()
     
     model = SidebarDataModel(repository: repository)
+    sbDelegate = .init()
     sbDelegate.model = model
   }
   

@@ -2,9 +2,9 @@ import Foundation
 import XCTest
 @testable import Xit
 
-@MainActor
 class XTFileChangesDataSourceTest: XTTest
 {
+  @MainActor
   func testInitialCommit() throws
   {
     let repoUIController = FakeRepoUIController(repository: repository)
