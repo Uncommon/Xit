@@ -13,15 +13,22 @@ final class CleanPanelController: NSWindowController
 
   init(repository: any Repository)
   {
-    let panel = CleanPanel(model: model)
-    let viewController = NSHostingController(rootView: panel)
-    let window = NSWindow(contentViewController: viewController)
-
     self.repository = repository
+    
+    // Initially empty window because CleanPanel needs a reference to self
+    let window = NSWindow()
+    
     super.init(window: window)
-
-    // Set the view again, but with a delegate now that `self` is constructed.
-    viewController.rootView = CleanPanel(delegate: self, model: model)
+    
+    let panel = CleanPanel(delegate: self, model: model)
+    let viewController = NSHostingController(rootView: panel)
+    
+    window.contentViewController = viewController
+    // Unlike NSWindow(contentViewController:), setting the content view
+    // controller afterwards doesn't make the window resizable.
+    window.styleMask = [.docModalWindow, .resizable]
+    window.contentMaxSize = NSSize(width: CGFloat.greatestFiniteMagnitude,
+                            height: .greatestFiniteMagnitude)
     refresh()
 
     folderSubscriber = model.$folderMode.sink {
