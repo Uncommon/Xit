@@ -63,6 +63,7 @@ protocol CleanPanelDelegate: AnyObject
   func closePanel()
   /// Should throw `CleanPanel.CleanError`
   func clean(_ files: [String]) throws
+  func show(_ files: [String])
   func refresh()
 }
 
@@ -169,7 +170,7 @@ struct CleanPanel: View
           .accessibilityIdentifier(.Clean.Controls.filterField)
       }
 
-      CleanList(data: model, selection: $selection)
+      CleanList(data: model, selection: $selection, delegate: delegate)
         .frame(minWidth: 200, minHeight: 100)
 
       ZStack(alignment: .leading) {

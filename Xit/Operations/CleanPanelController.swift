@@ -83,6 +83,13 @@ extension CleanPanelController: CleanPanelDelegate
       }
     }
   }
+  
+  func show(_ files: [String])
+  {
+    let urls = files.map { repository.fileURL($0) }
+    
+    NSWorkspace.shared.activateFileViewerSelecting(urls)
+  }
 
   func refresh()
   {

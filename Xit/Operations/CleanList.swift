@@ -5,6 +5,7 @@ struct CleanList: NSViewRepresentable
 {
   @ObservedObject var data: CleanData
   @Binding var selection: Set<String>
+  weak var delegate: (any CleanPanelDelegate)?
 
   enum ColumnID
   {
@@ -34,12 +35,13 @@ struct CleanList: NSViewRepresentable
     tableView.dataSource = context.coordinator
     scrollView.documentView = tableView
     scrollView.borderType = .bezelBorder
+    context.coordinator.setMenu(for: tableView)
     return scrollView
   }
 
   func makeCoordinator() -> Coordinator
   {
-    Coordinator(data: data, selection: $selection)
+    Coordinator(data: data, selection: $selection, delegate: delegate)
   }
 
   func updateNSView(_ nsView: NSScrollView, context: Context)
@@ -56,15 +58,36 @@ struct CleanList: NSViewRepresentable
   {
     let data: CleanData
     @Binding var selection: Set<String>
+    weak var delegate: (any CleanPanelDelegate)?
 
     let ignoredImage = NSImage(systemSymbolName: "eye.slash")!
     let addImage = NSImage(systemSymbolName: "plus.circle")!
       .withSymbolConfiguration(.init(paletteColors: [.systemGreen]))!
 
-    init(data: CleanData, selection: Binding<Set<String>>)
+    init(data: CleanData, selection: Binding<Set<String>>,
+         delegate: (any CleanPanelDelegate)?)
     {
       self.data = data
       self._selection = selection
+      self.delegate = delegate
+    }
+    
+    @MainActor
+    func setMenu(for tableView: NSTableView) {
+      let menu = NSMenu {
+        NSMenuItem(.showInFinder) { _ in
+          // User may have right-clicked on a row outside the selection
+          let indexes = tableView.selectedRowIndexes
+          let row = tableView.clickedRow
+          let targetIndexes = indexes.contains(row) ? indexes : [row]
+          let paths = targetIndexes
+                .map { self.data.filteredItems[$0].path }
+          
+          self.delegate?.show(paths)
+        }
+      }
+
+      tableView.menu = menu
     }
   }
 }
