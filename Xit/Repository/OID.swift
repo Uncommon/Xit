@@ -170,13 +170,17 @@ extension GitOID: CustomStringConvertible
   public var description: String { sha }
 }
 
+let oidSize = 20
+
 public func == (left: GitOID, right: GitOID) -> Bool
 {
   left.withUnsafeOID {
     (leftOID) in
     right.withUnsafeOID {
       (rightOID) in
-      git_oid_equal(leftOID, rightOID) != 0
+      // git_oid_equal() is slowed down by the use of git_oid_size(), which isn't
+      // even needed with SHA256 support turned off
+      memcmp(leftOID, rightOID, oidSize) == 0
     }
   }
 }
