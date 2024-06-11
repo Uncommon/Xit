@@ -71,18 +71,15 @@ class FetchOpController: PasswordOpController
   {
     Task {
       @MainActor in
-      guard !canceled,
-            let repository = repository
+      guard !canceled
       else { return }
 
       let received = Float(progress.receivedObjects)
       let indexed = Float(progress.indexedObjects)
-      let note = Notification.progressNotification(
-            repository: repository,
-            progress: (received + indexed) / 2,
-            total: Float(progress.totalObjects))
-
-      NotificationCenter.default.post(note)
+      
+      windowController?.repoController.post(
+        progress: (received + indexed) / 2,
+        total: Float(progress.totalObjects))
     }
     return true
   }

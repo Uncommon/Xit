@@ -22,32 +22,6 @@ protocol TitleBarDelegate: AnyObject
   func search()
 }
 
-extension Notification.Name
-{
-  static let XTProgress = Self("XTProgress")
-}
-
-extension Notification
-{
-  enum XTProgressKeys
-  {
-    static let progress = "progress"
-    static let total = "total"
-  }
-  
-  static func progressNotification(repository: AnyObject,
-                                   progress: Float, total: Float) -> Notification
-  {
-    return Notification(name: .XTProgress,
-                        object: repository,
-                        userInfo: [XTProgressKeys.progress: progress,
-                                   XTProgressKeys.total: total])
-  }
-  
-  var progress: Float? { userInfo?[XTProgressKeys.progress] as? Float }
-  var total: Float? { userInfo?[XTProgressKeys.total] as? Float }
-}
-
 @MainActor
 class TitleBarController: NSObject
 {
@@ -182,16 +156,10 @@ class TitleBarController: NSObject
   
   func observe(repository: XTRepository)
   {
-    progressSink = NotificationCenter.default.publisher(for: .XTProgress,
-                                                        object: repository)
+    progressSink = repository.controller?.progressPublisher
       .receive(on: DispatchQueue.main)
       .sink {
-        [weak self] (notification) in
-        guard let self = self,
-              let progress = notification.progress,
-              let total = notification.total
-        else { return }
-
+        (progress, total) in
         
         if progress < total {
           self.spinner.isIndeterminate = false

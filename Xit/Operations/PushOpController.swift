@@ -25,13 +25,10 @@ final class PushOpController: PasswordOpController
     else { return true }
 
     Task {
-      let repository = await self.repository
-      let note = Notification.progressNotification(
-        repository: repository as AnyObject,
-        progress: Float(progress.current),
-        total: Float(progress.total))
-
-      NotificationCenter.default.post(note)
+      @MainActor in
+      windowController?.repoController.post(
+          progress: Float(progress.current),
+          total: Float(progress.total))
     }
     return false
   }

@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-public protocol RepositoryController: AnyObject
+public protocol RepositoryController: AnyObject, RepositoryPublishing
 {
   var repository: any BasicRepository { get }
   var queue: TaskQueue { get }
@@ -44,6 +44,8 @@ final class GitRepositoryController: RepositoryController
   fileprivate let configWatcher: ConfigWatcher
   fileprivate var workspaceWatcher: WorkspaceWatcher?
   private var workspaceSink: AnyCancellable?
+  
+  var progressSubject = PassthroughSubject<ProgressValue, Never>()
 
   @MutexProtected(wrappedValue: .init())
   public var cache: RepositoryCache
@@ -109,6 +111,10 @@ extension GitRepositoryController: RepositoryPublishing
   var workspacePublisher: AnyPublisher<[String], Never> {
     workspaceWatcher!.publisher
   }
+  
+  var progressPublisher: AnyPublisher<(current: Float, total: Float), Never> {
+    progressSubject.eraseToAnyPublisher()
+  }
 
   func indexChanged() {
     repoWatcher!.publishers.send(.index)
@@ -116,6 +122,10 @@ extension GitRepositoryController: RepositoryPublishing
 
   func refsChanged() {
     repoWatcher?.publishers.send(.refs)
+  }
+  
+  func post(progress: Float, total: Float) {
+    progressSubject.send((progress, total))
   }
 }
 
