@@ -1,8 +1,8 @@
 import Foundation
 
-/// A simple value-holding container. One use is getting values out of Tasks
-/// from synchronous code.
-class Box<T>
+/// A simple value-holding container for getting values out of Tasks
+/// from synchronous code. Marked as unchecked Sendable so handle with care.
+class Box<T>: @unchecked Sendable
 {
   var value: T?
 
