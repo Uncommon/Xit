@@ -32,11 +32,6 @@ extension FileListModel
   /// Sets folder change status to match children.
   func postProcess(fileTree tree: FileChangeNode)
   {
-    let sortDescriptor = NSSortDescriptor(
-          key: "path.lastPathComponent",
-          ascending: true,
-          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
-
     tree.sort()
     updateChanges(tree)
   }

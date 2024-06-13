@@ -382,7 +382,6 @@ extension XTRepository
       else { return .init(path: "") }
       
       let path = String(cString: delta.pointee.old_file.path)
-      let newPath = String(cString: delta.pointee.new_file.path)
       let stagedChange = (entry.head_to_index?.pointee.status)
             .map { DeltaStatus(gitDelta: $0) } ?? .unmodified
       
