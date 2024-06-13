@@ -202,6 +202,10 @@ public final class GitCommit: Commit
     self.init(gitCommit: gitObject)
   }
 
+  deinit {
+    git_commit_free(commit)
+  }
+
   public func getTrailers() -> [(String, [String])]
   {
     guard let message = self.message
