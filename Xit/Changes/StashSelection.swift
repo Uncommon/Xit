@@ -165,15 +165,21 @@ final class StashUnstagedList: StashFileList, FileListModel
   
   func commit(for path: String) -> (any Commit)?
   {
-    if let untrackedCommit = stash.anyUntrackedCommit,
-       untrackedCommit.anyTree?.anyEntry(path: path) != nil {
+    commit(for: path, stash: stash)
+  }
+
+  /// Generic to unbox `stash`
+  func commit(for path: String, stash: some Stash) -> (any Commit)?
+  {
+    if let untrackedCommit = stash.untrackedCommit,
+       untrackedCommit.tree?.entry(path: path) != nil {
       return untrackedCommit
     }
     else {
-      return stash.anyMainCommit
+      return stash.mainCommit
     }
   }
-  
+
   func dataForFile(_ path: String) -> Data?
   {
     if let untrackedCommit = stash.anyUntrackedCommit,

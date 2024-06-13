@@ -24,7 +24,7 @@ public struct TreeLoader
     return treeNode(path: "", tree: tree, oldTree: oldTree)
   }
   
-  func treeNode(path: String, tree: any Tree, oldTree: NSTreeNode?) -> NSTreeNode
+  func treeNode(path: String, tree: some Tree, oldTree: NSTreeNode?) -> NSTreeNode
   {
     let result = NSTreeNode(representedObject: CommitTreeItem(path: path,
                                                               oid: tree.id))
@@ -37,7 +37,7 @@ public struct TreeLoader
     }
     else {
       for index in 0..<tree.count {
-        guard let entry = tree.anyEntry(at: index)
+        guard let entry = tree.entry(at: index)
         else { continue }
         let entryPath = path.appending(pathComponent: entry.name)
         

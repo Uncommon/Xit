@@ -16,14 +16,6 @@ public protocol Tree<ObjectIdentifier>: OIDObject
   func entry(at index: Int) -> Entry?
 }
 
-extension Tree
-{
-  func anyEntry(path: String) -> (any TreeEntry)?
-  { entry(path: path) as (any TreeEntry)? }
-  func anyEntry(at index: Int) -> (any TreeEntry)?
-  { entry(at: index) as (any TreeEntry)? }
-}
-
 public protocol TreeEntry<ObjectIdentifier>: OIDObject
 {
   associatedtype ObjectIdentifier: OID

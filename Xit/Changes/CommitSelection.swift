@@ -55,17 +55,23 @@ final class CommitFileList: FileListModel
   
   func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
   {
-    guard let tree = commit.anyTree
+    treeRoot(oldTree: oldTree, commit: commit)
+  }
+
+  /// Generic to unbox `commit`
+  func treeRoot(oldTree: NSTreeNode?, commit: some Commit) -> NSTreeNode
+  {
+    guard let tree = commit.tree
     else { return NSTreeNode() }
     let changeList = repository.changes(for: commit.id, parent: diffParent)
     let loader = TreeLoader(fileChanges: changeList)
     let result = loader.treeRoot(tree: tree, oldTree: oldTree)
-    
+
     postProcess(fileTree: result)
     insertDeletedFiles(root: result, changes: changeList)
     return result
   }
-  
+
   /// Inserts deleted files into a tree based on the given `changes`.
   private func insertDeletedFiles(root: NSTreeNode, changes: [FileChange])
   {
