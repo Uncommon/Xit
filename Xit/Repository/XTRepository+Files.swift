@@ -374,12 +374,12 @@ extension XTRepository
       }
     }
   
-    subscript(position: Int) -> FileStagingChange
+    subscript(position: Int) -> FileChange
     {
       guard let statusList = self.statusList,
             let entry = git_status_byindex(statusList, position)?.pointee,
             let delta = entry.head_to_index ?? entry.index_to_workdir
-      else { return .init(path: "", destinationPath: "") }
+      else { return .init(path: "") }
       
       let path = String(cString: delta.pointee.old_file.path)
       let newPath = String(cString: delta.pointee.new_file.path)
@@ -388,7 +388,6 @@ extension XTRepository
       
       return .init(
           path: path,
-          destinationPath: newPath,
           change: stagedChange)
     }
     

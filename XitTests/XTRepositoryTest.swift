@@ -271,7 +271,7 @@ class XTAmendTest: XTTest
   {
     let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file4.rawValue
-    let match = { (change: FileStagingChange) in change.path == fileName }
+    let match = { (change: FileChange) in change.path == fileName }
     
     try addSecondCommit()
     try execute(in: repository) {
@@ -303,7 +303,7 @@ class XTAmendTest: XTTest
   {
     let headCommit = try XCTUnwrap(repository.headCommit)
     let fileName = TestFileName.file1.rawValue
-    let match = { (change: FileStagingChange) in change.path == fileName }
+    let match = { (change: FileChange) in change.path == fileName }
     
     try addSecondCommit()
     try FileManager.default.removeItem(at: repository.fileURL(fileName))

@@ -34,18 +34,6 @@ extension FileChange // CustomStringConvertible
   { "\(path) [\(status.description)]" }
 }
 
-class FileStagingChange: FileChange
-{
-  let destinationPath: String
-  
-  init(path: String, destinationPath: String,
-       change: DeltaStatus = .unmodified)
-  {
-    self.destinationPath = destinationPath
-    super.init(path: path, change: change)
-  }
-}
-
 extension XTRepository: FileStatusDetection
 {
   /// Returns the changes for the given commit.
