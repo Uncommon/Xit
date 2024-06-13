@@ -94,9 +94,9 @@ class StashStagedList: StashFileList, FileListModel
     super.init(selection: selection)
   }
   
-  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
-    return indexList?.treeRoot(oldTree: oldTree) ?? NSTreeNode()
+    return indexList?.treeRoot(oldTree: oldTree) ?? FileChangeNode()
   }
   
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -144,10 +144,10 @@ final class StashUnstagedList: StashFileList, FileListModel
     super.init(selection: selection)
   }
   
-  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     guard let mainList = self.mainList
-    else { return NSTreeNode() }
+    else { return FileChangeNode() }
     var mainRoot = mainList.treeRoot(oldTree: oldTree)
     
     if let untrackedList = self.untrackedList {

@@ -159,16 +159,11 @@ class XTFileChangesModelTest: XTTest
   {
     let model = StagingSelection(repository: repository, amending: false)
     let tree = model.fileList.treeRoot(oldTree: nil)
-    guard let children = tree.children
-    else {
-      XCTFail("no children")
-      return
-    }
-    
-    XCTAssertEqual(children.count, 1)
-    
-    let change = children[0].representedObject as! FileChange
-    
+
+    XCTAssertEqual(tree.children.count, 1)
+
+    let change = tree.children[0].value
+
     XCTAssertEqual(change.status, DeltaStatus.unmodified)
   }
   
@@ -193,12 +188,12 @@ class XTFileChangesModelTest: XTTest
     
     XCTAssertEqual(children.count, 2)
     
-    var change = children[0].representedObject as! FileChange
-    
+    var change = children[0].value
+
     XCTAssertEqual(change.path, TestFileName.added.rawValue)
     XCTAssertEqual(change.status, DeltaStatus.added)
     
-    change = children[1].representedObject as! FileChange
+    change = children[1].value
     XCTAssertEqual(change.path, TestFileName.file1.rawValue)
     XCTAssertEqual(change.status, DeltaStatus.unmodified)
   }
@@ -227,24 +222,15 @@ class XTFileChangesModelTest: XTTest
                                          (name: .file1, change: .unmodified)]
     
     for pair in zip(children, expectedItems) {
-      guard let item = pair.0.representedObject as? FileChange
-      else {
-        XCTFail("wrong object type")
-        continue
-      }
-      
+      let item = pair.0.value
+
       XCTAssertEqual(item.path, pair.1.name.rawValue)
       XCTAssertEqual(item.status, pair.1.change)
     }
     
     let unstagedTree = model.unstagedFileList.treeRoot(oldTree: nil)
-    guard let unstagedChildren = unstagedTree.children,
-          unstagedChildren.count == 4,
-          let item = unstagedChildren[3].representedObject as? FileChange
-    else {
-      XCTFail("no children or wrong count")
-      return
-    }
+    XCTAssertEqual(unstagedTree.children.count, 4)
+    let item = unstagedTree.children[3].value
 
     XCTAssertEqual(item.path, TestFileName.untracked.rawValue)
     XCTAssertEqual(item.status, .untracked)

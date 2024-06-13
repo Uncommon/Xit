@@ -25,21 +25,17 @@ class CommitRootTest: XTTest
     let scratchTree = model.fileList.treeRoot(oldTree: nil)
     let relativeTree = model.fileList.treeRoot(oldTree: parentTree)
     
-    XCTAssertTrue(scratchTree.isEqual(relativeTree))
-    
+    XCTAssertTrue(scratchTree.deepEquals(other: relativeTree))
+
     if let deletedPath = deletedPath {
       let components = deletedPath.pathComponents
       var node = relativeTree
       
       for component in components {
-        guard let children = node.children
-        else {
-          XCTFail("no children")
-          break
-        }
-        
+        let children = node.children
+
         if let child = children.first(where: { component ==
-          ($0.representedObject as? CommitTreeItem)?.path.lastPathComponent }) {
+            $0.value.path.lastPathComponent }) {
           node = child
         }
         else {
@@ -48,25 +44,18 @@ class CommitRootTest: XTTest
         }
       }
       
-      guard let item = node.representedObject as? CommitTreeItem
-      else {
-        XCTFail("no item")
-        return
-      }
-      
-      XCTAssertEqual(item.status, DeltaStatus.deleted)
+      XCTAssertEqual(node.value.status, DeltaStatus.deleted)
     }
     
     if deletedPath != TestFileName.file1 {
-      guard let file1Node = relativeTree.children?.first(where:
-              { ($0.representedObject as? CommitTreeItem)?.path == TestFileName.file1} ),
-            let item = file1Node.representedObject as? CommitTreeItem
+      guard let file1Node = relativeTree.children.first(where:
+              { $0.value.path == TestFileName.file1 } )
       else {
         XCTFail("file1 missing")
         return
       }
       
-      XCTAssertEqual(item.status, DeltaStatus.unmodified)
+      XCTAssertEqual(file1Node.value.status, DeltaStatus.unmodified)
     }
   }
   
@@ -97,15 +86,9 @@ class CommitRootTest: XTTest
     
     let tree1 = model1.fileList.treeRoot(oldTree: nil)
     let tree2 = model2.fileList.treeRoot(oldTree: tree1)
-    guard let children1 = tree1.children,
-          let children2 = tree2.children
-    else {
-      XCTFail("no children")
-      return
-    }
-    
-    XCTAssertEqual(children1.count, 1)
-    XCTAssertEqual(children2.count, 2)
+
+    XCTAssertEqual(tree1.children.count, 1)
+    XCTAssertEqual(tree2.children.count, 2)
     checkCommitTrees(deletedPath: nil)
   }
   
@@ -215,15 +198,15 @@ class CommitRootTest: XTTest
     
     // Double check that the file shows up as added
     let newNode = try XCTUnwrap(parentRoot.commitTreeItemNode(forPath: subFilePath))
-    let newItem = try XCTUnwrap(newNode.representedObject as? CommitTreeItem)
-    
+    let newItem = newNode.value
+
     XCTAssertEqual(newItem.status, DeltaStatus.added)
     
     let model = CommitSelection(repository: repository, commit: commit)
     let root = model.fileList.treeRoot(oldTree: parentRoot)
     let fileNode = try XCTUnwrap(root.commitTreeItemNode(forPath: subFilePath))
-    let item = try XCTUnwrap(fileNode.representedObject as? CommitTreeItem)
-    
+    let item = fileNode.value
+
     XCTAssertEqual(item.status, DeltaStatus.unmodified)
   }
   
@@ -235,55 +218,42 @@ class CommitRootTest: XTTest
     
     let model = CommitSelection(repository: repository, commit: commit)
     let root = model.fileList.treeRoot(oldTree: nil)
-    guard let fileNode = root.commitTreeItemNode(forPath: subFilePath),
-          let item = fileNode.representedObject as? CommitTreeItem
+    guard let fileNode = root.commitTreeItemNode(forPath: subFilePath)
     else {
       XCTFail("can't get item")
       return
     }
     
-    XCTAssertEqual(item.status, DeltaStatus.unmodified)
-    
+    XCTAssertEqual(fileNode.value.status, DeltaStatus.unmodified)
+
     let parentModel = CommitSelection(repository: repository, commit: parentCommit)
     let parentRoot = parentModel.fileList.treeRoot(oldTree: root)
     
     let newNode = try XCTUnwrap(parentRoot.commitTreeItemNode(forPath: subFilePath))
-    let newItem = try XCTUnwrap(newNode.representedObject as? CommitTreeItem)
-    
+    let newItem = newNode.value
+
     XCTAssertEqual(newItem.status, DeltaStatus.added)
   }
 }
 
-extension NSTreeNode
+extension FileChangeNode
 {
-  /// Compares the contents of two tree nodes. This fails if either one has
-  /// a nil `representedObject`, but that's fine for testing purposes.
-  open override func isEqual(_ object: Any?) -> Bool
+  func deepEquals(other: FileChangeNode) -> Bool
   {
-    guard let otherNode = object as? NSTreeNode,
-          let representedObject = self.representedObject as? NSObject,
-          let otherObject = otherNode.representedObject as? NSObject,
-          representedObject.isEqual(otherObject),
-          let children = self.children,
-          let otherChildren = otherNode.children,
-          children.count == otherChildren.count
-    else { return false }
-    
-    return zip(children, otherChildren).allSatisfy { $0.isEqual($1) }
+    return self == other &&
+      zip(children, other.children).allSatisfy { $0.deepEquals(other: $1) }
   }
-  
-  func commitTreeItemNode(forPath path: String, root: String = "") -> NSTreeNode?
+
+  func commitTreeItemNode(forPath path: String, root: String = "") -> FileChangeNode?
   {
     let relativePath = path.droppingPrefix(root + "/")
     guard let topFolderName = relativePath.firstPathComponent
     else { return nil }
     let folderPath = root.isEmpty ? topFolderName : root +/ topFolderName
-    guard let node = children?.first(where:
-      { ($0.representedObject as? CommitTreeItem)?.path == folderPath}),
-          let item = node.representedObject as? CommitTreeItem
+    guard let node = children.first(where: { $0.value.path == folderPath })
     else { return nil }
     
-    if item.path == path {
+    if node.value.path == path {
       return node
     }
     else {
@@ -293,13 +263,9 @@ extension NSTreeNode
   
   func printChangeItems()
   {
-    if let item = representedObject as? CommitTreeItem {
-      print("\(item.path) - \(item.status)")
-    }
-    if let children = self.children {
-      for child in children {
-        child.printChangeItems()
-      }
+    print("\(value.path) - \(value.status)")
+    for child in children {
+      child.printChangeItems()
     }
   }
 }
