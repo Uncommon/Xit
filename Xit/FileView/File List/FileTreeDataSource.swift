@@ -3,21 +3,21 @@ import Cocoa
 
 final class FileTreeDataSource: FileListDataSourceBase
 {
-  fileprivate var root: NSTreeNode
-  
+  fileprivate var root: FileChangeNode
+
   override init(useWorkspaceList: Bool)
   {
-    root = NSTreeNode(representedObject: CommitTreeItem(path: "root"))
-    
+    root = FileChangeNode(value: FileChange(path: "root"))
+
     super.init(useWorkspaceList: useWorkspaceList)
   }
 }
 
-// NSTreeNode is not Sendable, but we're sending it across contexts in very
+// FileChangeNode is not Sendable, but we're sending it across contexts in very
 // limited ways, so it should be safe.
 struct TreeNodeContainer: @unchecked Sendable
 {
-  let node: NSTreeNode
+  let node: FileChangeNode
 }
 
 extension FileTreeDataSource: FileListDataSource
@@ -121,13 +121,12 @@ extension FileTreeDataSource: FileListDataSource
     guard (row >= 0) && (row < outlineView!.numberOfRows)
     else { return nil }
     
-    return (outlineView?.item(atRow: row) as? NSTreeNode)?.representedObject
-           as? FileChange
+    return (outlineView?.item(atRow: row) as? FileChangeNode)?.value
   }
   
   func treeItem(_ item: Any) -> FileChange?
   {
-    return (item as? NSTreeNode)?.representedObject as? FileChange
+    return (item as? FileChangeNode)?.value
   }
   
   func path(for item: Any) -> String
@@ -146,24 +145,24 @@ extension FileTreeDataSource: NSOutlineViewDataSource
   func outlineView(_ outlineView: NSOutlineView,
                    numberOfChildrenOfItem item: Any?) -> Int
   {
-    let children = (item as? NSTreeNode)?.children ?? root.children
-    
-    return children?.count ?? 0
+    let children = (item as? FileChangeNode)?.children ?? root.children
+
+    return children.count
   }
   
   func outlineView(_ outlineView: NSOutlineView,
                    isItemExpandable item: Any) -> Bool
   {
-    return !((item as? NSTreeNode)?.children?.isEmpty ?? true)
+    return !((item as? FileChangeNode)?.children.isEmpty ?? true)
   }
   
   func outlineView(_ outlineView: NSOutlineView,
                    child index: Int,
                    ofItem item: Any?) -> Any
   {
-    guard let children = (item as? NSTreeNode)?.children ?? root.children,
-          index < children.count
-    else { return NSTreeNode() }
+    let children = (item as? FileChangeNode)?.children ?? root.children
+    guard index < children.count
+    else { return FileChangeNode() }
     
     return children[index]
   }
@@ -172,18 +171,6 @@ extension FileTreeDataSource: NSOutlineViewDataSource
                    objectValueFor tableColumn: NSTableColumn?,
                    byItem item: Any?) -> Any?
   {
-    return (item as? NSTreeNode)?.representedObject
-  }
-}
-
-class CommitTreeItem: FileChange
-{
-  let oid: (any OID)?
-  
-  init(path: String, oid: (any OID)? = nil,
-       change: DeltaStatus = .unmodified)
-  {
-    self.oid = oid
-    super.init(path: path, change: change)
+    return (item as? FileChangeNode)?.value
   }
 }

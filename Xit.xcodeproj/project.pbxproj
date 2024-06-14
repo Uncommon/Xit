@@ -231,7 +231,6 @@
 		C96B22F022DF84C200DA219F /* GitVersionedOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */; };
 		C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* HistoryCellView.swift */; };
-		C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */; };
 		C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31AF20BF271300E74D2F /* StringExtensions.swift */; };
 		C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C97E31B120BF2A2100E74D2F /* RepoError.swift */; };
 		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
@@ -318,6 +317,8 @@
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
+		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
+		C9E602FA2C1BB02C00326726 /* FileChangeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F92C1BB02C00326726 /* FileChangeNode.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
 		C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */; };
@@ -615,7 +616,6 @@
 		C96B22EF22DF84C100DA219F /* GitVersionedOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitVersionedOptions.swift; sourceTree = "<group>"; };
 		C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* HistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryCellView.swift; sourceTree = "<group>"; };
-		C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTreeNode+FileChange.swift"; sourceTree = "<group>"; };
 		C97E31AF20BF271300E74D2F /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		C97E31B120BF2A2100E74D2F /* RepoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoError.swift; sourceTree = "<group>"; };
 		C9800D7C2017FEB80045B05D /* FileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListController.swift; sourceTree = "<group>"; };
@@ -702,6 +702,8 @@
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
+		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
+		C9E602F92C1BB02C00326726 /* FileChangeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChangeNode.swift; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
 		C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryMergeTest.swift; sourceTree = "<group>"; };
@@ -803,7 +805,6 @@
 				C931A0E627627E84007F441C /* MenuBuilder.swift */,
 				C95BD3EE1F8ECEC9000A2E2D /* Mutex.swift */,
 				892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */,
-				C97E319D20BF26B300E74D2F /* NSTreeNode+FileChange.swift */,
 				C957B8651D2D8D500040F858 /* PasswordStorage.swift */,
 				891C5F7226715C8A0099695D /* PrioritizedResults.swift */,
 				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
@@ -1101,6 +1102,7 @@
 				C97E31B120BF2A2100E74D2F /* RepoError.swift */,
 				C9328B131D776BC700EFF7F7 /* RepositoryWatcher.swift */,
 				C92E3C0122F1FB09004306C1 /* ConfigWatcher.swift */,
+				C9E602F72C1BAFD000326726 /* FileChange.swift */,
 				C959A7261F6C8440004277CD /* GitBlob.swift */,
 				C954ABFC1D34455000302160 /* GitBranch.swift */,
 				C98AFFB12502CF6700AD20EC /* GitBuffer.swift */,
@@ -1144,6 +1146,7 @@
 				C93799D41DDF9B28005C08B8 /* WorkspaceWatcher.swift */,
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
 				89CAF5812852A9E2000D2014 /* StringFakes.swift */,
+				C9E602F92C1BB02C00326726 /* FileChangeNode.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -1579,7 +1582,6 @@
 				C9AEE083278CAA33008BA92C /* FileListModel.swift in Sources */,
 				C957B8721D2DB44E0040F858 /* RemoteSheetController.swift in Sources */,
 				C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */,
-				C97E319E20BF26B300E74D2F /* NSTreeNode+FileChange.swift in Sources */,
 				8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */,
 				C936AD0C1D4C0FA900C5ADC3 /* PasswordOpController.swift in Sources */,
 				899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */,
@@ -1651,12 +1653,14 @@
 				898F75882A53428D00C157D7 /* ReferenceName.swift in Sources */,
 				89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */,
 				C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */,
+				C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
 				89B1C9B228778BE6006724EA /* MemoryPasswordStorage.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
 				C9473B9125A64D3000DA95BF /* HistorySplitController.swift in Sources */,
 				C9065F4E20FCFA8B00C01110 /* RefType.swift in Sources */,
 				89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */,
+				C9E602FA2C1BB02C00326726 /* FileChangeNode.swift in Sources */,
 				C994977D23107618004F06A5 /* XTRepository+Commits.swift in Sources */,
 				895ED19529BBD23500757AEA /* CheckOutRemoteOpController.swift in Sources */,
 				89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */,

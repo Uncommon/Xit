@@ -19,20 +19,18 @@ public struct TreeLoader
   }
   
   /// Constructs a new tree root, copying identical subtrees from an old tree
-  public func treeRoot(tree: any Tree, oldTree: NSTreeNode?) -> NSTreeNode
+  public func treeRoot(tree: any Tree, oldTree: FileChangeNode?) -> FileChangeNode
   {
     return treeNode(path: "", tree: tree, oldTree: oldTree)
   }
   
-  func treeNode(path: String, tree: some Tree, oldTree: NSTreeNode?) -> NSTreeNode
+  func treeNode(path: String, tree: some Tree, oldTree: FileChangeNode?) -> FileChangeNode
   {
-    let result = NSTreeNode(representedObject: CommitTreeItem(path: path,
-                                                              oid: tree.id))
-    
+    let result = FileChangeNode(value: FileChange(path: path, oid: tree.id))
+
     if let oldTree = oldTree,
-       let oldItem = oldTree.representedObject as? CommitTreeItem,
-      oldItem.oid?.equals(tree.id) ?? false {
-      oldTree.children.map { result.mutableChildren.addObjects(from: $0) }
+       oldTree.value.oid?.equals(tree.id) ?? false {
+      result.children.append(contentsOf: oldTree.children)
       applyStatus(to: result)
     }
     else {
@@ -44,39 +42,33 @@ public struct TreeLoader
         if entry.type == .tree {
           guard let entryTree = entry.object as? (any Tree)
           else { continue }
-          let oldNode = oldTree?.children?.first {
+          let oldNode = oldTree?.children.first {
             (node) in
-            (node.representedObject as? FileChange)?
-                .path.lastPathComponent == entry.name
+            node.value.path.lastPathComponent == entry.name
           }
           
-          result.mutableChildren.add(treeNode(path: entryPath, tree: entryTree,
-                                              oldTree: oldNode))
+          result.children.append(treeNode(path: entryPath, tree: entryTree,
+                                          oldTree: oldNode))
         }
         else {
           let fileStatus = changes[entryPath] ?? .unmodified
           let stagedChange = fileStatus
-          let fileItem = CommitTreeItem(path: entryPath, oid: entry.id,
+          let fileItem = FileChange(path: entryPath, oid: entry.id,
                                         change: stagedChange)
-          let node = NSTreeNode(representedObject: fileItem)
-          
-          result.mutableChildren.add(node)
+          let node = FileChangeNode(value: fileItem)
+
+          result.children.append(node)
         }
       }
     }
     return result
   }
   
-  func applyStatus(to node: NSTreeNode)
+  func applyStatus(to node: FileChangeNode)
   {
-    guard let item = node.representedObject as? FileChange
-    else { return }
-    
-    item.status = changes[item.path] ?? .unmodified
-    if let children = node.children {
-      for childNode in children {
-        applyStatus(to: childNode)
-      }
+    node.value.status = changes[node.value.path] ?? .unmodified
+    for childNode in node.children {
+      applyStatus(to: childNode)
     }
   }
 }

@@ -1,39 +1,5 @@
 import Foundation
 
-// Has to inherit from NSObject so NSTreeNode can use it to sort
-public class FileChange: NSObject
-{
-  @objc var path: String
-  let oldPath: String
-  var status: DeltaStatus
-  
-  /// Repository-relative path to use for git operations
-  var gitPath: String
-  { path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/") }
-  
-  init(path: String, oldPath: String = "", change: DeltaStatus = .unmodified)
-  {
-    self.path = path
-    self.oldPath = oldPath
-    self.status = change
-  }
-  
-  public override func isEqual(_ object: Any?) -> Bool
-  {
-    if let otherChange = object as? FileChange {
-      return otherChange.path == path &&
-             otherChange.status == status
-    }
-    return false
-  }
-}
-
-extension FileChange // CustomStringConvertible
-{
-  public override var description: String
-  { "\(path) [\(status.description)]" }
-}
-
 extension XTRepository: FileStatusDetection
 {
   /// Returns the changes for the given commit.

@@ -48,11 +48,10 @@ class FileListModelTest: XTTest
     XCTAssertEqual(change.status, .renamed)
 
     let root = model.treeRoot(oldTree: nil)
-    let item = try XCTUnwrap(root.children?.first?
-                                 .children?.first?.representedObject
-                             as? CommitTreeItem)
+    let item = try XCTUnwrap(root.children.first?
+                                 .children.first?.value)
 
-    XCTAssertEqual(root.children?.count, 1)
+    XCTAssertEqual(root.children.count, 1)
     XCTAssertEqual(item.path, TestFileName.subFile2.rawValue)
     // oldPath is not currently filled in
     // XCTAssertEqual(item.oldPath, TestFileName.subFile1.rawValue)

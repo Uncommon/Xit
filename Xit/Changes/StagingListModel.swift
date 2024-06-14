@@ -45,20 +45,21 @@ class IndexFileList: StagingListModel, FileListModel
     return repository.blame(for: path, data: data, to: nil)
   }
   
-  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     return treeRoot(changes: repository.stagedChanges(), oldTree: oldTree)
   }
   
-  func treeRoot(changes: [FileChange], oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(changes: [FileChange], oldTree: FileChangeNode?) -> FileChangeNode
   {
     let builder = WorkspaceTreeBuilder(fileChanges: changes)
     let root = builder.build(repository.repoURL)
     
     for stagedChange in changes {
-      stagedChange.path = stagedChange.path.withPrefix(NSTreeNode.rootPrefix)
+      var stagedChange = stagedChange
+      stagedChange.path = stagedChange.path.withPrefix(FileChangeNode.rootPrefix)
       if let node = root.fileChangeNode(path: stagedChange.path) {
-        node.fileChange.status = stagedChange.status
+        node.value.status = stagedChange.status
       }
       else {
         root.add(fileChange: stagedChange)
@@ -83,7 +84,7 @@ final class AmendingIndexFileList: IndexFileList
     repository.amendingStagedDiff(file: path)
   }
   
-  override func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  override func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     treeRoot(changes: repository.amendingStagedChanges(), oldTree: oldTree)
   }
@@ -128,7 +129,7 @@ final class WorkspaceFileList: StagingListModel, FileListModel
     repository.fileURL(path)
   }
   
-  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     let builder = WorkspaceTreeBuilder(fileChanges: repository.unstagedChanges(),
                                        repo: showingIgnored ? nil : repository)

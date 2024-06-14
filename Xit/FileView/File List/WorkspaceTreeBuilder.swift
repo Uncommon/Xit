@@ -25,12 +25,12 @@ final class WorkspaceTreeBuilder
     self.repo = repo
   }
   
-  func treeAtURL(_ baseURL: URL, rootPath: NSString) -> NSTreeNode
+  func treeAtURL(_ baseURL: URL, rootPath: NSString) -> FileChangeNode
   {
     let myPath = baseURL.path.droppingPrefix(rootPath as String).nilIfEmpty ??
                  WorkspaceTreeBuilder.rootName + "/"
     let rootItem = FileChange(path: myPath)
-    let node = NSTreeNode(representedObject: rootItem)
+    let node = FileChangeNode(value: rootItem)
     let enumerator = FileManager.default.enumerator(
           at: baseURL,
           includingPropertiesForKeys: [ URLResourceKey.isDirectoryKey ],
@@ -47,7 +47,7 @@ final class WorkspaceTreeBuilder
       let path = WorkspaceTreeBuilder.rootName
                                      .appending(pathComponent: relativePath)
 
-      var childNode: NSTreeNode?
+      var childNode: FileChangeNode?
       var isDirectory: AnyObject?
       
       do {
@@ -62,20 +62,20 @@ final class WorkspaceTreeBuilder
           childNode = self.treeAtURL(url, rootPath: rootPath)
         }
         else {
-          let item = FileChange(path: path)
-          
+          var item = FileChange(path: path)
+
           if let status = self.changes[relativePath.droppingPrefix("/")] {
             item.status = status
           }
-          childNode = NSTreeNode(representedObject: item)
+          childNode = FileChangeNode(value: item)
         }
       }
-      childNode.map { node.mutableChildren.add($0) }
+      childNode.map { node.children.append($0) }
     }
     return node
   }
   
-  func build(_ baseURL: URL) -> NSTreeNode
+  func build(_ baseURL: URL) -> FileChangeNode
   {
     return self.treeAtURL(baseURL, rootPath: baseURL.path as NSString)
   }

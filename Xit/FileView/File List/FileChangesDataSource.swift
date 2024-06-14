@@ -34,7 +34,7 @@ final class FileChangesDataSource: FileListDataSourceBase
       changes = newChanges
     }
     else {
-      for change in changes {
+      for (index, change) in changes.enumerated() {
         guard let newIndex = newChanges.firstIndex(where: {
           (newChange) in
           newChange.gitPath == change.gitPath &&
@@ -44,7 +44,7 @@ final class FileChangesDataSource: FileListDataSourceBase
         
         let newChange = newChanges[newIndex]
         
-        change.status = newChange.status
+        changes[index].status = newChange.status
         newChangeIndexes.insert(newIndex)
       }
       changes.removeObjects(at: deleteIndexes)

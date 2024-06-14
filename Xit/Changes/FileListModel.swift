@@ -11,7 +11,7 @@ protocol FileListModel: AnyObject
   /// Constructs the file tree
   /// - parameter oldTree: Tree from the previously selected commit, to speed
   /// up loading.
-  func treeRoot(oldTree: NSTreeNode?) -> NSTreeNode
+  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   /// Get the diff for the given file.
   /// - parameter path: Repository-relative file path.
   func diffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -30,27 +30,19 @@ protocol FileListModel: AnyObject
 extension FileListModel
 {
   /// Sets folder change status to match children.
-  func postProcess(fileTree tree: NSTreeNode)
+  func postProcess(fileTree tree: FileChangeNode)
   {
-    let sortDescriptor = NSSortDescriptor(
-          key: "path.lastPathComponent",
-          ascending: true,
-          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
-
-    tree.sort(with: [sortDescriptor], recursively: true)
+    tree.sort()
     updateChanges(tree)
   }
 
   /// Recursive helper for `postProcess`.
-  func updateChanges(_ node: NSTreeNode)
+  func updateChanges(_ node: FileChangeNode)
   {
-    guard let childNodes = node.children
-    else { return }
-
     var change: DeltaStatus?
 
-    for child in childNodes {
-      let childItem = child.representedObject as! FileChange
+    for child in node.children {
+      let childItem = child.value
 
       if !child.isLeaf {
         updateChanges(child)
@@ -60,14 +52,12 @@ extension FileListModel
                ?? childItem.status
     }
 
-    let nodeItem = node.representedObject as! FileChange
-
-    nodeItem.status = change ?? .unmodified
+    node.value.status = change ?? .unmodified
   }
 
   func findTreeNode(forPath path: String,
-                    parent: NSTreeNode,
-                    nodes: inout [String: NSTreeNode]) -> NSTreeNode
+                    parent: FileChangeNode,
+                    nodes: inout [String: FileChangeNode]) -> FileChangeNode
   {
     guard !path.isEmpty
     else { return parent }
@@ -76,10 +66,10 @@ extension FileListModel
       return pathNode
     }
     else {
-      let pathNode = NSTreeNode(representedObject: CommitTreeItem(path: path))
+      let pathNode = FileChangeNode(value: FileChange(path: path))
       let parentPath = (path as NSString).deletingLastPathComponent
 
-      parent.mutableChildren.add((parentPath.isEmpty) ?
+      parent.children.append((parentPath.isEmpty) ?
           pathNode :
           findTreeNode(forPath: parentPath, parent: parent, nodes: &nodes))
       nodes[path] = pathNode
@@ -88,26 +78,21 @@ extension FileListModel
   }
 
   /// Adds the contents of one tree into another
-  func add(_ srcTree: NSTreeNode, to destTree: inout NSTreeNode,
+  func add(_ srcTree: FileChangeNode, to destTree: inout FileChangeNode,
            status: DeltaStatus)
   {
-    guard let srcNodes = srcTree.children,
-          let destNodes = destTree.children
-    else { return }
-
     var srcIndex = 0, destIndex = 0
-    var addedNodes = [NSTreeNode]()
+    var addedNodes = [FileChangeNode]()
 
-    while (srcIndex < srcNodes.count) && (destIndex < destNodes.count) {
-      let srcItem = srcNodes[srcIndex].representedObject! as! FileChange
-      let destItem = destNodes[destIndex].representedObject! as! FileChange
+    while (srcIndex < srcTree.children.count) && (destIndex < destTree.children.count) {
+      let srcItem = srcTree.children[srcIndex].value
+      let destItem = destTree.children[destIndex].value
 
       if destItem.path != srcItem.path {
-        // NSTreeNode can't be in two trees, so make a new one.
         let newChange = FileChange(path: srcItem.path, change: status)
-        let newNode = NSTreeNode(representedObject: newChange)
+        let newNode = FileChangeNode(value: newChange)
 
-        newNode.mutableChildren.addObjects(from: srcNodes[srcIndex].children!)
+        newNode.children.append(contentsOf: srcTree.children[srcIndex].children)
         addedNodes.append(newNode)
       }
       else {
@@ -115,7 +100,7 @@ extension FileListModel
       }
       srcIndex += 1
     }
-    destTree.mutableChildren.addObjects(from: addedNodes)
-    destTree.mutableChildren.sort(keyPath: "representedObject.path")
+    destTree.children.append(contentsOf: addedNodes)
+    destTree.sort()
   }
 }
