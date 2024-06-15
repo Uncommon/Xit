@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol ReselectingOutlineDelegate: AnyObject
 {
   /// The user has clicked on the selected row.

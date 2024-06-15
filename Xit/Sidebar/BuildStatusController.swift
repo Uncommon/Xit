@@ -167,7 +167,9 @@ extension BuildStatusController: BuildStatusClient
     for item in branchItems {
       switch item {
         case is BranchSidebarItem:
-          display?.updateStatusImage(item: item)
+          Task { @MainActor in
+            display?.updateStatusImage(item: item)
+          }
         case is BranchFolderSidebarItem:
           updateBranches(item.children)
         default:
