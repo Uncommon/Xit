@@ -11,7 +11,7 @@ public typealias FullRepository =
 
 public protocol BasicRepository
 {
-  var controller: (any RepositoryController)? { get set }
+  var controller: (any RepositoryController)? { get }
 }
 
 public typealias ProgressValue = (current: Float, total: Float)

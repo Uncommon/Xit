@@ -427,9 +427,3 @@ extension XTWindowController: NSMenuDelegate
     }
   }
 }
-
-extension NSBindingName
-{
-  static let progressHidden =
-      NSBindingName(#keyPath(TitleBarController.progressHidden))
-}
