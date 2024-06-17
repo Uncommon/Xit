@@ -59,7 +59,8 @@ extension FileChangeNode
 
   func fileChangeNode(path: String) -> FileChangeNode?
   {
-    return fileChangeNode(recursivePath: path.withPrefix(FileChangeNode.rootPrefix))
+    return fileChangeNode(recursivePath: 
+        path.withPrefix(FileChangeNode.rootPrefix))
   }
 
   private func fileChangeNode(recursivePath path: String) -> FileChangeNode?

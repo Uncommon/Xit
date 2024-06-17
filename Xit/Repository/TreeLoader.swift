@@ -24,7 +24,8 @@ public struct TreeLoader
     return treeNode(path: "", tree: tree, oldTree: oldTree)
   }
   
-  func treeNode(path: String, tree: some Tree, oldTree: FileChangeNode?) -> FileChangeNode
+  func treeNode(path: String, tree: some Tree,
+                oldTree: FileChangeNode?) -> FileChangeNode
   {
     let result = FileChangeNode(value: FileChange(path: path, oid: tree.id))
 

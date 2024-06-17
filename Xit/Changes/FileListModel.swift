@@ -84,7 +84,8 @@ extension FileListModel
     var srcIndex = 0, destIndex = 0
     var addedNodes = [FileChangeNode]()
 
-    while (srcIndex < srcTree.children.count) && (destIndex < destTree.children.count) {
+    while (srcIndex < srcTree.children.count) &&
+          (destIndex < destTree.children.count) {
       let srcItem = srcTree.children[srcIndex].value
       let destItem = destTree.children[destIndex].value
 
