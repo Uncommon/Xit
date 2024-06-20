@@ -33,6 +33,8 @@ struct PreferenceKey<T>
   }
 }
 
+extension PreferenceKey: Sendable where T: Sendable {}
+
 enum WhitespaceSetting: String, CaseIterable
 {
   case showAll

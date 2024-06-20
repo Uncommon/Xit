@@ -151,7 +151,7 @@ extension BuildStatusViewController: BuildStatusAccessor
 
 extension BuildStatusViewController: BuildStatusClient
 {
-  func buildStatusUpdated(branch: String, buildType: String)
+  nonisolated func buildStatusUpdated(branch: String, buildType: String)
   {
     DispatchQueue.main.async {
       [self] in

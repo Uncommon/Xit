@@ -232,17 +232,20 @@ extension WebViewController: WrappingVariable
 
 extension WebViewController: WKNavigationDelegate
 {
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
+  nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
   {
-    if let scrollView = webView.enclosingScrollView {
-      scrollView.hasHorizontalScroller = false
-      scrollView.horizontalScrollElasticity = .none
-      scrollView.backgroundColor = NSColor(deviceWhite: 0.8, alpha: 1.0)
+    DispatchQueue.main.async {
+      [self] in
+      if let scrollView = webView.enclosingScrollView {
+        scrollView.hasHorizontalScroller = false
+        scrollView.horizontalScrollElasticity = .none
+        scrollView.backgroundColor = NSColor(deviceWhite: 0.8, alpha: 1.0)
+      }
+
+      tabWidth = savedTabWidth
+      wrapping = savedWrapping ?? defaults.wrapping
+      updateFont()
+      updateColors()
     }
-    
-    tabWidth = savedTabWidth
-    wrapping = savedWrapping ?? defaults.wrapping
-    updateFont()
-    updateColors()
   }
 }

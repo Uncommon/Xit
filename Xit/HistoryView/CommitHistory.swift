@@ -75,8 +75,8 @@ final class CommitHistory<C: Commit>
   
   /// Progress reporting callback. Parameters are start and end. Will be
   /// called on the main thread.
-  var postProgress: ((Int, Int) -> Void)?
-  
+  var postProgress: (@MainActor (Int, Int) -> Void)?
+
   /// Manually appends a commit.
   func appendCommit(_ commit: C)
   {
@@ -131,20 +131,21 @@ final class CommitHistory<C: Commit>
   /// called on the main thread.
   func processNextConnectionBatch()
   {
-    let batchSize = min(self.batchSize, entries.count - batchStart)
+    let currentBatchStart = batchStart
+    let batchSize = min(self.batchSize, entries.count - currentBatchStart)
     let (connections, newConnections) =
-          generateConnections(batchStart: batchStart,
+          generateConnections(batchStart: currentBatchStart,
                               batchSize: batchSize,
                               starting: processingConnections)
     
     Signpost.intervalStart(.generateLines(batchStart))
     DispatchQueue.concurrentPerform(iterations: batchSize) {
       (index) in
-      guard !checkAbort() && (index + batchStart < entries.count)
+      guard !checkAbort() && (index + currentBatchStart < entries.count)
       else { return }
       
-      let entry = withSync { entries[index + batchStart] }
-      
+      let entry = withSync { entries[index + currentBatchStart] }
+
       generateLines(entry: entry, connections: connections[index])
     }
 

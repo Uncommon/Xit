@@ -7,7 +7,7 @@ public enum WorkTreeLockStatus
   case error(Int32)
 }
 
-public struct WorkTreePruneOptions: OptionSet
+public struct WorkTreePruneOptions: OptionSet, Sendable
 {
   public let rawValue: UInt32
   

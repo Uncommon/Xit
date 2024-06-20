@@ -1,6 +1,6 @@
 import Foundation
 
-class NoOpKeychain: PasswordStorage
+final class NoOpKeychain: PasswordStorage
 {
   func find(host: String, path: String,
             protocol: PasswordProtocol?,
