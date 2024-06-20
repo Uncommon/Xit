@@ -1,6 +1,7 @@
 import Cocoa
 import Combine
 
+@MainActor
 protocol RepositoryUIController: AnyObject
 {
   var repository: any FullRepository { get }
@@ -227,7 +228,7 @@ final class XTWindowController: NSWindowController,
     validateTouchBar()
   }
 
-  func updateMiniwindowTitle()
+  nonisolated func updateMiniwindowTitle()
   {
     DispatchQueue.main.async {
       [weak self] in
@@ -326,28 +327,30 @@ extension XTWindowController: NSWindowDelegate
     })
     kvObservers.append(defaults.observe(\.deemphasizeMerges) {
       [weak self] (_, _) in
-      self?.redrawAllHistoryLists()
+      MainActor.assumeIsolated { self?.redrawAllHistoryLists() }
     })
     kvObservers.append(defaults.observe(\.statusInTabs) {
       [weak self] (_, _) in
-      self?.updateTabStatus()
+      MainActor.assumeIsolated { self?.updateTabStatus() }
     })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,
-        object: historySplitController.splitView, queue: nil) {
+        object: historySplitController.splitView, queue: .main) {
       [weak self] (_) in
       guard let self = self
       else { return }
-      let split = self.historySplitController.splitView
-      let frameSize = split.subviews[0].frame.size
-      let paneSize = split.isVertical ? frameSize.width : frameSize.height
-      let collapsed = paneSize == 0
+      MainActor.assumeIsolated {
+        let split = self.historySplitController.splitView
+        let frameSize = split.subviews[0].frame.size
+        let paneSize = split.isVertical ? frameSize.width : frameSize.height
+        let collapsed = paneSize == 0
 
-      if !collapsed {
-        self.historyAutoCollapsed = false
+        if !collapsed {
+          self.historyAutoCollapsed = false
+        }
+        self.titleBarController?.searchButton?.isEnabled = !collapsed
+        self.titleBarController?.updateViewControls()
       }
-      self.titleBarController?.searchButton?.isEnabled = !collapsed
-      self.titleBarController?.updateViewControls()
     }
     
     updateMiniwindowTitle()

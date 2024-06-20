@@ -1,6 +1,7 @@
 import Foundation
 
 /// Convenience protocol for accessing things through a `RepositoryUIController`
+@MainActor
 protocol RepositoryUIAccessor
 {
   var repoUIController: (any RepositoryUIController)? { get }
@@ -19,11 +20,10 @@ protocol RepositoryWindowView: NSView, RepositoryUIAccessor {}
 
 extension RepositoryWindowView
 {
+  @MainActor
   var repoUIController: (any RepositoryUIController)?
   {
-    Thread.syncOnMain {
-      window?.windowController as? RepositoryUIController
-    }
+    window?.windowController as? RepositoryUIController
   }
 }
 
@@ -32,11 +32,10 @@ protocol RepositoryWindowViewController: NSViewController, RepositoryUIAccessor 
 
 extension RepositoryWindowViewController
 {
-  // Use ancestorWindow because window may be nil for hidden views
+  @MainActor
   var repoUIController: (any RepositoryUIController)?
   {
-    Thread.syncOnMain {
-      view.ancestorWindow?.windowController as? RepositoryUIController
-    }
+    // Use ancestorWindow because window may be nil for hidden views
+    view.ancestorWindow?.windowController as? RepositoryUIController
   }
 }
