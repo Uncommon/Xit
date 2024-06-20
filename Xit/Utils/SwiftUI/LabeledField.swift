@@ -48,7 +48,7 @@ extension LabeledField where Label == Text
 
 private struct LabelWidthPreferenceKey: MaxDimensionKey
 {
-  static var defaultValue: CGFloat = 0
+  static let defaultValue: CGFloat = 0
 }
 
 // MARK: -

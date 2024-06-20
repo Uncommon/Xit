@@ -47,7 +47,7 @@ protocol ContextVariable: AnyObject
 
 enum TextWrapping: RawRepresentable, CaseIterable
 {
-  static var allCases: [TextWrapping] = [
+  static let allCases: [TextWrapping] = [
     .windowWidth,
     .columns(80),
     .none,

@@ -6,7 +6,7 @@ enum ButtonType
   case accept(String)
   case other(String)
 
-  static var ok: Self = .accept(UIString.ok.rawValue)
+  static let ok: Self = .accept(UIString.ok.rawValue)
 
   static func accept(_ uiString: UIString) -> ButtonType
   { .accept(uiString.rawValue) }
