@@ -1,6 +1,32 @@
 import XCTest
 @testable import Xit
 
+/// For testing
+class Keychain
+{
+  let keychainRef: SecKeychain
+
+  init?(path: String, password: String)
+  {
+    var keychain: SecKeychain?
+    let status = SecKeychainCreate(path, UInt32(password.utf8.count), password,
+                                   false, nil, &keychain)
+    guard status == noErr,
+          let finalKeychain = keychain
+    else { return nil }
+
+    self.keychainRef = finalKeychain
+  }
+}
+
+class TemporaryKeychain: Keychain
+{
+  deinit
+  {
+    SecKeychainDelete(keychainRef)
+  }
+}
+
 class KeychainTest: XCTestCase
 {
   let path = NSString.path(withComponents: ["private",
@@ -30,9 +56,8 @@ class KeychainTest: XCTestCase
       return
     }
     
-    let keychainStorage = KeychainStorage()
-    
-    keychainStorage.keychain = keychain.keychainRef
+    let keychainStorage = KeychainStorage(keychain.keychainRef)
+
     passwordStorage = keychainStorage
     
     let defaults = try XCTUnwrap(UserDefaults(suiteName: "com.uncommonplace.xit.tests"))

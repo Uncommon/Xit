@@ -31,7 +31,7 @@ public enum PasswordProtocol: String
   }
 }
 
-public protocol PasswordStorage
+public protocol PasswordStorage: Sendable
 {
   func find(host: String, path: String,
             protocol: PasswordProtocol?,
@@ -104,12 +104,25 @@ extension URL
   }
 }
 
+/// Sendable container for `SecKeychain` because keychain operations are documented to be
+/// thread safe. `KeychainStorage` only uses a specific keychain reference in tests anyway.
+struct SendableKeychain: @unchecked Sendable
+{
+  let keychain: SecKeychain
+}
+
 final class KeychainStorage: PasswordStorage
 {
   static let shared: PasswordStorage = KeychainStorage()
-  
-  var keychain: SecKeychain?
-  
+
+  let sendableKeychain: SendableKeychain?
+  var keychain: SecKeychain? { sendableKeychain?.keychain }
+
+  init(_ keychain: SecKeychain? = nil)
+  {
+    self.sendableKeychain = keychain.map { .init(keychain: $0) }
+  }
+
   private func passwordQueryBase(host: String,
                                  path: String,
                                  protocol: PasswordProtocol?,
@@ -216,31 +229,5 @@ final class KeychainStorage: PasswordStorage
       default:
         throw NSError(osStatus: status)
     }
-  }
-}
-
-/// For testing
-class Keychain
-{
-  let keychainRef: SecKeychain
-  
-  init?(path: String, password: String)
-  {
-    var keychain: SecKeychain?
-    let status = SecKeychainCreate(path, UInt32(password.utf8.count), password,
-                                   false, nil, &keychain)
-    guard status == noErr,
-          let finalKeychain = keychain
-    else { return nil }
-    
-    self.keychainRef = finalKeychain
-  }
-}
-
-class TemporaryKeychain: Keychain
-{
-  deinit
-  {
-    SecKeychainDelete(keychainRef)
   }
 }
