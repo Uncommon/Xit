@@ -41,8 +41,8 @@ final class CommitEntryController: NSViewController,
   @IBOutlet weak var stripCheckbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
   
-  var stripObserver: NSKeyValueObservation?
-  
+  var stripSink: AnyCancellable?
+
   var touchBarAmendButton: NSSegmentedControl!
   
   var anyStaged = false
@@ -70,13 +70,6 @@ final class CommitEntryController: NSViewController,
   {
     self.config = config
     self.repo = repository
-  }
-
-  deinit
-  {
-    stripObserver.map {
-      NotificationCenter.default.removeObserver($0)
-    }
   }
   
   override func awakeFromNib()
@@ -122,9 +115,9 @@ final class CommitEntryController: NSViewController,
     commitField.font = placeholder.font
     
     stripCheckbox.boolValue = defaults.stripComments
-    stripObserver = defaults.observe(\.stripComments) {
-      [weak self] (defaults, _) in
-      self?.stripCheckbox.boolValue = defaults.stripComments
+    stripSink = defaults.publisher(for: \.stripComments).sinkOnMainQueue {
+      [weak self] in
+      self?.stripCheckbox.boolValue = $0
     }
   }
   

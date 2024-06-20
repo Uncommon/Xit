@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 
 /// An operation that may require a password.
 class PasswordOpController: SimpleOperationController
@@ -6,6 +7,7 @@ class PasswordOpController: SimpleOperationController
   let urlInfo: Box<(host: String, path: String, port: Int)> = .init(("", "", 80))
   private(set) var passwordController: PasswordPanelController?
   private var closeObserver: NSObjectProtocol?
+  private var closeSink: AnyCancellable?
 
   required init(windowController: XTWindowController)
   {
@@ -13,19 +15,13 @@ class PasswordOpController: SimpleOperationController
     
     let nc = NotificationCenter.default
     
-    closeObserver = nc.addObserver(forName: NSWindow.willCloseNotification,
-                                   object: windowController.window,
-                                   queue: .main) {
-      (_) in
-      self.abort()
+    closeSink = nc.publisher(for: NSWindow.willCloseNotification,
+                             object: windowController.window).sinkOnMainQueue {
+      [weak self] (_) in
+      self?.abort()
     }
   }
 
-  deinit
-  {
-    closeObserver.map { NotificationCenter.default.removeObserver($0) }
-  }
-  
   override func abort()
   {
     passwordController = nil

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 final class FileMonitor
 {
@@ -6,9 +7,9 @@ final class FileMonitor
   private var sourceMutex = NSRecursiveLock()
   var fd: CInt = -1
   var source: DispatchSourceFileSystemObject?
-  
-  var notifyBlock: ((_ path: String, _ flags: UInt) -> Void)?
-  
+  let subject = PassthroughSubject<(String, UInt), Never>()
+  var eventPublisher: AnyPublisher<(String, UInt), Never> { subject.eraseToAnyPublisher() }
+
   init?(path: String)
   {
     self.path = path
@@ -40,10 +41,8 @@ final class FileMonitor
       
       guard let source = self.source
       else { return }
-      
-      DispatchQueue.main.async {
-        self.notifyBlock?(self.path, source.data)
-      }
+
+      subject.send((path, source.data.rawValue))
       if source.data.contains(.delete) {
         source.cancel()
         close(self.fd)

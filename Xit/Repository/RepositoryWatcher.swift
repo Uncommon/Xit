@@ -44,6 +44,8 @@ final class RepositoryWatcher
   
   var refsCache = [String: GitOID]()
 
+  var packedRefsSink, stashSink: AnyCancellable?
+
   init?(controller: RepositoryController)
   {
     guard let repository = controller.repository as? XTRepository
@@ -86,10 +88,12 @@ final class RepositoryWatcher
     let path = repository!.gitDirectoryPath
     let watcher = FileMonitor(path: path +/ "packed-refs")
     
-    mutex.withLock { packedRefsWatcher = watcher }
-    watcher?.notifyBlock = {
-      [weak self] (_, _) in
-      self?.checkRefs()
+    if let watcher {
+      mutex.withLock { packedRefsWatcher = watcher }
+      packedRefsSink = watcher.eventPublisher.sink {
+        [weak self] (_, _) in
+        self?.checkRefs()
+      }
     }
   }
   
@@ -100,7 +104,7 @@ final class RepositoryWatcher
     else { return }
     
     stashWatcher = watcher
-    watcher.notifyBlock = {
+    stashSink = watcher.eventPublisher.sink {
       [weak self] (_, _) in
       self?.publishers.send(.stash)
     }
