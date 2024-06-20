@@ -3,8 +3,10 @@ import os
 
 enum Signpost
 {
+  nonisolated(unsafe)
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
                             category: .pointsOfInterest)
+  nonisolated(unsafe)
   static let debugLogger = Logger(subsystem: "com.uncommonplace.xit",
                                   category: "signpost")
 

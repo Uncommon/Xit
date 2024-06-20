@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import os
 
+nonisolated(unsafe)
 let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
                         category: "repo")
 
