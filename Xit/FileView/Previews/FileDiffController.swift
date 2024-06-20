@@ -250,21 +250,23 @@ final class FileDiffController: WebViewController,
     }
   }
   
-  override func webMessage(_ params: [String: Any])
+  override nonisolated func webMessage(action: String, sha: String?, index: Int?)
   {
-    guard let action = params["action"] as? String,
-          let index = params["index"] as? Int
+    guard let index
     else { return }
     
-    switch action {
-      case "stageHunk":
-        stageHunk(index: index)
-      case "unstageHunk":
-        unstageHunk(index: index)
-      case "discardHunk":
-        discardHunk(index: index)
-      default:
-        break
+    DispatchQueue.main.async {
+      [self] in
+      switch action {
+        case "stageHunk":
+          stageHunk(index: index)
+        case "unstageHunk":
+          unstageHunk(index: index)
+        case "discardHunk":
+          discardHunk(index: index)
+        default:
+          break
+      }
     }
   }
 }

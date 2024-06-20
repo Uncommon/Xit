@@ -152,7 +152,15 @@ class WebViewController: NSViewController
     setDocumentProperty("--\(name)", value: color.cssRGB)
   }
   
-  func webMessage(_ params: [String: Any])
+  nonisolated func webMessage(_ params: [String: Any])
+  {
+    guard let action = params["action"] as? String
+    else { return }
+
+    webMessage(action: action, sha: params["sha"] as? String, index: params["index"] as? Int)
+  }
+
+  nonisolated func webMessage(action: String, sha: String?, index: Int?)
   {
     // override
   }
