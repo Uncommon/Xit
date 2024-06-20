@@ -30,11 +30,13 @@ struct FileSelection: Equatable
   }
 }
 
+@MainActor
 protocol WhitespaceVariable: AnyObject
 {
   var whitespace: WhitespaceSetting { get set }
 }
 
+@MainActor
 protocol TabWidthVariable: AnyObject
 {
   var tabWidth: UInt { get set }
@@ -117,6 +119,7 @@ extension TextWrapping: Equatable
   }
 }
 
+@MainActor
 protocol WrappingVariable: AnyObject
 {
   var wrapping: TextWrapping { get set }

@@ -66,6 +66,7 @@ final class AppDelegate: NSObject
         .makeKeyAndOrderFront(nil)
   }
   
+  @MainActor
   func activeWindowController() -> XTWindowController?
   {
     guard let controller = NSApp.mainWindow?.windowController

@@ -1,6 +1,7 @@
 import Cocoa
 import Siesta
 
+@MainActor
 protocol RemoteSheetDelegate: AnyObject
 {
   func acceptSettings(from sheetController: RemoteSheetController) -> Bool

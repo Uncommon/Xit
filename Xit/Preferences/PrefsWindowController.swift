@@ -1,7 +1,6 @@
 import Cocoa
 import SwiftUI
 
-
 final class PrefsWindowController: NSWindowController
 {
   enum Tab: String, CaseIterable
@@ -28,6 +27,7 @@ final class PrefsWindowController: NSWindowController
       }
     }
 
+    @MainActor
     func makeController(size: CGSize) -> NSViewController
     {
       switch self {

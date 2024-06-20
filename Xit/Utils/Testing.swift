@@ -21,6 +21,7 @@ enum Testing
           location: .init(string: "https://bitbucket.com")!, id: .init()),
   ]
 
+  @MainActor
   static func initialize()
   {
     var defaultsOption = false
