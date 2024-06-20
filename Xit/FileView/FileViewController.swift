@@ -310,8 +310,9 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
       timer.fireDate = Date(timeIntervalSinceNow: indexDelay)
     }
     else {
-      indexTimer = Timer.scheduledTimer(withTimeInterval: indexDelay,
-                                        repeats: false) {
+      // TODO: use a publisher with debounce
+      indexTimer = Timer.mainScheduledTimer(withTimeInterval: indexDelay,
+                                            repeats: false) {
         [weak self] (_) in
         // reload the staging lists
         self?.indexTimer = nil

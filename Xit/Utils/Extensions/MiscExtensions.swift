@@ -355,6 +355,24 @@ extension String
   }
 }
 
+extension Timer
+{
+  static func mainScheduledTimer(
+    withTimeInterval interval: TimeInterval,
+    repeats: Bool,
+    block: @escaping @Sendable @MainActor (Timer) -> Void
+  ) -> Timer
+  {
+    let timer = Timer(timeInterval: interval, repeats: repeats) {
+      (timer) in
+      MainActor.assumeIsolated { block(timer) }
+    }
+
+    RunLoop.main.add(timer, forMode: .default)
+    return timer
+  }
+}
+
 // Reportedly this is hidden in the Swift runtime
 // https://oleb.net/blog/2016/10/swift-array-of-c-strings/
 public func withArrayOfCStrings<R>(
