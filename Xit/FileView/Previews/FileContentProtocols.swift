@@ -42,6 +42,7 @@ protocol TabWidthVariable: AnyObject
   var tabWidth: UInt { get set }
 }
 
+@MainActor
 protocol ContextVariable: AnyObject
 {
   var contextLines: UInt { get set }

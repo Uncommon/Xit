@@ -91,7 +91,7 @@ struct SearchField: NSViewRepresentable
       owner.onEnd?()
     }
 
-    @objc
+    @objc @MainActor
     func searchAction(_ sender: NSSearchField)
     {
       owner.searchString = sender.stringValue

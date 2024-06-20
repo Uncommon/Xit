@@ -1,5 +1,6 @@
 import Cocoa
 
+@MainActor
 protocol XTTableViewDelegate: AnyObject
 {
   /// The user has clicked on the selected row.

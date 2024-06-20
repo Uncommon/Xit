@@ -2,11 +2,13 @@ import Foundation
 import Combine
 import Cocoa
 
+@MainActor
 protocol BuildStatusDisplay: AnyObject
 {
   func updateStatusImage(item: SidebarItem)
 }
 
+@MainActor
 final class BuildStatusController: NSObject
 {
   // The TeamCity server data has succeeded/failed and running/finished as

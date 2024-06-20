@@ -1,6 +1,7 @@
 import Cocoa
 
-@propertyWrapper struct ControlStringValue
+@propertyWrapper @MainActor
+struct ControlStringValue
 {
   var control: NSControl!
   
@@ -17,7 +18,8 @@ import Cocoa
   }
 }
 
-@propertyWrapper struct ControlURLValue
+@propertyWrapper @MainActor
+struct ControlURLValue
 {
   var control: NSControl!
   
@@ -34,7 +36,8 @@ import Cocoa
   }
 }
 
-@propertyWrapper struct ControlBoolValue
+@propertyWrapper @MainActor
+struct ControlBoolValue
 {
   var control: NSControl!
 
@@ -51,7 +54,8 @@ import Cocoa
   }
 }
 
-@propertyWrapper struct TextViewString
+@propertyWrapper @MainActor
+struct TextViewString
 {
   var textView: NSTextView!
   

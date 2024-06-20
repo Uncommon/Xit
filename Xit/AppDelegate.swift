@@ -1,6 +1,6 @@
 import AppKit
 
-@NSApplicationMain
+@NSApplicationMain @MainActor
 final class AppDelegate: NSObject
 {
   var openPanel: NSOpenPanel?

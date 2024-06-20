@@ -1,5 +1,6 @@
 import Cocoa
 
+@MainActor
 protocol HunkStaging: AnyObject
 {
   func stage(hunk: any DiffHunk)

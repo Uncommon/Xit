@@ -72,6 +72,7 @@ class FileListDataSourceBase: NSObject
 
 
 /// Methods that a file list data source must implement.
+@MainActor
 protocol FileListDataSource: FileListDataSourceBase
 {
   func reload()
@@ -80,6 +81,7 @@ protocol FileListDataSource: FileListDataSourceBase
   func change(for item: Any) -> DeltaStatus
 }
 
+@MainActor // expected to be called by @MainActor code, and FileListModel is not Sendable
 protocol FileListDelegate: AnyObject
 {
   func configure(model: any FileListModel)
