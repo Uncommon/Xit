@@ -25,7 +25,7 @@ class OperationController
   /// Actions to be executed after the operation succeeds.
   var successActions: [() -> Void] = []
 
-  private let canceledMutex = Mutex()
+  private let canceledMutex = NSRecursiveLock()
   private let canceledBox = Box<Bool>(false)
   
   init(windowController: XTWindowController)

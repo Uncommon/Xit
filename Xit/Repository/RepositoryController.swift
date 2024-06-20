@@ -38,7 +38,7 @@ final class GitRepositoryController: RepositoryController
   var repository: any BasicRepository { xtRepo }
 
   public let queue: TaskQueue
-  let mutex = Mutex()
+  let mutex = NSRecursiveLock()
 
   fileprivate var repoWatcher: RepositoryWatcher?
   fileprivate let configWatcher: ConfigWatcher

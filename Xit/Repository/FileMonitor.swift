@@ -3,7 +3,7 @@ import Foundation
 final class FileMonitor
 {
   let path: String
-  private var sourceMutex = Mutex()
+  private var sourceMutex = NSRecursiveLock()
   var fd: CInt = -1
   var source: DispatchSourceFileSystemObject?
   

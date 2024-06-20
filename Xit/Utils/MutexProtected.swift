@@ -7,7 +7,7 @@ import Foundation
 @propertyWrapper
 public struct MutexProtected<T>
 {
-  let mutex = Mutex()
+  let mutex = NSRecursiveLock()
   var value: T
 
   public var wrappedValue: T
@@ -18,7 +18,7 @@ public struct MutexProtected<T>
 
   /// Provides access to the mutex, which is recursive, so it may be useful to
   /// lock it for multiple operations.
-  public var projectedValue: Mutex { mutex }
+  public var projectedValue: NSRecursiveLock { mutex }
 
   public init(wrappedValue: T)
   {

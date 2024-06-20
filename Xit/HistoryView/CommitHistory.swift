@@ -70,8 +70,8 @@ final class CommitHistory<C: Commit>
   var commitLookup = [ID: Entry]()
   var entries = [Entry]()
   private var abortFlag = false
-  private var abortMutex = Mutex()
-  public var syncMutex = Mutex()
+  private var abortMutex = NSRecursiveLock()
+  public var syncMutex = NSRecursiveLock()
   
   /// Progress reporting callback. Parameters are start and end. Will be
   /// called on the main thread.

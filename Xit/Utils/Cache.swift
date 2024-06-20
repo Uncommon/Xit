@@ -21,8 +21,8 @@ class Cache<Key: Hashable, Value>
   }
   
   private var contents: [Key: Wrapper] = [:]
-  private let mutex = Mutex()
-  
+  private let mutex = NSRecursiveLock()
+
   /// The maximum number of entries. If the maximum is exceeded, then entries
   /// are purged starting with the least recently accessed.
   public var maxSize: Int

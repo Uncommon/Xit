@@ -9,7 +9,7 @@ final class PreviewItem: NSObject
   var path: String?
   var tempFolderPath: String?
 
-  let urlLock = Mutex()
+  let urlLock = NSRecursiveLock()
   var url = URL(string: "")
   
   override init()

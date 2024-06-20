@@ -7,8 +7,8 @@ final class HistoryCellView: NSTableCellView
   private var currentBranch: String?
   private var refs = [String]()
 
-  var mutex: Mutex!
-  
+  var mutex: NSRecursiveLock!
+
   static let lineColors: [NSColor] = [
       .systemBlue, .systemGreen, .systemRed, .systemBrown, .cyan,
       .darkGray, .systemPink, .magenta, .systemOrange, .systemPurple,

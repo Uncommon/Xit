@@ -27,7 +27,7 @@ final class RepositoryWatcher
 
   let publishers = PublisherGroup<Void, Never, Notification>()
 
-  let mutex = Mutex()
+  let mutex = NSRecursiveLock()
   
   private var lastIndexChangeGuarded = Date()
   var lastIndexChange: Date

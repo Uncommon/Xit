@@ -52,7 +52,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   /// Cached results for `vcsRootsForBuildType`
   private var vcsRootsCache: [String: [String]] = [:]
 
-  private let mutex = Mutex()
+  private let mutex = NSRecursiveLock()
   
   required init?(account: Account, password: String)
   {
