@@ -8,7 +8,8 @@ final class FileMonitor
   var fd: CInt = -1
   var source: DispatchSourceFileSystemObject?
   let subject = PassthroughSubject<(String, UInt), Never>()
-  var eventPublisher: AnyPublisher<(String, UInt), Never> { subject.eraseToAnyPublisher() }
+  var eventPublisher: AnyPublisher<(String, UInt), Never>
+  { subject.eraseToAnyPublisher() }
 
   init?(path: String)
   {

@@ -201,7 +201,8 @@ class GitIndex: StagingIndex
 
 extension GitIndex
 {
-  // Unchecked because git_index_entry isn't technically Sendable but it is effectively read-only
+  // Unchecked because git_index_entry isn't technically Sendable but it
+  // is effectively read-only
   struct Entry: IndexEntry, @unchecked Sendable
   {
     let gitEntry: git_index_entry

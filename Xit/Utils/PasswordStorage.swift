@@ -104,8 +104,9 @@ extension URL
   }
 }
 
-/// Sendable container for `SecKeychain` because keychain operations are documented to be
-/// thread safe. `KeychainStorage` only uses a specific keychain reference in tests anyway.
+/// Sendable container for `SecKeychain` because keychain operations are
+/// documented to be thread safe. `KeychainStorage` only uses a specific
+/// keychain reference in tests anyway.
 struct SendableKeychain: @unchecked Sendable
 {
   let keychain: SecKeychain

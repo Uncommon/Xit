@@ -81,7 +81,7 @@ protocol FileListDataSource: FileListDataSourceBase
   func change(for item: Any) -> DeltaStatus
 }
 
-@MainActor // expected to be called by @MainActor code, and FileListModel is not Sendable
+@MainActor // called by @MainActor code, and FileListModel is not Sendable
 protocol FileListDelegate: AnyObject
 {
   func configure(model: any FileListModel)
