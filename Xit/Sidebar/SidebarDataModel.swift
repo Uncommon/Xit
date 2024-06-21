@@ -2,7 +2,9 @@ import Foundation
 import Cocoa
 
 /// Contains the items listed in the sidebar
-final class SidebarDataModel
+///
+/// `@unchecked Sendable` because it is guarded by locks and queues.
+final class SidebarDataModel: @unchecked Sendable
 {
   typealias Repository = FileChangesRepo & // For creating selection objects
                          CommitStorage & // also for selections
