@@ -38,11 +38,12 @@ class RepoDocument: NSDocument
       throw NSError(domain: NSCocoaErrorDomain,
                     code: NSFileReadNoSuchFileError)
     }
+    let repoBox = Box(repository)
 
-    self.repository = repository
-
+    // Parent method is nonisolated
     Task {
       @MainActor in
+      self.repository = repoBox.value
       (NSApp.delegate as? AppDelegate)?.dismissOpenPanel()
     }
   }

@@ -27,7 +27,7 @@ enum Testing
   {
     var defaultsOption = false
 
-    for arg in CommandLine.arguments {
+    for arg in ProcessInfo.processInfo.arguments {
       if arg == "--defaults" {
         defaultsOption = true
       }

@@ -8,7 +8,7 @@ class WebViewController: NSViewController
   var savedTabWidth: UInt = Default.tabWidth
   var savedWrapping: TextWrapping?
   private var userContentController: ControllerMessageHandler = .init()
-  private var appearanceObserver: NSKeyValueObservation?
+  private var appearanceObserver: AnyCancellable?
   private var cancellables: [AnyCancellable] = []
 
   var defaults: UserDefaults = .xit
@@ -56,8 +56,8 @@ class WebViewController: NSViewController
   {
     super.viewDidAppear()
     if appearanceObserver == nil {
-      appearanceObserver = webView.observe(\.effectiveAppearance) {
-        [weak self] (_, _) in
+      appearanceObserver = webView.publisher(for: \.effectiveAppearance).sinkOnMainQueue {
+        [weak self] (_) in
         self?.updateColors()
       }
     }

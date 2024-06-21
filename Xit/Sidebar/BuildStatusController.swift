@@ -86,7 +86,7 @@ final class BuildStatusController: NSObject
         self?.buildStatusCache.refresh()
       }
     }
-    refreshTimer = .scheduledTimer(withTimeInterval: refreshInterval,
+    refreshTimer = .mainScheduledTimer(withTimeInterval: refreshInterval,
                                    repeats: true) {
       [weak self] _ in
       self?.buildStatusCache.refresh()
@@ -168,8 +168,11 @@ extension BuildStatusController: BuildStatusClient
     for item in branchItems {
       switch item {
         case is BranchSidebarItem:
-          Task { @MainActor in
-            display?.updateStatusImage(item: item)
+          if let display {
+            Task {
+              @MainActor in
+              display.updateStatusImage(item: item)
+            }
           }
         case is BranchFolderSidebarItem:
           updateBranches(item.children)

@@ -88,10 +88,6 @@ final class SideBarDataSource: NSObject
           self?.afterReload()
         }
       }
-      else {
-        return
-      }
-
     }
   }
   
