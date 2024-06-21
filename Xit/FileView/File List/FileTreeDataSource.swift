@@ -44,7 +44,7 @@ extension FileTreeDataSource: FileListDataSource
       }
       let root = rootContainer.node
 
-      delegate?.configure(model: fileList)
+      await delegate?.configure(model: fileList)
 
       let newRoot = fileList.treeRoot(oldTree: root)
       let container = TreeNodeContainer(node: newRoot)

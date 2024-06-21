@@ -157,7 +157,8 @@ class WebViewController: NSViewController
     guard let action = params["action"] as? String
     else { return }
 
-    webMessage(action: action, sha: params["sha"] as? String, index: params["index"] as? Int)
+    webMessage(action: action, sha: params["sha"] as? String,
+               index: params["index"] as? Int)
   }
 
   nonisolated func webMessage(action: String, sha: String?, index: Int?)
@@ -232,7 +233,8 @@ extension WebViewController: WrappingVariable
 
 extension WebViewController: WKNavigationDelegate
 {
-  nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
+  nonisolated
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
   {
     DispatchQueue.main.async {
       [self] in

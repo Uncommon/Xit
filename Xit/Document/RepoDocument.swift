@@ -41,7 +41,10 @@ class RepoDocument: NSDocument
 
     self.repository = repository
 
-    (NSApp.delegate as? AppDelegate)?.dismissOpenPanel()
+    Task {
+      @MainActor in
+      (NSApp.delegate as? AppDelegate)?.dismissOpenPanel()
+    }
   }
 
   override func canClose(withDelegate delegate: Any,
