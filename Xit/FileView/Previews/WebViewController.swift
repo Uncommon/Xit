@@ -79,7 +79,7 @@ class WebViewController: NSViewController
   public func load(html: String, baseURL: URL = WebViewController.baseURL)
   {
     if let webView = self.webView {
-      Thread.performOnMainThread {
+      DispatchQueue.main.async {
         webView.loadHTMLString(html, baseURL: baseURL)
       }
     }

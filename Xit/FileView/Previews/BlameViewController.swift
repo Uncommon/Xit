@@ -220,7 +220,8 @@ extension BlameViewController: FileContentLoading
         return
       }
       
-      Thread.performOnMainThread {
+      Task {
+        @MainActor [self] in
         self.spinner.isHidden = false
         self.spinner.startAnimation(nil)
         self.clear()

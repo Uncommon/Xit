@@ -267,18 +267,6 @@ extension NSMutableArray
 extension Thread
 {
   /// Performs the block immediately if this is the main thread, or
-  /// asynchronosly on the main thread otherwise.
-  static func performOnMainThread(_ block: @escaping () -> Void)
-  {
-    if isMainThread {
-      block()
-    }
-    else {
-      DispatchQueue.main.async(execute: block)
-    }
-  }
-  
-  /// Performs the block immediately if this is the main thread, or
   /// synchronosly on the main thread otherwise.
   static func syncOnMain<T>(_ block: () throws -> T) rethrows -> T
   {
