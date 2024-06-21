@@ -1,6 +1,6 @@
 import Foundation
 
-final class MemoryPasswordStorage: PasswordStorage
+final class MemoryPasswordStorage: PasswordStorage, @unchecked Sendable // protected by lock
 {
   static let shared: MemoryPasswordStorage = .init()
 
@@ -10,7 +10,8 @@ final class MemoryPasswordStorage: PasswordStorage
     let user: String
   }
 
-  var store: [Key: String] = [:]
+  private var store: [Key: String] = [:]
+  private var lock = NSRecursiveLock()
 
   func find(host: String, path: String,
             protocol: PasswordProtocol?, port: UInt16,
@@ -20,7 +21,7 @@ final class MemoryPasswordStorage: PasswordStorage
                         protocol: `protocol`, port: port)
     else { return nil }
 
-    return store[Key(url: url, user: account)]
+    return lock.withSync { store[Key(url: url, user: account)] }
   }
 
   func save(host: String, path: String,
@@ -33,22 +34,26 @@ final class MemoryPasswordStorage: PasswordStorage
       throw PasswordError.invalidURL
     }
 
-    store[Key(url: url, user: account)] = password
+    lock.withSync {
+      store[Key(url: url, user: account)] = password
+    }
   }
 
   func change(url: URL, newURL: URL?,
               account: String, newAccount: String?, password: String) throws
   {
-    if newURL != nil || newAccount != nil {
-      let newURL = newURL ?? url
-      let newAccount = newAccount ?? account
-      let key = Key(url: newURL, user: newAccount)
+    lock.withSync {
+      if newURL != nil || newAccount != nil {
+        let newURL = newURL ?? url
+        let newAccount = newAccount ?? account
+        let key = Key(url: newURL, user: newAccount)
 
-      store.removeValue(forKey: Key(url: url, user: account))
-      store[key] = password
-    }
-    else {
-      store[Key(url: url, user: account)] = password
+        store.removeValue(forKey: Key(url: url, user: account))
+        store[key] = password
+      }
+      else {
+        store[Key(url: url, user: account)] = password
+      }
     }
   }
 }
