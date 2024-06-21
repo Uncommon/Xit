@@ -113,7 +113,7 @@ final class SidebarDataModel: @unchecked Sendable
     } ?? []
   }
   
-  func reload()
+  nonisolated func reload()
   {
     let newRoots = loadRoots()
 

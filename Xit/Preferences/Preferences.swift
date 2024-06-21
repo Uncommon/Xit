@@ -67,6 +67,7 @@ extension UserDefaults
     #endif
   }
 
+  nonisolated(unsafe) // only in previews and initialization
   static var testing: UserDefaults = {
     let result = UserDefaults(suiteName: "xit-testing")!
     result.removePersistentDomain(forName: "xit-testing")

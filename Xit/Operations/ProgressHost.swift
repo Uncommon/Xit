@@ -40,7 +40,9 @@ struct ProgressHost_Previews: PreviewProvider
 {
   struct Preview: View
   {
+    nonisolated(unsafe)
     static var model = PresentingModel()
+    nonisolated(unsafe)
     static var publisher = Array(0...5).publisher
       .delay(for: 0.5, scheduler: DispatchQueue.main)
       .map {

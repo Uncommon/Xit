@@ -149,6 +149,7 @@ final class BuildStatusController: NSObject
 
 extension BuildStatusController: BuildStatusClient
 {
+  nonisolated
   func buildStatusUpdated(branch: String, buildType: String)
   {
     DispatchQueue.main.async {
