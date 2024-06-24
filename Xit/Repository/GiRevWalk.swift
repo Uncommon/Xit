@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol RevWalk<ID>
+public protocol RevWalk<ID>: AnyObject, Sequence, IteratorProtocol where Element == ID
 {
   associatedtype ID: OID
 

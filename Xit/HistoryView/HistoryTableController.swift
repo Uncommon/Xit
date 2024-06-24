@@ -113,9 +113,7 @@ final class HistoryTableController: NSViewController,
     let repository = self.repository
     weak var tableView = view as? NSTableView
     
-    history.withSync {
-      history.reset()
-    }
+    history.reset()
 
     let queue = Thread.syncOnMain { repoUIController?.queue }
 
@@ -136,16 +134,13 @@ final class HistoryTableController: NSViewController,
       let refs = repository.allRefs()
       
       for ref in refs where ref != "refs/stash" {
-        repository.oid(forRef: ref).map { walker.push(oid: $0) }
+        if let oid = repository.oid(forRef: ref) {
+          walker.push(oid: oid)
+        }
       }
 
       history.withSync {
-        while let oid = walker.next() {
-          guard let commit = repository.anyCommit(forOID: oid) as? GitCommit
-          else { continue }
-          
-          history.appendCommit(commit)
-        }
+        history.appendCommits(walker.compactMap { repository.anyCommit(forOID: $0) as? GitCommit })
       }
       
       DispatchQueue.global(qos: .utility).async {

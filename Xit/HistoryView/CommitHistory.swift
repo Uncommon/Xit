@@ -83,6 +83,11 @@ final class CommitHistory<C: Commit>
     entries.append(Entry(commit: commit))
   }
 
+  func appendCommits(_ sequence: some Sequence<C>)
+  {
+    entries.append(contentsOf: sequence.map { Entry(commit: $0) })
+  }
+
   func withSync<T>(_ callback: () throws -> T) rethrows -> T
   {
     try syncMutex.withLock(callback)
