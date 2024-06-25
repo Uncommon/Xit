@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-public final class TaskQueue
+public final class TaskQueue: @unchecked Sendable
 {
   public enum Error: Swift.Error
   {
@@ -10,11 +10,9 @@ public final class TaskQueue
   }
 
   let queue: DispatchQueue
-  var queueCount: UInt = 0
-  {
-    didSet { busyValuePublisher.value = queueCount > 0 }
-  }
+  private var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
+  private let lock = NSRecursiveLock()
 
   private let busyValuePublisher = CurrentValueSubject<Bool, Never>(false)
   public var busyPublisher: AnyPublisher<Bool, Never>
@@ -24,15 +22,31 @@ public final class TaskQueue
   {
     self.queue = DispatchQueue(label: id, attributes: [])
   }
-  
+
+  private func increment()
+  {
+    lock.withLock {
+      queueCount += 1
+    }
+    busyValuePublisher.value = true
+  }
+
+  private func decrement()
+  {
+    lock.withLock {
+      queueCount -= 1
+      busyValuePublisher.value = queueCount > 0
+    }
+  }
+
   func executeTask(_ block: () -> Void)
   {
-    queueCount += 1
+    increment()
     block()
-    queueCount -= 1
+    decrement()
   }
-  
-  func executeOffMainThread(_ block: @escaping () -> Void)
+
+  func executeOffMainThread(_ block: @escaping @Sendable () -> Void)
   {
     if Thread.isMainThread {
       if !isShutDown {
@@ -57,7 +71,9 @@ public final class TaskQueue
       let semaphore = DispatchSemaphore(value: 0)
 
       Task<Void, Never>.detached(priority: .userInitiated) {
+        self.increment()
         await block()
+        self.decrement()
         semaphore.signal()
       }
       semaphore.wait()
