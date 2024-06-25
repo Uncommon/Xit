@@ -392,7 +392,7 @@ public protocol Merging: AnyObject
   // In the future, expose more merge analysis and options
 }
 
-public enum ResetMode
+public enum ResetMode: Sendable
 {
   /// Does not touch the index file or the working tree at all
   case soft
@@ -412,7 +412,7 @@ public enum ResetMode
   */
 }
 
-enum TrackingBranchStatus
+enum TrackingBranchStatus: Sendable
 {
   /// No tracking branch set
   case none
