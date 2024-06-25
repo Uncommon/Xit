@@ -60,6 +60,8 @@ final class SideBarDataSource: NSObject
   
   func setAmending(_ amending: Bool)
   {
+    guard model != nil else { return }
+
     stagingItem.selection = StagingSelection(repository: repository,
                                              amending: amending)
     outline.reloadItem(stagingItem)
