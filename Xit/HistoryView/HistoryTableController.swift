@@ -86,12 +86,7 @@ final class HistoryTableController: NSViewController,
 
     history.postProgress = {
       [weak self] (start, end) in
-      guard let self
-      else { return }
-
-      Task {
-        self.batchFinished(start: start, end: end)
-      }
+      self?.batchFinished(start: start, end: end)
     }
   }
   
@@ -163,6 +158,7 @@ final class HistoryTableController: NSViewController,
   /// Notifier for history processing progress
   /// - parameter start: Row where the batch started
   /// - parameter end: Row where the batch ended
+  nonisolated
   func batchFinished(start: Int, end: Int)
   {
     DispatchQueue.main.async {

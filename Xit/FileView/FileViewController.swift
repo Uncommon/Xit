@@ -428,7 +428,10 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
                       staging: stagingType)
       }
       
-      self.contentController.load(selection: selection)
+      Task {
+        @MainActor in
+        self.contentController.load(selection: selection)
+      }
     }
 
     let fullPath = repo.repoURL.path.appending(

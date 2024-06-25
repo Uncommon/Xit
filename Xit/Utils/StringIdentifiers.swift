@@ -6,7 +6,7 @@ import Foundation
 prefix operator ◊ // shift-opt-v
 prefix operator ¶ // opt-7
 
-/// Creats an instance of a `RawRepresentable` string type, such as
+/// Creates an instance of a `RawRepresentable` string type, such as
 /// `NSBindingName`, from a string literal.
 prefix func ◊<T>(string: StringLiteralType) -> T
   where T: RawRepresentable, T.RawValue == String

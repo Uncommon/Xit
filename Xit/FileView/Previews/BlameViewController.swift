@@ -216,7 +216,7 @@ extension BlameViewController: FileContentLoading
             let text = String(data: data, encoding: .utf8) ??
                        String(data: data, encoding: .utf16)
       else {
-        self.notAvailable()
+        Task { @MainActor in self.notAvailable() }
         return
       }
       
@@ -225,9 +225,9 @@ extension BlameViewController: FileContentLoading
         self.spinner.isHidden = false
         self.spinner.startAnimation(nil)
         self.clear()
+        self.loadBlame(text: text, path: selection[0].path,
+                       selection: selection[0].repoSelection, fileList: fileList)
       }
-      self.loadBlame(text: text, path: selection[0].path,
-                     selection: selection[0].repoSelection, fileList: fileList)
     }
   }
 }
