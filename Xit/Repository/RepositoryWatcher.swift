@@ -42,7 +42,7 @@ final class RepositoryWatcher
     }
   }
   
-  var refsCache = [String: GitOID]()
+  var refsCache: [String: GitOID]
 
   var packedRefsSink, stashSink: AnyCancellable?
 
@@ -52,7 +52,8 @@ final class RepositoryWatcher
     else { return nil }
     
     self.controller = controller
-    
+    self.refsCache = Self.index(from: repository)
+
     let gitPath = repository.gitDirectoryPath
     let objectsPath = gitPath.appending(pathComponent: "objects")
     guard let stream = FileEventStream(path: gitPath,
@@ -72,7 +73,6 @@ final class RepositoryWatcher
     self.stream = stream
     makePackedRefsWatcher()
     makeStashWatcher()
-    refsCache = index(refs: repository.allRefs())
   }
   
   func stop()
@@ -110,12 +110,13 @@ final class RepositoryWatcher
     }
   }
   
-  func index(refs: [String]) -> [String: GitOID]
+  static func index(from repository: XTRepository) -> [String: GitOID]
   {
+    let refs = repository.allRefs()
     var result = [String: GitOID]()
     
     for ref in refs {
-      guard let oid = repository?.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
+      guard let oid = repository.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
       else { continue }
       
       result[ref] = oid
@@ -187,10 +188,10 @@ final class RepositoryWatcher
     guard let repository = self.repository
     else { return }
     
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
+    mutex.lock()
+    defer { mutex.unlock() }
     
-    let newRefCache = index(refs: repository.allRefs())
+    let newRefCache = Self.index(from: repository)
     let newKeys = Set(newRefCache.keys)
     let oldKeys = Set(refsCache.keys)
     let addedRefs = newKeys.subtracting(oldKeys)
