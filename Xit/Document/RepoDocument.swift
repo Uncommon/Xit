@@ -24,26 +24,24 @@ class RepoDocument: NSDocument
 
   override func read(from url: URL, ofType typeName: String) throws
   {
-    let gitURL = url.appendingPathComponent(".git")
+    // NSDocument.read(from:ofType:) is nonisolated, but in practice it gets called on the main thread
+    try MainActor.assumeIsolated {
+      let gitURL = url.appendingPathComponent(".git")
 
-    if !FileManager.default.fileExists(atPath: gitURL.path) {
-      throw NSError(domain: NSCocoaErrorDomain,
-                    code: NSFileReadUnknownError,
-                    userInfo: [NSLocalizedFailureReasonErrorKey:
-                               "The folder does not contain a Git repository."])
-    }
+      if !FileManager.default.fileExists(atPath: gitURL.path) {
+        throw NSError(domain: NSCocoaErrorDomain,
+                      code: NSFileReadUnknownError,
+                      userInfo: [NSLocalizedFailureReasonErrorKey:
+                                  "The folder does not contain a Git repository."])
+      }
 
-    guard let repository = XTRepository(url: url)
-    else {
-      throw NSError(domain: NSCocoaErrorDomain,
-                    code: NSFileReadNoSuchFileError)
-    }
-    let repoBox = Box(repository)
+      guard let repository = XTRepository(url: url)
+      else {
+        throw NSError(domain: NSCocoaErrorDomain,
+                      code: NSFileReadNoSuchFileError)
+      }
 
-    // Parent method is nonisolated
-    Task {
-      @MainActor in
-      self.repository = repoBox.value
+      self.repository = repository
       (NSApp.delegate as? AppDelegate)?.dismissOpenPanel()
     }
   }
