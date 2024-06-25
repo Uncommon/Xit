@@ -166,18 +166,19 @@ final class PushOpController: PasswordOpController
   
   func push(branches: [any LocalBranch],
             remote: any Remote,
-            then callback: (() -> Void)? = nil)
+            then callback: (@Sendable () -> Void)? = nil)
   {
+    guard let repository = self.repository
+    else { return }
+
+    if let url = remote.pushURL ?? remote.url {
+      self.setKeychainInfo(from: url)
+    }
+
     tryRepoOperation {
-      guard let repository = self.repository
-      else { return }
       let callbacks = RemoteCallbacks(passwordBlock: self.getPassword,
                                       downloadProgress: nil,
                                       uploadProgress: self.progressCallback)
-      
-      if let url = remote.pushURL ?? remote.url {
-        self.setKeychainInfo(from: url)
-      }
 
       try repository.push(branches: branches,
                           remote: remote,
