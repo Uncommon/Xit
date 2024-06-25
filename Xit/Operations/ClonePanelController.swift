@@ -119,14 +119,17 @@ final class ClonePanelController: NSWindowController
                       isDirectory: true)
     
     presentingModel.showSheet = true
-    
+
+    let selectedBranch = data.selectedBranch
+    let recurse = data.recurse
+
     DispatchQueue.global(qos: .userInitiated).async {
       [self] in
       let result = Result(catching: {
         try cloner.clone(from: sourceURL,
                          to: destURL,
-                         branch: data.selectedBranch,
-                         recurseSubmodules: data.recurse,
+                         branch: selectedBranch,
+                         recurseSubmodules: recurse,
                          publisher: progressPublisher)
       })
       

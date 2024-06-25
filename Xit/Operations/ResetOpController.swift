@@ -36,15 +36,18 @@ final class ResetOpController: OperationController
   {
     guard let repository = self.repository
     else { return }
-    
-    tryRepoOperation {
-      try repository.reset(toCommit: self.targetCommit, mode: mode)
-      
-      // This doesn't get automatically sent because the index may have only
-      // changed relative to the workspace.
-      self.windowController?.repoController.indexChanged()
+    let targetCommit = self.targetCommit!
 
-      self.ended()
+    tryRepoOperation {
+      try repository.reset(toCommit: targetCommit, mode: mode)
+      
+      Task {
+        @MainActor in
+        // This doesn't get automatically sent because the index may have only
+        // changed relative to the workspace.
+        self.windowController?.repoController.indexChanged()
+        self.ended()
+      }
     }
   }
 }

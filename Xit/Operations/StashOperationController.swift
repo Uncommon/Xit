@@ -17,13 +17,15 @@ final class StashOperationController: SimpleOperationController
         self.ended(result: .canceled)
         return
       }
+      let (message, keepStaged, includeUntracked, includeIgnored) =
+        (model.message, model.keepStaged, model.includeUntracked, model.includeIgnored)
 
       self.tryRepoOperation {
-        try repo.saveStash(name: model.message,
-                           keepIndex: model.keepStaged,
-                           includeUntracked: model.includeUntracked,
-                           includeIgnored: model.includeIgnored)
-        self.ended()
+        try repo.saveStash(name: message,
+                           keepIndex: keepStaged,
+                           includeUntracked: includeUntracked,
+                           includeIgnored: includeIgnored)
+        Task { @MainActor in self.ended() }
       }
     }
   }
