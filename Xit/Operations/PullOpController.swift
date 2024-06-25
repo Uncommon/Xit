@@ -31,8 +31,7 @@ final class PullOpController: FetchOpController
                                  callbacks: callbacks)
       
       try repository.pull(branch: branch, remote: remote, options: options)
-      self.windowController?.repoController.refsChanged()
-      self.ended()
+      self.refsChangedAndEnded()
     }
   }
 }

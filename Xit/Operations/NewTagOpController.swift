@@ -48,8 +48,7 @@ final class NewTagOpController: OperationController
       else {
         try? repository.createLightweightTag(name: name, targetOID: oid)
       }
-      self.windowController?.repoController.refsChanged()
-      self.ended()
+      self.refsChangedAndEnded()
     }
   }
 }

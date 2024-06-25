@@ -182,8 +182,7 @@ final class PushOpController: PasswordOpController
                           remote: remote,
                           callbacks: callbacks)
       callback?()
-      self.windowController?.repoController.refsChanged()
-      self.ended()
+      self.refsChangedAndEnded()
     }
   }
 }

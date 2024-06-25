@@ -34,8 +34,7 @@ final class RenameBranchOpController: OperationController
     
     tryRepoOperation {
       try repository.rename(branch: self.branchName, to: newName)
-      self.windowController?.repoController.refsChanged()
-      self.ended()
+      self.refsChangedAndEnded()
     }
   }
 }

@@ -114,8 +114,7 @@ class FetchOpController: PasswordOpController
                                  callbacks: callbacks)
       
       try repository.fetch(remote: remote, options: options)
-      self.windowController?.repoController.refsChanged()
-      self.ended()
+      self.refsChangedAndEnded()
     }
   }
 }

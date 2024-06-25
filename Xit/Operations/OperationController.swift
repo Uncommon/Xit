@@ -49,7 +49,16 @@ class OperationController
     successActions.removeAll()
     windowController?.operationEnded(self)
   }
-  
+
+  nonisolated func refsChangedAndEnded()
+  {
+    Task {
+      @MainActor in
+      self.windowController?.repoController.refsChanged()
+      self.ended()
+    }
+  }
+
   func onSuccess(_ action: @escaping () -> Void)
   {
     successActions.append(action)
