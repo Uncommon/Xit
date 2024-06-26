@@ -2,14 +2,14 @@ import Foundation
 import Siesta
 @testable import Xit
 
-extension StringCommit
+extension FakeCommit
 {
   init(branchHead branch: any Branch)
   {
     self.init(parentOIDs: [],
               message: branch.shortName,
               isSigned: false,
-              id: .init(rawValue: branch.oid!.sha))
+              id: branch.oid as! GitOID)
   }
 }
 
@@ -57,13 +57,13 @@ struct FakeRefSpec: RefSpec
 
 class FakeStash: Stash
 {
-  typealias ID = StringOID
-  
+  typealias ID = GitOID
+
   var message: String? = nil
-  var mainCommit: StringCommit? = nil
-  var indexCommit: StringCommit? = nil
-  var untrackedCommit: StringCommit? = nil
-  
+  var mainCommit: FakeCommit? = nil
+  var indexCommit: FakeCommit? = nil
+  var untrackedCommit: FakeCommit? = nil
+
   func indexChanges() -> [FileChange] { [] }
   func workspaceChanges() -> [FileChange] { [] }
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -119,7 +119,7 @@ class FakeLocalBranch: LocalBranch
   init(name: String)
   {
     self.name = RefPrefixes.heads +/ name
-    self.oid = StringOID(rawValue: UUID().uuidString)
+    self.oid = GitOID.random()
   }
 }
 
@@ -136,7 +136,7 @@ class FakeRemoteBranch: RemoteBranch
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name
     self.remoteName = remoteName
-    self.oid = StringOID(rawValue: UUID().uuidString)
+    self.oid = GitOID.random()
   }
 }
 
@@ -161,7 +161,7 @@ class FakeRepoController: RepositoryController
 
 class FakeFileChangesRepo: FileChangesRepo
 {
-  typealias ID = StringOID
+  typealias ID = GitOID
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
@@ -186,7 +186,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
                     updatingReference refName: String) throws -> ID
-  { §"" }
+  { .zero() }
   func oid(forRef: String) -> ID? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }

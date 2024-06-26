@@ -11,9 +11,9 @@ class StringRepository: CommitStorage
     self.commits = commits
   }
   
-  func oid(forSHA sha: String) -> StringOID?
+  func oid(forSHA sha: String) -> GitOID?
   {
-    StringOID(rawValue: sha)
+    GitOID(rawValue: sha)
   }
   
   func commit(forSHA sha: String) -> StringCommit?
@@ -21,14 +21,14 @@ class StringRepository: CommitStorage
     return commits.first { $0.id.sha == sha }
   }
 
-  func commit(forOID oid: StringOID) -> StringCommit?
+  func commit(forOID oid: GitOID) -> StringCommit?
   {
     return commits.first { $0.id.equals(oid) }
   }
   
   func commit(message: String, amend: Bool) throws {}
   
-  func walker() -> (any RevWalk<StringOID>)? { nil }
+  func walker() -> (any RevWalk<GitOID>)? { nil }
 }
 
 
@@ -40,16 +40,16 @@ extension Xit.CommitConnection: CustomDebugStringConvertible
 
 
 typealias TestCommitHistory = CommitHistory<StringCommit>
-typealias StringConnection = CommitConnection<StringOID>
+typealias StringConnection = CommitConnection<GitOID>
 
 class CommitHistoryTest: XCTestCase
 {
-  typealias StringConnection = CommitConnection<StringOID>
+  typealias StringConnection = CommitConnection<GitOID>
   
   var repository: StringRepository? = nil
 
-  func makeHistory(_ commitData: [(StringOID, [StringOID])],
-                   heads: [StringOID]? = nil) -> TestCommitHistory?
+  func makeHistory(_ commitData: [(GitOID, [GitOID])],
+                   heads: [GitOID]? = nil) -> TestCommitHistory?
   {
     let commits = commitData.map {
       (arg) -> StringCommit in

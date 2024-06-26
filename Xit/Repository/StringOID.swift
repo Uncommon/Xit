@@ -1,32 +1,27 @@
 import Foundation
 
-struct StringOID: OID, RawRepresentable
-{
-  let rawValue: String
-
-  var sha: String { rawValue }
-  var isZero: Bool { sha.isEmpty }
-}
-
-extension StringOID: Hashable
-{
-  func hash(into hasher: inout Hasher)
-  {
-    rawValue.hash(into: &hasher)
-  }
-}
-
-extension StringOID: ExpressibleByStringLiteral
-{
-  init(stringLiteral value: StringLiteralType)
-  {
-    self.rawValue = value
-  }
-}
-
 prefix operator §
 
-prefix func § (sha: StringLiteralType) -> StringOID
+prefix func § (sha: StringLiteralType) -> GitOID
 {
-  .init(rawValue: sha)
+  .init(stringLiteral: sha)
+}
+
+extension GitOID: ExpressibleByStringLiteral
+{
+  public init(stringLiteral value: StringLiteralType)
+  {
+    let padded = value + String(repeating: "0", count: GitOID.shaLength - value.count)
+
+    self.oid = .init()
+    precondition(git_oid_fromstr(&oid, padded) == 0, "failed to parse OID string")
+  }
+}
+
+extension GitOID
+{
+  static func random() -> GitOID
+  {
+    .init(sha: String(UUID().uuidString.filter(\.isNumber).prefix(GitOID.shaLength)))!
+  }
 }

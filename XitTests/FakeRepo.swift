@@ -13,7 +13,7 @@ class FakeRepo: FakeFileChangesRepo
   
   var isWriting: Bool { return false }
   
-  var commits: [StringOID: StringCommit] = [:]
+  var commits: [GitOID: FakeCommit] = [:]
 
   override init()
   {
@@ -28,10 +28,10 @@ class FakeRepo: FakeFileChangesRepo
     
     super.init()
     
-    let commit1 = StringCommit(branchHead: localBranch1)
-    let commit2 = StringCommit(branchHead: localBranch2)
-    let commitR1 = StringCommit(branchHead: remoteBranch1)
-    let commitR2 = StringCommit(branchHead: remoteBranch2)
+    let commit1 = FakeCommit(branchHead: localBranch1)
+    let commit2 = FakeCommit(branchHead: localBranch2)
+    let commitR1 = FakeCommit(branchHead: remoteBranch1)
+    let commitR2 = FakeCommit(branchHead: remoteBranch2)
 
     commits[commit1.id] = commit1
     commits[commit2.id] = commit2
@@ -75,14 +75,14 @@ extension FakeRepo: EmptyBranching
 
 extension FakeRepo: EmptyCommitStorage
 {
-  typealias ID = StringOID
-  typealias Commit = StringCommit
+  typealias ID = GitOID
+  typealias Commit = FakeCommit
 
-  func oid(forSHA sha: String) -> ID? { .init(rawValue: sha) }
-  
+  func oid(forSHA sha: String) -> ID? { .init(sha: sha) }
+
   func commit(forSHA sha: String) -> Commit?
   {
-    commits[StringOID(rawValue: sha)]
+    GitOID(sha: sha).flatMap { commits[$0] }
   }
   
   func commit(forOID oid: ID) -> Commit?

@@ -5,7 +5,7 @@ class StringChangesRepo: StringRepository, FileChangesRepo,
     EmptyBasicRepository, EmptyCommitReferencing, EmptyFileContents,
     EmptyFileDiffing, EmptyFileStaging, EmptyFileStatusDetection
 {
-  typealias ID = StringOID
+  typealias ID = GitOID
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree

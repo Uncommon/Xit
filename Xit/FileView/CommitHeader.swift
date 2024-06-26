@@ -209,10 +209,10 @@ struct CommitHeader_Previews: PreviewProvider
 {
   struct PreviewCommit: Commit
   {
-    let parentOIDs: [StringOID] = ["A", "B"]
+    let parentOIDs: [GitOID] = ["A", "B"]
     let message: String? = "Single line"
-    let tree: StringTree? = nil
-    let id: StringOID = "45a608978"
+    let tree: FakeTree? = nil
+    let id: GitOID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
@@ -238,7 +238,7 @@ struct CommitHeader_Previews: PreviewProvider
 
   static var previews: some View {
     CommitHeader(commit: PreviewCommit(),
-                 messageLookup: { parents[$0 as! StringOID]! },
+                 messageLookup: { parents[$0 as! GitOID]! },
                  selectParent: { _ in })
     CommitHeader(commit: nil,
                  messageLookup: { _ in "" },
