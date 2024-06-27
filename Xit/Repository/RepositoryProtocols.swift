@@ -65,7 +65,7 @@ public protocol Cloning
 public protocol CommitStorage<ID>: AnyObject
 {
   associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
   func oid(forSHA sha: String) -> ID?
   func commit(forSHA sha: String) -> Commit?
@@ -97,9 +97,9 @@ extension CommitStorage
 public protocol CommitReferencing<ID>: AnyObject
 {
   associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
   associatedtype Tag: Xit.Tag<ID>
-  associatedtype Tree: Xit.Tree<ID>
+  associatedtype Tree: Xit.Tree
 
   var headRef: String? { get }
   var currentBranch: String? { get }

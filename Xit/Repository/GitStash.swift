@@ -3,7 +3,7 @@ import Cocoa
 public protocol Stash<ID>: AnyObject
 {
   associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
   var message: String? { get }
   var mainCommit: Commit? { get }

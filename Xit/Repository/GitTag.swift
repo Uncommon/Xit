@@ -3,7 +3,7 @@ import Cocoa
 public protocol Tag<ID>
 {
   associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
   /// Tag name (without "refs/tags/")
   var name: String { get }

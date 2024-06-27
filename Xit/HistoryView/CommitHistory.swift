@@ -32,13 +32,13 @@ extension CommitEntry: Equatable
 
 
 /// A connection line between commits in the history list.
-struct CommitConnection<ID: OID>: Equatable, Sendable
+struct CommitConnection: Equatable, Sendable
 {
-  let parentOID, childOID: ID
+  let parentOID, childOID: GitOID
   let colorIndex: UInt
 }
 
-func == <ID>(left: CommitConnection<ID>, right: CommitConnection<ID>) -> Bool
+func == (left: CommitConnection, right: CommitConnection) -> Bool
 {
   return left.parentOID == right.parentOID &&
          left.childOID == right.childOID &&
@@ -60,14 +60,13 @@ typealias GitCommitHistory = CommitHistory<GitCommit>
 /// Maintains the history list, allowing for dynamic adding and removing.
 final class CommitHistory<C: Commit>
 {
-  typealias ID = C.ObjectIdentifier
   typealias Entry = CommitEntry<C>
-  typealias Connection = CommitConnection<ID>
-  typealias Repository = CommitStorage<ID>
+  typealias Connection = CommitConnection
+  typealias Repository = CommitStorage<GitOID>
 
   weak var repository: (any Repository)!
   
-  var commitLookup = [ID: Entry]()
+  var commitLookup = [GitOID: Entry]()
   var entries = [Entry]()
   private var abortFlag = false
   private var abortMutex = NSRecursiveLock()
@@ -234,7 +233,7 @@ final class CommitHistory<C: Commit>
     
     result.reserveCapacity(batchSize)
     for entry in entries[batchStart..<batchStart+batchSize] {
-      let commitOID = entry.commit.id as! ID
+      let commitOID = entry.commit.id
       let incomingIndex = connections.firstIndex {
         $0.parentOID.equalsSame(commitOID)
       }
@@ -268,7 +267,7 @@ final class CommitHistory<C: Commit>
   }
   
   private func parentIndex(_ parentOutlets: NSOrderedSet,
-                           of id: ID) -> UInt?
+                           of id: GitOID) -> UInt?
   {
     let result = parentOutlets.index(of: id)
     
@@ -276,15 +275,15 @@ final class CommitHistory<C: Commit>
   }
   
   func generateLines(entry: Entry,
-                     connections: [CommitConnection<ID>])
+                     connections: [CommitConnection])
   {
     // Seems like this cast shouldn't be necessary
-    let entryID = entry.commit.id as! ID
+    let entryID = entry.commit.id
     var nextChildIndex: UInt = 0
     let parentOutlets = connections.compactMap {
         ($0.parentOID.equalsSame(entryID)) ? nil : $0.parentOID }.unique()
-    var parentLines: [ID: (childIndex: UInt,
-                           colorIndex: UInt)] = [:]
+    var parentLines: [GitOID: (childIndex: UInt,
+                               colorIndex: UInt)] = [:]
     var generatedLines: [HistoryLine] = []
 
     for connection in connections {
@@ -362,7 +361,7 @@ extension CommitHistory
   /// Adds new commits to the list.
   public func process(_ startCommit: C, afterCommit: C? = nil)
   {
-    let startOID = startCommit.id as! ID
+    let startOID = startCommit.id
     guard commitLookup[startOID] == nil
     else { return }
     
@@ -398,7 +397,7 @@ extension CommitHistory
                                    after afterCommit: C?)
   {
     for branchEntry in result.entries {
-      commitLookup[branchEntry.commit.id as! ID] = branchEntry
+      commitLookup[branchEntry.commit.id] = branchEntry
     }
     
     let afterIndex = afterCommit.flatMap
@@ -409,8 +408,7 @@ extension CommitHistory
     
     if let insertBeforeIndex = lastParentOIDs.compactMap(
            {
-             // Another seemingly unneeded cast
-             let oid = $0 as! C.ID
+             let oid = $0
              return entries.firstIndex(where: { $0.commit.id.equalsSame(oid) })
            })
            .sorted().first {
@@ -432,7 +430,7 @@ extension CommitHistory
         entries.insert(contentsOf: result.entries, at: insertBeforeIndex)
       }
     }
-    else if let lastSecondaryOID = result.queue.last?.after.id as? ID,
+    else if let lastSecondaryOID = result.queue.last?.after.id,
             let lastSecondaryEntry = commitLookup[lastSecondaryOID],
             let lastSecondaryIndex = entries.firstIndex(where:
                 { $0.commit.id.equalsSame(lastSecondaryEntry.commit.id) }) {

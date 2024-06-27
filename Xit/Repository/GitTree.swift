@@ -1,9 +1,8 @@
 import Foundation
 
-public protocol Tree<ObjectIdentifier>: OIDObject
+public protocol Tree: OIDObject
 {
-  associatedtype ObjectIdentifier
-  associatedtype Entry: TreeEntry<ObjectIdentifier>
+  associatedtype Entry: TreeEntry
 
   /// Number of entries in the tree.
   var count: Int { get }
@@ -16,10 +15,8 @@ public protocol Tree<ObjectIdentifier>: OIDObject
   func entry(at index: Int) -> Entry?
 }
 
-public protocol TreeEntry<ObjectIdentifier>: OIDObject
+public protocol TreeEntry: OIDObject
 {
-  associatedtype ObjectIdentifier: OID
-
   var type: GitObjectType { get }
   var name: String { get }
   /// The object referenced by the entry is not a specific type because it
@@ -30,8 +27,6 @@ public protocol TreeEntry<ObjectIdentifier>: OIDObject
 
 public final class GitTree: Tree
 {
-  public typealias ObjectIdentifier = GitOID
-
   struct EntryCollection: Collection
   {
     let tree: GitTree
@@ -127,8 +122,6 @@ public final class GitTree: Tree
 
 public final class GitTreeEntry: TreeEntry
 {
-  public typealias ObjectIdentifier = GitOID
-
   let entry: OpaquePointer!
   let owner: OpaquePointer!
   let owned: Bool

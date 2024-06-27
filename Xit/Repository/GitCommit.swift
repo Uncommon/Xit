@@ -1,13 +1,12 @@
 import Cocoa
 
 
-public protocol Commit<ObjectIdentifier>: OIDObject, CustomStringConvertible
+public protocol Commit: OIDObject, CustomStringConvertible
 {
-  associatedtype ObjectIdentifier
-  associatedtype Tree: Xit.Tree<ObjectIdentifier>
+  associatedtype Tree: Xit.Tree
 
-  var parentOIDs: [ObjectIdentifier] { get }
-  
+  var parentOIDs: [GitOID] { get }
+
   var message: String? { get }
   
   var authorSig: Signature? { get }
@@ -60,7 +59,6 @@ extension Commit
 
 public final class GitCommit: Commit
 {
-  public typealias ObjectIdentifier = GitOID
   public typealias Tree = GitTree
 
   let commit: OpaquePointer

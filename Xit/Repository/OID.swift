@@ -53,7 +53,7 @@ func != (a: (any OID)?, b: (any OID)?) -> Bool
 }
 
 
-public protocol OIDObject: Hashable, Identifiable where ID: OID
+public protocol OIDObject: Hashable, Identifiable where ID == GitOID
 {
 }
 
