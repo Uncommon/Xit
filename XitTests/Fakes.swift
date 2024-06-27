@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Siesta
 @testable import Xit
 
@@ -143,12 +144,17 @@ class FakeRemoteBranch: RemoteBranch
 class FakeRepoController: RepositoryController
 {
   var repository: BasicRepository
-
   var queue: TaskQueue = TaskQueue(id: "testing")
-
   var cache: RepositoryCache = .init()
 
-  func invalidateIndex() {}
+  var configPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var headPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var indexPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var refLogPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var refsPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var stashPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var progressPublisher: AnyPublisher<ProgressValue, Never> { Empty().eraseToAnyPublisher() }
+  var workspacePublisher: AnyPublisher<[String], Never> { Empty().eraseToAnyPublisher() }
 
   init(repository: FakeRepo)
   {
@@ -156,7 +162,12 @@ class FakeRepoController: RepositoryController
     repository.controller = self
   }
 
+  func invalidateIndex() {}
   func waitForQueue() {}
+
+  func post(progress: Float, total: Float) {}
+  func indexChanged() {}
+  func refsChanged() {}
 }
 
 class FakeFileChangesRepo: FileChangesRepo

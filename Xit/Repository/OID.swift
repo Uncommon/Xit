@@ -170,6 +170,11 @@ extension GitOID: CustomStringConvertible
   public var description: String { sha }
 }
 
+extension GitOID: CustomDebugStringConvertible
+{
+  public var debugDescription: String { .init(sha.drop(while: { $0 == "0" })) }
+}
+
 let oidSize = 20
 
 public func == (left: GitOID, right: GitOID) -> Bool

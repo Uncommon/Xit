@@ -13,7 +13,7 @@ class StringRepository: CommitStorage
   
   func oid(forSHA sha: String) -> GitOID?
   {
-    GitOID(rawValue: sha)
+    .init(sha: sha)
   }
   
   func commit(forSHA sha: String) -> StringCommit?
@@ -35,7 +35,7 @@ class StringRepository: CommitStorage
 extension Xit.CommitConnection: CustomDebugStringConvertible
 {
   public var debugDescription: String
-  { return "\(childOID.sha)-\(parentOID.sha) \(colorIndex)" }
+  { return "\(childOID.debugDescription)-\(parentOID.debugDescription) \(colorIndex)" }
 }
 
 
@@ -52,8 +52,7 @@ class CommitHistoryTest: XCTestCase
                    heads: [GitOID]? = nil) -> TestCommitHistory?
   {
     let commits = commitData.map {
-      (arg) -> StringCommit in
-      let (id, parents) = arg
+      (id, parents) -> StringCommit in
       return .init(parentOIDs: parents, id: id)
     }
     
@@ -90,7 +89,7 @@ class CommitHistoryTest: XCTestCase
   /// Makes sure each commit precedes its parents.
   func check(_ history: TestCommitHistory, expectedLength: Int)
   {
-    print("\(history.entries.flatMap({ $0.commit.id.sha }))")
+    print("\(history.entries.map({ $0.commit.id.debugDescription }))")
     XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
@@ -188,8 +187,8 @@ class CommitHistoryTest: XCTestCase
     else { return }
     let repository = try XCTUnwrap(self.repository)
 
-    guard let commitA = repository.commit(forSHA: "a"),
-          let commitB = repository.commit(forSHA: "b")
+    guard let commitA = repository.commit(forOID: "a"),
+          let commitB = repository.commit(forOID: "b")
       else {
         XCTFail("Can't get starting commit")
         return
@@ -311,10 +310,10 @@ class CommitHistoryTest: XCTestCase
     else { return }
     let repository = try XCTUnwrap(self.repository)
 
-    guard let commitA = repository.commit(forSHA: "a"),
-          let commitD = repository.commit(forSHA: "d"),
-          let commitE = repository.commit(forSHA: "e"),
-          let commitAA = repository.commit(forSHA: "aa")
+    guard let commitA = repository.commit(forOID: "a"),
+          let commitD = repository.commit(forOID: "d"),
+          let commitE = repository.commit(forOID: "e"),
+          let commitAA = repository.commit(forOID: "aa")
     else {
       XCTFail("Can't get starting commit")
       return
@@ -389,9 +388,9 @@ class CommitHistoryTest: XCTestCase
     else { return }
     let repository = try XCTUnwrap(self.repository)
 
-    guard let commitA = repository.commit(forSHA: "a"),
-          let commitB = repository.commit(forSHA: "b"),
-          let commitE = repository.commit(forSHA: "e")
+    guard let commitA = repository.commit(forOID: "a"),
+          let commitB = repository.commit(forOID: "b"),
+          let commitE = repository.commit(forOID: "e")
     else {
       XCTFail("Can't get starting commit")
       return
@@ -554,14 +553,14 @@ class CommitHistoryTest: XCTestCase
   }
   
   /* Crossover:
-     h-------e-d------a
-      \-g-f-X----c-b-/
+     bb-------e-d------a
+      \-aa-f-X----c-b-/
   */
   func testCrossover()
   {
     guard let history = makeHistory(
-      [("a", ["d", "b"]), ("b", ["c"]), ("c", ["h"]), ("d", ["e"]),
-       ("e", ["h", "f"]), ("f", ["g"]), ("g", ["h"]), ("h", [])],
+      [("a", ["d", "b"]), ("b", ["c"]), ("c", ["bb"]), ("d", ["e"]),
+       ("e", ["bb", "f"]), ("f", ["aa"]), ("aa", ["bb"]), ("bb", [])],
       heads: ["a", "b", "f"])
     else { return }
     
@@ -572,20 +571,20 @@ class CommitHistoryTest: XCTestCase
     let aToD = StringConnection(parentOID: "d", childOID: "a", colorIndex: 0)
     let aToB = StringConnection(parentOID: "b", childOID: "a", colorIndex: 1)
     let bToC = StringConnection(parentOID: "c", childOID: "b", colorIndex: 1)
-    let cToH = StringConnection(parentOID: "h", childOID: "c", colorIndex: 1)
+    let cToBB = StringConnection(parentOID: "bb", childOID: "c", colorIndex: 1)
     let dToE = StringConnection(parentOID: "e", childOID: "d", colorIndex: 0)
-    let eToH = StringConnection(parentOID: "h", childOID: "e", colorIndex: 0)
+    let eToBB = StringConnection(parentOID: "bb", childOID: "e", colorIndex: 0)
     let eToF = StringConnection(parentOID: "f", childOID: "e", colorIndex: 2)
-    let fToG = StringConnection(parentOID: "g", childOID: "f", colorIndex: 2)
-    let gToH = StringConnection(parentOID: "h", childOID: "g", colorIndex: 2)
+    let fToAA = StringConnection(parentOID: "aa", childOID: "f", colorIndex: 2)
+    let aaToBB = StringConnection(parentOID: "bb", childOID: "aa", colorIndex: 2)
 
     XCTAssertEqual(connections[0], [aToD, aToB])
     XCTAssertEqual(connections[1], [aToD, aToB, bToC])
-    XCTAssertEqual(connections[2], [aToD, bToC, cToH])
-    XCTAssertEqual(connections[3], [aToD, dToE, cToH])
-    XCTAssertEqual(connections[4], [dToE, eToH, cToH, eToF])
-    XCTAssertEqual(connections[5], [eToH, cToH, eToF, fToG])
-    XCTAssertEqual(connections[6], [eToH, cToH, fToG, gToH])
-    XCTAssertEqual(connections[7], [eToH, cToH, gToH])
+    XCTAssertEqual(connections[2], [aToD, bToC, cToBB])
+    XCTAssertEqual(connections[3], [aToD, dToE, cToBB])
+    XCTAssertEqual(connections[4], [dToE, eToBB, cToBB, eToF])
+    XCTAssertEqual(connections[5], [eToBB, cToBB, eToF, fToAA])
+    XCTAssertEqual(connections[6], [eToBB, cToBB, fToAA, aaToBB])
+    XCTAssertEqual(connections[7], [eToBB, cToBB, aaToBB])
   }
 }
