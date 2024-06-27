@@ -65,7 +65,7 @@ extension EmptyCommitStorage
 
   func commit(message: String, amend: Bool) throws {}
 
-  func walker() -> (any RevWalk<ID>)? { nil }
+  func walker() -> (any RevWalk)? { nil }
 }
 
 protocol EmptyCommitReferencing: CommitReferencing where ID == GitOID {}

@@ -28,7 +28,7 @@ class StringRepository: CommitStorage
   
   func commit(message: String, amend: Bool) throws {}
   
-  func walker() -> (any RevWalk<GitOID>)? { nil }
+  func walker() -> (any RevWalk)? { nil }
 }
 
 

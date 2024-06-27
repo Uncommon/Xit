@@ -73,7 +73,7 @@ public protocol CommitStorage<ID>: AnyObject
 
   func commit(message: String, amend: Bool) throws
   
-  func walker() -> (any RevWalk<ID>)?
+  func walker() -> (any RevWalk)?
 }
 
 extension CommitStorage

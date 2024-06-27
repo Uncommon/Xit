@@ -1,13 +1,11 @@
 import Foundation
 
-public protocol RevWalk<ID>: AnyObject, Sequence, IteratorProtocol where Element == ID
+public protocol RevWalk: AnyObject, Sequence, IteratorProtocol where Element == GitOID
 {
-  associatedtype ID: OID
-
   func reset()
   func setSorting(_ sort: RevWalkSorting)
-  func push(oid: ID)
-  func next() -> ID?
+  func push(oid: GitOID)
+  func next() -> GitOID?
 }
 
 public struct RevWalkSorting: OptionSet, Sendable

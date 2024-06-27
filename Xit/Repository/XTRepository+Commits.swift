@@ -47,9 +47,9 @@ extension XTRepository: CommitStorage
     }
   }
   
-  public func walker() -> (any RevWalk<GitOID>)?
+  public func walker() -> (any RevWalk)?
   {
-    return GitRevWalk(repository: gitRepo)
+    GitRevWalk(repository: gitRepo)
   }
 }
 
