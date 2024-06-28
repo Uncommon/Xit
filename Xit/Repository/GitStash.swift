@@ -1,8 +1,7 @@
 import Cocoa
 
-public protocol Stash<ID>: AnyObject
+public protocol Stash: AnyObject
 {
-  associatedtype ID: OID
   associatedtype Commit: Xit.Commit
 
   var message: String? { get }

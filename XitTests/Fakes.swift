@@ -58,8 +58,6 @@ struct FakeRefSpec: RefSpec
 
 class FakeStash: Stash
 {
-  typealias ID = GitOID
-
   var message: String? = nil
   var mainCommit: FakeCommit? = nil
   var indexCommit: FakeCommit? = nil

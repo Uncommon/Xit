@@ -2,12 +2,10 @@ import Foundation
 
 public protocol Reference
 {
-  associatedtype ID: OID
-
   /// For a direct reference, the target OID
-  var targetOID: ID? { get }
+  var targetOID: GitOID? { get }
   /// Peels a tag reference
-  var peeledTargetOID: ID? { get }
+  var peeledTargetOID: GitOID? { get }
   /// For a symbolic reference, the name of the target
   var symbolicTargetName: String? { get }
   /// Type of reference: oid (direct) or symbolic
@@ -18,7 +16,7 @@ public protocol Reference
   /// Peels a symbolic reference until a direct reference is reached
   func resolve() -> Self?
   /// Changes the ref to point to a different object
-  func setTarget(_ newOID: ID, logMessage: String)
+  func setTarget(_ newOID: GitOID, logMessage: String)
 }
 
 final class GitReference: Reference

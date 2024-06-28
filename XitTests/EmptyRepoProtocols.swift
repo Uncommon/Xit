@@ -256,10 +256,7 @@ extension EmptyStash
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
 }
 
-class NullStash: EmptyStash
-{
-  typealias ID = GitOID
-}
+class NullStash: EmptyStash {}
 
 protocol EmptyRemoteManagement: RemoteManagement {}
 

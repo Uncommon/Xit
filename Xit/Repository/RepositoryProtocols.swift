@@ -98,7 +98,7 @@ public protocol CommitReferencing<ID>: AnyObject
 {
   associatedtype ID: OID
   associatedtype Commit: Xit.Commit
-  associatedtype Tag: Xit.Tag<ID>
+  associatedtype Tag: Xit.Tag
   associatedtype Tree: Xit.Tree
 
   var headRef: String? { get }
