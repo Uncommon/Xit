@@ -156,10 +156,9 @@ public final class GitCommit: Commit
     self.parentOIDs = GitCommit.calculateParentOIDs(gitCommit)
   }
 
-  convenience init?(oid: any OID, repository: OpaquePointer)
+  convenience init?(oid: GitOID, repository: OpaquePointer)
   {
-    guard let oid = oid as? GitOID,
-          let commit = try? OpaquePointer.from({
+    guard let commit = try? OpaquePointer.from({
             (commit) in
             oid.withUnsafeOID { git_commit_lookup(&commit, repository, $0) }
           })

@@ -228,7 +228,7 @@ extension XTRepository
 {
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forOID oid: any OID, parent parentOID: GitOID?) -> (any Diff)?
+  func diff(forOID oid: GitOID, parent parentOID: GitOID?) -> (any Diff)?
   {
     let key = oid.sha.appending(parentOID?.sha ?? "")
     
@@ -236,8 +236,6 @@ extension XTRepository
       return diff
     }
     else {
-      guard let oid = oid as? GitOID
-      else { return nil }
       guard let commit = commit(forOID: oid)
       else { return nil }
       

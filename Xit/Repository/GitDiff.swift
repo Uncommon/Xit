@@ -12,7 +12,7 @@ public protocol Diff: AnyObject
 
 public protocol DiffFile
 {
-  var oid: any OID { get }
+  var oid: GitOID { get }
   var filePath: String { get }
   var size: UInt64 { get }
   var diffFlags: DiffFlags { get }
@@ -209,7 +209,7 @@ extension Diff
 
 extension git_diff_file: DiffFile
 {
-  public var oid: any OID { GitOID(oid: id) }
+  public var oid: GitOID { GitOID(oid: id) }
   public var filePath: String
   {
     if let path = self.path {

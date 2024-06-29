@@ -285,8 +285,8 @@ protocol EmptyTagging: Tagging {}
 
 extension EmptyTagging
 {
-  func createTag(name: String, targetOID: any OID, message: String?) throws {}
-  func createLightweightTag(name: String, targetOID: any OID) throws {}
+  func createTag(name: String, targetOID: GitOID, message: String?) throws {}
+  func createLightweightTag(name: String, targetOID: GitOID) throws {}
   func deleteTag(name: String) throws {}
 }
 
