@@ -75,16 +75,6 @@ public protocol CommitStorage: AnyObject
   func walker() -> (any RevWalk)?
 }
 
-extension CommitStorage
-{
-  // Helper for dealing with a `CommitStorage` existential because the caller
-  // doesn't know the OID type.
-  func anyCommit(forOID oid: GitOID) -> (any Xit.Commit)?
-  {
-    return commit(forOID: oid) as (any Xit.Commit)?
-  }
-}
-
 
 public protocol CommitReferencing: AnyObject
 {

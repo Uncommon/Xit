@@ -48,7 +48,7 @@ public final class GitStash: Stash
         self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
           as? GitCommit
         if mainCommit.parentOIDs.count > 2 {
-          self.untrackedCommit = repo.anyCommit(forOID: mainCommit.parentOIDs[2])
+          self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
             as? GitCommit
         }
       }

@@ -374,7 +374,7 @@ extension CommitHistory
       defer { results.append(result) }
       if let nextOID = result.entries.last?.commit.parentOIDs.first,
          commitLookup[nextOID] == nil,
-         let nextCommit = repository.anyCommit(forOID: nextOID) as? C {
+         let nextCommit = repository.commit(forOID: nextOID) as? C {
         startCommit = nextCommit
       }
       else {
@@ -465,13 +465,13 @@ extension CommitHistory
     
     while let firstParentOID = commit.parentOIDs.first {
       for parentOID in commit.parentOIDs.dropFirst() {
-        if let parentCommit = repository.anyCommit(forOID: parentOID) as? C {
+        if let parentCommit = repository.commit(forOID: parentOID) as? C {
           queue.append((parentCommit, commit))
         }
       }
       
       guard commitLookup[firstParentOID] == nil,
-            let parentCommit = repository.anyCommit(forOID: firstParentOID) as? C
+            let parentCommit = repository.commit(forOID: firstParentOID) as? C
       else { break }
 
       if commit.parentOIDs.count > 1 {
