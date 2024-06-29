@@ -7,7 +7,9 @@ final class StashSelection: StagedUnstagedSelection
   unowned var repository: any FileChangesRepo
   let stash: any Stash
   var canCommit: Bool { false }
-  var oidToSelect: (any OID)? { stash.anyMainCommit?.parentOIDs.first }
+  var target: SelectionTarget {
+    stash.mainCommit?.parentOIDs.first.map { .oid($0) } ?? .none
+  }
   var fileList: any FileListModel { stagedList }
   var unstagedFileList: any FileListModel { unstagedList }
   var amending: Bool { false }

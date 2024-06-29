@@ -11,7 +11,7 @@ public protocol Branch: AnyObject
   /// Text that is not part of the specific branch name
   var prefix: String { get }
   /// OID of the branch's head commit
-  var oid: (any OID)? { get }
+  var oid: GitOID? { get }
   /// The branch's head commit
   var targetCommit: (any Commit)? { get }
   /// The remote this branch relates to. If a remote branch, then that remote.
@@ -86,7 +86,7 @@ public class GitBranch
     return String(cString: name)
   }
   
-  public var oid: (any OID)?
+  public var oid: GitOID?
   {
     guard let oid = git_reference_target(branchRef)
     else { return nil }

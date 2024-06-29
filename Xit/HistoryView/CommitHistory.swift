@@ -62,7 +62,7 @@ final class CommitHistory<C: Commit>
 {
   typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection
-  typealias Repository = CommitStorage<GitOID>
+  typealias Repository = CommitStorage
 
   weak var repository: (any Repository)!
   

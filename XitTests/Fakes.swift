@@ -10,7 +10,7 @@ extension FakeCommit
     self.init(parentOIDs: [],
               message: branch.shortName,
               isSigned: false,
-              id: branch.oid as! GitOID)
+              id: branch.oid!)
   }
 }
 
@@ -112,7 +112,7 @@ class FakeLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)?
   var name: String
   var shortName: String { strippedName }
-  var oid: (any OID)?
+  var oid: GitOID?
   var targetCommit: (any Commit)?
   
   init(name: String)
@@ -128,7 +128,7 @@ class FakeRemoteBranch: RemoteBranch
   var name: String
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
-  var oid: (any OID)?
+  var oid: GitOID?
   var targetCommit: (any Commit)?
   
   init(remoteName: String, name: String)
@@ -170,7 +170,6 @@ class FakeRepoController: RepositoryController
 
 class FakeFileChangesRepo: FileChangesRepo
 {
-  typealias ID = GitOID
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
@@ -190,13 +189,13 @@ class FakeFileChangesRepo: FileChangesRepo
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: ID) -> [String] { [] }
+  func refs(at oid: GitOID) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
-                    updatingReference refName: String) throws -> ID
+                    updatingReference refName: String) throws -> GitOID
   { .zero() }
-  func oid(forRef: String) -> ID? { nil }
+  func oid(forRef: String) -> GitOID? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
   
@@ -207,16 +206,16 @@ class FakeFileChangesRepo: FileChangesRepo
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   
-  func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
+  func diffMaker(forFile file: String, commitOID: GitOID, parentOID: GitOID?)
     -> PatchMaker.PatchResult?
   { nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
   
-  func blame(for path: String, from startOID: (any OID)?, to endOID: (any OID)?) -> (any Blame)?
+  func blame(for path: String, from startOID: GitOID?, to endOID: GitOID?) -> (any Blame)?
   { nil }
-  func blame(for path: String, data fromData: Data?, to endOID: (any OID)?) -> (any Blame)?
+  func blame(for path: String, data fromData: Data?, to endOID: GitOID?) -> (any Blame)?
   { nil }
   
   var index: (any StagingIndex)? { nil }
@@ -232,7 +231,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   { (.unmodified, .unmodified) }
 
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
   { [] }
   func stagedChanges() -> [FileChange] { [] }
   func unstagedChanges(showIgnored: Bool,

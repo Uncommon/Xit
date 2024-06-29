@@ -3,22 +3,9 @@ import Foundation
 extension XTRepository: FileStatusDetection
 {
   /// Returns the changes for the given commit.
-  public func changes(for oid: any OID,
-                      parent parentOID: (any OID)?) -> [FileChange]
+  public func changes(for oid: GitOID,
+                      parent parentOID: GitOID?) -> [FileChange]
   {
-    guard oid != SpecialOID.staging
-    else {
-      if let parentCommit = (parentOID as? GitOID)
-                            .flatMap({ commit(forOID: $0) }) {
-        return Array(amendingChanges(parent: parentCommit))
-      }
-      else {
-        return Array(stagingChanges)
-      }
-    }
-    
-    guard let oid = oid as? GitOID
-    else { return [] }
     guard let commit = self.commit(forOID: oid)
     else { return [] }
     

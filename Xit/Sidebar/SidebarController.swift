@@ -173,8 +173,8 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func selectedModelChanged()
   {
     if let selectedItem = self.selectedItem {
-      guard selectedItem.selection?.oidToSelect !=
-            repoUIController?.selection?.oidToSelect
+      guard selectedItem.selection?.target !=
+            repoUIController?.selection?.target
       else {
         return
       }
@@ -194,7 +194,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
             byExtendingSelection: false)
       
       case let commitChanges as CommitSelection:
-        let selectedGitOID = commitChanges.oidToSelect as? GitOID
+        let selectedGitOID = commitChanges.target.oid
         guard let ref = selectedGitOID.map({ repo.refs(at: $0) })?
                                       .first
         else { break }

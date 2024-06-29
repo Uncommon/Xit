@@ -171,7 +171,7 @@ extension XTRepository: Branching
 
 extension XTRepository: Tagging
 {
-  public func createTag(name: String, targetOID: any OID, message: String?) throws
+  public func createTag(name: String, targetOID: GitOID, message: String?) throws
   {
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,
@@ -190,7 +190,7 @@ extension XTRepository: Tagging
     }
   }
   
-  public func createLightweightTag(name: String, targetOID: any OID) throws
+  public func createLightweightTag(name: String, targetOID: GitOID) throws
   {
     try performWriting {
       guard let commit = GitCommit(oid: targetOID,

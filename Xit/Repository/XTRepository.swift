@@ -252,12 +252,9 @@ extension XTRepository: WritingManagement
 
 extension XTRepository
 {  
-  func graphBetween(local: any OID, upstream: any OID) -> (ahead: Int,
-                                                           behind: Int)?
+  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
+                                                         behind: Int)?
   {
-    guard let local = local as? GitOID,
-          let upstream = upstream as? GitOID
-    else { return nil }
     var ahead = 0
     var behind = 0
     let graphResult = local.withUnsafeOID { localOID in

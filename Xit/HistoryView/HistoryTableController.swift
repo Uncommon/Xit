@@ -5,7 +5,7 @@ final class HistoryTableController: NSViewController,
                                     RepositoryWindowViewController
 {
   typealias Repository = BasicRepository & FileChangesRepo &
-                         CommitStorage<GitOID> & FileContents
+                         CommitStorage & FileContents
   
   enum ColumnID
   {
@@ -55,7 +55,7 @@ final class HistoryTableController: NSViewController,
           guard let selection = selection
           else { return }
 
-          self?.selectRow(oid: selection.oidToSelect)
+          self?.selectRow(target: selection.target)
         },
         controller.reselectPublisher.sink {
           [weak self] in
@@ -209,11 +209,11 @@ final class HistoryTableController: NSViewController,
     guard let selection = repoUIController?.selection
     else { return }
     
-    selectRow(oid: selection.oidToSelect, forceScroll: true)
+    selectRow(target: selection.target, forceScroll: true)
   }
   
   /// Selects the row for the given commit SHA.
-  func selectRow(oid: (any OID)?, forceScroll: Bool = false)
+  func selectRow(target: SelectionTarget, forceScroll: Bool = false)
   {
     let tableView = view as! NSTableView
     
@@ -224,7 +224,7 @@ final class HistoryTableController: NSViewController,
       objc_sync_exit(self)
     }
     
-    guard let oid = oid,
+    guard let oid = target.oid,
           let row = history.entries.firstIndex(where: { $0.commit.id == oid })
     else {
       tableView.deselectAll(self)
@@ -407,7 +407,7 @@ extension HistoryTableController: XTTableViewDelegate
                                        commit: entry.commit)
     
     if (controller.selection == nil) ||
-       (controller.selection?.oidToSelect != newSelection.oidToSelect) ||
+       (controller.selection?.target != newSelection.target) ||
        (type(of: controller.selection!) != type(of: newSelection)) {
       controller.selection = newSelection
     }

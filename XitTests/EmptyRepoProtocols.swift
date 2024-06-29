@@ -42,7 +42,7 @@ class NullLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (any OID)? { nil }
+  var oid: GitOID? { nil }
   var targetCommit: (any Commit)? { nil }
 }
 
@@ -50,7 +50,7 @@ class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (any OID)? { nil }
+  var oid: GitOID? { nil }
   var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }
@@ -59,16 +59,16 @@ protocol EmptyCommitStorage: CommitStorage {}
 
 extension EmptyCommitStorage
 {
-  func oid(forSHA sha: String) -> ID?  { nil }
+  func oid(forSHA sha: String) -> GitOID?  { nil }
   func commit(forSHA sha: String) -> Commit? { nil }
-  func commit(forOID oid: ID) -> Commit? { nil }
+  func commit(forOID oid: GitOID) -> Commit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
   func walker() -> (any RevWalk)? { nil }
 }
 
-protocol EmptyCommitReferencing: CommitReferencing where ID == GitOID {}
+protocol EmptyCommitReferencing: CommitReferencing {}
 
 extension EmptyCommitReferencing
 {
@@ -153,7 +153,7 @@ protocol EmptyFileStatusDetection: FileStatusDetection {}
 
 extension EmptyFileStatusDetection
 {
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
   { [] }
 
   func stagedChanges() -> [FileChange] { [] }
@@ -179,18 +179,18 @@ protocol EmptyFileDiffing: FileDiffing {}
 extension EmptyFileDiffing
 {
   func diffMaker(forFile file: String,
-                 commitOID: any OID,
-                 parentOID: (any OID)?) -> PatchMaker.PatchResult? { nil }
+                 commitOID: GitOID,
+                 parentOID: GitOID?) -> PatchMaker.PatchResult? { nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
 
   func blame(for path: String,
-             from startOID: (any OID)?,
-             to endOID: (any OID)?) -> (any Blame)? { nil }
+             from startOID: GitOID?,
+             to endOID: GitOID?) -> (any Blame)? { nil }
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: (any OID)?) -> (any Blame)? { nil }
+             to endOID: GitOID?) -> (any Blame)? { nil }
 }
 
 protocol EmptyFileContents: FileContents {}

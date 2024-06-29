@@ -100,10 +100,8 @@ extension XTRepository: FileContents
                path: path)
   }
   
-  public func fileBlob(oid: any OID, path: String) -> (any Blob)?
+  public func fileBlob(oid: GitOID, path: String) -> (any Blob)?
   {
-    guard let oid = oid as? GitOID
-    else { return nil }
     return commitBlob(commit: commit(forOID: oid), path: path)
   }
   
@@ -120,15 +118,13 @@ extension XTRepository: FileDiffing
   /// Returns a diff maker for a file at the specified commit, compared to the
   /// parent commit.
   public func diffMaker(forFile file: String,
-                        commitOID: any OID,
-                        parentOID: (any OID)?) -> PatchMaker.PatchResult?
+                        commitOID: GitOID,
+                        parentOID: GitOID?) -> PatchMaker.PatchResult?
   {
-    guard let commitOID = commitOID as? GitOID
-    else { return nil }
     guard let toCommit = commit(forOID: commitOID)
     else { return nil }
     
-    let parentCommit = (parentOID as? GitOID).flatMap { commit(forOID: $0) }
+    let parentCommit = parentOID.flatMap { commit(forOID: $0) }
     guard isTextFile(file, context: .commit(toCommit)) ||
           parentCommit.map({ isTextFile(file, context: .commit($0)) }) ?? false
     else { return .binary }
@@ -213,15 +209,15 @@ extension XTRepository: FileDiffing
   }
   
   public func blame(for path: String,
-                    from startOID: (any OID)?,
-                    to endOID: (any OID)?) -> (any Blame)?
+                    from startOID: GitOID?,
+                    to endOID: GitOID?) -> (any Blame)?
   {
     GitBlame(repository: self, path: path, from: startOID, to: endOID)
   }
   
   public func blame(for path: String,
                     data fromData: Data?,
-                    to endOID: (any OID)?) -> (any Blame)?
+                    to endOID: GitOID?) -> (any Blame)?
   {
     GitBlame(repository: self, path: path,
              data: fromData ?? Data(), to: endOID)
@@ -232,7 +228,7 @@ extension XTRepository
 {
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
-  func diff(forOID oid: any OID, parent parentOID: (any OID)?) -> (any Diff)?
+  func diff(forOID oid: any OID, parent parentOID: GitOID?) -> (any Diff)?
   {
     let key = oid.sha.appending(parentOID?.sha ?? "")
     
@@ -246,10 +242,10 @@ extension XTRepository
       else { return nil }
       
       let parentOIDs = commit.parentOIDs
-      let parentOID: (any OID)? = parentOID == nil
+      let parentOID: GitOID? = parentOID == nil
             ? parentOIDs.first
             : parentOIDs.first { $0.equals(parentOID) }
-      let parentCommit = (parentOID as? GitOID).flatMap { self.commit(forOID: $0) }
+      let parentCommit = parentOID.flatMap { self.commit(forOID: $0) }
       
       guard let diff = GitDiff(oldTree: parentCommit?.tree,
                                newTree: commit.tree,
