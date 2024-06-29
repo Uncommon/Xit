@@ -235,7 +235,7 @@ final class CommitHistory<C: Commit>
     for entry in entries[batchStart..<batchStart+batchSize] {
       let commitOID = entry.commit.id
       let incomingIndex = connections.firstIndex {
-        $0.parentOID.equalsSame(commitOID)
+        $0.parentOID == commitOID
       }
       let incomingColor = incomingIndex.flatMap { connections[$0].colorIndex }
       
@@ -259,7 +259,7 @@ final class CommitHistory<C: Commit>
       
       result.append(connections)
       connections = connections.filter {
-        !$0.parentOID.equalsSame(commitOID)
+        $0.parentOID != commitOID
       }
     }
     
@@ -281,14 +281,14 @@ final class CommitHistory<C: Commit>
     let entryID = entry.commit.id
     var nextChildIndex: UInt = 0
     let parentOutlets = connections.compactMap {
-        ($0.parentOID.equalsSame(entryID)) ? nil : $0.parentOID }.unique()
+        ($0.parentOID == entryID) ? nil : $0.parentOID }.unique()
     var parentLines: [GitOID: (childIndex: UInt,
                                colorIndex: UInt)] = [:]
     var generatedLines: [HistoryLine] = []
 
     for connection in connections {
-      let commitIsParent = connection.parentOID.equalsSame(entryID)
-      let commitIsChild = connection.childOID.equalsSame(entryID)
+      let commitIsParent = connection.parentOID == entryID
+      let commitIsChild = connection.childOID == entryID
       let parentIndexInt = commitIsParent
               ? nil : parentOutlets.firstIndex(of: connection.parentOID)
       let parentIndex = parentIndexInt.map { UInt($0) }
@@ -401,7 +401,7 @@ extension CommitHistory
     }
     
     let afterIndex = afterCommit.flatMap
-        { commit in entries.firstIndex { $0.commit.id.equalsSame(commit.id) } }
+        { commit in entries.firstIndex { $0.commit.id == commit.id } }
     guard let lastEntry = result.entries.last
     else { return }
     let lastParentOIDs = lastEntry.commit.parentOIDs
@@ -409,7 +409,7 @@ extension CommitHistory
     if let insertBeforeIndex = lastParentOIDs.compactMap(
            {
              let oid = $0
-             return entries.firstIndex(where: { $0.commit.id.equalsSame(oid) })
+             return entries.firstIndex(where: { $0.commit.id == oid })
            })
            .sorted().first {
       #if DEBUGLOG
@@ -433,7 +433,7 @@ extension CommitHistory
     else if let lastSecondaryOID = result.queue.last?.after.id,
             let lastSecondaryEntry = commitLookup[lastSecondaryOID],
             let lastSecondaryIndex = entries.firstIndex(where:
-                { $0.commit.id.equalsSame(lastSecondaryEntry.commit.id) }) {
+                { $0.commit.id == lastSecondaryEntry.commit.id }) {
       #if DEBUGLOG
       print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
       #endif

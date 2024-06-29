@@ -4,11 +4,6 @@ public protocol OID: CustomDebugStringConvertible, Hashable, Sendable
 {
   var sha: String { get }
   var isZero: Bool { get }
-  
-  /// This is a workaround for the compiler being too eager to use
-  /// `== (a: (any OID)?, b: (any OID)?)` when a more specific (and more
-  /// efficient) version is available.
-  func equalsSame(_ other: Self) -> Bool
 }
 
 extension OID // CustomDebugStringConvertible
