@@ -151,9 +151,9 @@ class ReadOnlyUITests: XCTestCase
     HistoryList.ContextMenu.copySHAItem.click()
     
     let pasteboard = NSPasteboard.general
-    let copiedToxt = pasteboard.string(forType: .string)
-    
-    XCTAssertEqual(copiedToxt, "6b0c1c8b8816416089c534e474f4c692a76ac14f")
+    let copiedText = pasteboard.string(forType: .string)
+
+    XCTAssertEqual(copiedText, "6b0c1c8b8816416089c534e474f4c692a76ac14f")
   }
   
   /// Reset should be disabled for the branch head
@@ -178,7 +178,7 @@ class ReadOnlyUITests: XCTestCase
   /// Reset mode description and status are updated when modes are selected
   func testResetSheet()
   {
-    HistoryList.row(1).rightClick()
+    HistoryList.row(2).rightClick()
     HistoryList.ContextMenu.resetItem.click()
     
     XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
@@ -330,11 +330,11 @@ class ReadOnlyUITests: XCTestCase
       Search.field.click()
       Search.field.typeText("asd")
       Search.searchDown.click()
-      XCTAssert(HistoryList.row(2).isSelected)
+      XCTAssert(HistoryList.row(3).isSelected)
       Search.searchDown.click()
       XCTAssert(HistoryList.row(27).isSelected)
       Search.searchUp.click()
-      XCTAssert(HistoryList.row(2).isSelected)
+      XCTAssert(HistoryList.row(3).isSelected)
     }
     XCTContext.runActivity(named: "Search by SHA") {
       _ in

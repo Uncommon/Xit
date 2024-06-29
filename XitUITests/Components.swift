@@ -25,8 +25,8 @@ enum Search
   static let field = Window.window.searchFields[.Search.field]
   static let clearButton = field.buttons["cancel"]
   // No idea where these IDs come from but that's what they are
-  static let searchUp = Window.window.buttons["go up"]
-  static let searchDown = Window.window.buttons["go down"]
+  static let searchUp = Window.window.buttons["searchUp"]
+  static let searchDown = Window.window.buttons["searchDown"]
 
   static func setSearchType(_ searchType: HistorySearchType)
   {
@@ -264,7 +264,7 @@ enum HistoryList
   /// Returns the first row containing the given commit message
   static func row(_ message: String) -> XCUIElement
   {
-    list.tableRows
+    list.cells
         .containing(.init(format: "label == '\(message)'"))
         .firstMatch
   }
