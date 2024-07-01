@@ -18,8 +18,6 @@ struct StringCommit: Commit
 
 struct FakeCommit: Commit // same as NullTree
 {
-  typealias ObjectIdentifier = GitOID
-
   var parentOIDs: [GitOID]
   var message: String?
   var authorSig: Signature?
@@ -34,8 +32,6 @@ struct FakeCommit: Commit // same as NullTree
 /// String-based tree for testing and placeholders
 struct StringTree: Tree
 {
-  typealias ObjectIdentifier = GitOID
-  
   var id: GitOID
 
   var count: Int { entries.count }
@@ -47,8 +43,6 @@ struct StringTree: Tree
 
   struct Entry: TreeEntry
   {
-    typealias ObjectIdentifier = GitOID
-
     var id: GitOID { "" }
     var type: GitObjectType { .invalid }
     var name: String { "" }
@@ -58,8 +52,6 @@ struct StringTree: Tree
 
 struct FakeTree: Tree
 {
-  typealias ObjectIdentifier = GitOID
-
   var count: Int { entries.count }
   var id: GitOID
   var entries: [Entry] = []

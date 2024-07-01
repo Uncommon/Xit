@@ -18,12 +18,12 @@ class StringRepository: CommitStorage
   
   func commit(forSHA sha: String) -> StringCommit?
   {
-    return commits.first { $0.id.sha == sha }
+    commits.first { $0.id.sha == sha }
   }
 
   func commit(forOID oid: GitOID) -> StringCommit?
   {
-    return commits.first { $0.id.equals(oid) }
+    commits.first { $0.id == oid }
   }
   
   func commit(message: String, amend: Bool) throws {}
@@ -91,7 +91,7 @@ class CommitHistoryTest: XCTestCase
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {
         guard let parentIndex = history.entries.firstIndex(
-            where: { $0.commit.id.equals(parentOID) })
+            where: { $0.commit.id == parentOID })
         else {
           XCTFail("parent entry not found: \(parentOID)")
           continue

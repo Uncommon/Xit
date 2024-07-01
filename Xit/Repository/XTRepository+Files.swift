@@ -242,7 +242,7 @@ extension XTRepository
       let parentOIDs = commit.parentOIDs
       let parentOID: GitOID? = parentOID == nil
             ? parentOIDs.first
-            : parentOIDs.first { $0.equals(parentOID) }
+            : parentOIDs.first { $0 == parentOID }
       let parentCommit = parentOID.flatMap { self.commit(forOID: $0) }
       
       guard let diff = GitDiff(oldTree: parentCommit?.tree,

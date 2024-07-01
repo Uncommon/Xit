@@ -118,7 +118,7 @@ class XTRepositoryMergeTest: XTTest
       return
     }
 
-    XCTAssertTrue(c1OID.equals(headOID))
+    XCTAssertTrue(c1OID == headOID)
   }
   
   // Fast-forward case. This could also have a ff-only variant.

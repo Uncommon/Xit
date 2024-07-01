@@ -13,12 +13,12 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     var commitColors = [String: NSColor]()
     var lastHue = 120
     
-    init(firstOID: any OID)
+    init(firstOID: GitOID)
     {
       _ = color(for: firstOID)
     }
     
-    func color(for oid: any OID) -> NSColor
+    func color(for oid: GitOID) -> NSColor
     {
       if let color = commitColors[oid.sha] {
         return color
@@ -123,7 +123,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     dateFormatter.dateStyle = .short
     
     for hunk in blame.hunks {
-      let finalOID = hunk.finalLine.oid as! GitOID
+      let finalOID = hunk.finalLine.oid
       var hunkColor = coloring.color(for: finalOID)
       let jumpButton = finalOID == currentOID ? "" : HTML.jumpButton(finalOID.sha)
 

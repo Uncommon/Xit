@@ -30,7 +30,7 @@ public struct TreeLoader
     let result = FileChangeNode(value: FileChange(path: path, oid: tree.id))
 
     if let oldTree = oldTree,
-       oldTree.value.oid?.equals(tree.id) ?? false {
+       oldTree.value.oid == tree.id {
       result.children.append(contentsOf: oldTree.children)
       applyStatus(to: result)
     }

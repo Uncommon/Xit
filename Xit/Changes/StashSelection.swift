@@ -69,7 +69,7 @@ class StashFileList
       assertionFailure("main commit should not be missing")
       return false
     }
-    return mainCommit.id.equals(otherCommit.id)
+    return mainCommit.id == otherCommit.id
   }
 }
 

@@ -13,7 +13,7 @@ extension Font
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
   weak var repository: (any CommitStorage)?
-  var selectParent: ((any OID) -> Void)?
+  var selectParent: ((GitOID) -> Void)?
   
   var commit: (any Commit)?
   {

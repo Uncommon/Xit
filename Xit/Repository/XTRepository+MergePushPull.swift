@@ -272,7 +272,7 @@ extension XTRepository: Merging
             let remoteCommit = branch.targetCommit as? GitCommit
       else { throw RepoError.unexpected }
       
-      if targetCommit.id.equals(remoteCommit.id) {
+      if targetCommit.id == remoteCommit.id {
         return
       }
       
