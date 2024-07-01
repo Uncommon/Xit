@@ -15,14 +15,6 @@ public protocol Stash: AnyObject
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
 }
 
-extension Stash
-{
-  var anyMainCommit: (any Xit.Commit)? { mainCommit as (any Xit.Commit)? }
-  var anyIndexCommit: (any Xit.Commit)? { indexCommit as (any Xit.Commit)? }
-  var anyUntrackedCommit: (any Xit.Commit)?
-  { untrackedCommit as (any Xit.Commit)? }
-}
-
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
