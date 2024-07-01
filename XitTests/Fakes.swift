@@ -115,10 +115,10 @@ class FakeLocalBranch: LocalBranch
   var oid: GitOID?
   var targetCommit: (any Commit)?
   
-  init(name: String)
+  init(name: String, oid: GitOID = .random())
   {
     self.name = RefPrefixes.heads +/ name
-    self.oid = GitOID.random()
+    self.oid = oid
   }
 }
 
@@ -131,11 +131,11 @@ class FakeRemoteBranch: RemoteBranch
   var oid: GitOID?
   var targetCommit: (any Commit)?
   
-  init(remoteName: String, name: String)
+  init(remoteName: String, name: String, oid: GitOID = .random())
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name
     self.remoteName = remoteName
-    self.oid = GitOID.random()
+    self.oid = oid
   }
 }
 

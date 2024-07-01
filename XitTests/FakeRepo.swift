@@ -3,10 +3,10 @@ import Foundation
 
 class FakeRepo: FakeFileChangesRepo
 {
-  let localBranch1 = FakeLocalBranch(name: "branch1")
-  let localBranch2 = FakeLocalBranch(name: "branch2")
-  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1")
-  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2")
+  let localBranch1 = FakeLocalBranch(name: "branch1", oid: "a")
+  let localBranch2 = FakeLocalBranch(name: "branch2", oid: "b")
+  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1", oid: "c")
+  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2", oid: "d")
   
   let remote1 = FakeRemote()
   let remote2 = FakeRemote()
