@@ -78,7 +78,7 @@ class ReadOnlyUITests: XCTestCase
     let sha = "a4bca6b67a5483169963572ee3da563da33712f7"
     let shaPrefix = String(sha.prefix(6))
     
-    CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
+    CommitHeader.assertDisplay(date: "Jan 10, 2013 at 7:11 AM",
                                sha: shaPrefix,
                                name: "Danny Greg",
                                email: "<danny@github.com>",
@@ -95,7 +95,7 @@ class ReadOnlyUITests: XCTestCase
     let sha = "d603d61ea756eb881ba440b3e66b561d070aec6e"
     let shaPrefix = String(sha.prefix(6))
     
-    CommitHeader.assertDisplay(date: "Feb 16, 2012 at 12:10 PM",
+    CommitHeader.assertDisplay(date: "Feb 16, 2012 at 12:10 PM",
                                sha: shaPrefix,
                                name: "joshaber",
                                email: "<joshaber@gmail.com>",
@@ -147,7 +147,7 @@ class ReadOnlyUITests: XCTestCase
   /// Copies the SHA of the clicked commit
   func testHistoryCopySHA()
   {
-    HistoryList.row(1).rightClick()
+    HistoryList.row(2).rightClick()
     HistoryList.ContextMenu.copySHAItem.click()
     
     let pasteboard = NSPasteboard.general
@@ -163,13 +163,13 @@ class ReadOnlyUITests: XCTestCase
     
     XCTContext.runActivity(named: "Disabled for current commit") { _ in
       // For some reason row 0 is not hittable, but its cell is
-      HistoryList.row(0).children(matching: .cell).element(boundBy: 0).rightClick()
+      HistoryList.row(1).children(matching: .cell).element(boundBy: 0).rightClick()
       XCTAssertFalse(resetItem.isEnabled)
       XitApp.typeKey(.escape, modifierFlags: [])
     }
     
     XCTContext.runActivity(named: "Enabled for other commit") { _ in
-      HistoryList.row(1).rightClick()
+      HistoryList.row(2).rightClick()
       XCTAssertTrue(resetItem.isEnabled)
       XitApp.typeKey(.escape, modifierFlags: [])
     }
@@ -342,7 +342,7 @@ class ReadOnlyUITests: XCTestCase
       Search.clearButton.click()
       Search.field.typeText("93f5")
       Search.field.typeKey(.return, modifierFlags: [])
-      XCTAssert(HistoryList.row(4).isSelected)
+      XCTAssert(HistoryList.row(5).isSelected)
     }
     XCTContext.runActivity(named: "Search by author") {
       _ in
@@ -350,7 +350,7 @@ class ReadOnlyUITests: XCTestCase
       Search.clearButton.click()
       Search.field.typeText("Danny")
       Search.searchUp.click()
-      XCTAssert(HistoryList.row(1).isSelected)
+      XCTAssert(HistoryList.row(2).isSelected)
     }
   }
 }

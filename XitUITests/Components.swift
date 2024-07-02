@@ -55,7 +55,7 @@ enum PrefsWindow
     let menuBar = XitApp.menuBars
     
     menuBar.menuBarItems["Xit"].click()
-    menuBar.menuItems["Preferences…"].click()
+    menuBar.menuItems["Settings…"].click()
     XCTAssertTrue(window.waitForExistence(timeout: 1.0),
                   "Preferences window did not open", file: file, line: line)
   }
