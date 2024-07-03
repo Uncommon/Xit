@@ -70,7 +70,7 @@ extension XTRepository: Workspace
   public func checkOut(refName: String) throws
   {
     guard let ref = reference(named: refName),
-          let oid = ref.targetOID as? GitOID
+          let oid = ref.targetOID
     else { throw RepoError.notFound }
     
     let target = try OpaquePointer.from {

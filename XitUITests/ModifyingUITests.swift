@@ -65,7 +65,9 @@ class ModifyingUITests: XCTestCase
     Sidebar.list.staticTexts[oldBranchName].rightClick()
     XitApp.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
-    XCTAssertTrue(Sidebar.list.staticTexts[newBranchName].exists)
+
+    XCTAssertTrue(Sidebar.list.staticTexts[newBranchName]
+        .waitForExistence(timeout: 1.0))
 
     let branches = env.git.branches()
     

@@ -21,7 +21,7 @@ class FakeRepoUIController: RepositoryUIController
     self.repository = repository
   }
   
-  func select(oid: any OID) {}
+  func select(oid: GitOID) {}
   func reselect() {}
   func showErrorMessage(error: RepoError) {}
   func updateForFocus() {}

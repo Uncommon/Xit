@@ -1,9 +1,8 @@
 import Cocoa
 
-public protocol Stash<ID>: AnyObject
+public protocol Stash: AnyObject
 {
-  associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
   var message: String? { get }
   var mainCommit: Commit? { get }
@@ -16,18 +15,10 @@ public protocol Stash<ID>: AnyObject
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
 }
 
-extension Stash
-{
-  var anyMainCommit: (any Xit.Commit)? { mainCommit as (any Xit.Commit)? }
-  var anyIndexCommit: (any Xit.Commit)? { indexCommit as (any Xit.Commit)? }
-  var anyUntrackedCommit: (any Xit.Commit)?
-  { untrackedCommit as (any Xit.Commit)? }
-}
-
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
-  typealias Repo = CommitStorage<GitOID> & FileContents & FileStatusDetection &
+  typealias Repo = CommitStorage & FileContents & FileStatusDetection &
                    Stashing
   public typealias ID = GitOID
   
@@ -46,10 +37,10 @@ public final class GitStash: Stash
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
         // Should be able to use repo.commit() directly...
-        self.indexCommit = repo.anyCommit(forOID: mainCommit.parentOIDs[1])
+        self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
           as? GitCommit
         if mainCommit.parentOIDs.count > 2 {
-          self.untrackedCommit = repo.anyCommit(forOID: mainCommit.parentOIDs[2])
+          self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
             as? GitCommit
         }
       }

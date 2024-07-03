@@ -11,7 +11,7 @@ protocol RepositoryUIController: AnyObject
   var reselectPublisher: AnyPublisher<Void, Never> { get }
   var isAmending: Bool { get set }
 
-  func select(oid: any OID)
+  func select(oid: GitOID)
   func reselect()
   func updateForFocus()
   func showErrorMessage(error: RepoError)
@@ -206,11 +206,10 @@ final class XTWindowController: NSWindowController,
     updateNavButtons()
   }
   
-  func select(oid: any OID)
+  func select(oid: GitOID)
   {
     guard let repo = repoDocument?.repository,
-          let gitOID = oid as? GitOID,
-          let commit = repo.commit(forOID: gitOID)
+          let commit = repo.commit(forOID: oid)
     else { return }
   
     selection = CommitSelection(repository: repo, commit: commit)

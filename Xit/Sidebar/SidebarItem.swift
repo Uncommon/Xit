@@ -93,7 +93,7 @@ class SidebarItem: NSObject
     else { return false }
     
     return displayTitle == otherItem.displayTitle &&
-           selection?.oidToSelect == otherItem.selection?.oidToSelect
+           selection?.target == otherItem.selection?.target
   }
 }
 
@@ -374,22 +374,14 @@ final class TagSidebarItem: SidebarItem
   required init(title: String)
   {
     assertionFailure("This initializer shouldn't be used.")
-    self.tag = MockTag()
+    self.tag = FakeTag(name: "",
+                       signature: .init(
+                          name: "Mock",
+                          email: "mock@example.com",
+                          when: .init()),
+                       targetOID: nil, commit: nil, message: nil,
+                       type: .annotated, isSigned: false)
     super.init(title: title)
-  }
-
-  internal struct MockTag: Tag
-  {
-    let name = ""
-    let signature: Signature? = .init(
-      name: "Mock",
-      email: "mock@example.com",
-      when: .init())
-    let targetOID: StringOID? = nil
-    let commit: StringCommit? = nil
-    let message: String? = nil
-    let type: TagType = .annotated
-    let isSigned: Bool = false
   }
 }
 

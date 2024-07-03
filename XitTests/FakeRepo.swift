@@ -3,17 +3,17 @@ import Foundation
 
 class FakeRepo: FakeFileChangesRepo
 {
-  let localBranch1 = FakeLocalBranch(name: "branch1")
-  let localBranch2 = FakeLocalBranch(name: "branch2")
-  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1")
-  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2")
+  let localBranch1 = FakeLocalBranch(name: "branch1", oid: "a")
+  let localBranch2 = FakeLocalBranch(name: "branch2", oid: "b")
+  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1", oid: "c")
+  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2", oid: "d")
   
   let remote1 = FakeRemote()
   let remote2 = FakeRemote()
   
   var isWriting: Bool { return false }
   
-  var commits: [StringOID: StringCommit] = [:]
+  var commits: [GitOID: FakeCommit] = [:]
 
   override init()
   {
@@ -28,10 +28,10 @@ class FakeRepo: FakeFileChangesRepo
     
     super.init()
     
-    let commit1 = StringCommit(branchHead: localBranch1)
-    let commit2 = StringCommit(branchHead: localBranch2)
-    let commitR1 = StringCommit(branchHead: remoteBranch1)
-    let commitR2 = StringCommit(branchHead: remoteBranch2)
+    let commit1 = FakeCommit(branchHead: localBranch1)
+    let commit2 = FakeCommit(branchHead: localBranch2)
+    let commitR1 = FakeCommit(branchHead: remoteBranch1)
+    let commitR2 = FakeCommit(branchHead: remoteBranch2)
 
     commits[commit1.id] = commit1
     commits[commit2.id] = commit2
@@ -75,14 +75,14 @@ extension FakeRepo: EmptyBranching
 
 extension FakeRepo: EmptyCommitStorage
 {
-  typealias ID = StringOID
-  typealias Commit = StringCommit
+  typealias ID = GitOID
+  typealias Commit = FakeCommit
 
-  func oid(forSHA sha: String) -> ID? { .init(rawValue: sha) }
-  
+  func oid(forSHA sha: String) -> ID? { .init(sha: sha) }
+
   func commit(forSHA sha: String) -> Commit?
   {
-    commits[StringOID(rawValue: sha)]
+    GitOID(sha: sha).flatMap { commits[$0] }
   }
   
   func commit(forOID oid: ID) -> Commit?

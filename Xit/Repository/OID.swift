@@ -1,59 +1,6 @@
 import Foundation
 
-public protocol OID: CustomDebugStringConvertible, Hashable, Sendable
-{
-  var sha: String { get }
-  var isZero: Bool { get }
-  
-  /// This is a workaround for the compiler being too eager to use
-  /// `== (a: (any OID)?, b: (any OID)?)` when a more specific (and more
-  /// efficient) version is available.
-  func equalsSame(_ other: Self) -> Bool
-}
-
-extension OID // CustomDebugStringConvertible
-{
-  public var debugDescription: String { sha }
-}
-
-extension OID
-{
-  public func hash(into hasher: inout Hasher)
-  {
-    sha.hash(into: &hasher)
-  }
-
-  /// For use when it isn't statically known that two OID values are the same type
-  public func equals(_ other: (any OID)?) -> Bool
-  {
-    return sha == other?.sha
-  }
-  
-  public func equalsSame(_ other: Self) -> Bool
-  {
-    return sha == other.sha
-  }
-}
-
-func == (a: (any OID)?, b: (any OID)?) -> Bool
-{
-  switch (a, b) {
-    case (nil, nil):
-      return true
-    case (.some, .none), (.none, .some):
-      return false
-    case let (.some(a), .some(b)):
-      return a.equals(b)
-  }
-}
-
-func != (a: (any OID)?, b: (any OID)?) -> Bool
-{
-  return !(a == b)
-}
-
-
-public protocol OIDObject: Hashable, Identifiable where ID: OID
+public protocol OIDObject: Hashable, Identifiable where ID == GitOID
 {
 }
 
@@ -70,7 +17,7 @@ extension OIDObject // Equatable
 }
 
 
-public struct GitOID: OID
+public struct GitOID: Sendable
 {
   var oid: git_oid
   
@@ -159,7 +106,7 @@ extension GitOID: Hashable
 {
   public func hash(into hasher: inout Hasher)
   {
-    withUnsafeBytes(of: oid) { buffer in
+    withUnsafeBytes(of: oid.id) { buffer in
       hasher.combine(bytes: buffer)
     }
   }
@@ -168,6 +115,11 @@ extension GitOID: Hashable
 extension GitOID: CustomStringConvertible
 {
   public var description: String { sha }
+}
+
+extension GitOID: CustomDebugStringConvertible
+{
+  public var debugDescription: String { .init(sha.drop(while: { $0 == "0" })) }
 }
 
 let oidSize = 20

@@ -69,7 +69,7 @@ class XTFileChangesModelTest: XTTest
     
     let model = StashSelection(repository: repository, index: 0)
     
-    XCTAssertEqual(model.oidToSelect?.sha, repository.headSHA)
+    XCTAssertEqual(model.target.oid?.sha, repository.headSHA)
     
     let changes = model.fileList.changes
     let unstagedChanges = model.unstagedFileList.changes

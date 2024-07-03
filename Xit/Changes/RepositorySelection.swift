@@ -5,12 +5,27 @@ typealias FileChangesRepo =
     BasicRepository & CommitReferencing & FileDiffing & FileContents &
     FileStaging & FileStatusDetection
 
+enum SelectionTarget: Equatable
+{
+  case oid(GitOID)
+  case staging
+  case none
+
+  var oid: GitOID?
+  {
+    switch self {
+      case .oid(let oid): oid
+      default: nil
+    }
+  }
+}
+
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
 protocol RepositorySelection: AnyObject
 {
   var repository: any FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
-  var oidToSelect: (any OID)? { get }
+  var target: SelectionTarget { get }
   /// Is this used to stage and commit files? Differentiates between staging
   /// and stash changes, which both have unstaged lists.
   var canCommit: Bool { get }
@@ -56,7 +71,7 @@ extension RepositorySelection
     }
 
     return type(of: self) == type(of: other) &&
-           oidToSelect == other.oidToSelect
+           target == other.target
   }
 }
 

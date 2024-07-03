@@ -2,9 +2,7 @@ import Foundation
 
 protocol ObjectDatabase
 {
-  associatedtype ID: OID
-
-  subscript(oid: ID) -> ODBObject? { get }
+  subscript(oid: GitOID) -> ODBObject? { get }
 }
 
 protocol ODBObject

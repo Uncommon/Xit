@@ -7,7 +7,9 @@ final class StashSelection: StagedUnstagedSelection
   unowned var repository: any FileChangesRepo
   let stash: any Stash
   var canCommit: Bool { false }
-  var oidToSelect: (any OID)? { stash.anyMainCommit?.parentOIDs.first }
+  var target: SelectionTarget {
+    stash.mainCommit?.parentOIDs.first.map { .oid($0) } ?? .none
+  }
   var fileList: any FileListModel { stagedList }
   var unstagedFileList: any FileListModel { unstagedList }
   var amending: Bool { false }
@@ -45,7 +47,7 @@ class StashFileList
   {
     self.repository = selection.repository
     self.stash = selection.stash
-    if let mainCommit = selection.stash.anyMainCommit {
+    if let mainCommit = selection.stash.mainCommit {
       self.mainSelection = CommitSelection(repository: selection.repository,
                                            commit: mainCommit)
       self.mainList = CommitFileList(repository: selection.repository,
@@ -61,13 +63,13 @@ class StashFileList
   {
     guard let other = other as? StashFileList
     else { return false }
-    guard let mainCommit = stash.anyMainCommit,
-          let otherCommit = other.stash.anyMainCommit
+    guard let mainCommit = stash.mainCommit,
+          let otherCommit = other.stash.mainCommit
     else {
       assertionFailure("main commit should not be missing")
       return false
     }
-    return mainCommit.id.equals(otherCommit.id)
+    return mainCommit.id == otherCommit.id
   }
 }
 
@@ -79,14 +81,14 @@ class StashStagedList: StashFileList, FileListModel
   
   var changes: [FileChange]
   {
-    stash.anyIndexCommit.map {
+    stash.indexCommit.map {
       repository.changes(for: $0.id, parent: nil)
     } ?? []
   }
 
   override init(selection: StashSelection)
   {
-    self.indexSelection = selection.stash.anyIndexCommit.map {
+    self.indexSelection = selection.stash.indexCommit.map {
         CommitSelection(repository: selection.repository, commit: $0) }
     self.indexList = indexSelection.map {
         CommitFileList(repository: $0.repository, commit: $0.commit) }
@@ -106,7 +108,7 @@ class StashStagedList: StashFileList, FileListModel
   
   func dataForFile(_ path: String) -> Data?
   {
-    guard let indexCommit = stash.anyIndexCommit
+    guard let indexCommit = stash.indexCommit
     else { return nil }
     
     return repository.contentsOfFile(path: path, at: indexCommit)
@@ -114,7 +116,7 @@ class StashStagedList: StashFileList, FileListModel
 
   func blame(for path: String) -> (any Blame)?
   {
-    guard let indexCommit = stash.anyIndexCommit
+    guard let indexCommit = stash.indexCommit
     else { return nil }
     
     return repository.blame(for: path, from: indexCommit.id, to: nil)
@@ -136,7 +138,7 @@ final class StashUnstagedList: StashFileList, FileListModel
   
   override init(selection: StashSelection)
   {
-    self.untrackedSelection = selection.stash.anyUntrackedCommit.map {
+    self.untrackedSelection = selection.stash.untrackedCommit.map {
         CommitSelection(repository: selection.repository, commit: $0) }
     self.untrackedList = untrackedSelection.map {
         CommitFileList(repository: $0.repository, commit: $0.commit) }
@@ -182,13 +184,13 @@ final class StashUnstagedList: StashFileList, FileListModel
 
   func dataForFile(_ path: String) -> Data?
   {
-    if let untrackedCommit = stash.anyUntrackedCommit,
+    if let untrackedCommit = stash.untrackedCommit,
        let untrackedData = repository.contentsOfFile(path: path,
                                                      at: untrackedCommit) {
       return untrackedData
     }
     else {
-      guard let commit = stash.anyMainCommit
+      guard let commit = stash.mainCommit
       else { return nil }
       
       return repository.contentsOfFile(path: path, at: commit)

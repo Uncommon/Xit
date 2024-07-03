@@ -6,7 +6,7 @@ final class CommitSelection: RepositorySelection
 {
   unowned var repository: any FileChangesRepo
   let commit: any Commit
-  var oidToSelect: (any OID)? { commit.id }
+  var target: SelectionTarget { .oid(commit.id) }
   var canCommit: Bool { false }
   var fileList: any FileListModel { commitFileList }
   
@@ -35,11 +35,11 @@ final class CommitFileList: FileListModel
                               parent: self.commit.parentOIDs.first)
   
   let commit: any Commit
-  let diffParent: (any OID)?
-  
+  let diffParent: GitOID?
+
   init(repository: any FileChangesRepo,
        commit: any Commit,
-       diffParent: (any OID)? = nil)
+       diffParent: GitOID? = nil)
   {
     self.repository = repository
     self.commit = commit

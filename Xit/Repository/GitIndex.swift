@@ -68,7 +68,7 @@ struct EntryCollection<Index>: RandomAccessCollection where Index: StagingIndex
 /// An individual file entry in an index.
 public protocol IndexEntry
 {
-  var oid: any OID { get }
+  var oid: GitOID { get }
   var path: String { get }
   var conflicted: Bool { get }
 }
@@ -207,7 +207,7 @@ extension GitIndex
   {
     let gitEntry: git_index_entry
     
-    var oid: any OID { GitOID(oid: gitEntry.id) }
+    var oid: GitOID { GitOID(oid: gitEntry.id) }
     var path: String { String(cString: gitEntry.path) }
     
     var conflicted: Bool

@@ -53,7 +53,7 @@ class SidebarDataSourceTest: XTTest
               as! SidebarItem
     let expandable = sbds.outlineView(outline, isItemExpandable: tag)
     
-    XCTAssertNotNil(tag.selection?.oidToSelect)
+    XCTAssertNotNil(tag.selection?.target.oid)
     XCTAssertFalse(expandable)
   }
   
@@ -77,7 +77,7 @@ class SidebarDataSourceTest: XTTest
                    as! SidebarItem
       let expandable = sbds.outlineView(outline, isItemExpandable: branch)
       
-      XCTAssertNotNil(branch.selection?.oidToSelect)
+      XCTAssertNotNil(branch.selection?.target)
       XCTAssertFalse(expandable)
     }
   }

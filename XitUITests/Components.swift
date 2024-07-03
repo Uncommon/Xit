@@ -25,8 +25,8 @@ enum Search
   static let field = Window.window.searchFields[.Search.field]
   static let clearButton = field.buttons["cancel"]
   // No idea where these IDs come from but that's what they are
-  static let searchUp = Window.window.buttons["go up"]
-  static let searchDown = Window.window.buttons["go down"]
+  static let searchUp = Window.window.buttons["searchUp"]
+  static let searchDown = Window.window.buttons["searchDown"]
 
   static func setSearchType(_ searchType: HistorySearchType)
   {
@@ -55,7 +55,7 @@ enum PrefsWindow
     let menuBar = XitApp.menuBars
     
     menuBar.menuBarItems["Xit"].click()
-    menuBar.menuItems["Preferences…"].click()
+    menuBar.menuItems["Settings…"].click()
     XCTAssertTrue(window.waitForExistence(timeout: 1.0),
                   "Preferences window did not open", file: file, line: line)
   }
@@ -264,8 +264,8 @@ enum HistoryList
   /// Returns the first row containing the given commit message
   static func row(_ message: String) -> XCUIElement
   {
-    list.tableRows
-        .containing(.init(format: "label == '\(message)'"))
+    list.cells
+        .containing(.init(format: "value == '\(message)'"))
         .firstMatch
   }
   

@@ -1,15 +1,16 @@
 import Foundation
+import Combine
 import Siesta
 @testable import Xit
 
-extension StringCommit
+extension FakeCommit
 {
   init(branchHead branch: any Branch)
   {
     self.init(parentOIDs: [],
               message: branch.shortName,
               isSigned: false,
-              id: .init(rawValue: branch.oid!.sha))
+              id: branch.oid!)
   }
 }
 
@@ -57,13 +58,11 @@ struct FakeRefSpec: RefSpec
 
 class FakeStash: Stash
 {
-  typealias ID = StringOID
-  
   var message: String? = nil
-  var mainCommit: StringCommit? = nil
-  var indexCommit: StringCommit? = nil
-  var untrackedCommit: StringCommit? = nil
-  
+  var mainCommit: FakeCommit? = nil
+  var indexCommit: FakeCommit? = nil
+  var untrackedCommit: FakeCommit? = nil
+
   func indexChanges() -> [FileChange] { [] }
   func workspaceChanges() -> [FileChange] { [] }
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
@@ -113,13 +112,13 @@ class FakeLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)?
   var name: String
   var shortName: String { strippedName }
-  var oid: (any OID)?
+  var oid: GitOID?
   var targetCommit: (any Commit)?
   
-  init(name: String)
+  init(name: String, oid: GitOID = .random())
   {
     self.name = RefPrefixes.heads +/ name
-    self.oid = StringOID(rawValue: UUID().uuidString)
+    self.oid = oid
   }
 }
 
@@ -129,26 +128,31 @@ class FakeRemoteBranch: RemoteBranch
   var name: String
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
-  var oid: (any OID)?
+  var oid: GitOID?
   var targetCommit: (any Commit)?
   
-  init(remoteName: String, name: String)
+  init(remoteName: String, name: String, oid: GitOID = .random())
   {
     self.name = RefPrefixes.remotes +/ remoteName +/ name
     self.remoteName = remoteName
-    self.oid = StringOID(rawValue: UUID().uuidString)
+    self.oid = oid
   }
 }
 
 class FakeRepoController: RepositoryController
 {
   var repository: BasicRepository
-
   var queue: TaskQueue = TaskQueue(id: "testing")
-
   var cache: RepositoryCache = .init()
 
-  func invalidateIndex() {}
+  var configPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var headPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var indexPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var refLogPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var refsPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var stashPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
+  var progressPublisher: AnyPublisher<ProgressValue, Never> { Empty().eraseToAnyPublisher() }
+  var workspacePublisher: AnyPublisher<[String], Never> { Empty().eraseToAnyPublisher() }
 
   init(repository: FakeRepo)
   {
@@ -156,12 +160,16 @@ class FakeRepoController: RepositoryController
     repository.controller = self
   }
 
+  func invalidateIndex() {}
   func waitForQueue() {}
+
+  func post(progress: Float, total: Float) {}
+  func indexChanged() {}
+  func refsChanged() {}
 }
 
 class FakeFileChangesRepo: FileChangesRepo
 {
-  typealias ID = StringOID
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
@@ -181,13 +189,13 @@ class FakeFileChangesRepo: FileChangesRepo
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: ID) -> [String] { [] }
+  func refs(at oid: GitOID) -> [String] { [] }
   func allRefs() -> [String] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
-                    updatingReference refName: String) throws -> ID
-  { §"" }
-  func oid(forRef: String) -> ID? { nil }
+                    updatingReference refName: String) throws -> GitOID
+  { .zero() }
+  func oid(forRef: String) -> GitOID? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
   
@@ -198,16 +206,16 @@ class FakeFileChangesRepo: FileChangesRepo
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   
-  func diffMaker(forFile file: String, commitOID: any OID, parentOID: (any OID)?)
+  func diffMaker(forFile file: String, commitOID: GitOID, parentOID: GitOID?)
     -> PatchMaker.PatchResult?
   { nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
   
-  func blame(for path: String, from startOID: (any OID)?, to endOID: (any OID)?) -> (any Blame)?
+  func blame(for path: String, from startOID: GitOID?, to endOID: GitOID?) -> (any Blame)?
   { nil }
-  func blame(for path: String, data fromData: Data?, to endOID: (any OID)?) -> (any Blame)?
+  func blame(for path: String, data fromData: Data?, to endOID: GitOID?) -> (any Blame)?
   { nil }
   
   var index: (any StagingIndex)? { nil }
@@ -223,7 +231,7 @@ class FakeFileChangesRepo: FileChangesRepo
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   { (.unmodified, .unmodified) }
 
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
   { [] }
   func stagedChanges() -> [FileChange] { [] }
   func unstagedChanges(showIgnored: Bool,

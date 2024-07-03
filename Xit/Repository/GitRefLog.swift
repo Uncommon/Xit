@@ -2,8 +2,7 @@ import Foundation
 
 protocol RefLog
 {
-  associatedtype ID: OID
-  associatedtype Entry: RefLogEntry<ID>
+  associatedtype Entry: RefLogEntry
 
   var entryCount: Int { get }
   
@@ -11,7 +10,7 @@ protocol RefLog
   func dropEntry(atIndex index: Int, rewrite: Bool) throws
   
   func write() throws
-  func append(oid: ID, committer: Signature, message: String) throws
+  func append(oid: GitOID, committer: Signature, message: String) throws
 }
 
 extension RefLog
@@ -20,12 +19,10 @@ extension RefLog
   { .init(refLog: self) }
 }
 
-protocol RefLogEntry<ID>
+protocol RefLogEntry
 {
-  associatedtype ID: OID
-
-  var oldOID: ID { get }
-  var newOID: ID { get }
+  var oldOID: GitOID { get }
+  var newOID: GitOID { get }
   var committer: Signature { get }
   var message: String { get }
 }

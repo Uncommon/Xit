@@ -61,7 +61,7 @@ class BlameTest: XTTest
     XCTAssertEqual(commitBlame.hunks.count, 4)
     XCTAssertEqual(commitBlame.hunks.map { $0.finalLine.start }, lineStarts)
     XCTAssertEqual(commitBlame.hunks.map { $0.lineCount }, lineCounts)
-    XCTAssertEqual(commitBlame.hunks[2].finalLine.oid as! GitOID, headOID)
+    XCTAssertEqual(commitBlame.hunks[2].finalLine.oid, headOID)
   }
   
   func testStagingBlame() throws

@@ -42,7 +42,7 @@ class NullLocalBranch: LocalBranch
   var trackingBranch: (any RemoteBranch)? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
-  var oid: (any OID)? { nil }
+  var oid: GitOID? { nil }
   var targetCommit: (any Commit)? { nil }
 }
 
@@ -50,7 +50,7 @@ class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
   var shortName: String { "origin/branch" }
-  var oid: (any OID)? { nil }
+  var oid: GitOID? { nil }
   var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }
@@ -59,23 +59,23 @@ protocol EmptyCommitStorage: CommitStorage {}
 
 extension EmptyCommitStorage
 {
-  func oid(forSHA sha: String) -> ID?  { nil }
+  func oid(forSHA sha: String) -> GitOID?  { nil }
   func commit(forSHA sha: String) -> Commit? { nil }
-  func commit(forOID oid: ID) -> Commit? { nil }
+  func commit(forOID oid: GitOID) -> Commit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
-  func walker() -> (any RevWalk<ID>)? { nil }
+  func walker() -> (any RevWalk)? { nil }
 }
 
-protocol EmptyCommitReferencing: CommitReferencing where ID == StringOID {}
+protocol EmptyCommitReferencing: CommitReferencing {}
 
 extension EmptyCommitReferencing
 {
   var headRef: String? { nil }
   var currentBranch: String? { nil }
 
-  func oid(forRef: String) -> StringOID? { nil }
+  func oid(forRef: String) -> GitOID? { nil }
   func sha(forRef: String) -> String? { nil }
   func tags() throws -> [NullTag] { [] }
   func graphBetween(localBranch: any LocalBranch,
@@ -88,7 +88,7 @@ extension EmptyCommitReferencing
   { nil }
 
   func reference(named name: String) -> (any Reference)? { nil }
-  func refs(at oid: StringOID) -> [String] { [] }
+  func refs(at oid: GitOID) -> [String] { [] }
   func allRefs() -> [String] { [] }
 
   func rebuildRefsIndex() {}
@@ -96,17 +96,17 @@ extension EmptyCommitReferencing
   func createCommit(with tree: Tree,
                     message: String,
                     parents: [NullCommit],
-                    updatingReference refName: String) throws -> StringOID
+                    updatingReference refName: String) throws -> GitOID
   { §"" }
 }
 
 class NullCommit: Commit
 {
-  typealias ObjectIdentifier = StringOID
+  typealias ObjectIdentifier = GitOID
   typealias Tree = NullTree
 
-  var id:  StringOID { §"" }
-  var parentOIDs: [StringOID] { [] }
+  var id:  GitOID { §"" }
+  var parentOIDs: [GitOID] { [] }
   var message: String? { nil }
   var authorSig: Signature? { nil }
   var committerSig: Signature? { nil }
@@ -118,19 +118,19 @@ class NullCommit: Commit
 
 class NullTree: Tree
 {
-  typealias ObjectIdentifier = StringOID
+  typealias ObjectIdentifier = GitOID
 
   struct Entry: TreeEntry
   {
-    typealias ObjectIdentifier = StringOID
+    typealias ObjectIdentifier = GitOID
 
-    var id: StringOID { §"" }
+    var id: GitOID { §"" }
     var type: GitObjectType { .invalid }
     var name: String { "" }
     var object: (any OIDObject)? { nil }
   }
 
-  var id: StringOID { §"" }
+  var id: GitOID { .zero() }
   var count: Int { 0 }
 
   func entry(named: String) -> Entry? { nil }
@@ -142,7 +142,7 @@ class NullTag: Tag
 {
   var name: String = ""
   let signature: Signature? = nil
-  let targetOID: StringOID? = nil
+  let targetOID: GitOID? = nil
   let commit: NullCommit? = nil
   let message: String? = nil
   let type: TagType = .annotated
@@ -153,7 +153,7 @@ protocol EmptyFileStatusDetection: FileStatusDetection {}
 
 extension EmptyFileStatusDetection
 {
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
   { [] }
 
   func stagedChanges() -> [FileChange] { [] }
@@ -179,18 +179,18 @@ protocol EmptyFileDiffing: FileDiffing {}
 extension EmptyFileDiffing
 {
   func diffMaker(forFile file: String,
-                 commitOID: any OID,
-                 parentOID: (any OID)?) -> PatchMaker.PatchResult? { nil }
+                 commitOID: GitOID,
+                 parentOID: GitOID?) -> PatchMaker.PatchResult? { nil }
   func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
 
   func blame(for path: String,
-             from startOID: (any OID)?,
-             to endOID: (any OID)?) -> (any Blame)? { nil }
+             from startOID: GitOID?,
+             to endOID: GitOID?) -> (any Blame)? { nil }
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: (any OID)?) -> (any Blame)? { nil }
+             to endOID: GitOID?) -> (any Blame)? { nil }
 }
 
 protocol EmptyFileContents: FileContents {}
@@ -256,10 +256,7 @@ extension EmptyStash
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
 }
 
-class NullStash: EmptyStash
-{
-  typealias ID = StringOID
-}
+class NullStash: EmptyStash {}
 
 protocol EmptyRemoteManagement: RemoteManagement {}
 
@@ -288,8 +285,8 @@ protocol EmptyTagging: Tagging {}
 
 extension EmptyTagging
 {
-  func createTag(name: String, targetOID: any OID, message: String?) throws {}
-  func createLightweightTag(name: String, targetOID: any OID) throws {}
+  func createTag(name: String, targetOID: GitOID, message: String?) throws {}
+  func createLightweightTag(name: String, targetOID: GitOID) throws {}
   func deleteTag(name: String) throws {}
 }
 

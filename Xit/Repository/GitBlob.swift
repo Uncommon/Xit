@@ -17,10 +17,9 @@ public final class GitBlob
     self.blob = blob
   }
   
-  init?(repository: OpaquePointer, oid: any OID)
+  init?(repository: OpaquePointer, oid: GitOID)
   {
-    guard let oid = oid as? GitOID,
-          let blob = try? OpaquePointer.from({
+    guard let blob = try? OpaquePointer.from({
       (blob) in
       oid.withUnsafeOID { git_blob_lookup(&blob, repository, $0) }
     })

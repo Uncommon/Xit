@@ -1,14 +1,13 @@
 import Cocoa
 
-public protocol Tag<ID>
+public protocol Tag
 {
-  associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
   /// Tag name (without "refs/tags/")
   var name: String { get }
   var signature: Signature? { get }
-  var targetOID: ID? { get }
+  var targetOID: GitOID? { get }
   var commit: Commit? { get }
   /// Tag message; will be nil for lightweight tags.
   var message: String? { get }

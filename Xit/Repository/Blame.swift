@@ -9,7 +9,7 @@ public struct BlameHunk: Sendable
 {
   struct LineInfo: Sendable
   {
-    let oid: any OID // OIDs are zero for local changes
+    let oid: GitOID // OIDs are zero for local changes
     let start: Int
     let signature: Signature
   }
@@ -30,6 +30,7 @@ public struct BlameHunk: Sendable
   }
 }
 
+// TODO: Make this Sendable because `hunks` is never changed after init
 /// Blame data from the git command line because libgit2 is slow
 public final class GitBlame: Blame
 {
@@ -51,7 +52,7 @@ public final class GitBlame: Blame
         else { continue }
         
         if var last = hunks.last,
-           oid == (last.originalLine.oid as? GitOID) {
+           oid == last.originalLine.oid {
           last.lineCount += 1
           hunks[hunks.index(before: hunks.endIndex)] = last
         }
@@ -100,7 +101,7 @@ public final class GitBlame: Blame
   }
   
   init?(repository: XTRepository, path: String,
-        from startOID: (any OID)?, to endOID: (any OID)?)
+        from startOID: GitOID?, to endOID: GitOID?)
   {
     var args = ["blame", "-p", path]
     
@@ -114,7 +115,7 @@ public final class GitBlame: Blame
   }
   
   init?(repository: XTRepository, path: String,
-        data: Data, to endOID: (any OID)?)
+        data: Data, to endOID: GitOID?)
   {
     let args = ["blame", "-p", "--contents", "-", path]
     

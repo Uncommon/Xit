@@ -265,16 +265,16 @@ extension GitRemote
 public struct RemoteHead
 {
   let local: Bool
-  let oid: any OID
-  let localOID: any OID
+  let oid: GitOID
+  let localOID: GitOID
   let name: String
   let symrefTarget: String
   
   init(_ head: git_remote_head)
   {
     self.local = head.local == 0 ? false : true
-    self.oid = GitOID(oid: head.oid)
-    self.localOID = GitOID(oid: head.loid)
+    self.oid = .init(oid: head.oid)
+    self.localOID = .init(oid: head.loid)
     self.name = String(cString: head.name)
     self.symrefTarget = head.symref_target.map { String(cString: $0) } ?? ""
   }

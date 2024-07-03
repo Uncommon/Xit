@@ -4,9 +4,9 @@ final class NewTagOpController: OperationController
 {
   override func start() throws
   {
-    guard let selectedOID = windowController?.selection?.oidToSelect,
+    guard let selectedOID = windowController?.selection?.target as? GitOID,
           let repository = repository,
-          let commit = repository.anyCommit(forOID: selectedOID)
+          let commit = repository.commit(forOID: selectedOID)
     else { throw RepoError.unexpected }
     let config = repository.config
     let userName = config.userName
@@ -36,7 +36,7 @@ final class NewTagOpController: OperationController
     }
   }
   
-  func executeTag(name: String, oid: any OID, message: String?)
+  func executeTag(name: String, oid: GitOID, message: String?)
   {
     guard let repository = self.repository
     else { return }

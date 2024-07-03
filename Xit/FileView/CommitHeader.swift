@@ -13,7 +13,7 @@ extension Font
 class CommitHeaderHostingView: NSHostingView<CommitHeader>
 {
   weak var repository: (any CommitStorage)?
-  var selectParent: ((any OID) -> Void)?
+  var selectParent: ((GitOID) -> Void)?
   
   var commit: (any Commit)?
   {
@@ -26,7 +26,7 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
           commit: newValue,
           messageLookup: {
             [weak self] in
-            self?.repository?.anyCommit(forOID: $0)?.messageSummary ?? ""
+            self?.repository?.commit(forOID: $0)?.messageSummary ?? ""
           },
           selectParent: select)
     }
@@ -36,9 +36,9 @@ class CommitHeaderHostingView: NSHostingView<CommitHeader>
 struct CommitHeader: View
 {
   let commit: (any Commit)?
-  let messageLookup: (any OID) -> String
-  let selectParent: (any OID) -> Void
-  
+  let messageLookup: (GitOID) -> String
+  let selectParent: (GitOID) -> Void
+
   enum Measurement
   {
     static let margin: CGFloat = 12
@@ -156,8 +156,8 @@ struct CommitHeader: View
   }
 
   init(commit: (any Commit)?,
-       messageLookup: @escaping (any OID) -> String,
-       selectParent: @escaping (any OID) -> Void)
+       messageLookup: @escaping (GitOID) -> String,
+       selectParent: @escaping (GitOID) -> Void)
   {
     self.commit = commit
     self.messageLookup = messageLookup
@@ -209,10 +209,10 @@ struct CommitHeader_Previews: PreviewProvider
 {
   struct PreviewCommit: Commit
   {
-    let parentOIDs: [StringOID] = ["A", "B"]
+    let parentOIDs: [GitOID] = ["A", "B"]
     let message: String? = "Single line"
-    let tree: StringTree? = nil
-    let id: StringOID = "45a608978"
+    let tree: FakeTree? = nil
+    let id: GitOID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",
                                           email: "author@example.com",
@@ -238,7 +238,7 @@ struct CommitHeader_Previews: PreviewProvider
 
   static var previews: some View {
     CommitHeader(commit: PreviewCommit(),
-                 messageLookup: { parents[$0 as! StringOID]! },
+                 messageLookup: { parents[$0]! },
                  selectParent: { _ in })
     CommitHeader(commit: nil,
                  messageLookup: { _ in "" },

@@ -62,49 +62,30 @@ public protocol Cloning
              publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
 }
 
-public protocol CommitStorage<ID>: AnyObject
+public protocol CommitStorage: AnyObject
 {
-  associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
+  associatedtype Commit: Xit.Commit
 
-  func oid(forSHA sha: String) -> ID?
+  func oid(forSHA sha: String) -> GitOID?
   func commit(forSHA sha: String) -> Commit?
-  func commit(forOID oid: ID) -> Commit?
+  func commit(forOID oid: GitOID) -> Commit?
 
   func commit(message: String, amend: Bool) throws
   
-  func walker() -> (any RevWalk<ID>)?
-}
-
-extension CommitStorage
-{
-  // Helper for dealing with a `CommitStorage` existential because the caller
-  // doesn't know the OID type.
-  func anyCommit(forOID oid: any OID) -> (any Xit.Commit)?
-  {
-    guard let oid = oid as? ID
-    else {
-      if !(oid is SpecialOID) {
-        assertionFailure("wrong OID type")
-      }
-      return nil
-    }
-    return commit(forOID: oid) as (any Xit.Commit)?
-  }
+  func walker() -> (any RevWalk)?
 }
 
 
-public protocol CommitReferencing<ID>: AnyObject
+public protocol CommitReferencing: AnyObject
 {
-  associatedtype ID: OID
-  associatedtype Commit: Xit.Commit<ID>
-  associatedtype Tag: Xit.Tag<ID>
-  associatedtype Tree: Xit.Tree<ID>
+  associatedtype Commit: Xit.Commit
+  associatedtype Tag: Xit.Tag
+  associatedtype Tree: Xit.Tree
 
   var headRef: String? { get }
   var currentBranch: String? { get }
   
-  func oid(forRef: String) -> ID?
+  func oid(forRef: String) -> GitOID?
   func sha(forRef: String) -> String?
   func tags() throws -> [Tag]
   func graphBetween(localBranch: any LocalBranch,
@@ -115,7 +96,7 @@ public protocol CommitReferencing<ID>: AnyObject
   func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   
   func reference(named name: String) -> (any Reference)?
-  func refs(at oid: ID) -> [String]
+  func refs(at oid: GitOID) -> [String]
   func allRefs() -> [String]
   
   func rebuildRefsIndex()
@@ -125,7 +106,7 @@ public protocol CommitReferencing<ID>: AnyObject
   func createCommit(with tree: Tree,
                     message: String,
                     parents: [Commit],
-                    updatingReference refName: String) throws -> ID
+                    updatingReference refName: String) throws -> GitOID
 }
 
 extension CommitReferencing
@@ -134,7 +115,7 @@ extension CommitReferencing
   { currentBranch.flatMap { .init($0) } }
   var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
-  var headOID: ID? { headRef.flatMap { self.oid(forRef: $0) } }
+  var headOID: GitOID? { headRef.flatMap { self.oid(forRef: $0) } }
 }
 
 extension CommitReferencing where Self: CommitStorage
@@ -144,7 +125,7 @@ extension CommitReferencing where Self: CommitStorage
 
 public protocol FileStatusDetection: AnyObject
 {
-  func changes(for oid: any OID, parent parentOID: (any OID)?) -> [FileChange]
+  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
 
   func stagedChanges() -> [FileChange]
   func amendingStagedChanges() -> [FileChange]
@@ -180,18 +161,18 @@ extension FileStatusDetection
 public protocol FileDiffing: AnyObject
 {
   func diffMaker(forFile file: String,
-                 commitOID: any OID,
-                 parentOID: (any OID)?) -> PatchMaker.PatchResult?
+                 commitOID: GitOID,
+                 parentOID: GitOID?) -> PatchMaker.PatchResult?
   func stagedDiff(file: String) -> PatchMaker.PatchResult?
   func unstagedDiff(file: String) -> PatchMaker.PatchResult?
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?
 
   func blame(for path: String,
-             from startOID: (any OID)?,
-             to endOID: (any OID)?) -> (any Blame)?
+             from startOID: GitOID?,
+             to endOID: GitOID?) -> (any Blame)?
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: (any OID)?) -> (any Blame)?
+             to endOID: GitOID?) -> (any Blame)?
 }
 
 public protocol FileContents: AnyObject
@@ -441,8 +422,8 @@ extension Branching
 
 public protocol Tagging: AnyObject
 {
-  func createTag(name: String, targetOID: any OID, message: String?) throws
-  func createLightweightTag(name: String, targetOID: any OID) throws
+  func createTag(name: String, targetOID: GitOID, message: String?) throws
+  func createLightweightTag(name: String, targetOID: GitOID) throws
   func deleteTag(name: String) throws
 }
 
