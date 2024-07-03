@@ -22,7 +22,7 @@ final class PushOpController: PasswordOpController
   func progressCallback(progress: PushTransferProgress) -> Bool
   {
     guard !canceled
-    else { return true }
+    else { return false }
 
     Task {
       @MainActor in
@@ -30,7 +30,7 @@ final class PushOpController: PasswordOpController
           progress: Float(progress.current),
           total: Float(progress.total))
     }
-    return false
+    return true
   }
 
   override func start() throws
