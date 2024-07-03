@@ -265,7 +265,7 @@ enum HistoryList
   static func row(_ message: String) -> XCUIElement
   {
     list.cells
-        .containing(.init(format: "label == '\(message)'"))
+        .containing(.init(format: "value == '\(message)'"))
         .firstMatch
   }
   
