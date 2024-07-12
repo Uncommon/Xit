@@ -31,7 +31,7 @@ extension XTWindowController
     control.setEnabled(!navForwardStack.isEmpty, forSegment: 1)
   }
 
-  func configureTitleBarController(repository: XTRepository)
+  func configureTitleBarController(repository: any BasicRepository & CommitReferencing)
   {
     let viewController: TitleBarController = titleBarController!
 
@@ -44,7 +44,9 @@ extension XTWindowController
       viewController?.progressHidden = !$0
     })
     viewController.selectedBranch = repository.currentBranch
-    viewController.observe(repository: repository)
+    if let controller = repository.controller {
+      viewController.observe(controller: controller)
+    }
     updateBranchList()
   }
 }

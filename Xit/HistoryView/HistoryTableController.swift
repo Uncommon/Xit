@@ -29,8 +29,7 @@ final class HistoryTableController: NSViewController,
   
   func finishLoad(repository: any Repository)
   {
-    // TODO: use GitCommitHistory.Repository after targeting macOS 13
-    history.repository = repository as! XTRepository
+    history.repository = repository
 
     tableView.headerView?.menu = columnsMenu
     columnsMenu.delegate = self

@@ -95,13 +95,8 @@ final class HistoryCellView: NSTableCellView
   func configure(entry: CommitEntry<GitCommit>,
                  repository: any Branching & CommitReferencing)
   {
-    // can't generalize this just yet
-    // reqires macOS 13 runtime to cast to `any CommitReferencing<GitOID>`
-    guard let repo = repository as? XTRepository
-    else { return }
-
     currentBranch = repository.currentBranch
-    refs = repo.refs(at: entry.commit.id)
+    refs = repository.refs(at: entry.commit.id)
     setLabel(entry.commit.message ?? "(no message)")
     self.entry = entry
     

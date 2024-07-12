@@ -154,9 +154,9 @@ class TitleBarController: NSObject
     remoteOpsMenu.items[2].submenu = fetchMenu
   }
   
-  func observe(repository: XTRepository)
+  func observe(controller: any RepositoryController)
   {
-    progressSink = repository.controller?.progressPublisher
+    progressSink = controller.progressPublisher
       .receive(on: DispatchQueue.main)
       .sink {
         (progress, total) in
