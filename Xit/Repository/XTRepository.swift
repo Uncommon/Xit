@@ -10,7 +10,6 @@ let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
 struct CallbackPayload { let repo: XTRepository }
 
 let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-let XTPathsKey = "paths"
 
 public final class XTRepository: BasicRepository, RepoConfiguring
 {
