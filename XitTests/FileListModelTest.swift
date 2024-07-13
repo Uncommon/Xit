@@ -8,6 +8,7 @@ class StringChangesRepo: StringRepository, FileChangesRepo,
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
+  typealias Blob = NullBlob
 }
 
 class FileListModelTest: XTTest

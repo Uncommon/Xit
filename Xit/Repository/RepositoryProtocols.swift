@@ -177,11 +177,13 @@ public protocol FileDiffing: AnyObject
 
 public protocol FileContents: AnyObject
 {
+  associatedtype Blob: Xit.Blob
+
   var repoURL: URL { get }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool
-  func fileBlob(ref: String, path: String) -> (any Blob)?
-  func stagedBlob(file: String) -> (any Blob)?
+  func fileBlob(ref: String, path: String) -> Blob?
+  func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: any Commit) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
   func fileURL(_ file: String) -> URL

@@ -43,7 +43,7 @@ extension XTRepository: FileContents
     switch context {
       case .commit(let commit):
         if let entry = (commit as? GitCommit)?.tree?.entry(path: path),
-           let blob = entry.object as? any Blob {
+           let blob = entry.object as? GitBlob {
           return !blob.isBinary
         }
       case .index:
@@ -65,7 +65,7 @@ extension XTRepository: FileContents
   public func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data?
   {
     guard let entry = (commit as? GitCommit)?.tree?.entry(path: path),
-          let blob = entry.object as? any Blob
+          let blob = entry.object as? GitBlob
     else { return nil }
     
     return blob.makeData()
@@ -78,7 +78,7 @@ extension XTRepository: FileContents
     }
   }
   
-  public func stagedBlob(file: String) -> (any Blob)?
+  public func stagedBlob(file: String) -> GitBlob?
   {
     guard let index = GitIndex(repository: gitRepo),
           let entry = index.entry(at: file),
@@ -89,18 +89,18 @@ extension XTRepository: FileContents
     return blob
   }
   
-  func commitBlob(commit: GitCommit?, path: String) -> (any Blob)?
+  func commitBlob(commit: GitCommit?, path: String) -> GitBlob?
   {
-    commit?.tree?.entry(path: path)?.object as? (any Blob)
+    commit?.tree?.entry(path: path)?.object as? GitBlob
   }
   
-  public func fileBlob(ref: String, path: String) -> (any Blob)?
+  public func fileBlob(ref: String, path: String) -> GitBlob?
   {
     commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
                path: path)
   }
   
-  public func fileBlob(oid: GitOID, path: String) -> (any Blob)?
+  public func fileBlob(oid: GitOID, path: String) -> GitBlob?
   {
     return commitBlob(commit: commit(forOID: oid), path: path)
   }

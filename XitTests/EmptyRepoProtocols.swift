@@ -149,6 +149,18 @@ class NullTag: Tag
   let isSigned: Bool = false
 }
 
+struct NullBlob: Blob
+{
+  let dataSize: UInt = 0
+  let isBinary = false
+
+  func makeData() -> Data? { nil }
+  func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
+  {
+    try body(.init(start: nil, count: 0))
+  }
+}
+
 protocol EmptyFileStatusDetection: FileStatusDetection {}
 
 extension EmptyFileStatusDetection
@@ -200,8 +212,8 @@ extension EmptyFileContents
   var repoURL: URL { .init(fileURLWithPath: "/") }
 
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: String, path: String) -> (any Blob)? { nil }
-  func stagedBlob(file: String) -> (any Blob)? { nil }
+  func fileBlob(ref: String, path: String) -> Blob? { nil }
+  func stagedBlob(file: String) -> Blob? { nil }
   func contentsOfFile(path: String, at commit: any Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { .init(fileURLWithPath: "/") }

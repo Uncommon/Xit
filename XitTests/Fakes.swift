@@ -173,6 +173,7 @@ class FakeFileChangesRepo: FileChangesRepo
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
+  typealias Blob = NullBlob
 
   var controller: (any RepositoryController)?
 
@@ -200,8 +201,8 @@ class FakeFileChangesRepo: FileChangesRepo
   var repoURL: URL { URL(fileURLWithPath: "") }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: String, path: String) -> (any Blob)? { nil }
-  func stagedBlob(file: String) -> (any Blob)? { nil }
+  func fileBlob(ref: String, path: String) -> Blob? { nil }
+  func stagedBlob(file: String) -> Blob? { nil }
   func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
