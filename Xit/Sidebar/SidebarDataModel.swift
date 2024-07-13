@@ -126,7 +126,12 @@ final class SidebarDataModel: @unchecked Sendable
   {
     guard let repo = repository
     else { return [] }
-    
+
+    return loadRoots(repo)
+  }
+
+  func loadRoots(_ repo: some Repository) -> [SideBarGroupItem]
+  {
     let newRoots = makeRoots()
     let branchesGroup = newRoots[SidebarGroupIndex.branches.rawValue]
     let localBranches = repo.localBranches.sorted { $0.name <~ $1.name }

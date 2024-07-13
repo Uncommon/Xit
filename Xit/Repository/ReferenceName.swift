@@ -59,7 +59,7 @@ public struct ReferenceName<T>: RawRepresentable where T: ReferenceKind
   
   public init?(_ name: String)
   {
-    // +/ (appending path componens) will quietly consume leading slashes
+    // +/ (appending path components) will quietly consume leading slashes
     guard !name.hasPrefix("/") && GitReference.isValidName(T.prefix +/ name)
     else { return nil }
     

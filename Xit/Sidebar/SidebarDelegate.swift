@@ -19,10 +19,21 @@ final class SidebarDelegate: NSObject
   func graphText(for item: SidebarItem) -> String?
   {
     guard let repository = model?.repository,
-          item is LocalBranchSidebarItem,
-          let refName = LocalBranchRefName(item.title),
+          item is LocalBranchSidebarItem
+    else { return nil }
+
+    return graphText(repository, for: item)
+  }
+
+  func graphText<R>(_ repository: R,
+                    for item: SidebarItem) -> String?
+    where R: SidebarDataModel.Repository
+  {
+    guard let refName = LocalBranchRefName(item.title),
           let localBranch = repository.localBranch(named: refName),
-          let trackingBranch = localBranch.trackingBranch,
+          let trackingBranch = localBranch.trackingBranch
+            // Repository and LocalBranch each have a RemoteBranch type
+            as? R.RemoteBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
                                               upstreamBranch: trackingBranch)
     else { return nil }

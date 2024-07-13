@@ -18,29 +18,33 @@ protocol EmptyBranching: Branching {}
 extension EmptyBranching
 {
   var currentBranch: String? { nil }
-  var localBranches: AnySequence<any LocalBranch>
-  { .init(Array<NullLocalBranch>()) }
-  var remoteBranches: AnySequence<any RemoteBranch>
-  { .init(Array<NullRemoteBranch>()) }
+  var localBranches: AnySequence<LocalBranch>
+  { .init(Array<LocalBranch>()) }
+  var remoteBranches: AnySequence<RemoteBranch>
+  { .init(Array<RemoteBranch>()) }
 
   /// Creates a branch at the given target ref
   func createBranch(named name: String,
-                    target: String) throws -> (any LocalBranch)? { nil }
+                    target: String) throws -> LocalBranch? { nil }
   func rename(branch: String, to: String) throws {}
-  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String) -> (any RemoteBranch)? { nil }
-  func localBranch(tracking remoteBranch: any RemoteBranch) -> (any LocalBranch)?
-  { nil }
-  func localTrackingBranch(forBranch branch: RemoteBranchRefName) -> (any LocalBranch)?
+  func localBranch(named name: LocalBranchRefName) -> LocalBranch? { nil }
+  func remoteBranch(named name: String) -> RemoteBranch? { nil }
+  func remoteBranch(named name: String, remote: String) -> RemoteBranch? { nil }
+  func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch? { nil }
+  func localTrackingBranch(forBranch branch: RemoteBranchRefName) -> LocalBranch?
   { nil }
   func reset(toCommit target: any Commit, mode: ResetMode) throws {}
 }
-class NullBranching: EmptyBranching {}
+class NullBranching: EmptyBranching
+{
+  typealias LocalBranch = NullLocalBranch
+  typealias RemoteBranch = NullRemoteBranch
+}
 
 class NullLocalBranch: LocalBranch
 {
   var trackingBranchName: String? { get { nil } set {} }
-  var trackingBranch: (any RemoteBranch)? { nil }
+  var trackingBranch: NullRemoteBranch? { nil }
   var name: String { "refs/heads/branch" }
   var shortName: String { "branch" }
   var oid: GitOID? { nil }
@@ -61,32 +65,42 @@ protocol EmptyCommitStorage: CommitStorage {}
 extension EmptyCommitStorage
 {
   func oid(forSHA sha: String) -> GitOID?  { nil }
-  func commit(forSHA sha: String) -> GitCommit? { nil }
-  func commit(forOID oid: GitOID) -> GitCommit? { nil }
+  func commit(forSHA sha: String) -> Commit? { nil }
+  func commit(forOID oid: GitOID) -> Commit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
-  func walker() -> (any RevWalk)? { nil }
+  func walker() -> RevWalk? { nil }
 }
-class NullCommitStorage: EmptyCommitStorage {}
+class NullCommitStorage: EmptyCommitStorage
+{
+  typealias Commit = NullCommit
+  typealias RevWalk = NullRevWalk
+}
+
+protocol EmptyRevWalk: RevWalk {}
+
+extension EmptyRevWalk
+{
+  func reset() {}
+  func setSorting(_ sort: RevWalkSorting) {}
+  func push(oid: GitOID) {}
+  func next() -> GitOID? { nil }
+}
+class NullRevWalk: EmptyRevWalk {}
 
 protocol EmptyCommitReferencing: CommitReferencing {}
 
 extension EmptyCommitReferencing
 {
   var headRef: String? { nil }
-  var currentBranch: String? { nil }
 
   func oid(forRef: String) -> GitOID? { nil }
   func sha(forRef: String) -> String? { nil }
   func tags() throws -> [Tag] { [] }
-  func graphBetween(localBranch: any LocalBranch,
-                    upstreamBranch: any RemoteBranch) -> (ahead: Int,
+  func graphBetween(localBranch: LocalBranch,
+                    upstreamBranch: RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
-  { nil }
-
-  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
   { nil }
 
   func reference(named name: String) -> (any Reference)? { nil }
@@ -106,6 +120,8 @@ class NullCommitReferencing: EmptyCommitReferencing
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
+  typealias LocalBranch = NullLocalBranch
+  typealias RemoteBranch = NullRemoteBranch
 }
 
 class NullCommit: Commit

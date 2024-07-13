@@ -28,7 +28,7 @@ public struct RevWalkSorting: OptionSet, Sendable
   public static let reverse = RevWalkSorting(sort: GIT_SORT_REVERSE)
 }
 
-final class GitRevWalk: RevWalk
+public final class GitRevWalk: RevWalk
 {
   let walker: OpaquePointer
   

@@ -70,10 +70,9 @@ final class PushOpController: PasswordOpController
       case .named(let remoteName):
         guard let namedRemote = repository.remote(named: remoteName)
         else { throw RepoError.notFound }
-        let localTrackingBranches = repository.localBranches.filter {
-          $0.trackingBranch?.remoteName == remoteName
-        }
-        
+        let localTrackingBranches =
+          getLocalTrackingBranches(repository, for: remoteName)
+
         guard !localTrackingBranches.isEmpty
         else {
           let alert = NSAlert()
@@ -107,7 +106,15 @@ final class PushOpController: PasswordOpController
       }
     }
   }
-  
+
+  func getLocalTrackingBranches(_ repository: some Branching,
+                                for remoteName: String) -> [any LocalBranch]
+  {
+    repository.localBranches.filter {
+      $0.trackingBranch?.remoteName == remoteName
+    }
+  }
+
   func pushNewBranch() throws
   {
     guard let repository = self.repository,

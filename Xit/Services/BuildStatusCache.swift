@@ -52,7 +52,7 @@ final class BuildStatusCache: BuildStatusAccessor
     
     statuses.removeAll()
     Task {
-      let localBranches = branchLister.localBranches
+      let localBranches = getLocalBranches(branchLister)
 
       await Signpost.interval(.refreshBuildStatus) {
         for local in localBranches {
@@ -67,6 +67,11 @@ final class BuildStatusCache: BuildStatusAccessor
         }
       }
     }
+  }
+
+  func getLocalBranches(_ repository: some Branching) -> [any LocalBranch]
+  {
+    repository.localBranches.map { $0 }
   }
 
   enum RefreshError: Error

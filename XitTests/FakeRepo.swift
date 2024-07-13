@@ -1,8 +1,19 @@
 import Foundation
 @testable import Xit
 
-class FakeRepo: FakeFileChangesRepo
+class FakeRepo: FileChangesRepo &
+  EmptyCommitReferencing & EmptyFileDiffing & EmptyFileContents &
+  EmptyFileStaging & EmptyFileStatusDetection
 {
+  typealias Commit = FakeCommit
+  typealias Tag = NullTag
+  typealias Tree = NullTree
+  typealias Blob = NullBlob
+  typealias LocalBranch = FakeLocalBranch
+  typealias RemoteBranch = FakeRemoteBranch
+
+  var controller: (any RepositoryController)?
+
   let localBranch1 = FakeLocalBranch(name: "branch1", oid: "a")
   let localBranch2 = FakeLocalBranch(name: "branch2", oid: "b")
   let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1", oid: "c")
@@ -15,7 +26,7 @@ class FakeRepo: FakeFileChangesRepo
   
   var commits: [GitOID: FakeCommit] = [:]
 
-  override init()
+  init()
   {
     self.remote1.name = "origin1"
     self.remote2.name = "origin2"
@@ -25,8 +36,6 @@ class FakeRepo: FakeFileChangesRepo
     self.localBranch2.trackingBranch = remoteBranch2
     self.remoteBranch1.remoteName = remote1.name
     self.remoteBranch2.remoteName = remote2.name
-    
-    super.init()
     
     let commit1 = FakeCommit(branchHead: localBranch1)
     let commit2 = FakeCommit(branchHead: localBranch2)
@@ -45,7 +54,7 @@ class FakeRepo: FakeFileChangesRepo
     remote1.urlString = "https://example.com/repo2.git"
   }
   
-  override func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)?
+  func localBranch(named name: LocalBranchRefName) -> FakeLocalBranch?
   {
     switch name.name {
       case "branch1":
@@ -60,15 +69,15 @@ class FakeRepo: FakeFileChangesRepo
 
 extension FakeRepo: EmptyBranching
 {
-  var localBranches: AnySequence<any LocalBranch>
+  var localBranches: AnySequence<FakeLocalBranch>
   {
-    let array: [any LocalBranch] = [localBranch1, localBranch2]
+    let array: [LocalBranch] = [localBranch1, localBranch2]
     return AnySequence(array)
   }
   
-  var remoteBranches: AnySequence<any RemoteBranch>
+  var remoteBranches: AnySequence<FakeRemoteBranch>
   {
-    let array: [any RemoteBranch] = [remoteBranch1, remoteBranch2]
+    let array: [RemoteBranch] = [remoteBranch1, remoteBranch2]
     return AnySequence(array)
   }
 }
@@ -76,7 +85,7 @@ extension FakeRepo: EmptyBranching
 extension FakeRepo: EmptyCommitStorage
 {
   typealias ID = GitOID
-  typealias Commit = FakeCommit
+  typealias RevWalk = NullRevWalk
 
   func oid(forSHA sha: String) -> ID? { .init(sha: sha) }
 

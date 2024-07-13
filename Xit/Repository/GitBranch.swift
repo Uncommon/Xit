@@ -28,8 +28,10 @@ extension Branch
 
 public protocol LocalBranch: Branch
 {
+  associatedtype RemoteBranch: Xit.RemoteBranch
+
   var trackingBranchName: String? { get set }
-  var trackingBranch: (any RemoteBranch)? { get }
+  var trackingBranch: RemoteBranch? { get }
 }
 
 extension LocalBranch
@@ -174,7 +176,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   /// Returns a branch object for this branch's remote tracking branch,
   /// or `nil` if no tracking branch is set or if it references a non-existent
   /// branch.
-  public var trackingBranch: (any RemoteBranch)?
+  public var trackingBranch: GitRemoteBranch?
   {
     guard let upstream = try? OpaquePointer.from({
       git_branch_upstream(&$0, branchRef)

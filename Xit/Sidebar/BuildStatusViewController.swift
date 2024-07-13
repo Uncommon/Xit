@@ -112,9 +112,7 @@ final class BuildStatusViewController: NSViewController
   @IBAction
   func refresh(_ sender: Any)
   {
-    if let localBranch = branch as? any LocalBranch ??
-                         (branch as? any RemoteBranch).flatMap({
-                            repository.localBranch(tracking: $0) }),
+    if let localBranch = repository.localBranch(for: branch),
        let remoteName = branch.remoteName {
       setProgressVisible(true)
       Task {

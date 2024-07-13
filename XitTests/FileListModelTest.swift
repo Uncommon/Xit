@@ -2,13 +2,16 @@ import XCTest
 @testable import Xit
 
 class StringChangesRepo: StringRepository, FileChangesRepo,
-    EmptyBasicRepository, EmptyCommitReferencing, EmptyFileContents,
-    EmptyFileDiffing, EmptyFileStaging, EmptyFileStatusDetection
+    EmptyBasicRepository, EmptyBranching, EmptyCommitReferencing,
+    EmptyFileContents, EmptyFileDiffing, EmptyFileStaging,
+    EmptyFileStatusDetection
 {
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
   typealias Blob = NullBlob
+  typealias LocalBranch = NullLocalBranch
+  typealias RemoteBranch = NullRemoteBranch
 }
 
 class FileListModelTest: XTTest

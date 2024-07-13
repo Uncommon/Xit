@@ -38,12 +38,17 @@ final class NewBranchPanelController: SheetController
     self.branchName = branchName
     self.startingPoint = startingPoint
     
-    localBranchNames = repository.localBranches.map { $0.shortName }
-    remoteBranchNames = repository.remoteBranches.map { $0.shortName }
+    (localBranchNames, remoteBranchNames) = getBranchNames(repository)
     
     updateCreateButton()
   }
-  
+
+  func getBranchNames(_ repository: some Branching) -> ([String], [String])
+  {
+    (repository.localBranches.map { $0.shortName },
+     repository.remoteBranches.map { $0.shortName })
+  }
+
   private func validateNames() -> Bool
   {
     let branchName = self.branchName

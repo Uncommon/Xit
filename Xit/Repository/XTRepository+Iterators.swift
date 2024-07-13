@@ -44,9 +44,9 @@ extension XTRepository
       super.init(repo: repo, flags: GIT_BRANCH_LOCAL)
     }
     
-    public func next() -> (any LocalBranch)?
+    public func next() -> GitLocalBranch?
     {
-      nextBranch().map { GitLocalBranch(branch: $0, config: repo.config) }
+      nextBranch().map { .init(branch: $0, config: repo.config) }
     }
   }
   
@@ -58,9 +58,9 @@ extension XTRepository
       super.init(repo: repo, flags: GIT_BRANCH_REMOTE)
     }
     
-    public func next() -> (any RemoteBranch)?
+    public func next() -> GitRemoteBranch?
     {
-      nextBranch().map { GitRemoteBranch(branch: $0, config: repo.config) }
+      nextBranch().map { .init(branch: $0, config: repo.config) }
     }
   }
   

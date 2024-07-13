@@ -4,7 +4,8 @@ import SwiftUI
 struct FetchDialog: SheetDialog
 {
   typealias ContentView = FetchPanel
-  typealias Repository = RepoConfiguring & RemoteManagement & CommitReferencing
+  typealias Repository = RepoConfiguring & RemoteManagement &
+      CommitReferencing & Branching
 
   var acceptButtonTitle: UIString { .fetch }
 

@@ -2,8 +2,8 @@ import Cocoa
 
 
 typealias FileChangesRepo =
-    BasicRepository & CommitReferencing & FileDiffing & FileContents &
-    FileStaging & FileStatusDetection
+    BasicRepository & Branching & CommitReferencing & FileDiffing &
+    FileContents & FileStaging & FileStatusDetection
 
 enum SelectionTarget: Equatable
 {

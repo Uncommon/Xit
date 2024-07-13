@@ -31,7 +31,8 @@ extension XTWindowController
     control.setEnabled(!navForwardStack.isEmpty, forSegment: 1)
   }
 
-  func configureTitleBarController(repository: any BasicRepository & CommitReferencing)
+  func configureTitleBarController(
+    repository: any BasicRepository & CommitReferencing & Branching)
   {
     let viewController: TitleBarController = titleBarController!
 

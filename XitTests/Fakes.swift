@@ -109,7 +109,7 @@ class FakePRService : PullRequestService
 class FakeLocalBranch: LocalBranch
 {
   var trackingBranchName: String?
-  var trackingBranch: (any RemoteBranch)?
+  var trackingBranch: FakeRemoteBranch?
   var name: String
   var shortName: String { strippedName }
   var oid: GitOID?
@@ -168,12 +168,14 @@ class FakeRepoController: RepositoryController
   func refsChanged() {}
 }
 
-class FakeFileChangesRepo: FileChangesRepo
+class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
 {
   typealias Commit = NullCommit
   typealias Tag = NullTag
   typealias Tree = NullTree
   typealias Blob = NullBlob
+  typealias LocalBranch = NullLocalBranch
+  typealias RemoteBranch = NullRemoteBranch
 
   var controller: (any RepositoryController)?
 
@@ -183,11 +185,11 @@ class FakeFileChangesRepo: FileChangesRepo
   func sha(forRef: String) -> String? { nil }
   
   func tags() throws -> [Tag] { [] }
-  func graphBetween(localBranch: any LocalBranch, upstreamBranch: any RemoteBranch)
+  func graphBetween(localBranch: LocalBranch, upstreamBranch: RemoteBranch)
     -> (ahead: Int, behind: Int)?
   { nil }
-  func localBranch(named name: LocalBranchRefName) -> (any LocalBranch)? { nil }
-  func remoteBranch(named name: String, remote: String) -> (any RemoteBranch)?
+  func localBranch(named name: LocalBranchRefName) -> LocalBranch? { nil }
+  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
   func refs(at oid: GitOID) -> [String] { [] }

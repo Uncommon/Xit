@@ -4,6 +4,9 @@ import XCTest
 
 class StringRepository: CommitStorage
 {
+  typealias Commit = StringCommit
+  typealias RevWalk = NullRevWalk
+
   let commits: [StringCommit]
   
   init(commits: [StringCommit])
@@ -25,10 +28,9 @@ class StringRepository: CommitStorage
   {
     commits.first { $0.id == oid }
   }
-  
+
   func commit(message: String, amend: Bool) throws {}
-  
-  func walker() -> (any RevWalk)? { nil }
+  func walker() -> NullRevWalk? { nil }
 }
 
 

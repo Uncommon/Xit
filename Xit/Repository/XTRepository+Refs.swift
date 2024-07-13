@@ -28,14 +28,14 @@ extension XTRepository: Branching
   public var currentBranchPublisher: AnyPublisher<String?, Never>
   { currentBranchSubject.eraseToAnyPublisher() }
   
-  public var localBranches: AnySequence<any LocalBranch>
+  public var localBranches: AnySequence<GitLocalBranch>
   { AnySequence { LocalBranchIterator(repo: self) } }
   
-  public var remoteBranches: AnySequence<any RemoteBranch>
+  public var remoteBranches: AnySequence<GitRemoteBranch>
   { AnySequence { RemoteBranchIterator(repo: self) } }
 
   public func createBranch(named name: String,
-                           target: String) throws -> (any LocalBranch)?
+                           target: String) throws -> GitLocalBranch?
   {
     if isWriting {
       throw RepoError.alreadyWriting
@@ -70,7 +70,7 @@ extension XTRepository: Branching
     try RepoError.throwIfGitError(result)
   }
 
-  public func localBranch(named refName: LocalBranchRefName) -> (any LocalBranch)?
+  public func localBranch(named refName: LocalBranchRefName) -> GitLocalBranch?
   {
     let fullName = refName.rawValue
     
@@ -89,12 +89,12 @@ extension XTRepository: Branching
   }
   
   public func remoteBranch(named name: String,
-                           remote: String) -> (any RemoteBranch)?
+                           remote: String) -> GitRemoteBranch?
   {
     return remoteBranch(named: remote +/ name)
   }
   
-  public func remoteBranch(named name: String) -> (any RemoteBranch)?
+  public func remoteBranch(named name: String) -> GitRemoteBranch?
   {
     let fullName = RefPrefixes.remotes +/ name
     
@@ -111,8 +111,8 @@ extension XTRepository: Branching
     }
   }
   
-  public func localBranch(tracking remoteBranch: any RemoteBranch)
-    -> (any LocalBranch)?
+  public func localBranch(tracking remoteBranch: GitRemoteBranch)
+    -> GitLocalBranch?
   {
     guard let remoteBranchName = RemoteBranchRefName(rawValue: remoteBranch.name)
     else {
@@ -129,7 +129,7 @@ extension XTRepository: Branching
                           options: [])
 
   public func localTrackingBranch(forBranch branch: RemoteBranchRefName)
-    -> (any LocalBranch)?
+    -> GitLocalBranch?
   {
     let config = self.config as! GitConfig
     
