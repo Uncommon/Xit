@@ -141,6 +141,8 @@ class NullTree: Tree
   var id: GitOID { .zero() }
   var count: Int { 0 }
 
+  var entries: [Entry] { [] }
+
   func entry(named: String) -> Entry? { nil }
   func entry(path: String) -> Entry? { nil }
   func entry(at index: Int) -> Entry? { nil }

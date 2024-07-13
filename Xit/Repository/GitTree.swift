@@ -3,9 +3,13 @@ import Foundation
 public protocol Tree: OIDObject
 {
   associatedtype Entry: TreeEntry
+  associatedtype EntryCollection: Collection<Entry>
 
   /// Number of entries in the tree.
   var count: Int { get }
+
+  /// The tree's direct children.
+  var entries: EntryCollection { get }
 
   /// Finds an entry with the given name.
   func entry(named: String) -> Entry?
@@ -27,19 +31,19 @@ public protocol TreeEntry: OIDObject
 
 public final class GitTree: Tree
 {
-  struct EntryCollection: Collection
+  public struct EntryCollection: Collection
   {
     let tree: GitTree
 
-    var startIndex: Int { 0 }
-    var endIndex: Int { tree.count }
-    
-    func index(after i: Int) -> Int
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { tree.count }
+
+    public func index(after i: Int) -> Int
     {
       return i + 1
     }
     
-    subscript(position: Int) -> GitTreeEntry
+    public subscript(position: Int) -> GitTreeEntry
     {
       guard let result = git_tree_entry_byindex(tree.tree, position),
             let owner = git_tree_owner(tree.tree)
@@ -52,7 +56,7 @@ public final class GitTree: Tree
     }
   }
   
-  var entries: EntryCollection
+  public var entries: EntryCollection
   { .init(tree: self) }
   
   let tree: OpaquePointer
