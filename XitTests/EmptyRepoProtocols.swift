@@ -35,6 +35,7 @@ extension EmptyBranching
   { nil }
   func reset(toCommit target: any Commit, mode: ResetMode) throws {}
 }
+class NullBranching: EmptyBranching {}
 
 class NullLocalBranch: LocalBranch
 {
@@ -60,13 +61,14 @@ protocol EmptyCommitStorage: CommitStorage {}
 extension EmptyCommitStorage
 {
   func oid(forSHA sha: String) -> GitOID?  { nil }
-  func commit(forSHA sha: String) -> Commit? { nil }
-  func commit(forOID oid: GitOID) -> Commit? { nil }
+  func commit(forSHA sha: String) -> GitCommit? { nil }
+  func commit(forOID oid: GitOID) -> GitCommit? { nil }
 
   func commit(message: String, amend: Bool) throws {}
 
   func walker() -> (any RevWalk)? { nil }
 }
+class NullCommitStorage: EmptyCommitStorage {}
 
 protocol EmptyCommitReferencing: CommitReferencing {}
 
@@ -77,7 +79,7 @@ extension EmptyCommitReferencing
 
   func oid(forRef: String) -> GitOID? { nil }
   func sha(forRef: String) -> String? { nil }
-  func tags() throws -> [NullTag] { [] }
+  func tags() throws -> [Tag] { [] }
   func graphBetween(localBranch: any LocalBranch,
                     upstreamBranch: any RemoteBranch) -> (ahead: Int,
                                                           behind: Int)?
@@ -95,9 +97,15 @@ extension EmptyCommitReferencing
 
   func createCommit(with tree: Tree,
                     message: String,
-                    parents: [NullCommit],
+                    parents: [Commit],
                     updatingReference refName: String) throws -> GitOID
-  { §"" }
+  { .zero() }
+}
+class NullCommitReferencing: EmptyCommitReferencing
+{
+  typealias Commit = NullCommit
+  typealias Tag = NullTag
+  typealias Tree = NullTree
 }
 
 class NullCommit: Commit
@@ -185,6 +193,7 @@ extension EmptyFileStatusDetection
   { (.unmodified, .unmodified) }
   func isIgnored(path: String) -> Bool { false }
 }
+class NullFileStatusDetection: EmptyFileStatusDetection {}
 
 protocol EmptyFileDiffing: FileDiffing {}
 
@@ -204,6 +213,7 @@ extension EmptyFileDiffing
              data fromData: Data?,
              to endOID: GitOID?) -> (any Blame)? { nil }
 }
+class NullFileDiffing: EmptyFileDiffing {}
 
 protocol EmptyFileContents: FileContents {}
 
@@ -217,6 +227,10 @@ extension EmptyFileContents
   func contentsOfFile(path: String, at commit: any Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { .init(fileURLWithPath: "/") }
+}
+class NullFileContents: EmptyFileContents
+{
+  typealias Blob = NullBlob
 }
 
 protocol EmptyFileStaging: FileStaging {}
@@ -234,6 +248,7 @@ extension EmptyFileStaging
   func unstageAllFiles() throws {}
   func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws {}
 }
+class NullFileStaging: EmptyFileStaging {}
 
 protocol EmptyStashing: Stashing {}
 
@@ -252,6 +267,11 @@ extension EmptyStashing
                  includeUntracked: Bool,
                  includeIgnored: Bool) throws {}
 }
+class NullStashing: EmptyStashing
+{
+  typealias Stash = NullStash
+  typealias Commit = NullCommit
+}
 
 protocol EmptyStash: Stash {}
 
@@ -267,7 +287,6 @@ extension EmptyStash
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
 }
-
 class NullStash: EmptyStash {}
 
 protocol EmptyRemoteManagement: RemoteManagement {}
@@ -279,6 +298,7 @@ extension EmptyRemoteManagement
   func addRemote(named name: String, url: URL) throws {}
   func deleteRemote(named name: String) throws {}
 }
+class NullRemoteManagement: EmptyRemoteManagement {}
 
 public protocol EmptyRemoteCommunication: RemoteCommunication {}
 
@@ -292,6 +312,7 @@ extension EmptyRemoteCommunication
             remote: any Remote,
             options: FetchOptions) throws {}
 }
+class NullRemoteCommunication: EmptyRemoteCommunication {}
 
 protocol EmptyTagging: Tagging {}
 
@@ -301,6 +322,7 @@ extension EmptyTagging
   func createLightweightTag(name: String, targetOID: GitOID) throws {}
   func deleteTag(name: String) throws {}
 }
+class NullTagging: EmptyTagging {}
 
 protocol EmptyWorkspace: Workspace {}
 
@@ -310,3 +332,4 @@ extension EmptyWorkspace
   func checkOut(refName: String) throws {}
   func checkOut(sha: String) throws {}
 }
+class NullWorkSpace: EmptyWorkspace {}
