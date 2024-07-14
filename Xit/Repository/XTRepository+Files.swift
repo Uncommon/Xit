@@ -210,14 +210,14 @@ extension XTRepository: FileDiffing
   
   public func blame(for path: String,
                     from startOID: GitOID?,
-                    to endOID: GitOID?) -> (any Blame)?
+                    to endOID: GitOID?) -> GitBlame?
   {
     GitBlame(repository: self, path: path, from: startOID, to: endOID)
   }
   
   public func blame(for path: String,
                     data fromData: Data?,
-                    to endOID: GitOID?) -> (any Blame)?
+                    to endOID: GitOID?) -> GitBlame?
   {
     GitBlame(repository: self, path: path,
              data: fromData ?? Data(), to: endOID)

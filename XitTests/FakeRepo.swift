@@ -11,6 +11,7 @@ class FakeRepo: FileChangesRepo &
   typealias Blob = NullBlob
   typealias LocalBranch = FakeLocalBranch
   typealias RemoteBranch = FakeRemoteBranch
+  typealias Blame = NullBlame
 
   var controller: (any RepositoryController)?
 

@@ -161,6 +161,8 @@ extension FileStatusDetection
 
 public protocol FileDiffing: AnyObject
 {
+  associatedtype Blame: Xit.Blame
+
   func diffMaker(forFile file: String,
                  commitOID: GitOID,
                  parentOID: GitOID?) -> PatchMaker.PatchResult?
@@ -170,10 +172,10 @@ public protocol FileDiffing: AnyObject
 
   func blame(for path: String,
              from startOID: GitOID?,
-             to endOID: GitOID?) -> (any Blame)?
+             to endOID: GitOID?) -> Blame?
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: GitOID?) -> (any Blame)?
+             to endOID: GitOID?) -> Blame?
 }
 
 public protocol FileContents: AnyObject

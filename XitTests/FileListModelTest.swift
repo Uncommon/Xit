@@ -12,6 +12,7 @@ class StringChangesRepo: StringRepository, FileChangesRepo,
   typealias Blob = NullBlob
   typealias LocalBranch = NullLocalBranch
   typealias RemoteBranch = NullRemoteBranch
+  typealias Blame = NullBlame
 }
 
 class FileListModelTest: XTTest

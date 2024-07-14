@@ -13,6 +13,7 @@ extension EmptyBasicRepository
   var controller: (any RepositoryController)? { get { nil } set {} }
 }
 
+
 protocol EmptyBranching: Branching {}
 
 extension EmptyBranching
@@ -41,6 +42,7 @@ class NullBranching: EmptyBranching
   typealias RemoteBranch = NullRemoteBranch
 }
 
+
 class NullLocalBranch: LocalBranch
 {
   var trackingBranchName: String? { get { nil } set {} }
@@ -51,6 +53,7 @@ class NullLocalBranch: LocalBranch
   var targetCommit: (any Commit)? { nil }
 }
 
+
 class NullRemoteBranch: RemoteBranch
 {
   var name: String { "refs/remotes/origin/branch" }
@@ -59,6 +62,7 @@ class NullRemoteBranch: RemoteBranch
   var targetCommit: (any Commit)? { nil }
   var remoteName: String? { nil }
 }
+
 
 protocol EmptyCommitStorage: CommitStorage {}
 
@@ -78,6 +82,7 @@ class NullCommitStorage: EmptyCommitStorage
   typealias RevWalk = NullRevWalk
 }
 
+
 protocol EmptyRevWalk: RevWalk {}
 
 extension EmptyRevWalk
@@ -88,6 +93,7 @@ extension EmptyRevWalk
   func next() -> GitOID? { nil }
 }
 class NullRevWalk: EmptyRevWalk {}
+
 
 protocol EmptyCommitReferencing: CommitReferencing {}
 
@@ -124,6 +130,7 @@ class NullCommitReferencing: EmptyCommitReferencing
   typealias RemoteBranch = NullRemoteBranch
 }
 
+
 class NullCommit: Commit
 {
   typealias ObjectIdentifier = GitOID
@@ -139,6 +146,7 @@ class NullCommit: Commit
 
   func getTrailers() -> [(String, [String])] { [] }
 }
+
 
 class NullTree: Tree
 {
@@ -164,6 +172,7 @@ class NullTree: Tree
   func entry(at index: Int) -> Entry? { nil }
 }
 
+
 class NullTag: Tag
 {
   var name: String = ""
@@ -174,6 +183,7 @@ class NullTag: Tag
   let type: TagType = .annotated
   let isSigned: Bool = false
 }
+
 
 struct NullBlob: Blob
 {
@@ -186,6 +196,7 @@ struct NullBlob: Blob
     try body(.init(start: nil, count: 0))
   }
 }
+
 
 protocol EmptyFileStatusDetection: FileStatusDetection {}
 
@@ -213,6 +224,7 @@ extension EmptyFileStatusDetection
 }
 class NullFileStatusDetection: EmptyFileStatusDetection {}
 
+
 protocol EmptyFileDiffing: FileDiffing {}
 
 extension EmptyFileDiffing
@@ -226,12 +238,25 @@ extension EmptyFileDiffing
 
   func blame(for path: String,
              from startOID: GitOID?,
-             to endOID: GitOID?) -> (any Blame)? { nil }
+             to endOID: GitOID?) -> Blame? { nil }
   func blame(for path: String,
              data fromData: Data?,
-             to endOID: GitOID?) -> (any Blame)? { nil }
+             to endOID: GitOID?) -> Blame? { nil }
 }
-class NullFileDiffing: EmptyFileDiffing {}
+class NullFileDiffing: EmptyFileDiffing
+{
+  typealias Blame = NullBlame
+}
+
+
+protocol EmptyBlame: Blame {}
+
+extension EmptyBlame
+{
+  var hunks: [BlameHunk] { [] }
+}
+struct NullBlame: EmptyBlame{}
+
 
 protocol EmptyFileContents: FileContents {}
 
@@ -251,6 +276,7 @@ class NullFileContents: EmptyFileContents
   typealias Blob = NullBlob
 }
 
+
 protocol EmptyFileStaging: FileStaging {}
 
 extension EmptyFileStaging
@@ -267,6 +293,7 @@ extension EmptyFileStaging
   func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws {}
 }
 class NullFileStaging: EmptyFileStaging {}
+
 
 protocol EmptyStashing: Stashing {}
 
@@ -291,6 +318,7 @@ class NullStashing: EmptyStashing
   typealias Commit = NullCommit
 }
 
+
 protocol EmptyStash: Stash {}
 
 extension EmptyStash
@@ -307,6 +335,7 @@ extension EmptyStash
 }
 class NullStash: EmptyStash {}
 
+
 protocol EmptyRemoteManagement: RemoteManagement {}
 
 extension EmptyRemoteManagement
@@ -317,6 +346,7 @@ extension EmptyRemoteManagement
   func deleteRemote(named name: String) throws {}
 }
 class NullRemoteManagement: EmptyRemoteManagement {}
+
 
 public protocol EmptyRemoteCommunication: RemoteCommunication {}
 
@@ -332,6 +362,7 @@ extension EmptyRemoteCommunication
 }
 class NullRemoteCommunication: EmptyRemoteCommunication {}
 
+
 protocol EmptyTagging: Tagging {}
 
 extension EmptyTagging
@@ -341,6 +372,7 @@ extension EmptyTagging
   func deleteTag(name: String) throws {}
 }
 class NullTagging: EmptyTagging {}
+
 
 protocol EmptyWorkspace: Workspace {}
 
