@@ -80,22 +80,27 @@ extension SidebarController
   func mergeBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem() as? BranchSidebarItem,
-          let branch = selectedItem.branchObject()
+          let branch = selectedItem.branchObject(),
+          let repo = self.repo,
+          let queue = repoController?.queue
     else { return }
-    
-    repoUIController?.queue.executeOffMainThread {
-      [weak self] in
+    let showAlert = { // capture self here instead of not-main-thread block
+      [weak self] (repoError: RepoError) -> Void in
+      guard let window = self?.view.window
+      else { return }
+      let alert = NSAlert()
+
+      alert.messageString = repoError.message
+      alert.beginSheetModal(for: window)
+    }
+
+    queue.executeOffMainThread {
       do {
-        try self?.repo.merge(branch: branch)
+        try repo.merge(branch: branch)
       }
       catch let repoError as RepoError {
         DispatchQueue.main.async {
-          guard let window = self?.view.window
-          else { return }
-          let alert = NSAlert()
-          
-          alert.messageString = repoError.message
-          alert.beginSheetModal(for: window)
+          showAlert(repoError)
         }
       }
       catch {
