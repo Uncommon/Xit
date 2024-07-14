@@ -170,13 +170,11 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
   
   override nonisolated func webMessage(action: String, sha: String?, index: Int?)
   {
-    guard let sha
+    guard let sha,
+          let oid = GitOID(sha: sha)
     else { return }
 
     DispatchQueue.main.async { [self] in
-      guard let oid = repoUIController?.repository.oid(forSHA: sha)
-      else { return }
-
       repoUIController?.select(oid: oid)
     }
   }

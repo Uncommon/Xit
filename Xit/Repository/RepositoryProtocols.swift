@@ -67,7 +67,6 @@ public protocol CommitStorage: AnyObject
   associatedtype Commit: Xit.Commit
   associatedtype RevWalk: Xit.RevWalk
 
-  func oid(forSHA sha: String) -> GitOID?
   func commit(forSHA sha: String) -> Commit?
   func commit(forOID oid: GitOID) -> Commit?
 

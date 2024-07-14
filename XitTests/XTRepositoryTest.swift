@@ -472,7 +472,7 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockTags()
   {
-    guard let headOID = repository.headSHA.flatMap({ repository.oid(forSHA: $0) })
+    guard let headOID = repository.headOID
     else {
       XCTFail("no head")
       return

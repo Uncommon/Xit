@@ -2,11 +2,6 @@ import Foundation
 
 extension XTRepository: CommitStorage
 {
-  public func oid(forSHA sha: String) -> GitOID?
-  {
-    return GitOID(sha: sha)
-  }
-  
   public func commit(forSHA sha: String) -> GitCommit?
   {
     return GitCommit(sha: sha, repository: gitRepo)
