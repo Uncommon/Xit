@@ -288,8 +288,8 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
         select(remoteBranch:
             remoteRef.droppingPrefix(RefPrefixes.remotes))
       
-      case let tagRef where tagRef.hasPrefix(GitTag.tagPrefix):
-        select(tag: tagRef.droppingPrefix(GitTag.tagPrefix))
+      case let tagRef where tagRef.hasPrefix(RefPrefixes.tags):
+        select(tag: tagRef.droppingPrefix(RefPrefixes.tags))
       
       default:
         break

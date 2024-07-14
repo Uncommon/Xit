@@ -22,9 +22,6 @@ public enum TagType
 
 public final class GitTag: Tag
 {
-  // TODO: Move this out because it's used by other classes
-  static let tagPrefix = "refs/tags/"
-
   weak var repository: XTRepository?
   private let ref: OpaquePointer
   private let tag: OpaquePointer?
@@ -67,7 +64,7 @@ public final class GitTag: Tag
   /// or just the tag name itself.
   init?(repository: XTRepository, name: String)
   {
-    let refName = name.hasPrefix(GitTag.tagPrefix) ? name : GitTag.tagPrefix + name
+    let refName = name.withPrefix(RefPrefixes.tags)
     guard let ref = try? OpaquePointer.from({
             git_reference_lookup(&$0, repository.gitRepo, refName)
           }),
@@ -75,7 +72,7 @@ public final class GitTag: Tag
     else { return nil }
     
     self.ref = ref
-    self.name = name.droppingPrefix(GitTag.tagPrefix)
+    self.name = name.droppingPrefix(RefPrefixes.tags)
     
     self.tag = try? OpaquePointer.from({
         git_reference_peel(&$0, ref, GIT_OBJECT_TAG) })
