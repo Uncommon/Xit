@@ -68,7 +68,7 @@ extension XTRepository: RemoteCommunication
     var mergeBranch = branch
     
     if let localBranch = branch as? GitLocalBranch,
-       let trackingBranch = localBranch.trackingBranch as? GitRemoteBranch {
+       let trackingBranch = localBranch.trackingBranch {
       mergeBranch = trackingBranch
     }
     
