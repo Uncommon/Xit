@@ -73,11 +73,11 @@ public protocol ConnectedRemote: AnyObject
   func referenceAdvertisements() throws -> [RemoteHead]
 }
 
-final class GitRemote: Remote
+public final class GitRemote: Remote
 {
   let remote: OpaquePointer
   
-  var name: String?
+  public var name: String?
   {
     guard let name = git_remote_name(remote)
     else { return nil }
@@ -85,7 +85,7 @@ final class GitRemote: Remote
     return String(cString: name)
   }
 
-  var urlString: String?
+  public var urlString: String?
   {
     guard let url = git_remote_url(remote)
     else { return nil }
@@ -93,7 +93,7 @@ final class GitRemote: Remote
     return String(cString: url)
   }
   
-  var pushURLString: String?
+  public var pushURLString: String?
   {
     guard let url = git_remote_pushurl(remote)
     else { return nil }
@@ -101,7 +101,7 @@ final class GitRemote: Remote
     return String(cString: url)
   }
   
-  var refSpecs: AnyCollection<GitRefSpec>
+  public var refSpecs: AnyCollection<GitRefSpec>
   { AnyCollection(RefSpecCollection(remote: self)) }
   
   init?(name: String, repository: OpaquePointer)
@@ -128,7 +128,7 @@ final class GitRemote: Remote
     git_remote_free(remote)
   }
 
-  func rename(_ name: String) throws
+  public func rename(_ name: String) throws
   {
     guard let oldName = git_remote_name(remote),
           let owner = git_remote_owner(remote)
@@ -159,7 +159,7 @@ final class GitRemote: Remote
     }
   }
   
-  func updateURLString(_ URLString: String?) throws
+  public func updateURLString(_ URLString: String?) throws
   {
     guard let name = git_remote_name(remote),
           let owner = git_remote_owner(remote)
@@ -174,7 +174,7 @@ final class GitRemote: Remote
     }
   }
   
-  func updatePushURLString(_ URLString: String?) throws
+  public func updatePushURLString(_ URLString: String?) throws
   {
     guard let name = git_remote_name(remote),
           let owner = git_remote_owner(remote)
@@ -189,7 +189,7 @@ final class GitRemote: Remote
     }
   }
   
-  func withConnection<T>(direction: RemoteConnectionDirection,
+  public func withConnection<T>(direction: RemoteConnectionDirection,
                          callbacks: RemoteCallbacks,
                          action: (any ConnectedRemote) throws -> T) throws -> T
   {
@@ -249,7 +249,7 @@ extension GitRemote
       self.remote = remote
     }
     
-    mutating func next() -> GitRefSpec?
+    mutating public func next() -> GitRefSpec?
     {
       guard index < git_remote_refspec_count(remote.remote)
       else { return nil }

@@ -116,8 +116,8 @@ extension FakeRepo: SubmoduleManagement
 extension FakeRepo: RemoteManagement
 {
   func remoteNames() -> [String] { return ["origin1", "origin2" ]}
-  
-  func remote(named name: String) -> (any Remote)?
+
+  func remote(named name: String) -> FakeRemote?
   {
     switch name {
       case "origin1": return remote1
@@ -125,7 +125,15 @@ extension FakeRepo: RemoteManagement
       default: return nil
     }
   }
-  
+
   func addRemote(named name: String, url: URL) throws {}
   func deleteRemote(named name: String) throws {}
+
+  func push(branches: [LocalBranch],
+            remote: FakeRemote,
+            callbacks: RemoteCallbacks) throws {}
+  func fetch(remote: FakeRemote, options: FetchOptions) throws {}
+  func pull(branch: any Branch,
+            remote: FakeRemote,
+            options: FetchOptions) throws {}
 }

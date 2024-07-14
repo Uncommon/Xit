@@ -97,8 +97,19 @@ class FetchOpController: PasswordOpController
                     downloadTags: Bool,
                     pruneBranches: Bool)
   {
-    guard let repository = repository,
-          let remote = repository.remote(named: remoteName)
+    guard let repository = repository
+    else { return }
+
+    executeFetch(repository, remoteName: remoteName,
+                 downloadTags: downloadTags, pruneBranches: pruneBranches)
+  }
+
+  func executeFetch(_ repository: some RemoteManagement,
+                    remoteName: String,
+                    downloadTags: Bool,
+                    pruneBranches: Bool)
+  {
+    guard let remote = repository.remote(named: remoteName)
     else { return }
     
     if let url = remote.url {

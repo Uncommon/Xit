@@ -38,15 +38,20 @@ final class PushOpController: PasswordOpController
     guard let repository = repository
     else { throw RepoError.unexpected }
 
-    let remote: any Remote
-    let branches: [any LocalBranch]
+    try start(repository)
+  }
+
+  func start<R>(_ repository: R) throws where R: FullRepository
+  {
+    let remote: R.Remote
+    let branches: [R.LocalBranch]
 
     switch remoteOption {
       case .all:
         throw RepoError.unexpected
 
       case .new:
-        try pushNewBranch()
+        try pushNewBranch(repository)
         return
       
       case .currentBranch, nil:
@@ -60,7 +65,7 @@ final class PushOpController: PasswordOpController
               let remoteName = remoteBranch.remoteName,
               let trackedRemote = repository.remote(named: remoteName)
         else {
-          try pushNewBranch()
+          try pushNewBranch(repository)
           return
         }
 
@@ -70,9 +75,9 @@ final class PushOpController: PasswordOpController
       case .named(let remoteName):
         guard let namedRemote = repository.remote(named: remoteName)
         else { throw RepoError.notFound }
-        let localTrackingBranches =
-          getLocalTrackingBranches(repository, for: remoteName)
-
+        let localTrackingBranches = repository.localBranches.filter {
+          $0.trackingBranch?.remoteName == remoteName
+        }
         guard !localTrackingBranches.isEmpty
         else {
           let alert = NSAlert()
@@ -99,7 +104,7 @@ final class PushOpController: PasswordOpController
     alert.beginSheetModal(for: windowController!.window!) {
       (response) in
       if response == .alertFirstButtonReturn {
-        self.push(branches: branches, remote: remote)
+        self.push(repository, branches: branches, remote: remote)
       }
       else {
         self.ended(result: .canceled)
@@ -107,18 +112,10 @@ final class PushOpController: PasswordOpController
     }
   }
 
-  func getLocalTrackingBranches(_ repository: some Branching,
-                                for remoteName: String) -> [any LocalBranch]
+  func pushNewBranch(_ repository: some RemoteManagement &
+                     CommitReferencing & Branching) throws
   {
-    repository.localBranches.filter {
-      $0.trackingBranch?.remoteName == remoteName
-    }
-  }
-
-  func pushNewBranch() throws
-  {
-    guard let repository = self.repository,
-          let window = windowController?.window,
+    guard let window = windowController?.window,
           let branchName = repository.currentBranchRefName,
           let currentBranch = repository.localBranch(named: branchName)
     else {
@@ -142,7 +139,7 @@ final class PushOpController: PasswordOpController
         return
       }
       
-      self.push(branches: [currentBranch], remote: remote, then: {
+      self.push(repository, branches: [currentBranch], remote: remote, then: {
         // This is now on the repo queue
         if let remoteName = remote.name {
           DispatchQueue.main.async {
@@ -171,13 +168,12 @@ final class PushOpController: PasswordOpController
     }
   }
   
-  func push(branches: [any LocalBranch],
-            remote: any Remote,
-            then callback: (@Sendable () -> Void)? = nil)
+  func push<R>(_ repository: R,
+               branches: [R.LocalBranch],
+               remote: R.Remote,
+               then callback: (@Sendable () -> Void)? = nil)
+    where R: RemoteManagement
   {
-    guard let repository = self.repository
-    else { return }
-
     if let url = remote.pushURL ?? remote.url {
       self.setKeychainInfo(from: url)
     }

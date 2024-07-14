@@ -188,7 +188,7 @@ extension XTRepository: Stashing
   }
 }
 
-extension XTRepository: RemoteManagement
+extension XTRepository
 {
   public func remoteNames() -> [String]
   {
@@ -202,7 +202,7 @@ extension XTRepository: RemoteManagement
     return strArray.compactMap { $0 }
   }
   
-  public func remote(named name: String) -> (any Remote)?
+  public func remote(named name: String) -> GitRemote?
   {
     return GitRemote(name: name, repository: gitRepo)
   }

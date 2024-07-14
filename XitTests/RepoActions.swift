@@ -426,6 +426,11 @@ struct Fetch: RepoAction
   
   func execute(in repository: any FullRepository) throws
   {
+    try executeUnboxed(in: repository)
+  }
+
+  func executeUnboxed(in repository: some FullRepository) throws
+  {
     guard let remote = repository.remote(named: remoteName)
     else { throw RepoError.notFound }
     let options = FetchOptions(downloadTags: false,

@@ -1,14 +1,11 @@
 import Foundation
 
-extension XTRepository: RemoteCommunication
+extension XTRepository: RemoteManagement
 {
-  public func push(branches: [any LocalBranch],
-                   remote: any Remote,
+  public func push(branches: [GitLocalBranch],
+                   remote: GitRemote,
                    callbacks: RemoteCallbacks) throws
   {
-    guard let gitRemote = remote as? GitRemote
-    else { throw RepoError.unexpected }
-
     try performWriting {
       var result: Int32
       let names = branches.map { $0.name }
@@ -22,7 +19,7 @@ extension XTRepository: RemoteCommunication
 
           options.callbacks = gitCallbacks
           return Signpost.interval(.networkOperation) {
-            git_remote_push(gitRemote.remote, &mutableArray, &options)
+            git_remote_push(remote.remote, &mutableArray, &options)
           }
         }
       }
@@ -30,16 +27,13 @@ extension XTRepository: RemoteCommunication
     }
   }
   
-  public func fetch(remote: any Remote, options: FetchOptions) throws
+  public func fetch(remote: GitRemote, options: FetchOptions) throws
   {
-    guard let gitRemote = remote as? GitRemote
-    else { throw RepoError.unexpected }
-
     try performWriting {
       var refspecs = git_strarray.init()
       var result: Int32
       
-      result = git_remote_get_fetch_refspecs(&refspecs, gitRemote.remote)
+      result = git_remote_get_fetch_refspecs(&refspecs, remote.remote)
       try RepoError.throwIfGitError(result)
       defer {
         git_strarray_free(&refspecs)
@@ -51,7 +45,7 @@ extension XTRepository: RemoteCommunication
         withUnsafePointer(to: $0) {
           (options) in
           Signpost.interval(.networkOperation) {
-            git_remote_fetch(gitRemote.remote, &refspecs, options, message)
+            git_remote_fetch(remote.remote, &refspecs, options, message)
           }
         }
       }
@@ -60,7 +54,7 @@ extension XTRepository: RemoteCommunication
   }
   
   public func pull(branch: any Branch,
-                   remote: any Remote,
+                   remote: GitRemote,
                    options: FetchOptions) throws
   {
     try fetch(remote: remote, options: options)
@@ -96,9 +90,9 @@ extension XTRepository: Merging
     let branchName: String
 
     switch remoteBranch {
-      case let localBranch as any LocalBranch:
+      case let localBranch as GitLocalBranch:
         branchName = localBranch.name
-      case let remoteBranch as any RemoteBranch:
+      case let remoteBranch as GitRemoteBranch:
         branchName = remoteBranch.shortName
       default:
         assertionFailure("unexpected branch type: \(remoteBranch)")

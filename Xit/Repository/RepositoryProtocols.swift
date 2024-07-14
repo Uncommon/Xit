@@ -6,8 +6,8 @@ import Combine
 public typealias FullRepository =
     BasicRepository & Branching & CommitStorage & CommitReferencing & FileDiffing &
     FileContents & FileStaging & FileStatusDetection & Merging &
-    RemoteCommunication & RemoteManagement & RepoConfiguring & Stashing &
-    SubmoduleManagement & Tagging & WritingManagement & Workspace
+    RemoteManagement & RepoConfiguring & Stashing & SubmoduleManagement &
+    Tagging & WritingManagement & Workspace
 
 public protocol BasicRepository
 {
@@ -248,15 +248,37 @@ public protocol Stashing: AnyObject
 
 public protocol RemoteManagement: AnyObject
 {
+  associatedtype LocalBranch: Xit.LocalBranch
+  associatedtype Remote: Xit.Remote
+
   func remoteNames() -> [String]
-  func remote(named name: String) -> (any Remote)?
+  func remote(named name: String) -> Remote?
   func addRemote(named name: String, url: URL) throws
   func deleteRemote(named name: String) throws
+
+  /// Pushes an update for the given branch.
+  /// - parameter branches: Local branches to push; must have a tracking branch set
+  /// - parameter remote: Target remote to push to
+  /// - parameter callbacks: Password and progress callbacks
+  func push(branches: [LocalBranch],
+            remote: Remote,
+            callbacks: RemoteCallbacks) throws
+
+  /// Dowloads updated refs and commits from the remote.
+  func fetch(remote: Remote, options: FetchOptions) throws
+
+  /// Initiates pulling (fetching and merging) the given branch.
+  /// - parameter branch: Either the local branch or the remote tracking branch.
+  /// - parameter remote: The remote to pull from.
+  /// - parameter options: Options for the fetch operation.
+  func pull(branch: any Branch,
+            remote: Remote,
+            options: FetchOptions) throws
 }
 
 extension RemoteManagement
 {
-  func remotes() -> [any Remote]
+  func remotes() -> [Remote]
   {
     return remoteNames().compactMap { remote(named: $0) }
   }
@@ -321,28 +343,6 @@ public struct PushTransferProgress: Sendable
 {
   let current, total: UInt32
   let bytes: size_t
-}
-
-public protocol RemoteCommunication: AnyObject
-{
-  /// Pushes an update for the given branch.
-  /// - parameter branches: Local branches to push; must have a tracking branch set
-  /// - parameter remote: Target remote to push to
-  /// - parameter callbacks: Password and progress callbacks
-  func push(branches: [any LocalBranch],
-            remote: any Remote,
-            callbacks: RemoteCallbacks) throws
-  
-  /// Dowloads updated refs and commits from the remote.
-  func fetch(remote: any Remote, options: FetchOptions) throws
-  
-  /// Initiates pulling (fetching and merging) the given branch.
-  /// - parameter branch: Either the local branch or the remote tracking branch.
-  /// - parameter remote: The remote to pull from.
-  /// - parameter options: Options for the fetch operation.
-  func pull(branch: any Branch,
-            remote: any Remote,
-            options: FetchOptions) throws
 }
 
 public protocol SubmoduleManagement: AnyObject

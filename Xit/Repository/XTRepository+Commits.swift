@@ -167,7 +167,7 @@ extension XTRepository: CommitReferencing
   {
     return try writing {
       guard let refName = LocalBranchRefName(name),
-            let branch = localBranch(named: refName) as? GitLocalBranch
+            let branch = localBranch(named: refName)
       else { throw RepoError.notFound }
 
       try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))

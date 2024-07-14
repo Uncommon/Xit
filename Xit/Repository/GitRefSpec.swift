@@ -19,16 +19,16 @@ public protocol RefSpec
   func transformToSource(name: String) -> String?
 }
 
-struct GitRefSpec: RefSpec
+public struct GitRefSpec: RefSpec
 {
   let refSpec: OpaquePointer
   
-  var source: String { String(cString: git_refspec_src(refSpec)) }
-  var destination: String { String(cString: git_refspec_dst(refSpec)) }
-  var stringValue: String { String(cString: git_refspec_string(refSpec)) }
-  var force: Bool { git_refspec_force(refSpec) != 0 }
+  public var source: String { String(cString: git_refspec_src(refSpec)) }
+  public var destination: String { String(cString: git_refspec_dst(refSpec)) }
+  public var stringValue: String { String(cString: git_refspec_string(refSpec)) }
+  public var force: Bool { git_refspec_force(refSpec) != 0 }
 
-  var direction: RemoteConnectionDirection
+  public var direction: RemoteConnectionDirection
   { .init(gitDirection: git_refspec_direction(refSpec)) }
 
   init(refSpec: OpaquePointer)
@@ -46,17 +46,17 @@ struct GitRefSpec: RefSpec
     self.refSpec = refSpec
   }
 
-  func sourceMatches(refName: String) -> Bool
+  public func sourceMatches(refName: String) -> Bool
   {
     return git_refspec_src_matches(refSpec, refName) == 1
   }
   
-  func destinationMatches(refName: String) -> Bool
+  public func destinationMatches(refName: String) -> Bool
   {
     return git_refspec_dst_matches(refSpec, refName) == 1
   }
   
-  func transformToTarget(name: String) -> String?
+  public func transformToTarget(name: String) -> String?
   {
     var buffer = git_buf()
     let result = git_refspec_transform(&buffer, refSpec, name)
@@ -68,7 +68,7 @@ struct GitRefSpec: RefSpec
     return target
   }
   
-  func transformToSource(name: String) -> String?
+  public func transformToSource(name: String) -> String?
   {
     var buffer = git_buf()
     let result = git_refspec_rtransform(&buffer, refSpec, name)

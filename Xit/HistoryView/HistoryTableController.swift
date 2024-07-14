@@ -328,9 +328,7 @@ extension HistoryTableController: NSTableViewDelegate
               !tableView.columnObject(withIdentifier: ColumnID.refs)!.isHidden
 
         historyCell.displayMode = refsColumnVisible ? .titleGraph : .all
-        historyCell.configure(
-            entry: entry,
-            repository: repository as! any Branching & CommitReferencing)
+        historyCell.configure(entry: entry, repository: repository)
         historyCell.mutex = history.syncMutex
 
       case ColumnID.author:
@@ -356,9 +354,7 @@ extension HistoryTableController: NSTableViewDelegate
         let refsCell = result as! HistoryCellView
 
         refsCell.displayMode = .refsOnly
-        refsCell.configure(
-            entry: entry,
-            repository: repository as! any Branching & CommitReferencing)
+        refsCell.configure(entry: entry, repository: repository)
         refsCell.mutex = history.syncMutex
 
       default:
