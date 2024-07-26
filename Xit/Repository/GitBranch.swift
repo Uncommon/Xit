@@ -1,5 +1,7 @@
 import Cocoa
+import FakedMacro
 
+@Faked(skip: ["prefix", "remoteName"], createNull: false)
 public protocol Branch: AnyObject
 {
   /// The full reference name
@@ -26,6 +28,7 @@ extension Branch
 }
 
 
+@Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol LocalBranch: Branch
 {
   associatedtype RemoteBranch: Xit.RemoteBranch
@@ -41,6 +44,7 @@ extension LocalBranch
 }
 
 
+@Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol RemoteBranch: Branch
 {
 }
@@ -53,6 +57,12 @@ extension RemoteBranch
   /// What the branch name would look like if it were a local branch
   public var localBranchName: String
   { RefPrefixes.heads + strippedName }
+}
+
+// EmptyRemoteBranch can't be extended outside the macro
+extension RemoteBranch
+{
+  public var remoteName: String? { nil }
 }
 
 

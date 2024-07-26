@@ -1,5 +1,7 @@
 import Cocoa
+import FakedMacro
 
+@Faked
 public protocol Tag
 {
   associatedtype Commit: Xit.Commit
@@ -18,6 +20,11 @@ public protocol Tag
 public enum TagType
 {
   case lightweight, annotated
+}
+
+extension TagType
+{
+  static func fakeDefault() -> Self { .lightweight }
 }
 
 public final class GitTag: Tag

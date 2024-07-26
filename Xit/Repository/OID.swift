@@ -16,6 +16,12 @@ extension OIDObject // Equatable
   { a.id == b.id }
 }
 
+protocol EmptyOIDObject: OIDObject {}
+extension EmptyOIDObject
+{
+  var id: GitOID { .zero() }
+}
+
 
 public struct GitOID: Sendable
 {
@@ -120,6 +126,11 @@ extension GitOID: CustomStringConvertible
 extension GitOID: CustomDebugStringConvertible
 {
   public var debugDescription: String { .init(sha.drop(while: { $0 == "0" })) }
+}
+
+extension GitOID // Fakable
+{
+  static func fakeDefault() -> GitOID { .zero() }
 }
 
 let oidSize = 20

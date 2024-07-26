@@ -1,5 +1,5 @@
 {
-  "originHash" : "daf185367b84b6a38fd7b80ce35bef1f826cc547e47c6ef97e81735b837e1d26",
+  "originHash" : "a6c91dab9765923bb5004230ac4f08d8b71e8fc0d06a88264c46fd18d6119b2b",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -11,12 +11,30 @@
       }
     },
     {
+      "identity" : "fakedmacro",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Uncommon/FakedMacro",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c6a8ed222b54fc3e0a8f2b44c60f2de0a7dd007b"
+      }
+    },
+    {
       "identity" : "siesta",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bustoutsolutions/siesta",
       "state" : {
         "revision" : "43f34046ebb5beb6802200353c473af303bbc31e",
         "version" : "1.5.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
     }
   ],

@@ -1,5 +1,7 @@
 import Cocoa
+import FakedMacro
 
+@Faked
 public protocol Stash: AnyObject
 {
   associatedtype Commit: Xit.Commit

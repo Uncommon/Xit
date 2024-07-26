@@ -172,7 +172,7 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
 {
   typealias Commit = NullCommit
   typealias Tag = NullTag
-  typealias Tree = NullTree
+  typealias Tree = FakeTree
   typealias Blob = NullBlob
   typealias LocalBranch = NullLocalBranch
   typealias RemoteBranch = NullRemoteBranch

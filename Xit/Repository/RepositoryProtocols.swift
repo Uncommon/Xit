@@ -1,6 +1,7 @@
 // periphery:ignore:all
 import Foundation
 import Combine
+import FakedMacro
 
 /// A combination of all repository protocols
 public typealias FullRepository =
@@ -9,6 +10,7 @@ public typealias FullRepository =
     RemoteManagement & RepoConfiguring & Stashing & SubmoduleManagement &
     Tagging & WritingManagement & Workspace
 
+@Faked
 public protocol BasicRepository
 {
   var controller: (any RepositoryController)? { get }
@@ -39,6 +41,7 @@ public protocol RepositoryPublishing
   func refsChanged()
 }
 
+@Faked
 public protocol WritingManagement
 {
   /// True if the repository is currently performing a writing operation.
@@ -54,6 +57,7 @@ public protocol RepoConfiguring
   var config: any Config { get }
 }
 
+@Faked
 public protocol Cloning
 {
   func clone(from source: URL, to destination: URL,
@@ -62,6 +66,7 @@ public protocol Cloning
              publisher: RemoteProgressPublisher) throws -> (any FullRepository)?
 }
 
+@Faked
 public protocol CommitStorage: AnyObject
 {
   associatedtype Commit: Xit.Commit
@@ -76,6 +81,7 @@ public protocol CommitStorage: AnyObject
 }
 
 
+@Faked(types: ["Tree": "FakeTree"])
 public protocol CommitReferencing: AnyObject
 {
   associatedtype Commit: Xit.Commit
@@ -124,6 +130,7 @@ extension CommitReferencing where Self: Branching
   { currentBranch.flatMap { .init($0) } }
 }
 
+@Faked
 public protocol FileStatusDetection: AnyObject
 {
   func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
@@ -137,8 +144,14 @@ public protocol FileStatusDetection: AnyObject
   func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
   func stagedStatus(for path: String) throws -> DeltaStatus
   func unstagedStatus(for path: String) throws -> DeltaStatus
+  @FakeDefault((DeltaStatus.unmodified, DeltaStatus.unmodified))
   func status(file: String) throws -> (DeltaStatus, DeltaStatus)
   func isIgnored(path: String) -> Bool
+}
+
+extension DeltaStatus
+{
+  static func fakeDefault() -> Self { .unmodified }
 }
 
 extension FileStatusDetection
@@ -159,6 +172,7 @@ extension FileStatusDetection
   }
 }
 
+@Faked
 public protocol FileDiffing: AnyObject
 {
   associatedtype Blame: Xit.Blame
@@ -178,6 +192,7 @@ public protocol FileDiffing: AnyObject
              to endOID: GitOID?) -> Blame?
 }
 
+@Faked
 public protocol FileContents: AnyObject
 {
   associatedtype Blob: Xit.Blob
@@ -192,6 +207,12 @@ public protocol FileContents: AnyObject
   func fileURL(_ file: String) -> URL
 }
 
+extension URL
+{
+  static func fakeDefault() -> Self { .init(filePath: "/") }
+}
+
+@Faked
 public protocol FileStaging: AnyObject
 {
   var index: (any StagingIndex)? { get }
@@ -225,10 +246,13 @@ extension FileStaging
   }
 }
 
+@Faked
 public protocol Stashing: AnyObject
 {
+  @FakeDefault(exp: ".init([any Stash]())")
   var stashes: AnyCollection<any Stash> { get }
   
+  @FakeDefault(exp: "NullStash()")
   func stash(index: UInt, message: String?) -> any Stash
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws
@@ -246,6 +270,7 @@ public protocol Stashing: AnyObject
                  includeIgnored: Bool) throws
 }
 
+@Faked
 public protocol RemoteManagement: AnyObject
 {
   associatedtype LocalBranch: Xit.LocalBranch
@@ -284,6 +309,7 @@ extension RemoteManagement
   }
 }
 
+@Faked
 public protocol TransferProgress: Sendable
 {
   var totalObjects: UInt32 { get }
@@ -345,14 +371,15 @@ public struct PushTransferProgress: Sendable
   let bytes: size_t
 }
 
+@Faked
 public protocol SubmoduleManagement: AnyObject
 {
   func submodules() -> [any Submodule]
   func addSubmodule(path: String, url: String) throws
 }
 
-public protocol Branching: AnyObject
-{
+@Faked
+public protocol Branching: AnyObject {
   associatedtype LocalBranch: Xit.LocalBranch
   associatedtype RemoteBranch: Xit.RemoteBranch
 
@@ -446,6 +473,7 @@ extension Branching
   }
 }
 
+@Faked
 public protocol Tagging: AnyObject
 {
   func createTag(name: String, targetOID: GitOID, message: String?) throws
@@ -453,6 +481,7 @@ public protocol Tagging: AnyObject
   func deleteTag(name: String) throws
 }
 
+@Faked
 public protocol Workspace: AnyObject
 {
   func checkOut(branch: String) throws

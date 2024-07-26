@@ -1,5 +1,7 @@
 import Foundation
+import FakedMacro
 
+@Faked
 public protocol RefSpec
 {
   var source: String { get }
@@ -17,6 +19,11 @@ public protocol RefSpec
   /// Transform a target reference to its source reference following the
   /// refspec's rules
   func transformToSource(name: String) -> String?
+}
+
+extension RemoteConnectionDirection
+{
+  static func fakeDefault() -> Self { .fetch }
 }
 
 public struct GitRefSpec: RefSpec

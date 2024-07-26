@@ -7,7 +7,7 @@ class FakeRepo: FileChangesRepo &
 {
   typealias Commit = FakeCommit
   typealias Tag = NullTag
-  typealias Tree = NullTree
+  typealias Tree = FakeTree
   typealias Blob = NullBlob
   typealias LocalBranch = FakeLocalBranch
   typealias RemoteBranch = FakeRemoteBranch

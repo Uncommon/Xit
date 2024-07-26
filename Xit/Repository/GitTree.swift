@@ -1,4 +1,5 @@
 import Foundation
+import FakedMacro
 
 public protocol Tree: OIDObject
 {
@@ -19,6 +20,7 @@ public protocol Tree: OIDObject
   func entry(at index: Int) -> Entry?
 }
 
+@Faked(inherit: ["EmptyOIDObject"])
 public protocol TreeEntry: OIDObject
 {
   var type: GitObjectType { get }
@@ -28,6 +30,10 @@ public protocol TreeEntry: OIDObject
   var object: (any OIDObject)? { get }
 }
 
+extension GitObjectType
+{
+  static func fakeDefault() -> Self { .invalid }
+}
 
 public final class GitTree: Tree
 {

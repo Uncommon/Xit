@@ -1,6 +1,8 @@
 import Cocoa
+import FakedMacro
 
-
+// It's hard to do EmptyTree because of how entries works
+@Faked(types: ["Tree": "FakeTree"], inherit: ["EmptyOIDObject"])
 public protocol Commit: OIDObject, CustomStringConvertible
 {
   associatedtype Tree: Xit.Tree
@@ -17,7 +19,7 @@ public protocol Commit: OIDObject, CustomStringConvertible
   var authorDate: Date? { get }
   var committerName: String? { get }
   var committerEmail: String? { get }
-  var commitDate: Date { get }
+  @FakeDefault(Date.distantPast) var commitDate: Date { get }
   
   var tree: Tree? { get }
 

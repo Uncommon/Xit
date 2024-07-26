@@ -1,11 +1,18 @@
 import Foundation
+import FakedMacro
 
+@Faked
 public protocol Blob: ContiguousBytes
 {
   var dataSize: UInt { get }
   var isBinary: Bool { get }
 
   func makeData() -> Data?
+  
+  // For ContiguousBytes
+  @FakeDefault(exp: "try body(.init(start: nil, count: 0))")
+  func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R)
+      rethrows -> R
 }
 
 public final class GitBlob

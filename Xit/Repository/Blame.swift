@@ -1,5 +1,7 @@
 import Foundation
+import FakedMacro
 
+@Faked
 public protocol Blame
 {
   var hunks: [BlameHunk] { get }

@@ -1,4 +1,5 @@
 import Cocoa
+import FakedMacro
 
 public enum RemoteConnectionDirection: Sendable
 {
@@ -29,6 +30,7 @@ extension RemoteConnectionDirection
   }
 }
 
+@Faked
 public protocol Remote: AnyObject
 {
   typealias PushProgressCallback = (PushTransferProgress) -> Bool
@@ -38,6 +40,7 @@ public protocol Remote: AnyObject
   var urlString: String? { get }
   var pushURLString: String? { get }
   
+  @FakeDefault(exp: ".init([RefSpec]())")
   var refSpecs: AnyCollection<RefSpec> { get }
   
   func rename(_ name: String) throws
@@ -45,6 +48,7 @@ public protocol Remote: AnyObject
   func updatePushURLString(_ URLString: String?) throws
   
   /// Calls the callback between opening and closing a connection to the remote.
+  @FakeDefault(exp: "try action(NullConnectedRemote())")
   func withConnection<T>(direction: RemoteConnectionDirection,
                          callbacks: RemoteCallbacks,
                          action: (any ConnectedRemote) throws -> T) throws -> T
@@ -66,6 +70,7 @@ extension Remote
   }
 }
 
+@Faked
 public protocol ConnectedRemote: AnyObject
 {
   var defaultBranch: String? { get }
@@ -190,8 +195,9 @@ public final class GitRemote: Remote
   }
   
   public func withConnection<T>(direction: RemoteConnectionDirection,
-                         callbacks: RemoteCallbacks,
-                         action: (any ConnectedRemote) throws -> T) throws -> T
+                                callbacks: RemoteCallbacks,
+                                action: (any ConnectedRemote) throws -> T)
+    throws -> T
   {
     var result: Int32
     

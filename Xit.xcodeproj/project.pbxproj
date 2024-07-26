@@ -61,7 +61,6 @@
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
 		897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */; };
 		897AE64F28BACDA500CC165C /* FileListModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE64E28BACDA500CC165C /* FileListModelTest.swift */; };
-		897AE65128BAD14C00CC165C /* EmptyRepoProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */; };
 		897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */; };
 		8983E19126641BC20075370C /* ClonePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E19026641BC20075370C /* ClonePanel.swift */; };
 		8983E1A7266596BD0075370C /* PathField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E1A6266596BD0075370C /* PathField.swift */; };
@@ -110,6 +109,7 @@
 		89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272D2861711700A17651 /* AccountsPrefsPane.swift */; };
 		89E427302862CF2E00A17651 /* EditAccountPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89F24B842C498878007D632E /* FakedMacro in Frameworks */ = {isa = PBXBuildFile; productRef = 89F24B832C498878007D632E /* FakedMacro */; };
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
 		89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F62856946D009ECF7D /* SheetDialog.swift */; };
@@ -435,7 +435,6 @@
 		897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickThroughImageView.swift; sourceTree = "<group>"; };
 		897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStringExtensions.swift; sourceTree = "<group>"; };
 		897AE64E28BACDA500CC165C /* FileListModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListModelTest.swift; sourceTree = "<group>"; };
-		897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRepoProtocols.swift; sourceTree = "<group>"; };
 		897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchBar.swift; sourceTree = "<group>"; };
 		8983E19026641BC20075370C /* ClonePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanel.swift; sourceTree = "<group>"; };
 		8983E1A6266596BD0075370C /* PathField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathField.swift; sourceTree = "<group>"; };
@@ -756,6 +755,7 @@
 				C9CDB91D270D4FD1007C2E77 /* libgit2-mac.a in Frameworks */,
 				C9CDB920270D50A1007C2E77 /* libiconv.tbd in Frameworks */,
 				C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */,
+				89F24B842C498878007D632E /* FakedMacro in Frameworks */,
 				C9CDB924270D54F9007C2E77 /* libssh2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1019,7 +1019,6 @@
 				C924EFB4262F316500B13D31 /* RepoActions.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
-				897AE65028BAD14C00CC165C /* EmptyRepoProtocols.swift */,
 				895CBA372B4061E70094D534 /* LibGit2Test.swift */,
 			);
 			path = XitTests;
@@ -1338,6 +1337,7 @@
 			name = Xit;
 			packageProductDependencies = (
 				C931A0E0275AE340007F441C /* Siesta */,
+				89F24B832C498878007D632E /* FakedMacro */,
 			);
 			productName = Xit;
 			productReference = C3FA46FC13D0F8E200AC4F9B /* Xit.app */;
@@ -1422,6 +1422,7 @@
 			mainGroup = C3FA46F113D0F8E200AC4F9B;
 			packageReferences = (
 				C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */,
+				89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */,
 			);
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
 			projectDirPath = "";
@@ -1808,7 +1809,6 @@
 				C9FCC1D11D50EB1A00AC398E /* CommitHistoryTest.swift in Sources */,
 				C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */,
 				C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */,
-				897AE65128BAD14C00CC165C /* EmptyRepoProtocols.swift in Sources */,
 				C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */,
@@ -2535,6 +2535,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Uncommon/FakedMacro";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bustoutsolutions/siesta";
@@ -2546,6 +2554,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		89F24B832C498878007D632E /* FakedMacro */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */;
+			productName = FakedMacro;
+		};
 		C931A0E0275AE340007F441C /* Siesta */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */;
