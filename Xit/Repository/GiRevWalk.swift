@@ -2,7 +2,8 @@ import Foundation
 import FakedMacro
 
 @Faked
-public protocol RevWalk: AnyObject, Sequence, IteratorProtocol where Element == GitOID
+public protocol RevWalk: AnyObject, Sequence, IteratorProtocol
+  where Element == GitOID
 {
   func reset()
   func setSorting(_ sort: RevWalkSorting)

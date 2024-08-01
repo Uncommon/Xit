@@ -1,6 +1,7 @@
 import Foundation
 
-final class MemoryPasswordStorage: PasswordStorage, @unchecked Sendable // protected by lock
+// unchecked Sendable: protected by lock
+final class MemoryPasswordStorage: PasswordStorage, @unchecked Sendable
 {
   static let shared: MemoryPasswordStorage = .init()
 

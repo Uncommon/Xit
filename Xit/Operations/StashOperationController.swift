@@ -18,7 +18,8 @@ final class StashOperationController: SimpleOperationController
         return
       }
       let (message, keepStaged, includeUntracked, includeIgnored) =
-        (model.message, model.keepStaged, model.includeUntracked, model.includeIgnored)
+        (model.message, model.keepStaged,
+         model.includeUntracked, model.includeIgnored)
 
       self.tryRepoOperation {
         try repo.saveStash(name: message,

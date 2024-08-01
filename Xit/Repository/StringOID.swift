@@ -11,7 +11,8 @@ extension GitOID: ExpressibleByStringLiteral
 {
   public init(stringLiteral value: StringLiteralType)
   {
-    let padded = String(repeating: "0", count: GitOID.shaLength - value.count) + value
+    let padded = String(repeating: "0",
+                        count: GitOID.shaLength - value.count) + value
 
     self.oid = .init()
     precondition(git_oid_fromstr(&oid, padded) == 0, "failed to parse OID string")

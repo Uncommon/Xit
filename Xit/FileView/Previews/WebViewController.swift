@@ -56,7 +56,8 @@ class WebViewController: NSViewController
   {
     super.viewDidAppear()
     if appearanceObserver == nil {
-      appearanceObserver = webView.publisher(for: \.effectiveAppearance).sinkOnMainQueue {
+      appearanceObserver = webView.publisher(for: \.effectiveAppearance)
+                                  .sinkOnMainQueue {
         [weak self] (_) in
         self?.updateColors()
       }

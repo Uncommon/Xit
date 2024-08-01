@@ -24,7 +24,8 @@ class RepoDocument: NSDocument
 
   override func read(from url: URL, ofType typeName: String) throws
   {
-    // NSDocument.read(from:ofType:) is nonisolated, but in practice it gets called on the main thread
+    // NSDocument.read(from:ofType:) is nonisolated, but in practice it gets
+    // called on the main thread
     try MainActor.assumeIsolated {
       let gitURL = url.appendingPathComponent(".git")
 

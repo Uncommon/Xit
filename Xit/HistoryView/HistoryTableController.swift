@@ -134,7 +134,9 @@ final class HistoryTableController: NSViewController,
       }
 
       history.withSync {
-        history.appendCommits(walker.compactMap { repository.commit(forOID: $0) as? GitCommit })
+        history.appendCommits(walker.compactMap {
+          repository.commit(forOID: $0) as? GitCommit
+        })
       }
       
       DispatchQueue.global(qos: .utility).async {

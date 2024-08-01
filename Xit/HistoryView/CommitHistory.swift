@@ -331,7 +331,6 @@ final class CommitHistory<C: Commit>
   }
 }
 
-
 /// The result of processing a segment of a branch.
 struct BranchResult<C: Commit>
 {
@@ -352,7 +351,6 @@ extension BranchResult: CustomStringConvertible
     return "\(first)..\(last)"
   }
 }
-
 
 /// Functions for dynamically modifying the history list
 /// (not currently used in the application)
