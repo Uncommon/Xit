@@ -22,9 +22,9 @@ public enum TagType
   case lightweight, annotated
 }
 
-extension TagType
+extension TagType: Fakable
 {
-  static func fakeDefault() -> Self { .lightweight }
+  public static func fakeDefault() -> Self { .lightweight }
 }
 
 public final class GitTag: Tag

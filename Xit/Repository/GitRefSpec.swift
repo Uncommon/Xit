@@ -21,9 +21,9 @@ public protocol RefSpec
   func transformToSource(name: String) -> String?
 }
 
-extension RemoteConnectionDirection
+extension RemoteConnectionDirection: Fakable
 {
-  static func fakeDefault() -> Self { .fetch }
+  public static func fakeDefault() -> Self { .fetch }
 }
 
 public struct GitRefSpec: RefSpec

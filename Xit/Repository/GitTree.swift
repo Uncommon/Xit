@@ -30,9 +30,9 @@ public protocol TreeEntry: OIDObject
   var object: (any OIDObject)? { get }
 }
 
-extension GitObjectType
+extension GitObjectType: Fakable
 {
-  static func fakeDefault() -> Self { .invalid }
+  public static func fakeDefault() -> Self { .invalid }
 }
 
 public final class GitTree: Tree

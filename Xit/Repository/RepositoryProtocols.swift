@@ -149,9 +149,9 @@ public protocol FileStatusDetection: AnyObject
   func isIgnored(path: String) -> Bool
 }
 
-extension DeltaStatus
+extension DeltaStatus: Fakable
 {
-  static func fakeDefault() -> Self { .unmodified }
+  public static func fakeDefault() -> Self { .unmodified }
 }
 
 extension FileStatusDetection
@@ -207,9 +207,9 @@ public protocol FileContents: AnyObject
   func fileURL(_ file: String) -> URL
 }
 
-extension URL
+extension URL: Fakable
 {
-  static func fakeDefault() -> Self { .init(filePath: "/") }
+  public static func fakeDefault() -> Self { .init(filePath: "/") }
 }
 
 @Faked
