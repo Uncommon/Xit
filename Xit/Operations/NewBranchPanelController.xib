@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="22505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,7 +21,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="397" height="190"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1710" height="1069"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2056" height="1285"/>
             <view key="contentView" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="397" height="190"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -66,7 +66,7 @@ Gw
                         </columns>
                         <gridCells>
                             <gridCell row="WDU-Q6-6c3" column="vdU-5k-F2r" id="LAQ-WY-P7N">
-                                <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UZZ-c6-MgT">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UZZ-c6-MgT">
                                     <rect key="frame" x="-2" y="92" width="91" height="16"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="New branch:" id="CMX-bB-Hne">
                                         <font key="font" metaFont="system"/>
@@ -76,7 +76,7 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="WDU-Q6-6c3" column="pd6-d3-MeE" id="K8h-ds-KMj">
-                                <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Oj-06-Qzi">
+                                <textField key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Oj-06-Qzi">
                                     <rect key="frame" x="95" y="89" width="262" height="21"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="Gb9-kn-zPu">
                                         <font key="font" metaFont="system"/>
@@ -89,7 +89,7 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="5BL-Tz-cAg" column="vdU-5k-F2r" id="6a1-aR-Hs9">
-                                <textField key="contentView" focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9gi-S5-Gpu">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9gi-S5-Gpu">
                                     <rect key="frame" x="-2" y="58" width="91" height="16"/>
                                     <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Starting point:" id="bBL-Bd-g7K">
                                         <font key="font" metaFont="system"/>
@@ -99,7 +99,7 @@ Gw
                                 </textField>
                             </gridCell>
                             <gridCell row="5BL-Tz-cAg" column="pd6-d3-MeE" id="wAp-Vw-v20">
-                                <textField key="contentView" focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FcF-9i-uh6">
+                                <textField key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FcF-9i-uh6">
                                     <rect key="frame" x="95" y="56" width="262" height="21"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="sgH-o9-xTX">
                                         <font key="font" usesAppearanceFont="YES"/>

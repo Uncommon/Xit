@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="20037"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -86,13 +86,13 @@
                             <subviews>
                                 <button identifier="previewHeader" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e4E-MC-bxy">
                                     <rect key="frame" x="-1" y="188" width="542" height="23"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="21" id="u7f-zG-hqv"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lNU-FQ-Ngf">
                                         <behavior key="behavior" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="21" id="u7f-zG-hqv"/>
+                                    </constraints>
                                 </button>
                                 <segmentedControl identifier="previewSegments" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
                                     <rect key="frame" x="192" y="188" width="157" height="23"/>
@@ -214,13 +214,13 @@
                                 </tabView>
                                 <button identifier="previewFooter" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pgg-q8-kWG">
                                     <rect key="frame" x="-1" y="-1" width="542" height="23"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="21" id="lKP-mc-zqo"/>
-                                    </constraints>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cTG-kW-mZT">
                                         <behavior key="behavior" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="21" id="lKP-mc-zqo"/>
+                                    </constraints>
                                 </button>
                                 <pathControl identifier="previewPath" verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gna-OS-Gx2">
                                     <rect key="frame" x="0.0" y="0.0" width="58" height="22"/>
@@ -395,8 +395,8 @@
         </customObject>
     </objects>
     <resources>
-        <image name="NSActionTemplate" width="15" height="15"/>
-        <image name="NSQuickLookTemplate" width="21" height="13"/>
+        <image name="NSActionTemplate" width="20" height="20"/>
+        <image name="NSQuickLookTemplate" width="26" height="17"/>
         <image name="doc.plaintext" catalog="system" width="14" height="16"/>
         <image name="person.fill.questionmark" catalog="system" width="17" height="14"/>
         <image name="plus.forwardslash.minus" catalog="system" width="16" height="14"/>
