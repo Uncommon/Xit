@@ -1,10 +1,10 @@
 # Xit
 
-Xit (pronounced "exit") is a graphical tool for working with git repositories. The overall goals are:
+Xit (pronounced "exit") is a visual tool for working with git repositories. The overall goals are:
 
-  * A useful graphical interface for viewing and managing your repository
-  * Stability and scalability - handle large repositories well (lots of commits and lots of files)
-  * A well-organized codebase to facilitate continued development
+* A useful graphical interface for viewing and managing your repository
+* Stability and scalability - handle large repositories well (lots of commits and lots of files)
+* A well-organized codebase to facilitate continued development
 
 # Background and current status
 
@@ -15,15 +15,15 @@ Xit began as a rewrite of GitX, born from a desire for a codebase that was easie
 # Features
 
 * **Sidebar** showing branches, remotes, tags, submodules, and stashes.
-  * If you sign in with your TeamCity account, you can see build status for branches you have pushed.
-  * If you sign in with your Bitbucket Server account, you can see and act on pull requests.
-  * Support for more services, such as GitHub, is in the works.
+  * Build status for branches you have pushed (currently supports TeamCity).
+  * Pull request indicators and actions (currently supports Bitbucket Server).
+  * Support for more services, such as GitHub, is planned.
 * **History list** with a graph of commits and branches.
   * Search the list by author, message content, or hash.
   * Navigate backwards and forwards through your history of selected commits.
 * **File lists and previews** for workspace files and previous commits.
-  * See just the files that changed, or use the outline view to browse the whole hierarchy at any commit.
-  * Preview files as diffs, blame, plain text, or QuickLook.
+  * See just the files that changed, or use the outline view to browse the full hierarchy at any commit.
+  * Preview files as diffs, blame, plain text, or QuickLook previews.
   * Blame view has color coding to show lines that changed at the same time, and links back to the commit they came from.
 
 # Roadmap
