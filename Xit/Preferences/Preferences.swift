@@ -19,6 +19,8 @@ enum PreferenceKeys
   static let fontName = PreferenceKey("fontName", "Menlo-Regular")
   static let fontSize = PreferenceKey("fontSize", 11)
   static let wrapping = PreferenceKey("wrapping", TextWrapping.none)
+  static let guideWidth = PreferenceKey("guideWidth", 83)
+  static let showGuide = PreferenceKey("showGuide", true)
 }
 
 struct PreferenceKey<T>
@@ -164,6 +166,16 @@ extension UserDefaults
   {
     get { self[PreferenceKeys.contextLines] }
     set { self[PreferenceKeys.contextLines] = newValue }
+  }
+  @objc dynamic var guideWidth: Int
+  {
+    get { self[PreferenceKeys.guideWidth] }
+    set { self[PreferenceKeys.guideWidth] = newValue }
+  }
+  @objc dynamic var showGuide: Bool
+  {
+    get { self[PreferenceKeys.showGuide] }
+    set { self[PreferenceKeys.showGuide] = newValue }
   }
   dynamic var wrapping: TextWrapping
   {

@@ -1,12 +1,20 @@
 import SwiftUI
 
+extension NSFont
+{
+  static var code: NSFont
+  {
+    .init(name: UserDefaults.xit.fontName,
+          size: CGFloat(UserDefaults.xit.fontSize))
+    ?? .monospacedSystemFont(ofSize: 11, weight: .regular)
+  }
+}
+
 extension Font
 {
   static var code: Font
   {
-    .init(NSFont(name: UserDefaults.xit.fontName,
-                 size: CGFloat(UserDefaults.xit.fontSize))
-          ?? .monospacedSystemFont(ofSize: 11, weight: .regular))
+    .init(NSFont.code)
   }
 }
 

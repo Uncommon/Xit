@@ -8,16 +8,37 @@ struct CommitPanel: View
   @Binding var commitAllowed: Bool
   let commit: () -> Void
 
+  private var characterWidth: CGFloat
+  {
+    let size = "W".size(withAttributes: [.font: NSFont.code])
+    return size.width
+  }
+
+  private enum Constants
+  {
+    static let textEditorInset: CGFloat = 5
+  }
+
   var body: some View {
       HStack(spacing: 0) {
         ZStack(alignment: .topLeading) {
           TextEditor(text: $message).background(Color(NSColor.clear))
           Text("Commit message")
             .foregroundColor(Color(.placeholderTextColor))
-            .padding(.leading, 5)
+            .padding(.leading, Constants.textEditorInset)
             .opacity(message.isEmpty ? 1 : 0)
             .allowsHitTesting(false)
-        }.font(.code)
+          if UserDefaults.xit.showGuide {
+            Rectangle()
+              .fill(.gray.opacity(0.25))
+              .frame(width: 1, height: .infinity)
+              .offset(x: characterWidth
+                      * CGFloat(UserDefaults.xit.guideWidth)
+                      + Constants.textEditorInset)
+          }
+        }
+        .font(.code)
+        .clipped()
         Divider()
         VStack(alignment: .leading) {
           Toggle(isOn: $amend, label: {

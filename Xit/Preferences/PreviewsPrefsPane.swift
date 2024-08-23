@@ -4,13 +4,16 @@ struct PreviewsPrefsPane: View
 {
   @AppStorage var fontName: String
   @AppStorage var fontSize: Int
-  @AppStorage var whitespcae: WhitespaceSetting
+  @AppStorage var whitespace: WhitespaceSetting
   @AppStorage var wrapping: TextWrapping
   @AppStorage var tabWidth: Int
   @AppStorage var contextLines: Int
+  @AppStorage var guideWidth: Int
+  @AppStorage var showGuide: Bool
 
   @State var fontChanger: FontChanger?
   @State var font: NSFont
+  @State private var guideTextValue = "0"
 
   let widths = [2, 4, 6, 8]
   let contexts = [0, 3, 6, 12, 25]
@@ -59,7 +62,7 @@ struct PreviewsPrefsPane: View
         Text("\(fontName) \(fontSize)")
       })
       LabeledField("Diff view defaults:", VStack(alignment: .leading) {
-        Picker(selection: $whitespcae) {
+        Picker(selection: $whitespace) {
           ForEach(WhitespaceSetting.allCases, id: \.self) {
             Text($0.displayName)
           }
@@ -86,6 +89,28 @@ struct PreviewsPrefsPane: View
           }
         } label: { EmptyView() }.fixedSize()
       })
+      LabeledField("Commit view defaults:", VStack(alignment: .leading) {
+        HStack(spacing: 0) {
+          Toggle("", isOn: $showGuide)
+            .toggleStyle(.checkbox)
+          Group {
+            TextField("", text: $guideTextValue)
+              .onChange(of: guideTextValue) { _, value in
+                guideWidth = Int(value) ?? 0
+              }
+              .frame(width: 40)
+            Stepper(value: $guideWidth, in: 0...9999, label: {}) { _ in
+              guideTextValue = String(guideWidth)
+            }
+            .onAppear {
+              guideTextValue = String(guideWidth)
+            }
+          }
+          .disabled(showGuide == false)
+          Text("Page guide at column")
+            .padding(.leading)
+        }
+      })
     }.labelWidthGroup().frame(minWidth: 350)
   }
 
@@ -97,7 +122,7 @@ struct PreviewsPrefsPane: View
     _fontSize = .init(wrappedValue: defaults.fontSize,
                       PreferenceKeys.fontSize.key,
                       store: defaults)
-    _whitespcae = .init(wrappedValue: defaults.whitespace,
+    _whitespace = .init(wrappedValue: defaults.whitespace,
                         PreferenceKeys.diffWhitespace.key,
                         store: defaults)
     _wrapping = .init(wrappedValue: defaults.wrapping,
@@ -109,6 +134,12 @@ struct PreviewsPrefsPane: View
     _contextLines = .init(wrappedValue: defaults.contextLines,
                           PreferenceKeys.contextLines.key,
                           store: defaults)
+    _guideWidth = .init(wrappedValue: defaults.guideWidth,
+                        PreferenceKeys.guideWidth.key,
+                        store: defaults)
+    _showGuide = .init(wrappedValue: defaults.showGuide,
+                        PreferenceKeys.showGuide.key,
+                        store: defaults)
 
     // Access wrappedValue and projectedValue explicitly because self isn't
     // completely initilaized yet.

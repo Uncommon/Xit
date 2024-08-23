@@ -40,11 +40,15 @@ final class CommitEntryController: NSViewController,
   @IBOutlet weak var amendChcekbox: NSButton!
   @IBOutlet weak var stripCheckbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
-  
+  @IBOutlet weak var guildLine: NSBox!
+  @IBOutlet weak var guideLeadingConstraint: NSLayoutConstraint!
+
   var stripSink: AnyCancellable?
 
   var touchBarAmendButton: NSSegmentedControl!
-  
+
+  private var kvObservers: [NSKeyValueObservation] = []
+
   var anyStaged = false
   {
     didSet
@@ -54,7 +58,7 @@ final class CommitEntryController: NSViewController,
       }
     }
   }
-  
+
   var commitMessage: String
   {
     get
@@ -65,7 +69,13 @@ final class CommitEntryController: NSViewController,
       updateCommitButton()
     }
   }
-  
+
+  private var characterWidth: CGFloat
+  {
+    let size = "W".size(withAttributes: [.font: commitField.font ?? NSFont.code])
+    return size.width
+  }
+
   func configure(repository: any Repository, config: any Config)
   {
     self.config = config
@@ -126,6 +136,18 @@ final class CommitEntryController: NSViewController,
     updateStagedStatus()
     updateCommitButton()
     amendChcekbox.boolValue = repoUIController?.isAmending ?? false
+
+    updateGuide()
+
+    kvObservers.append(defaults.observe(\.guideWidth) {
+      [weak self] (_, _) in
+      MainActor.assumeIsolated { self?.updateGuide() }
+    })
+
+    kvObservers.append(defaults.observe(\.showGuide) {
+      [weak self] (_, _) in
+      MainActor.assumeIsolated { self?.updateGuide() }
+    })
   }
   
   @IBAction
@@ -237,6 +259,21 @@ final class CommitEntryController: NSViewController,
                                   .amend, .commit]
     
     return bar
+  }
+
+  func updateGuide()
+  {
+    if UserDefaults.xit.showGuide
+    {
+      guildLine.isHidden = false
+      guideLeadingConstraint.constant = commitField.textContainerInset.width
+        + (commitField.textContainer?.lineFragmentPadding ?? 0)
+        + characterWidth * CGFloat(UserDefaults.xit.guideWidth)
+    }
+    else
+    {
+      guildLine.isHidden = true
+    }
   }
 }
 
