@@ -43,11 +43,9 @@ final class CommitEntryController: NSViewController,
   @IBOutlet weak var guildLine: NSBox!
   @IBOutlet weak var guideLeadingConstraint: NSLayoutConstraint!
 
-  var stripSink: AnyCancellable?
+  private var cancellables = Set<AnyCancellable>()
 
   var touchBarAmendButton: NSSegmentedControl!
-
-  private var kvObservers: [NSKeyValueObservation] = []
 
   var anyStaged = false
   {
@@ -125,10 +123,31 @@ final class CommitEntryController: NSViewController,
     commitField.font = placeholder.font
     
     stripCheckbox.boolValue = defaults.stripComments
-    stripSink = defaults.publisher(for: \.stripComments).sinkOnMainQueue {
+    defaults.publisher(for: \.stripComments).sinkOnMainQueue {
       [weak self] in
       self?.stripCheckbox.boolValue = $0
     }
+    .store(in: &cancellables)
+
+    defaults.publisher(for: \.guideWidth).sinkOnMainQueue { 
+      [weak self] in
+      guard let strongSelf = self 
+      else {
+        return
+      }
+      
+      strongSelf.guideLeadingConstraint.constant = 
+        strongSelf.commitField.textContainerInset.width
+        + (strongSelf.commitField.textContainer?.lineFragmentPadding ?? 0)
+        + strongSelf.characterWidth * CGFloat($0)
+    }
+    .store(in: &cancellables)
+
+    defaults.publisher(for: \.showGuide).sinkOnMainQueue {
+      [weak self] in
+      self?.guildLine.isHidden = $0 == false
+    }
+    .store(in: &cancellables)
   }
   
   override func viewWillAppear()
@@ -136,18 +155,6 @@ final class CommitEntryController: NSViewController,
     updateStagedStatus()
     updateCommitButton()
     amendChcekbox.boolValue = repoUIController?.isAmending ?? false
-
-    updateGuide()
-
-    kvObservers.append(defaults.observe(\.guideWidth) {
-      [weak self] (_, _) in
-      MainActor.assumeIsolated { self?.updateGuide() }
-    })
-
-    kvObservers.append(defaults.observe(\.showGuide) {
-      [weak self] (_, _) in
-      MainActor.assumeIsolated { self?.updateGuide() }
-    })
   }
   
   @IBAction
@@ -259,21 +266,6 @@ final class CommitEntryController: NSViewController,
                                   .amend, .commit]
     
     return bar
-  }
-
-  func updateGuide()
-  {
-    if UserDefaults.xit.showGuide
-    {
-      guildLine.isHidden = false
-      guideLeadingConstraint.constant = commitField.textContainerInset.width
-        + (commitField.textContainer?.lineFragmentPadding ?? 0)
-        + characterWidth * CGFloat(UserDefaults.xit.guideWidth)
-    }
-    else
-    {
-      guildLine.isHidden = true
-    }
   }
 }
 
