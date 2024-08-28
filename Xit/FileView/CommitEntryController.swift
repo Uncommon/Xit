@@ -40,11 +40,13 @@ final class CommitEntryController: NSViewController,
   @IBOutlet weak var amendChcekbox: NSButton!
   @IBOutlet weak var stripCheckbox: NSButton!
   @IBOutlet weak var placeholder: NSTextField!
-  
-  var stripSink: AnyCancellable?
+  @IBOutlet weak var guildLine: NSBox!
+  @IBOutlet weak var guideLeadingConstraint: NSLayoutConstraint!
+
+  private var cancellables = Set<AnyCancellable>()
 
   var touchBarAmendButton: NSSegmentedControl!
-  
+
   var anyStaged = false
   {
     didSet
@@ -54,7 +56,7 @@ final class CommitEntryController: NSViewController,
       }
     }
   }
-  
+
   var commitMessage: String
   {
     get
@@ -65,7 +67,13 @@ final class CommitEntryController: NSViewController,
       updateCommitButton()
     }
   }
-  
+
+  private var characterWidth: CGFloat
+  {
+    let size = "W".size(withAttributes: [.font: commitField.font ?? NSFont.code])
+    return size.width
+  }
+
   func configure(repository: any Repository, config: any Config)
   {
     self.config = config
@@ -115,10 +123,31 @@ final class CommitEntryController: NSViewController,
     commitField.font = placeholder.font
     
     stripCheckbox.boolValue = defaults.stripComments
-    stripSink = defaults.publisher(for: \.stripComments).sinkOnMainQueue {
+    defaults.publisher(for: \.stripComments).sinkOnMainQueue {
       [weak self] in
       self?.stripCheckbox.boolValue = $0
     }
+    .store(in: &cancellables)
+
+    defaults.publisher(for: \.guideWidth).sinkOnMainQueue { 
+      [weak self] in
+      guard let strongSelf = self 
+      else {
+        return
+      }
+      
+      strongSelf.guideLeadingConstraint.constant = 
+        strongSelf.commitField.textContainerInset.width
+        + (strongSelf.commitField.textContainer?.lineFragmentPadding ?? 0)
+        + strongSelf.characterWidth * CGFloat($0)
+    }
+    .store(in: &cancellables)
+
+    defaults.publisher(for: \.showGuide).sinkOnMainQueue {
+      [weak self] in
+      self?.guildLine.isHidden = $0 == false
+    }
+    .store(in: &cancellables)
   }
   
   override func viewWillAppear()

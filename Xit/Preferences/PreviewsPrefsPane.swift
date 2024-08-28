@@ -4,7 +4,7 @@ struct PreviewsPrefsPane: View
 {
   @AppStorage var fontName: String
   @AppStorage var fontSize: Int
-  @AppStorage var whitespcae: WhitespaceSetting
+  @AppStorage var whitespace: WhitespaceSetting
   @AppStorage var wrapping: TextWrapping
   @AppStorage var tabWidth: Int
   @AppStorage var contextLines: Int
@@ -59,7 +59,7 @@ struct PreviewsPrefsPane: View
         Text("\(fontName) \(fontSize)")
       })
       LabeledField("Diff view defaults:", VStack(alignment: .leading) {
-        Picker(selection: $whitespcae) {
+        Picker(selection: $whitespace) {
           ForEach(WhitespaceSetting.allCases, id: \.self) {
             Text($0.displayName)
           }
@@ -97,7 +97,7 @@ struct PreviewsPrefsPane: View
     _fontSize = .init(wrappedValue: defaults.fontSize,
                       PreferenceKeys.fontSize.key,
                       store: defaults)
-    _whitespcae = .init(wrappedValue: defaults.whitespace,
+    _whitespace = .init(wrappedValue: defaults.whitespace,
                         PreferenceKeys.diffWhitespace.key,
                         store: defaults)
     _wrapping = .init(wrappedValue: defaults.wrapping,

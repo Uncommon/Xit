@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -11,6 +10,8 @@
                 <outlet property="amendChcekbox" destination="blR-Jh-nMJ" id="vH4-xO-IvG"/>
                 <outlet property="commitButton" destination="u0x-wv-OUI" id="ldN-uV-0XE"/>
                 <outlet property="commitField" destination="kX1-Lg-TAb" id="W6k-BU-JZF"/>
+                <outlet property="guideLeadingConstraint" destination="dVl-Da-hdl" id="g7T-0h-YxH"/>
+                <outlet property="guildLine" destination="va9-oh-tvx" id="5w0-hf-XJf"/>
                 <outlet property="placeholder" destination="aZR-Tw-uvn" id="70R-1S-POC"/>
                 <outlet property="stripCheckbox" destination="UbJ-vq-otO" id="7EX-k7-YKe"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
@@ -70,7 +71,7 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="u0x-wv-OUI">
-                                <rect key="frame" x="383" y="108" width="93" height="32"/>
+                                <rect key="frame" x="382" y="109" width="95" height="32"/>
                                 <buttonCell key="cell" type="push" title="Commit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7NM-lk-g3u">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -85,7 +86,7 @@ DQ
                                 </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="blR-Jh-nMJ">
-                                <rect key="frame" x="387" y="79" width="65" height="18"/>
+                                <rect key="frame" x="387" y="79" width="69" height="18"/>
                                 <buttonCell key="cell" type="check" title="Amend" bezelStyle="regularSquare" imagePosition="left" inset="2" id="3Jd-44-eWX">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -96,7 +97,7 @@ DQ
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UbJ-vq-otO">
-                                <rect key="frame" x="387" y="55" width="85" height="18"/>
+                                <rect key="frame" x="387" y="53" width="83" height="18"/>
                                 <buttonCell key="cell" type="check" title="Strip" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="JoP-qq-uFl">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -107,16 +108,23 @@ DQ
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="orV-HJ-nAY">
-                                <rect key="frame" x="404" y="41" width="68" height="16"/>
+                                <rect key="frame" x="404" y="38" width="68" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="comments" id="Nm8-n6-8PM">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <box horizontalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="va9-oh-tvx">
+                                <rect key="frame" x="48" y="0.0" width="5" height="146"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="1" id="TqM-tn-ff3"/>
+                                </constraints>
+                            </box>
                         </subviews>
                         <constraints>
                             <constraint firstItem="orV-HJ-nAY" firstAttribute="leading" secondItem="aBy-aA-oOR" secondAttribute="trailing" constant="25" id="1I9-fw-0y6"/>
+                            <constraint firstAttribute="bottom" secondItem="va9-oh-tvx" secondAttribute="bottom" id="4hp-fB-Yzj"/>
                             <constraint firstItem="UbJ-vq-otO" firstAttribute="leading" secondItem="blR-Jh-nMJ" secondAttribute="leading" id="AzJ-bC-sm9"/>
                             <constraint firstItem="aBy-aA-oOR" firstAttribute="leading" secondItem="TnB-EK-nt1" secondAttribute="leading" id="SYB-g5-bIl"/>
                             <constraint firstAttribute="trailing" secondItem="orV-HJ-nAY" secondAttribute="trailing" constant="10" id="SZb-os-FHo"/>
@@ -124,6 +132,7 @@ DQ
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="blR-Jh-nMJ" secondAttribute="trailing" constant="10" id="VNb-SX-uyS"/>
                             <constraint firstAttribute="trailing" secondItem="u0x-wv-OUI" secondAttribute="trailing" constant="10" id="Wcs-QL-pA6"/>
                             <constraint firstItem="u0x-wv-OUI" firstAttribute="top" secondItem="TnB-EK-nt1" secondAttribute="top" constant="10" id="XJZ-Rt-rfU"/>
+                            <constraint firstItem="va9-oh-tvx" firstAttribute="leading" secondItem="TnB-EK-nt1" secondAttribute="leading" constant="50" id="dVl-Da-hdl"/>
                             <constraint firstItem="orV-HJ-nAY" firstAttribute="top" secondItem="UbJ-vq-otO" secondAttribute="bottom" id="eCk-Ja-HhJ"/>
                             <constraint firstItem="UbJ-vq-otO" firstAttribute="top" secondItem="blR-Jh-nMJ" secondAttribute="bottom" constant="10" id="fZt-Aa-wKS"/>
                             <constraint firstItem="aBy-aA-oOR" firstAttribute="top" secondItem="TnB-EK-nt1" secondAttribute="top" id="iHl-DK-azF"/>
@@ -131,6 +140,7 @@ DQ
                             <constraint firstAttribute="trailing" secondItem="UbJ-vq-otO" secondAttribute="trailing" constant="10" id="mHS-ax-lvX"/>
                             <constraint firstAttribute="bottom" secondItem="aBy-aA-oOR" secondAttribute="bottom" id="tFu-tj-dKz"/>
                             <constraint firstItem="u0x-wv-OUI" firstAttribute="leading" secondItem="aBy-aA-oOR" secondAttribute="trailing" constant="8" id="w15-rv-h8a"/>
+                            <constraint firstItem="va9-oh-tvx" firstAttribute="top" secondItem="TnB-EK-nt1" secondAttribute="top" id="xGb-oD-axQ"/>
                         </constraints>
                     </view>
                     <color key="borderColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>

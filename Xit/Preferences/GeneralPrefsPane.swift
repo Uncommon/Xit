@@ -13,6 +13,10 @@ struct GeneralPrefsPane: View
   @ConfigValue var userEmail: String
   @AppStorage var fetchTags: Bool
   @ConfigValue var pruneBranches: Bool
+  @AppStorage var guideWidth: Int
+  @AppStorage var showGuide: Bool
+
+  @State private var guideTextValue = "0"
 
   var body: some View
   {
@@ -35,6 +39,31 @@ struct GeneralPrefsPane: View
         Toggle("Download tags", isOn: $fetchTags)
         Toggle("Prune branches", isOn: $pruneBranches)
       }.fixedSize())
+      LabeledField("Commit view:", VStack(alignment: .leading) {
+        Group {
+          VStack(alignment: .leading) {
+            Toggle("Show page guide", isOn: $showGuide)
+              .toggleStyle(.checkbox)
+
+            HStack(spacing: 0) {
+              Text("Page guide at column")
+                .padding(.trailing)
+              TextField("Page guide column", text: $guideTextValue)
+                .onChange(of: guideTextValue) { _, value in
+                  guideWidth = Int(value) ?? 0
+                }
+                .frame(width: 40)
+              Stepper(value: $guideWidth, in: 0...9999, label: {}) { _ in
+                guideTextValue = String(guideWidth)
+              }
+              .onAppear {
+                guideTextValue = String(guideWidth)
+              }
+            }
+            .disabled(showGuide == false)
+          }
+        }
+      })
     }.labelWidthGroup().frame(minWidth: 350)
   }
 
@@ -60,6 +89,12 @@ struct GeneralPrefsPane: View
                             PreferenceKeys.fetchTags,
                             store: defaults)
     self._pruneBranches = .init(key: "fetch.prune", config: config, default: false)
+    self._guideWidth = .init(wrappedValue: defaults.guideWidth,
+                             PreferenceKeys.guideWidth.key,
+                             store: defaults)
+    self._showGuide = .init(wrappedValue: defaults.showGuide,
+                            PreferenceKeys.showGuide.key,
+                            store: defaults)
   }
 }
 
