@@ -20,17 +20,15 @@ public protocol Stash: AnyObject
 /// Wraps a stash to preset a unified list of file changes.
 public final class GitStash: Stash
 {
-  typealias Repo = CommitStorage & FileContents & FileStatusDetection &
-                   Stashing
   public typealias ID = GitOID
   
-  unowned var repo: any Repo
+  unowned var repo: XTRepository
   public var message: String?
   public private(set) var mainCommit: GitCommit?
   public private(set) var indexCommit, untrackedCommit: GitCommit?
   private var cachedIndexChanges, cachedWorkspaceChanges: [FileChange]?
 
-  init(repo: any Repo, index: UInt, message: String?)
+  init(repo: XTRepository, index: UInt, message: String?)
   {
     self.repo = repo
     self.message = message
@@ -40,10 +38,8 @@ public final class GitStash: Stash
       if mainCommit.parentOIDs.count > 1 {
         // Should be able to use repo.commit() directly...
         self.indexCommit = repo.commit(forOID: mainCommit.parentOIDs[1])
-          as? GitCommit
         if mainCommit.parentOIDs.count > 2 {
           self.untrackedCommit = repo.commit(forOID: mainCommit.parentOIDs[2])
-            as? GitCommit
         }
       }
     }
