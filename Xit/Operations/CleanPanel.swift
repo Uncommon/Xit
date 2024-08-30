@@ -139,21 +139,19 @@ struct CleanPanel: View
     VStack(alignment: .leading) {
       HStack {
         Spacer()
-        VStack(alignment: .leading) {
-          LabeledField("Files:",
-            Picker(selection: $model.mode, label: EmptyView()) {
-              Text(.untrackedOnly).tag(CleanMode.untracked)
-              Text(.ignoredOnly).tag(CleanMode.ignored)
-              Text(.all).tag(CleanMode.all)
-            }.fixedSize()
-              .accessibilityIdentifier(.Clean.Controls.fileMode))
-          LabeledField("Folders:",
-            Picker(selection: $model.folderMode, label: EmptyView()) {
-              Text(.ignore).tag(CleanFolderMode.ignore)
-              Text(.cleanEntireFolder).tag(CleanFolderMode.clean)
-              Text(.listContents).tag(CleanFolderMode.recurse)
-            }.fixedSize())
-             .accessibilityIdentifier(.Clean.Controls.folderMode)
+        Form {
+          Picker("Files:", selection: $model.mode) {
+            Text(.untrackedOnly).tag(CleanMode.untracked)
+            Text(.ignoredOnly).tag(CleanMode.ignored)
+            Text(.all).tag(CleanMode.all)
+          }.fixedSize()
+           .accessibilityIdentifier(.Clean.Controls.fileMode)
+          Picker("Folders:", selection: $model.folderMode) {
+            Text(.ignore).tag(CleanFolderMode.ignore)
+            Text(.cleanEntireFolder).tag(CleanFolderMode.clean)
+            Text(.listContents).tag(CleanFolderMode.recurse)
+          }.fixedSize()
+           .accessibilityIdentifier(.Clean.Controls.folderMode)
         }
         Spacer()
       }.padding(.bottom, 10)

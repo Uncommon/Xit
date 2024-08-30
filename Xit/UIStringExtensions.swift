@@ -135,6 +135,14 @@ extension Button where Label == Text
   }
 }
 
+extension LabeledContent where Label == Text, Content: View
+{
+  init(_ title: UIString, content: () -> Content)
+  {
+    self.init(title.rawValue, content: content)
+  }
+}
+
 extension Text
 {
   init(_ string: UIString)

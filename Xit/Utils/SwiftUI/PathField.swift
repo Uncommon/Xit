@@ -49,9 +49,10 @@ struct PathField: View
   var body: some View
   {
     HStack {
-      TextField("", text: $path)
-        .overlay(Color.clear.border(Color(NSColor.selectedControlColor),
-                                    width: isDropTarget ? 2 : 0))
+      TextField(text: $path)
+        .labelsHidden()
+        .border(Color(NSColor.selectedControlColor),
+                width: isDropTarget ? 2 : 0)
       Button {
         chooseFolder()
       } label: {

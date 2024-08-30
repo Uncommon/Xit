@@ -21,23 +21,28 @@ struct ClonePanel: View
   {
     VStack {
       Form {
-        LabeledField(.sourceURL.colon, TextField("", text: $data.url))
-        LabeledField(.cloneTo.colon, PathField(path: $data.destination))
-        LabeledField(.name.colon, TextField("", text: $data.name))
-        LabeledField(.fullPath.colon, Text(data.destination +/ data.name))
-        Divider()
-        LabeledField(label: Text(.checkOutBranch.colon),
-                     content: Picker(selection: popupSelection,
-                                     label: EmptyView()) {
-                       ForEach(popupBranches, id: \.self) {
-                         Text($0)
-                       }
-                     }.labelsHidden()
-                      .disabled(data.branches.isEmpty)
-                      .fixedSize(horizontal: true, vertical: true))
+        TextField(.sourceURL.colon, text: $data.url)
+        LabeledContent(.cloneTo.colon) { PathField(path: $data.destination) }
+        TextField(.name.colon, text: $data.name)
+        Spacer(minLength: 8)
+        LabeledContent(.fullPath.colon) {
+          // Padding to line up with text field contents
+          Text(data.destination +/ data.name).padding(.leading, 4)
+        }
+        Spacer(minLength: 20)
+        LabeledContent(.checkOutBranch.colon) {
+          Picker(selection: popupSelection,
+                 label: EmptyView()) {
+            ForEach(popupBranches, id: \.self) {
+              Text($0)
+            }
+          }.labelsHidden()
+            .disabled(data.branches.isEmpty)
+            .fixedSize(horizontal: true, vertical: true)
+        }
         // To be implemeted later
-        // LabeledField("", Toggle("Recurse submodules", isOn: $data.recurse))
-      }.labelWidthGroup()
+        // LabeledContent("Recurse submodules") { Toggle(isOn: $data.recurse) }
+      }
       Spacer(minLength: 12)
       HStack {
         if data.inProgress {
