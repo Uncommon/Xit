@@ -40,7 +40,9 @@ struct PathField: View
               isDirectory.boolValue
         else { return }
         
-        path = url.path
+        DispatchQueue.main.async {
+          path = url.path
+        }
       }
       return true
     }
