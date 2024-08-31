@@ -140,7 +140,6 @@
 		C9120EE023EE04C00052387E /* ResetPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9120EDE23EE04C00052387E /* ResetPanelController.swift */; };
 		C9120EE123EE04C00052387E /* ResetPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9120EDF23EE04C00052387E /* ResetPanelController.xib */; };
 		C91727B623689F500023DC57 /* ReadOnlyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91727B523689F500023DC57 /* ReadOnlyUITests.swift */; };
-		C919B9E526B09F4D007952FA /* LabeledField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919B9D326B09F4D007952FA /* LabeledField.swift */; };
 		C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91E9A001D527A1300E128AC /* HistoryTableController.swift */; };
 		C91F34781D30656B005F9BDF /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* Services.swift */; };
 		C923D6481D8CA56800C6B90B /* XTTagTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D6471D8CA56800C6B90B /* XTTagTest.swift */; };
@@ -523,7 +522,6 @@
 		C91727B323689F500023DC57 /* XitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C91727B523689F500023DC57 /* ReadOnlyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyUITests.swift; sourceTree = "<group>"; };
 		C91727B723689F500023DC57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C919B9D326B09F4D007952FA /* LabeledField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledField.swift; sourceTree = "<group>"; };
 		C91E9A001D527A1300E128AC /* HistoryTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableController.swift; sourceTree = "<group>"; };
 		C91F34771D30656B005F9BDF /* Services.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		C923D6471D8CA56800C6B90B /* XTTagTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTTagTest.swift; sourceTree = "<group>"; };
@@ -866,7 +864,6 @@
 			children = (
 				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
 				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
-				C919B9D326B09F4D007952FA /* LabeledField.swift */,
 				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 				8983E1A6266596BD0075370C /* PathField.swift */,
 				89BA11E128BD576D00A7999A /* SearchField.swift */,
@@ -1555,7 +1552,6 @@
 				C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */,
 				C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */,
 				C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */,
-				C919B9E526B09F4D007952FA /* LabeledField.swift in Sources */,
 				C957B84B1D2D53040040F858 /* SheetController.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,

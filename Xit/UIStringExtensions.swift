@@ -143,6 +143,14 @@ extension LabeledContent where Label == Text, Content: View
   }
 }
 
+extension Picker where Label == Text
+{
+  init(_ title: UIString, selection: Binding<SelectionValue>, @ViewBuilder content: () -> Content)
+  {
+    self.init(title.rawValue, selection: selection, content: content)
+  }
+}
+
 extension Text
 {
   init(_ string: UIString)
@@ -160,6 +168,14 @@ extension TextField where Label == Text
   {
     self.init(title.rawValue, text: text,
               onEditingChanged: onEditingChanged, onCommit: onCommit)
+  }
+}
+
+extension Toggle where Label == Text
+{
+  init(_ title: UIString, isOn: Binding<Bool>)
+  {
+    self.init(title.rawValue, isOn: isOn)
   }
 }
 

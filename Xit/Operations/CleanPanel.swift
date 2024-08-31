@@ -230,7 +230,7 @@ struct CleanPanel: View
           }
           .accessibilityIdentifier(.Clean.Button.cleanAll)
       }
-    }.labelWidthGroup().frame(minWidth: 400).padding(20)
+    }.frame(minWidth: 400).padding(20)
       .onChange(of: model.filteredItems) {
         (newValue, _) in
         selection.formIntersection(newValue.map { $0.path })

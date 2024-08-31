@@ -41,52 +41,56 @@ struct PreviewsPrefsPane: View
 
   var body: some View
   {
-    VStack(alignment: .leading) {
-      LabeledField("Font:", HStack {
-        Button("Change...") {
-          let manager = NSFontManager.shared
+    Form {
+      LabeledContent("Font:") {
+        HStack {
+          Button("Change...") {
+            let manager = NSFontManager.shared
 
-          manager.setSelectedFont(font, isMultiple: false)
-          manager.orderFrontFontPanel(nil)
-          fontChanger = FontChanger(font: $font)
-          manager.target = fontChanger
-        }.controlSize(.small)
-          .onChange(of: font) {
-            (newValue, _) in
-            fontName = newValue.displayName ?? newValue.fontName
-            fontSize = Int(newValue.pointSize)
+            manager.setSelectedFont(font, isMultiple: false)
+            manager.orderFrontFontPanel(nil)
+            fontChanger = FontChanger(font: $font)
+            manager.target = fontChanger
+          }.controlSize(.small)
+            .onChange(of: font) {
+              (newValue, _) in
+              fontName = newValue.displayName ?? newValue.fontName
+              fontSize = Int(newValue.pointSize)
           }
-        Text("\(fontName) \(fontSize)")
-      })
-      LabeledField("Diff view defaults:", VStack(alignment: .leading) {
-        Picker(selection: $whitespace) {
-          ForEach(WhitespaceSetting.allCases, id: \.self) {
-            Text($0.displayName)
-          }
-        } label: { EmptyView() }.fixedSize()
-        HStack {
-          Picker(selection: $tabWidth) {
-            ForEach(widths, id: \.self) {
-              Text("\($0)")
+          Text("\(fontName) \(fontSize)")
+        }
+      }
+      LabeledContent("Diff view defaults:") {
+        VStack(alignment: .leading) {
+          Picker(selection: $whitespace) {
+            ForEach(WhitespaceSetting.allCases, id: \.self) {
+              Text($0.displayName)
             }
           } label: { EmptyView() }.fixedSize()
-          Text("spaces per tab")
-        }
-        HStack {
-          Picker(selection: $contextLines) {
-            ForEach(contexts, id: \.self) {
-              Text("\($0)")
+          HStack {
+            Picker(selection: $tabWidth) {
+              ForEach(widths, id: \.self) {
+                Text("\($0)")
+              }
+            } label: { EmptyView() }.fixedSize()
+            Text("spaces per tab")
+          }
+          HStack {
+            Picker(selection: $contextLines) {
+              ForEach(contexts, id: \.self) {
+                Text("\($0)")
+              }
+            } label: { EmptyView() }.fixedSize()
+            Text("lines of context")
+          }
+          Picker(selection: $wrapping) {
+            ForEach(TextWrapping.allCases, id: \.self) {
+              Text($0.displayName)
             }
           } label: { EmptyView() }.fixedSize()
-          Text("lines of context")
-        }
-        Picker(selection: $wrapping) {
-          ForEach(TextWrapping.allCases, id: \.self) {
-            Text($0.displayName)
-          }
-        } label: { EmptyView() }.fixedSize()
-      })
-    }.labelWidthGroup().frame(minWidth: 350)
+        }.labelsHidden()
+      }
+    }.frame(minWidth: 350)
   }
 
   init(defaults: UserDefaults)

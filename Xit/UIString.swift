@@ -276,11 +276,15 @@ public struct UIString: RawRepresentable, Sendable
   static let merged = ›"Merged"
   static let closed = ›"Closed"
 
-  // Fetch/push/pull commands
+  // Fetch/push/pull
   static let fetchCurrentUnavailable = ›"Fetch Current Branch"
   static let pushCurrentUnavailable = ›"No Tracking Branch to Push"
   static let pullCurrentUnavailable = ›"No Tracking Branch to Pull"
-  
+  static let remote = ›"Remote"
+  static let options = ›"Options"
+  static let downloadTags = ›"Download tags"
+  static let pruneObsolete = ›"Prune obsolete local branches"
+
   static let pushNew = ›"Push to New Remote Branch..."
 
   static private let fetchCurrentFormat = #"Fetch "%2$@/%1$@""#
@@ -302,6 +306,14 @@ public struct UIString: RawRepresentable, Sendable
   { .init(format: pullCurrentFormat, branch, remote) }
   static func pullRemote(_ remote: String) -> UIString
   { .init(format: pullRemoteFormat, remote) }
+
+  // Tag
+  static let target = ›"Target"
+  static let tagName = ›"Tag name"
+  static let tagType = ›"Type"
+  static let annotated = ›"Annotated"
+  static let lightweight = ›"Lightweight"
+  static let annotation = ›"Annotation"
 
   // Repository errors
   static private let gitErrorFormat = "An internal git error (%d) occurred."

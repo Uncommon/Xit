@@ -16,55 +16,42 @@ struct GeneralPrefsPane: View
   @AppStorage var guideWidth: Int
   @AppStorage var showGuide: Bool
 
-  @State private var guideTextValue = "0"
-
   var body: some View
   {
-    VStack(alignment: .leading) {
-      LabeledField("Interface options:", VStack(alignment: .leading) {
-        Toggle("Collapse history list in Staging view", isOn: $collapseHistory)
-          .accessibilityIdentifier(.Preferences.Controls.collapseHistory)
-        Toggle("De-emphasize merge commits", isOn: $deemphasize)
-          .accessibilityIdentifier(.Preferences.Controls.deemphasize)
-        Toggle("Automatically reset \"Amend\"", isOn: $resetAmend)
-          .accessibilityIdentifier(.Preferences.Controls.resetAmend)
-        Toggle("Workspace status in tabs", isOn: $tabStatus)
-          .accessibilityIdentifier(.Preferences.Controls.tabStatus)
-      }.fixedSize())
-      LabeledField("User name:",
-                   TextField(text: $userName, label: { EmptyView() }))
-      LabeledField("User email:",
-                   TextField(text: $userEmail, label: { EmptyView() }))
-      LabeledField("Fetch options:", VStack(alignment: .leading) {
-        Toggle("Download tags", isOn: $fetchTags)
-        Toggle("Prune branches", isOn: $pruneBranches)
-      }.fixedSize())
-      LabeledField("Commit view:", VStack(alignment: .leading) {
-        Group {
-          VStack(alignment: .leading) {
-            Toggle("Show page guide", isOn: $showGuide)
-              .toggleStyle(.checkbox)
-
-            HStack(spacing: 0) {
-              Text("Page guide at column")
-                .padding(.trailing)
-              TextField("Page guide column", text: $guideTextValue)
-                .onChange(of: guideTextValue) { _, value in
-                  guideWidth = Int(value) ?? 0
-                }
-                .frame(width: 40)
-              Stepper(value: $guideWidth, in: 0...9999, label: {}) { _ in
-                guideTextValue = String(guideWidth)
-              }
-              .onAppear {
-                guideTextValue = String(guideWidth)
-              }
-            }
-            .disabled(showGuide == false)
-          }
+    Form {
+      LabeledContent("Interface options:") {
+        VStack(alignment: .leading) {
+          Toggle("Collapse history list in Staging view", isOn: $collapseHistory)
+            .accessibilityIdentifier(.Preferences.Controls.collapseHistory)
+          Toggle("De-emphasize merge commits", isOn: $deemphasize)
+            .accessibilityIdentifier(.Preferences.Controls.deemphasize)
+          Toggle("Automatically reset \"Amend\"", isOn: $resetAmend)
+            .accessibilityIdentifier(.Preferences.Controls.resetAmend)
+          Toggle("Workspace status in tabs", isOn: $tabStatus)
+            .accessibilityIdentifier(.Preferences.Controls.tabStatus)
+        }.fixedSize()
+      }
+      TextField("User name:", text: $userName)
+      TextField("User email:", text: $userEmail)
+      LabeledContent("Fetch options:") {
+        VStack(alignment: .leading) {
+          Toggle("Download tags", isOn: $fetchTags)
+          Toggle("Prune branches", isOn: $pruneBranches)
+        }.fixedSize()
+      }
+      LabeledContent("Commit view:") {
+        VStack(alignment: .leading) {
+          Toggle("Show page guide", isOn: $showGuide)
+          HStack {
+            Text("Page guide at column")
+            TextField("", value: $guideWidth, formatter: NumberFormatter())
+              .labelsHidden()
+              .frame(width: 40)
+            Stepper(value: $guideWidth, in: 0...9999, label: {}).labelsHidden()
+          }.disabled(!showGuide)
         }
-      })
-    }.labelWidthGroup().frame(minWidth: 350)
+      }
+    }.frame(minWidth: 350)
   }
 
   init(defaults: UserDefaults, config: any Config)

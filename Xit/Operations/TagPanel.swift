@@ -40,30 +40,33 @@ struct TagPanel: DataModelView
 
   var body: some View
   {
-    VStack(alignment: .leading) {
-      LabeledField("Target:", Text(model.commitMessage))
-      LabeledField("Tag name:", TextField("", text: $model.tagName))
-      LabeledField("Type:", VStack(alignment: .leading) {
-        Picker(selection: $model.tagType.animation(), content: {
-          Text("Lightweight").tag(TagType.lightweight)
-          Text("Annotated").tag(TagType.annotated)
-        }, label: { EmptyView() })
-          .pickerStyle(.radioGroup)
-      })
+    Form {
+      TextField(.target.colon, text: .constant(model.commitMessage))
+          .textFieldStyle(.plain)
+          .focusable(false)
+          .selectionDisabled()
+          .allowsHitTesting(false)
+      TextField(.tagName.colon, text: $model.tagName)
+      Picker(.tagType.colon, selection: $model.tagType.animation()) {
+        Text(.lightweight).tag(TagType.lightweight)
+        Text(.annotated).tag(TagType.annotated)
+      }.pickerStyle(.radioGroup)
       if model.tagType == .annotated {
-        LabeledField("Annotation:", VStack(alignment: .leading) {
-          Text("\(model.signature.name ?? "") <\(model.signature.email ?? "")>")
-          TextEditor(text: $model.message)
-            .font(.body.monospaced())
-            // Allowing variable height causes layout issues in the sheet
-            // at runtime.
-            .frame(height: 67)
-            .border(.tertiary)
-        })
+        LabeledContent(.annotation.colon) {
+          VStack(alignment: .leading) {
+            Text("\(model.signature.name ?? "") <\(model.signature.email ?? "")>")
+            TextEditor(text: $model.message)
+                .font(.body.monospaced())
+                // Allowing variable height causes layout issues in the sheet
+                // at runtime.
+                .frame(height: 67)
+                .border(.tertiary)
+          }
+        }
           .disabled(model.tagType == .lightweight)
           .foregroundColor(model.tagType == .annotated ? .primary : .secondary)
       }
-    }.labelWidthGroup().frame(minWidth: 350)
+    }.frame(minWidth: 350)
   }
 }
 

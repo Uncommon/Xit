@@ -44,18 +44,17 @@ struct EditAccountPanel: DataModelView
 
   var body: some View
   {
-    VStack {
-      LabeledField("Service:", Picker(selection: $model.serviceType) {
+    Form {
+      Picker("Services:", selection: $model.serviceType) {
         ForEach(AccountType.allCases, id: \.self) {
           (type) in
           ServiceLabel(type)
         }
-      } label: { EmptyView() })
-      LabeledField("Location:", TextField("", text: $model.location))
-      LabeledField("User name:", TextField("", text: $model.userName))
-      LabeledField("Password:", SecureField("", text: $model.password))
-    }.labelWidthGroup()
-      .frame(minWidth: 300)
+      }
+      TextField("Location:", text: $model.location)
+      TextField("User name:", text: $model.userName)
+      SecureField("Password:", text: $model.password)
+    }.frame(minWidth: 300)
   }
 
   init()

@@ -25,26 +25,21 @@ struct FetchPanel: DataModelView
 
   var body: some View
   {
-    VStack(alignment: .leading) {
-      LabeledField(
-        label: Text("Remote:"),
-        content: Picker(selection: $model.remote) {
-          ForEach(model.remotes, id: \.self) {
-            Text($0)
-          }
-        } label: { EmptyView() }
-          .accessibilityIdentifier(.FetchSheet.remotePopup))
-      LabeledField(label: Text("Options:"), content:
+    Form {
+      Picker(.remote.colon, selection: $model.remote) {
+        ForEach(model.remotes, id: \.self) {
+          Text($0)
+        }
+      }.accessibilityIdentifier(.FetchSheet.remotePopup)
+      LabeledContent(.options.colon) {
         VStack(alignment: .leading) {
-          Toggle("Download tags", isOn: $model.downloadTags)
-            .fixedSize()
+          Toggle(.downloadTags, isOn: $model.downloadTags)
             .accessibilityIdentifier(.FetchSheet.tagsCheck)
-          Toggle("Prune obsolete local branches", isOn: $model.pruneBranches)
-            .fixedSize()
+          Toggle(.pruneObsolete, isOn: $model.pruneBranches)
             .accessibilityIdentifier(.FetchSheet.pruneCheck)
         }
-      )
-    }.labelWidthGroup()
+      }
+    }
   }
 }
 
