@@ -4,7 +4,7 @@ final class NewTagOpController: OperationController
 {
   override func start() throws
   {
-    guard let selectedOID = windowController?.selection?.target as? GitOID,
+    guard let selectedOID = windowController?.selection?.target.oid,
           let repository = repository,
           let commit = repository.commit(forOID: selectedOID)
     else { throw RepoError.unexpected }
