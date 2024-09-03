@@ -102,11 +102,11 @@ extension XTRepository: Workspace
 
 extension XTRepository: Stashing
 {
-  public var stashes: AnyCollection<any Stash>
+  public var stashes: AnyCollection<GitStash>
   { AnyCollection(StashCollection(repo: self)) }
   
   // TODO: Don't require the message parameter
-  public func stash(index: UInt, message: String?) -> any Stash
+  public func stash(index: UInt, message: String?) -> GitStash
   {
     GitStash(repo: self, index: index, message: message)
   }
@@ -177,7 +177,7 @@ extension XTRepository: Stashing
     }
   }
   
-  public func commitForStash(at index: UInt) -> (any Xit.Commit)?
+  public func commitForStash(at index: UInt) -> GitCommit?
   {
     guard let stashLog = GitRefLog(repository: gitRepo, refName: "refs/stash"),
           index < stashLog.entryCount

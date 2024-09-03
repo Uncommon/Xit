@@ -246,19 +246,23 @@ extension FileStaging
   }
 }
 
-@Faked
+// The way the associated type is used isn't compatible with @Faked
+// because of the type of `stashes`, and stash() must produce a value.
+//@Faked(types: ["Stash": "NullStash"])
 public protocol Stashing: AnyObject
 {
-  @FakeDefault(exp: ".init([any Stash]())")
-  var stashes: AnyCollection<any Stash> { get }
+  associatedtype Stash: Xit.Stash
+
+  @FakeDefault(exp: ".init([NullStash]())")
+  var stashes: AnyCollection<Stash> { get }
   
   @FakeDefault(exp: "NullStash()")
-  func stash(index: UInt, message: String?) -> any Stash
+  func stash(index: UInt, message: String?) -> Stash
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws
   func dropStash(index: UInt) throws
-  func commitForStash(at index: UInt) -> (any Commit)?
-  
+  func commitForStash(at index: UInt) -> Stash.Commit?
+
   /// Make a new stash entry
   /// - parameter name: Name of the stash entry
   /// - parameter keepIndex: Do not stash staged changes
@@ -268,6 +272,19 @@ public protocol Stashing: AnyObject
                  keepIndex: Bool,
                  includeUntracked: Bool,
                  includeIgnored: Bool) throws
+}
+protocol EmptyStashing: Stashing {}
+extension EmptyStashing {
+  var stashes: AnyCollection<Stash> { .init([Stash]()) }
+  // stash(index:message:) not implemented because it must produce an instance
+  func popStash(index: UInt) throws {}
+  func applyStash(index: UInt) throws {}
+  func dropStash(index: UInt) throws {}
+  func commitForStash(at index: UInt) -> Stash.Commit? { nil }
+  func saveStash(name: String?,
+                 keepIndex: Bool,
+                 includeUntracked: Bool,
+                 includeIgnored: Bool) throws {}
 }
 
 @Faked

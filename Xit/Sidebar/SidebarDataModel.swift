@@ -107,10 +107,17 @@ final class SidebarDataModel: @unchecked Sendable
 
   func makeStashItems() -> [SidebarItem]
   {
-    return repository?.stashes.map {
+    repository.map { makeStashItems($0) } ?? []
+  }
+
+  func makeStashItems<R>(_ repository: R) -> [SidebarItem]
+    where R: Stashing & FileChangesRepo
+  {
+    repository.stashes.map {
       StashSidebarItem(title: $0.message ?? "stash",
-                  selection: StashSelection(repository: repository!, stash: $0))
-    } ?? []
+                       selection: StashSelection(repository: repository,
+                                                 stash: $0))
+    }
   }
   
   nonisolated func reload()

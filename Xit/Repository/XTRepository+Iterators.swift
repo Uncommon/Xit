@@ -102,7 +102,7 @@ extension XTRepository
       .init(stashes: self)
     }
     
-    public subscript(position: Int) -> any Stash
+    public subscript(position: Int) -> GitStash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
@@ -130,7 +130,7 @@ extension XTRepository
       self.index = 0
     }
     
-    public func next() -> (any Stash)?
+    public func next() -> GitStash?
     {
       guard index < stashes.count
       else {

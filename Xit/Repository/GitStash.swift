@@ -33,7 +33,7 @@ public final class GitStash: Stash
     self.repo = repo
     self.message = message
     
-    if let mainCommit = repo.commitForStash(at: index) as? GitCommit {
+    if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
         // Should be able to use repo.commit() directly...
