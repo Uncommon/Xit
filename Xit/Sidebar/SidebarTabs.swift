@@ -112,6 +112,14 @@ struct TreeLabelList: View
 struct SidebarTabs: View
 {
   @State var tab: SidebarTab = .remote
+
+  // These are separate for testing/preview convenience
+  //let brancher: any Branching
+  //let remoteManager: any RemoteManagement
+  let stasher: any Stashing
+  //let submobuleManager: any SubmoduleManagement
+  //let tagger: any Tagging
+
   let remoteData: [TreeLabelItem] = [
     .init(name: "origin", image: .init(systemSymbolName: "network")!, children: [
       .init(name: "branch", image: .xtBranch, children: nil)
@@ -151,10 +159,7 @@ struct SidebarTabs: View
             tagCell("otherTag", annotated: false)
           }
         case .stashes:
-          List {
-            stashCell("WIP on main")
-            stashCell("WIP on someBranch")
-          }
+          AnyView(stashList(repo: stasher))
         case .submodules:
           List {
             Label("submodule1",
@@ -168,18 +173,37 @@ struct SidebarTabs: View
     }.frame(width: 300)
   }
 
+  init(//brancher: any Branching,
+       //remoteManager: any RemoteManagement,
+       stasher: any Stashing
+       //submoduleManager: any SubmoduleManagement,
+       //tagger: any Tagging
+  )
+  {
+    //self.brancher = brancher
+    //self.remoteManager = remoteManager
+    self.stasher = stasher
+    //self.submobuleManager = submoduleManager
+    //self.tagger = tagger
+  }
+
+  init(repo: any FullRepository)
+  {
+    self.init(//brancher: repo, remoteManager: repo,
+              stasher: repo
+              //submoduleManager: repo, tagger: repo
+    )
+  }
+
+  func stashList(repo: some Stashing) -> some View
+  {
+    StashList(repo: repo)
+  }
+
   func tagCell(_ name: String, annotated: Bool) -> some View {
     Label(name, systemImage: "tag")
       .symbolVariant(annotated ? .fill : .none)
       .listRowSeparator(.hidden)
-  }
-
-  func stashCell(_ name: String) -> some View {
-    HStack {
-      Label(name, systemImage: "shippingbox")
-      Spacer()
-      WorkspaceStatusView(unstagedCount: 1, stagedCount: 3)
-    }.listRowSeparator(.hidden)
   }
 }
 
@@ -198,5 +222,5 @@ struct WorkspaceStatusView: View
 
 #Preview
 {
-  SidebarTabs()
+  SidebarTabs(stasher: StashListPreview.PreviewStashing(["one", "two", "three"]))
 }

@@ -65,7 +65,7 @@ extension XTRepository
   }
   
   /// The indexable collection of stashes in the repository.
-  public class StashCollection: Collection
+  public class StashCollection: RandomAccessCollection
   {
     public typealias Iterator = StashIterator
     

@@ -321,6 +321,7 @@
 		C9E7DA3A2C82215F00B539E0 /* SwiftUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */; };
 		C9E7DA3C2C83CA1400B539E0 /* SidebarTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */; };
 		C9E7DA3E2C86038100B539E0 /* IconTabPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */; };
+		C9E7DA402C87415700B539E0 /* StashList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3F2C87415700B539E0 /* StashList.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
 		C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */; };
 		C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */; };
@@ -706,6 +707,7 @@
 		C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIExtensions.swift; sourceTree = "<group>"; };
 		C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarTabs.swift; sourceTree = "<group>"; };
 		C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTabPicker.swift; sourceTree = "<group>"; };
+		C9E7DA3F2C87415700B539E0 /* StashList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashList.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
 		C9E8816B1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTRepositoryMergeTest.swift; sourceTree = "<group>"; };
 		C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = XTWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1271,6 +1273,7 @@
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
+				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1721,6 +1724,7 @@
 				C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */,
 				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */,
+				C9E7DA402C87415700B539E0 /* StashList.swift in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
 				C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */,
 				89009E50287C8A88004A684B /* AccountStatusCell.swift in Sources */,

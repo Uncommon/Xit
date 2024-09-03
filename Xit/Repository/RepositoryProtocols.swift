@@ -254,8 +254,8 @@ public protocol Stashing: AnyObject
   associatedtype Stash: Xit.Stash
 
   @FakeDefault(exp: ".init([NullStash]())")
-  var stashes: AnyCollection<Stash> { get }
-  
+  var stashes: AnyRandomAccessCollection<Stash> { get }
+
   @FakeDefault(exp: "NullStash()")
   func stash(index: UInt, message: String?) -> Stash
   func popStash(index: UInt) throws
@@ -275,7 +275,7 @@ public protocol Stashing: AnyObject
 }
 protocol EmptyStashing: Stashing {}
 extension EmptyStashing {
-  var stashes: AnyCollection<Stash> { .init([Stash]()) }
+  var stashes: AnyRandomAccessCollection<Stash> { .init([Stash]()) }
   // stash(index:message:) not implemented because it must produce an instance
   func popStash(index: UInt) throws {}
   func applyStash(index: UInt) throws {}

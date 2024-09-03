@@ -103,8 +103,8 @@ extension FakeRepo: EmptyCommitStorage
 
 extension FakeRepo: EmptyStashing
 {
-  var stashes: AnyCollection<any Stash> { return AnyCollection([]) }
-  func stash(index: UInt, message: String?) -> any Stash { return FakeStash() }
+  var stashes: AnyRandomAccessCollection<FakeStash> { return .init([]) }
+  func stash(index: UInt, message: String?) -> FakeStash { return FakeStash() }
 }
 
 extension FakeRepo: SubmoduleManagement

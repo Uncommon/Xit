@@ -102,9 +102,9 @@ extension XTRepository: Workspace
 
 extension XTRepository: Stashing
 {
-  public var stashes: AnyCollection<GitStash>
-  { AnyCollection(StashCollection(repo: self)) }
-  
+  public var stashes: AnyRandomAccessCollection<GitStash>
+  { .init(StashCollection(repo: self)) }
+
   // TODO: Don't require the message parameter
   public func stash(index: UInt, message: String?) -> GitStash
   {

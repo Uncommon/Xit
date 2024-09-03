@@ -65,7 +65,16 @@ public struct GitOID: Sendable
     
     self.oid = oid
   }
-  
+
+  init(string: String)
+  {
+    let padded = String(repeating: "0",
+                        count: GitOID.shaLength - string.count) + string
+
+    self.oid = .init()
+    precondition(git_oid_fromstr(&oid, padded) == 0, "failed to parse OID string")
+  }
+
   public var sha: String
   {
     let length = GitOID.shaLength + 1
