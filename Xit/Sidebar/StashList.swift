@@ -4,6 +4,33 @@ struct StashList<R>: View where R: Stashing
 {
   let repo: R
 
+  @State private var showAlert = false
+  @State private var alertAction: StashAction?
+  @Environment(\.showError) private var showError
+
+  enum StashAction
+  {
+    case pop, apply, drop
+
+    var buttonTitle: UIString {
+      switch self {
+        case .pop: .pop
+        case .apply: .apply
+        case .drop: .drop
+      }
+    }
+
+    var confirmText: UIString {
+      switch self {
+        case .pop: .confirmPopSelected
+        case .apply: .confirmApplySelected
+        case .drop: .confirmStashDrop
+      }
+    }
+
+    var isDestructive: Bool { self == .drop }
+  }
+
   var body: some View {
     List(repo.stashes) { (stash: R.Stash) in
       HStack {
@@ -17,23 +44,50 @@ struct StashList<R>: View where R: Stashing
       }
         .listRowSeparator(.hidden)
         .contextMenu {
-          Button(.pop) { pop(stash) }
-          Button(.apply) { apply(stash) }
-          Button(.drop) { drop(stash) }
+          Button(.pop) { confirm(.pop) }
+          Button(.apply) { confirm(.apply) }
+          Button(.drop) { confirm(.drop) }
+        }
+        .confirmationDialog(alertAction?.confirmText.rawValue ?? "", 
+                            isPresented: $showAlert,
+                            presenting: alertAction) {
+          (action) in
+          Button(action.buttonTitle,
+                 role: action.isDestructive ? .destructive : nil)
+          { perform(action, on: stash) }
         }
     }
+      .overlay {
+        if repo.stashes.isEmpty {
+          ContentUnavailableView("No stashes", systemImage: "shippingbox")
+    }
+  }
   }
 
-  func pop(_ stash: R.Stash)
+  func confirm(_ action: StashAction)
   {
+    alertAction = action
+    showAlert = true
   }
 
-  func apply(_ stash: R.Stash)
+  func perform(_ action: StashAction, on stash: R.Stash)
   {
-  }
+    guard let index = repo.findStashIndex(stash)
+    else { return }
 
-  func drop(_ stash: R.Stash)
-  {
+    do {
+      switch action {
+        case .pop:
+          try repo.popStash(index: UInt(index))
+        case .apply:
+          try repo.applyStash(index: UInt(index))
+        case .drop:
+          try repo.dropStash(index: UInt(index))
+      }
+    }
+    catch let error as NSError {
+      showError(error)
+    }
   }
 }
 

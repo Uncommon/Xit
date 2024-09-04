@@ -206,9 +206,11 @@ public struct UIString: RawRepresentable, Sendable
   static let checkoutFailedConflict = ›"Checkout failed because of a conflict with local changes."
   static let checkoutFailedConflictInfo = ›"Revert or stash your changes and try again."
   static let confirmPop = ›"Apply the most recent stash, and then delete it?"
+  static let confirmPopSelected = ›"Apply the selected stash, and then delete it?"
   static let confirmApply = ›"Apply the most recent stash, without deleting it?"
+  static let confirmApplySelected = ›"Apply the selected stash, without deleting it?"
   static let confirmStashDelete = ›"Delete the most recent stash?"
-  static let confirmStashDrop = ›"Drop (delete) the selected stash?"
+  static let confirmStashDrop = ›"Delete the selected stash?"
   
   static let keychainInvalidURL = ›"""
       The password could not be saved to the keychain because \

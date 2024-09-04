@@ -287,6 +287,20 @@ extension EmptyStashing {
                  includeIgnored: Bool) throws {}
 }
 
+extension Stashing
+{
+  func findStashIndex(_ stash: Stash) -> Int?
+  {
+    guard let mainCommit = stash.mainCommit
+    else { return nil }
+    return stashes.firstIndex {
+      $0.mainCommit?.id == mainCommit.id
+    }.map {
+      stashes.distance(from: stashes.startIndex, to: $0)
+    }
+  }
+}
+
 @Faked
 public protocol RemoteManagement: AnyObject
 {

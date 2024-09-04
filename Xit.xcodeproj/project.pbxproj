@@ -1271,8 +1271,8 @@
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
-				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
+				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 			);
 			path = Sidebar;
