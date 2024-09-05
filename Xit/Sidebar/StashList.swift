@@ -90,8 +90,8 @@ struct StashList<Stasher, Publisher>: View
       }
     }
       .contextMenu(forSelectionType: GitOID.self) {
-        if let stash = $0.first {
-          let index = model.stasher.findStashIndex(stash) ?? 0
+        if let stash = $0.first,
+           let index = model.stasher.findStashIndex(stash) {
           Button(.pop) { confirm(.pop(index)) }
           Button(.apply) { confirm(.apply(index)) }
           Button(.drop) { confirm(.drop(index)) }
@@ -107,7 +107,7 @@ struct StashList<Stasher, Publisher>: View
       }
       .overlay {
         if model.stasher.stashes.isEmpty {
-          ContentUnavailableView("No stashes", systemImage: "shippingbox")
+          ContentUnavailableView("No Stashes", systemImage: "shippingbox")
         }
       }
   }
@@ -144,6 +144,8 @@ struct StashList<Stasher, Publisher>: View
 
 struct StashListPreview: View
 {
+  let stashes: [Stash]
+
   class Stash: EmptyStash
   {
     var mainCommit: FakeCommit?
@@ -200,16 +202,20 @@ struct StashListPreview: View
 
   var body: some View
   {
-    let repo = StashListPreview.PreviewStashing(stashes: [
-      .init(message: "WIP some stuff", oid: .init(stringLiteral: "1")),
-      .init(message: "WIP more work", oid: .init(stringLiteral: "2")),
-      .init(message: "WIP things", oid: .init(stringLiteral: "3")),
-    ])
+    let repo = StashListPreview.PreviewStashing(stashes: stashes)
     StashList(stasher: repo, publisher: repo)
+      .listStyle(.sidebar)
   }
 }
 
-#Preview {
-  StashListPreview()
-    .listStyle(.sidebar)
+#Preview("With items") {
+  StashListPreview(stashes: [
+    .init(message: "WIP some stuff", oid: .init(stringLiteral: "1")),
+    .init(message: "WIP more work", oid: .init(stringLiteral: "2")),
+    .init(message: "WIP things", oid: .init(stringLiteral: "3")),
+  ])
+}
+
+#Preview("Empty") {
+  StashListPreview(stashes: [])
 }
