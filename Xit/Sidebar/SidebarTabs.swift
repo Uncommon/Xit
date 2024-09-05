@@ -156,22 +156,17 @@ struct SidebarTabs: View
           List {
             HStack {
               Label("Staging", systemImage: "folder")
-                .listRowSeparator(.hidden)
               Spacer()
               WorkspaceStatusView(unstagedCount: 0, stagedCount: 5)
             }
             Divider()
-              .listRowSeparator(.hidden)
             Label("branch", image: "scm.branch")
-              .listRowSeparator(.hidden)
             Label("main", image: "scm.branch")
-              .listRowSeparator(.hidden)
           }
         case .remote:
           List(remoteData, children: \.children) { item in
             Label(title: { Text(item.name) },
                   icon: { Image(nsImage: item.image) })
-              .listRowSeparator(.hidden)
           }
         case .tags:
           List {
@@ -184,13 +179,13 @@ struct SidebarTabs: View
           List {
             Label("submodule1",
                   systemImage: "square.split.bottomrightquarter")
-              .listRowSeparator(.hidden)
             Label("submodule2",
                   systemImage: "square.split.bottomrightquarter")
-              .listRowSeparator(.hidden)
           }
       }
-    }.frame(width: 300)
+    }
+      .listStyle(.sidebar)
+      .frame(width: 300)
   }
 
   init(//brancher: any Branching,
@@ -218,6 +213,7 @@ struct SidebarTabs: View
     )
   }
 
+  // Needs a generic wrapper because StashList is generic
   func stashList(stasher: some Stashing,
                  publisher: some RepositoryPublishing) -> some View
   {
@@ -227,7 +223,6 @@ struct SidebarTabs: View
   func tagCell(_ name: String, annotated: Bool) -> some View {
     Label(name, systemImage: "tag")
       .symbolVariant(annotated ? .fill : .none)
-      .listRowSeparator(.hidden)
   }
 }
 

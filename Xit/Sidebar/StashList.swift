@@ -88,7 +88,6 @@ struct StashList<Stasher, Publisher>: View
         // TODO: calculate the actual counts
         WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
       }
-        .listRowSeparator(.hidden)
     }
       .contextMenu(forSelectionType: GitOID.self) {
         if let stash = $0.first {
@@ -212,4 +211,5 @@ struct StashListPreview: View
 
 #Preview {
   StashListPreview()
+    .listStyle(.sidebar)
 }
