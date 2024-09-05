@@ -1,8 +1,10 @@
 import Foundation
 import SwiftUI
 
-protocol TabItem: CaseIterable, Identifiable, Equatable {
-  var imageName: String { get }
+protocol TabItem: Identifiable, Equatable {
+  associatedtype Icon: View
+
+  var icon: Icon { get }
   var toolTip: UIString { get }
 }
 
@@ -21,7 +23,7 @@ struct IconTabPicker<Item>: View where Item: TabItem {
         let isSelected = item == selection.wrappedValue
         Button(action: { selection.wrappedValue = item },
                label: {
-          Image(systemName: item.imageName)
+          item.icon
             .padding(.horizontal, 6)
             .contentShape(Rectangle()) // make padding hittable
         })
@@ -35,10 +37,10 @@ struct IconTabPicker<Item>: View where Item: TabItem {
 }
 
 struct IconTabPicker_Preview: View {
-  @State var selection: SidebarTab = .local
+  @State var selection: SidebarTab = .local(modified: false)
 
   var body: some View {
-    IconTabPicker(items: SidebarTab.allCases, selection: $selection)
+    IconTabPicker(items: SidebarTab.cleanCases, selection: $selection)
   }
 }
 #Preview {

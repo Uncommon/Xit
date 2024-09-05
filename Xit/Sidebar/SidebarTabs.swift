@@ -65,18 +65,37 @@ extension FolderTreeItem: Identifiable
   var id: String { name }
 }
 
-enum SidebarTab: TabItem
+enum SidebarTab: TabItem, Hashable
 {
-  case local, remote, tags, stashes, submodules
+  typealias ID = Self
 
+  case local(modified: Bool), remote, tags, stashes, submodules
 
-  var imageName: String {
+  static var cleanCases: [SidebarTab] =
+      [.local(modified: false), .remote, .tags, .stashes, .submodules]
+  static var modifiedCases: [SidebarTab] =
+      [.local(modified: true), .remote, .tags, .stashes, .submodules]
+
+  var id: Self
+  {
     switch self {
-      case .local: "desktopcomputer" // TODO: desktop vs laptop
-      case .remote: "network"
-      case .tags: "tag"
-      case .stashes: "shippingbox"
-      case .submodules: "square.split.bottomrightquarter"
+      case .local: .local(modified: false)
+      default: self
+    }
+  }
+
+  @ViewBuilder
+  var icon: some View
+  {
+    switch self {
+      case .local(true): Image("externaldrive.badge")
+          //.symbolRenderingMode(.palette)
+          //.foregroundStyle(.secondary, .tint)
+      case .local(modified: false): Image(systemName: "externaldrive")
+      case .remote: Image(systemName: "network")
+      case .tags: Image(systemName: "tag")
+      case .stashes: Image(systemName: "tray")
+      case .submodules: Image(systemName: "square.split.bottomrightquarter")
     }
   }
 
@@ -128,7 +147,7 @@ struct SidebarTabs: View
 
   var body: some View {
     VStack(spacing: 0) {
-      IconTabPicker(items: SidebarTab.allCases, selection: $tab)
+      IconTabPicker(items: SidebarTab.cleanCases, selection: $tab)
         .padding(6)
       Divider()
       switch tab {
