@@ -216,7 +216,8 @@ struct SidebarTabs: View
 
   func stashList(repo: some Stashing) -> some View
   {
-    StashList(repo: repo)
+    Text("placeholder")
+    //StashList(repo: repo)
   }
 
   func tagCell(_ name: String, annotated: Bool) -> some View {

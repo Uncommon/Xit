@@ -1,8 +1,30 @@
 import SwiftUI
+import Combine
 
-struct StashList<R>: View where R: Stashing
+class ObservableStashModel<Stasher, Publisher>: ObservableObject
+  where Stasher: Stashing, Publisher: RepositoryPublishing
 {
-  let repo: R
+  let stasher: Stasher
+  let publisher: Publisher
+
+  var sink: AnyCancellable?
+
+  init(stasher: Stasher, publisher: Publisher)
+  {
+    self.stasher = stasher
+    self.publisher = publisher
+
+    sink = publisher.stashPublisher.sinkOnMainQueue {
+      [weak self] in
+      self?.objectWillChange.send()
+    }
+  }
+}
+
+struct StashList<Stasher, Publisher>: View
+  where Stasher: Stashing, Publisher: RepositoryPublishing
+{
+  @StateObject var model: ObservableStashModel<Stasher, Publisher>
 
   @State private var showAlert = false
   @State private var alertAction: StashAction?
@@ -12,7 +34,8 @@ struct StashList<R>: View where R: Stashing
   {
     case pop, apply, drop
 
-    var buttonTitle: UIString {
+    var buttonTitle: UIString
+    {
       switch self {
         case .pop: .pop
         case .apply: .apply
@@ -20,7 +43,8 @@ struct StashList<R>: View where R: Stashing
       }
     }
 
-    var confirmText: UIString {
+    var confirmText: UIString
+    {
       switch self {
         case .pop: .confirmPopSelected
         case .apply: .confirmApplySelected
@@ -31,8 +55,10 @@ struct StashList<R>: View where R: Stashing
     var isDestructive: Bool { self == .drop }
   }
 
-  var body: some View {
-    List(repo.stashes) { (stash: R.Stash) in
+  var body: some View
+  {
+    List(Array(model.stasher.stashes.enumerated()), id: \.element.id) {
+      (index: Int, stash: Stasher.Stash) in
       HStack {
         // using Label() placed the text too low relative to the icon
         Image(systemName: "shippingbox")
@@ -40,7 +66,7 @@ struct StashList<R>: View where R: Stashing
         Text(stash.mainCommit?.messageSummary ?? "WIP")
         Spacer()
         // TODO: calculate the actual counts
-        WorkspaceStatusView(unstagedCount: 1, stagedCount: 2)
+        WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
       }
         .listRowSeparator(.hidden)
         .contextMenu {
@@ -54,14 +80,20 @@ struct StashList<R>: View where R: Stashing
           (action) in
           Button(action.buttonTitle,
                  role: action.isDestructive ? .destructive : nil)
-          { perform(action, on: stash) }
+          { perform(action, at: index) }
         }
     }
       .overlay {
-        if repo.stashes.isEmpty {
+        if model.stasher.stashes.isEmpty {
           ContentUnavailableView("No stashes", systemImage: "shippingbox")
-    }
+        }
+      }
   }
+
+  init(stasher: Stasher, publisher: Publisher)
+  {
+    self._model = .init(wrappedValue:
+        .init(stasher: stasher, publisher: publisher))
   }
 
   func confirm(_ action: StashAction)
@@ -70,19 +102,16 @@ struct StashList<R>: View where R: Stashing
     showAlert = true
   }
 
-  func perform(_ action: StashAction, on stash: R.Stash)
+  func perform(_ action: StashAction, at index: Int)
   {
-    guard let index = repo.findStashIndex(stash)
-    else { return }
-
     do {
       switch action {
         case .pop:
-          try repo.popStash(index: UInt(index))
+          try model.stasher.popStash(index: UInt(index))
         case .apply:
-          try repo.applyStash(index: UInt(index))
+          try model.stasher.applyStash(index: UInt(index))
         case .drop:
-          try repo.dropStash(index: UInt(index))
+          try model.stasher.dropStash(index: UInt(index))
       }
     }
     catch let error as NSError {
@@ -119,10 +148,11 @@ struct StashListPreview: View
     func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
   }
 
-  class PreviewStashing: EmptyStashing
+  class PreviewStashing: EmptyStashing, EmptyRepositoryPublishing
   {
     var stashArray: [Stash]
     var stashes: AnyRandomAccessCollection<Stash> { .init(stashArray) }
+    let publisher = PassthroughSubject<Void, Never>()
 
     init(stashes: [Stash])
     { self.stashArray = stashes }
@@ -130,14 +160,30 @@ struct StashListPreview: View
     { self.init(stashes: Stash.makeList(messages)) }
     func stash(index: UInt, message: String?) -> Stash
     { .init(message: message ?? "", oid: .zero()) }
+
+    var stashPublisher: AnyPublisher<Void, Never>
+    { publisher.eraseToAnyPublisher() }
+
+    func popStash(index: UInt) throws
+    {
+      try dropStash(index: index)
+    }
+
+    func dropStash(index: UInt) throws
+    {
+      stashArray.remove(at: Int(index))
+      publisher.send()
+    }
   }
 
-  var body: some View {
-    StashList(repo: StashListPreview.PreviewStashing(stashes: [
+  var body: some View
+  {
+    let repo = StashListPreview.PreviewStashing(stashes: [
       .init(message: "WIP some stuff", oid: .init(stringLiteral: "1")),
       .init(message: "WIP more work", oid: .init(stringLiteral: "2")),
       .init(message: "WIP things", oid: .init(stringLiteral: "3")),
-    ]))
+    ])
+    StashList(stasher: repo, publisher: repo)
   }
 }
 

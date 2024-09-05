@@ -18,6 +18,7 @@ public protocol BasicRepository
 
 public typealias ProgressValue = (current: Float, total: Float)
 
+//@Faked
 public protocol RepositoryPublishing
 {
   // These all just notify that a thing in the repository has changed.
@@ -29,16 +30,42 @@ public protocol RepositoryPublishing
   var stashPublisher: AnyPublisher<Void, Never> { get }
   
   var progressPublisher: AnyPublisher<ProgressValue, Never> { get }
-  
-  func post(progress: Float, total: Float)
 
   /// Published value is the paths that changed this time.
   var workspacePublisher: AnyPublisher<[String], Never> { get }
+
+  func post(progress: Float, total: Float)
 
   // Methods for manually triggering change messages without waiting for
   // changes to be detected automatically.
   func indexChanged()
   func refsChanged()
+}
+// Macro extension visibility isn't working right
+//@Faked_Imp
+protocol EmptyRepositoryPublishing: RepositoryPublishing {}
+extension EmptyRepositoryPublishing {
+  var configPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var headPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var indexPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var refLogPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var refsPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var stashPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var progressPublisher: AnyPublisher<ProgressValue, Never> { .fakeDefault() }
+  var workspacePublisher: AnyPublisher<[String], Never> { .fakeDefault() }
+  func post(progress: Float, total: Float) {}
+  func indexChanged() {}
+  func refsChanged() {}
+}
+
+struct NullRepositoryPublishing: EmptyRepositoryPublishing {}
+
+extension AnyPublisher: Fakable
+{
+  public static func fakeDefault() -> AnyPublisher<Output, Failure>
+  {
+    Empty(completeImmediately: false).eraseToAnyPublisher()
+  }
 }
 
 @Faked
