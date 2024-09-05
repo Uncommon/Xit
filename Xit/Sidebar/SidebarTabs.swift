@@ -135,6 +135,7 @@ struct SidebarTabs: View
   // These are separate for testing/preview convenience
   //let brancher: any Branching
   //let remoteManager: any RemoteManagement
+  let publisher: any RepositoryPublishing
   let stasher: any Stashing
   //let submobuleManager: any SubmoduleManagement
   //let tagger: any Tagging
@@ -178,7 +179,7 @@ struct SidebarTabs: View
             tagCell("otherTag", annotated: false)
           }
         case .stashes:
-          AnyView(stashList(repo: stasher))
+          AnyView(stashList(stasher: stasher, publisher: publisher))
         case .submodules:
           List {
             Label("submodule1",
@@ -194,6 +195,7 @@ struct SidebarTabs: View
 
   init(//brancher: any Branching,
        //remoteManager: any RemoteManagement,
+       publisher: any RepositoryPublishing,
        stasher: any Stashing
        //submoduleManager: any SubmoduleManagement,
        //tagger: any Tagging
@@ -201,23 +203,25 @@ struct SidebarTabs: View
   {
     //self.brancher = brancher
     //self.remoteManager = remoteManager
+    self.publisher = publisher
     self.stasher = stasher
     //self.submobuleManager = submoduleManager
     //self.tagger = tagger
   }
 
-  init(repo: any FullRepository)
+  init(repo: any FullRepository, publisher: any RepositoryPublishing)
   {
     self.init(//brancher: repo, remoteManager: repo,
+              publisher: publisher,
               stasher: repo
               //submoduleManager: repo, tagger: repo
     )
   }
 
-  func stashList(repo: some Stashing) -> some View
+  func stashList(stasher: some Stashing,
+                 publisher: some RepositoryPublishing) -> some View
   {
-    Text("placeholder")
-    //StashList(repo: repo)
+    StashList(stasher: stasher, publisher: publisher)
   }
 
   func tagCell(_ name: String, annotated: Bool) -> some View {
@@ -242,5 +246,6 @@ struct WorkspaceStatusView: View
 
 #Preview
 {
-  SidebarTabs(stasher: StashListPreview.PreviewStashing(["one", "two", "three"]))
+  let repo = StashListPreview.PreviewStashing(["one", "two", "three"])
+  return SidebarTabs(publisher: repo, stasher: repo)
 }
