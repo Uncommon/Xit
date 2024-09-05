@@ -320,8 +320,13 @@ extension Stashing
   {
     guard let mainCommit = stash.mainCommit
     else { return nil }
+    return findStashIndex(mainCommit.id)
+  }
+  
+  func findStashIndex(_ oid: GitOID) -> Int?
+  {
     return stashes.firstIndex {
-      $0.mainCommit?.id == mainCommit.id
+      $0.mainCommit?.id == oid
     }.map {
       stashes.distance(from: stashes.startIndex, to: $0)
     }

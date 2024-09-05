@@ -30,9 +30,11 @@ struct StashList<Stasher, Publisher>: View
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
 
+  @State var selection: GitOID?
+
   enum StashAction
   {
-    case pop, apply, drop
+    case pop(Int), apply(Int), drop(Int)
 
     var buttonTitle: UIString
     {
@@ -52,12 +54,30 @@ struct StashList<Stasher, Publisher>: View
       }
     }
 
-    var isDestructive: Bool { self == .drop }
+    var index: Int
+    {
+      switch self {
+        case .pop(let index), .apply(let index), .drop(let index):
+          index
+      }
+    }
+
+    var isDestructive: Bool
+    {
+      switch self {
+        case .drop:
+          true
+        default:
+          false
+      }
+    }
   }
 
   var body: some View
   {
-    List(Array(model.stasher.stashes.enumerated()), id: \.element.id) {
+    List(Array(model.stasher.stashes.enumerated()),
+         id: \.element.id,
+         selection: $selection) {
       (index: Int, stash: Stasher.Stash) in
       HStack {
         // using Label() placed the text too low relative to the icon
@@ -69,20 +89,23 @@ struct StashList<Stasher, Publisher>: View
         WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
       }
         .listRowSeparator(.hidden)
-        .contextMenu {
-          Button(.pop) { confirm(.pop) }
-          Button(.apply) { confirm(.apply) }
-          Button(.drop) { confirm(.drop) }
-        }
-        .confirmationDialog(alertAction?.confirmText.rawValue ?? "", 
-                            isPresented: $showAlert,
-                            presenting: alertAction) {
-          (action) in
-          Button(action.buttonTitle,
-                 role: action.isDestructive ? .destructive : nil)
-          { perform(action, at: index) }
-        }
     }
+      .contextMenu(forSelectionType: GitOID.self) {
+        if let stash = $0.first {
+          let index = model.stasher.findStashIndex(stash) ?? 0
+          Button(.pop) { confirm(.pop(index)) }
+          Button(.apply) { confirm(.apply(index)) }
+          Button(.drop) { confirm(.drop(index)) }
+        }
+      }
+      .confirmationDialog(alertAction?.confirmText.rawValue ?? "",
+                          isPresented: $showAlert,
+                          presenting: alertAction) {
+        (action) in
+        Button(action.buttonTitle,
+               role: action.isDestructive ? .destructive : nil)
+        { perform(action) }
+      }
       .overlay {
         if model.stasher.stashes.isEmpty {
           ContentUnavailableView("No stashes", systemImage: "shippingbox")
@@ -102,16 +125,16 @@ struct StashList<Stasher, Publisher>: View
     showAlert = true
   }
 
-  func perform(_ action: StashAction, at index: Int)
+  func perform(_ action: StashAction)
   {
     do {
       switch action {
         case .pop:
-          try model.stasher.popStash(index: UInt(index))
+          try model.stasher.popStash(index: UInt(action.index))
         case .apply:
-          try model.stasher.applyStash(index: UInt(index))
+          try model.stasher.applyStash(index: UInt(action.index))
         case .drop:
-          try model.stasher.dropStash(index: UInt(index))
+          try model.stasher.dropStash(index: UInt(action.index))
       }
     }
     catch let error as NSError {
