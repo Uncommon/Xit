@@ -26,6 +26,7 @@ struct StashList<Stasher, Publisher>: View
 {
   @StateObject var model: ObservableStashModel<Stasher, Publisher>
 
+  @State private var filterString: String = ""
   @State private var showAlert = false
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
@@ -73,43 +74,79 @@ struct StashList<Stasher, Publisher>: View
     }
   }
 
-  var body: some View
+  var filteredStashes: [Stasher.Stash]
   {
-    List(Array(model.stasher.stashes.enumerated()),
-         id: \.element.id,
-         selection: $selection) {
-      (index: Int, stash: Stasher.Stash) in
-      HStack {
-        // using Label() placed the text too low relative to the icon
-        Image(systemName: "shippingbox")
-          .foregroundStyle(.tint)
-        Text(stash.mainCommit?.messageSummary ?? "WIP")
-        Spacer()
-        // TODO: calculate the actual counts
-        WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
+    if filterString.isEmpty {
+      Array(model.stasher.stashes)
+    }
+    else {
+      model.stasher.stashes.filter {
+        $0.message?.lowercased().contains(filterString.lowercased()) ?? false
       }
     }
-      .contextMenu(forSelectionType: GitOID.self) {
-        if let stash = $0.first,
-           let index = model.stasher.findStashIndex(stash) {
-          Button(.pop) { confirm(.pop(index)) }
-          Button(.apply) { confirm(.apply(index)) }
-          Button(.drop) { confirm(.drop(index)) }
+  }
+
+  var body: some View
+  {
+    VStack(spacing: 0) {
+      List(filteredStashes,
+           id: \.id,
+           selection: $selection) {
+        (stash: Stasher.Stash) in
+        let index = model.stasher.findStashIndex(stash) ?? 0
+        HStack {
+          // using Label() placed the text too low relative to the icon
+          Image(systemName: "tray")
+            .foregroundStyle(.tint)
+          Text(stash.mainCommit?.messageSummary ?? "WIP")
+          Spacer()
+          // TODO: calculate the actual counts
+          WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
         }
       }
-      .confirmationDialog(alertAction?.confirmText.rawValue ?? "",
-                          isPresented: $showAlert,
-                          presenting: alertAction) {
-        (action) in
-        Button(action.buttonTitle,
-               role: action.isDestructive ? .destructive : nil)
-        { perform(action) }
-      }
-      .overlay {
-        if model.stasher.stashes.isEmpty {
-          ContentUnavailableView("No Stashes", systemImage: "shippingbox")
+        .contextMenu(forSelectionType: GitOID.self) {
+          if let stash = $0.first,
+             let index = model.stasher.findStashIndex(stash) {
+            Button(.pop) { confirm(.pop(index)) }
+            Button(.apply) { confirm(.apply(index)) }
+            Button(.drop) { confirm(.drop(index)) }
+          }
         }
+        .confirmationDialog(alertAction?.confirmText.rawValue ?? "",
+                            isPresented: $showAlert,
+                            presenting: alertAction) {
+          (action) in
+          Button(action.buttonTitle,
+                 role: action.isDestructive ? .destructive : nil)
+          { perform(action) }
+        }
+        .overlay {
+          if model.stasher.stashes.isEmpty {
+            ContentUnavailableView("No Stashes", systemImage: "tray")
+          }
+        }
+      HStack(spacing: 0) {
+        Menu {
+          Button("Stash current changes") {}
+          Divider()
+          Button("Pop top stash") {}
+          Button("Apply top stash") {}
+          Button("Drop top stash") {}
+        } label: {
+          Image(systemName: "ellipsis.circle")
+        }
+          .menuStyle(.borderlessButton)
+          .menuIndicator(.hidden)
+          .frame(width: 24)
+        FilterField(text: $filterString, prompt: Text(.filter)) {
+          FilterIndicator()
+        } rightContent: {
+          // toggle searching within file changes
+          EmptyView()
+        }.padding(2)
       }
+      .padding(.horizontal, 4)
+    }
   }
 
   init(stasher: Stasher, publisher: Publisher)
@@ -142,6 +179,7 @@ struct StashList<Stasher, Publisher>: View
   }
 }
 
+#if DEBUG
 struct StashListPreview: View
 {
   let stashes: [Stash]
@@ -151,7 +189,7 @@ struct StashListPreview: View
     var mainCommit: FakeCommit?
     var indexCommit: FakeCommit?
     var untrackedCommit: FakeCommit?
-    var message: String?
+    var message: String? { mainCommit?.messageSummary }
 
     init(message: String, oid: GitOID)
     {
@@ -166,6 +204,9 @@ struct StashListPreview: View
       }
     }
 
+    // These are supposed to be unnecessary because of the EmptyStash
+    // default implementations, but there are still issues with the compiler
+    // and/or the @Faked macro.
     func indexChanges() -> [FileChange] { [] }
     func workspaceChanges() -> [FileChange] { [] }
     func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
@@ -210,12 +251,13 @@ struct StashListPreview: View
 
 #Preview("With items") {
   StashListPreview(stashes: [
-    .init(message: "WIP some stuff", oid: .init(stringLiteral: "1")),
-    .init(message: "WIP more work", oid: .init(stringLiteral: "2")),
-    .init(message: "WIP things", oid: .init(stringLiteral: "3")),
+    .init(message: "WIP first", oid: .init(stringLiteral: "1")),
+    .init(message: "WIP second", oid: .init(stringLiteral: "2")),
+    .init(message: "WIP third", oid: .init(stringLiteral: "3")),
   ])
 }
 
 #Preview("Empty") {
   StashListPreview(stashes: [])
 }
+#endif
