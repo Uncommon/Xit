@@ -313,6 +313,7 @@
 		C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */; };
 		C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */; };
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
+		C9E594B92C8B4D7900C518C4 /* FilterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594B82C8B4D7900C518C4 /* FilterField.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -699,6 +700,7 @@
 		C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
+		C9E594B82C8B4D7900C518C4 /* FilterField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterField.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -873,6 +875,7 @@
 				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 				8983E1A6266596BD0075370C /* PathField.swift */,
 				89BA11E128BD576D00A7999A /* SearchField.swift */,
+				C9E594B82C8B4D7900C518C4 /* FilterField.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -1689,6 +1692,7 @@
 				C92E30EF1D4FF358001985F7 /* CommitHistory.swift in Sources */,
 				89C927881D43B0460074F71A /* PullOpController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* FetchOpController.swift in Sources */,
+				C9E594B92C8B4D7900C518C4 /* FilterField.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* AccountsManager.swift in Sources */,
 				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
 				891260E0285BCA1800053528 /* StashPanel.swift in Sources */,
