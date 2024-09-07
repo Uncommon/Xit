@@ -9,7 +9,7 @@ final class SidebarDataModel: @unchecked Sendable
   typealias Repository = FileChangesRepo & // For creating selection objects
                          CommitStorage & // also for selections
                          Branching & RemoteManagement &
-                         SubmoduleManagement & Stashing
+                         SubmoduleManagement & Stashing & Tagging
 
   private(set) weak var repository: (any Repository)?
   var roots: [SideBarGroupItem] = []

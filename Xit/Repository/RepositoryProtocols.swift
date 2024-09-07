@@ -112,7 +112,6 @@ public protocol CommitStorage: AnyObject
 public protocol CommitReferencing: AnyObject
 {
   associatedtype Commit: Xit.Commit
-  associatedtype Tag: Xit.Tag
   associatedtype Tree: Xit.Tree
   associatedtype LocalBranch: Xit.LocalBranch
   associatedtype RemoteBranch: Xit.RemoteBranch
@@ -121,7 +120,6 @@ public protocol CommitReferencing: AnyObject
 
   func oid(forRef: String) -> GitOID?
   func sha(forRef: String) -> String?
-  func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
                     upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
 
@@ -539,6 +537,8 @@ extension Branching
 @Faked
 public protocol Tagging: AnyObject
 {
+  associatedtype Tag: Xit.Tag
+  func tags() throws -> [Tag]
   func createTag(name: String, targetOID: GitOID, message: String?) throws
   func createLightweightTag(name: String, targetOID: GitOID) throws
   func deleteTag(name: String) throws

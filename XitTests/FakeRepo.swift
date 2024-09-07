@@ -113,6 +113,10 @@ extension FakeRepo: SubmoduleManagement
   func addSubmodule(path: String, url: String) throws {}
 }
 
+extension FakeRepo: EmptyTagging
+{
+}
+
 extension FakeRepo: RemoteManagement
 {
   func remoteNames() -> [String] { return ["origin1", "origin2" ]}
