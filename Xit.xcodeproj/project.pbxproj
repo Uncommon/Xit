@@ -314,6 +314,7 @@
 		C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */; };
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
 		C9E594B92C8B4D7900C518C4 /* FilterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594B82C8B4D7900C518C4 /* FilterField.swift */; };
+		C9E594BB2C8BE9E400C518C4 /* TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BA2C8BE9E400C518C4 /* TagList.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -701,6 +702,7 @@
 		C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesDataSourceTest.swift; sourceTree = "<group>"; };
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
 		C9E594B82C8B4D7900C518C4 /* FilterField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterField.swift; sourceTree = "<group>"; };
+		C9E594BA2C8BE9E400C518C4 /* TagList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagList.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -1277,6 +1279,7 @@
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
+				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1758,6 +1761,7 @@
 				C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */,
 				89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */,
 				897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */,
+				C9E594BB2C8BE9E400C518C4 /* TagList.swift in Sources */,
 				89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */,
 				89E427302862CF2E00A17651 /* EditAccountPanel.swift in Sources */,
 				C90FCA2F1D9C776C006196DE /* FileDiffController.swift in Sources */,

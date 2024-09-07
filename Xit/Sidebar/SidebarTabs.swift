@@ -142,8 +142,9 @@ struct SidebarTabs: View
 
   let remoteData: [TreeLabelItem] = [
     .init(name: "origin", image: .init(systemSymbolName: "network")!, children: [
-      .init(name: "branch", image: .xtBranch, children: nil)
-    ])
+      .init(name: "branch", image: .xtBranch, children: nil),
+      .init(name: "main", image: .xtBranch, children: nil),
+    ]),
   ]
 
   var body: some View {

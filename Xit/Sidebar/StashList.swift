@@ -89,9 +89,7 @@ struct StashList<Stasher, Publisher>: View
   var body: some View
   {
     VStack(spacing: 0) {
-      List(filteredStashes,
-           id: \.id,
-           selection: $selection) {
+      List(filteredStashes, id: \.id, selection: $selection) {
         (stash: Stasher.Stash) in
         let index = model.stasher.findStashIndex(stash) ?? 0
         HStack {
@@ -144,8 +142,7 @@ struct StashList<Stasher, Publisher>: View
           // toggle searching within file changes
           EmptyView()
         }.padding(2)
-      }
-      .padding(.horizontal, 4)
+      }.padding(.horizontal, 4)
     }
   }
 
