@@ -124,18 +124,13 @@ struct StashList<Stasher, Publisher>: View
           }
         }
       HStack(spacing: 0) {
-        Menu {
+        SidebarActionButton {
           Button("Stash current changes") {}
           Divider()
           Button("Pop top stash") {}
           Button("Apply top stash") {}
           Button("Drop top stash") {}
-        } label: {
-          Image(systemName: "ellipsis.circle")
         }
-          .menuStyle(.borderlessButton)
-          .menuIndicator(.hidden)
-          .frame(width: 24)
         FilterField(text: $filterString, prompt: Text(.filter)) {
           FilterIndicator()
         } rightContent: {
