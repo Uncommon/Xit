@@ -6,7 +6,7 @@ class ObservableTagModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Obse
   let tagger: Tagger
   let publisher: Publisher
 
-  @Published var tags: [Tagger.Tag]
+  @Published var tags: [TreeItem<Tagger.Tag>] = []
 
   var sink: AnyCancellable?
 
@@ -15,12 +15,18 @@ class ObservableTagModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Obse
     self.tagger = tagger
     self.publisher = publisher
 
-    self.tags = (try? tagger.tags()) ?? []
-
+    setTagHierarchy()
     sink = publisher.refsPublisher.sink {
       [weak self] in
-      self?.tags = (try? tagger.tags()) ?? []
+      self?.setTagHierarchy()
     }
+  }
+
+  func setTagHierarchy()
+  {
+    let tagList = (try? tagger.tags()) ?? []
+
+    self.tags = TreeItem.makeHierarchy(from: tagList)
   }
 }
 
@@ -33,30 +39,33 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
   var body: some View
   {
     VStack(spacing: 0) {
-      List(model.tags, id: \.name, selection: $selection) {
-        (tag) in
+      List(model.tags, id: \.path, children: \.children, selection: $selection) {
+        (tag: TreeItem<Tagger.Tag>) in
+        let item = tag.item
         Label(
-          title: { Text(tag.name) },
+          title: { Text(tag.path.lastPathComponent) },
           icon: {
-            Image(systemName: "tag")
-              .symbolVariant(tag.type == .lightweight ? .none : .fill)
+            Image(systemName: item.map { $0.isSigned ? "seal" : "tag" } ?? "folder")
+              .symbolVariant(item?.type == .lightweight ? .none : .fill)
           }
-        )
+        ).selectionDisabled(item == nil)
       }
         .contextMenu(forSelectionType: String.self) {
           if let _ = $0.first {
             Button(.delete, role: .destructive) {  }
           }
         }
-      HStack(spacing: 0) {
-        Menu {
-          Button("New tag...") {}
-        } label: {
-          Image(systemName: "ellipsis.circle")
+        .overlay {
+          if model.tags.isEmpty {
+            ContentUnavailableView("No Tags", systemImage: "tag")
+          }
         }
-          .menuStyle(.borderlessButton)
-          .menuIndicator(.hidden)
-          .frame(width: 24)
+      HStack(spacing: 0) {
+        Button {
+          // new tag panel
+        } label: {
+          Image(systemName: "plus")
+        }.buttonStyle(.plain).padding(.horizontal, 3)
         FilterField(text: .constant(""), prompt: Text(.filter)) {
           FilterIndicator()
         }.padding(2)
@@ -133,8 +142,21 @@ struct TagListPreview: View
 
 #Preview("Tags") {
   TagListPreview(tags: [
-    .init(name: "v1.0", isSigned: true),
-    .init(name: "working"),
+    .init(name: "signed", message: "signed!", isSigned: true),
+    .init(name: "light"),
   ])
+}
+
+#Preview("Folder") {
+  TagListPreview(tags: [
+    .init(name: "v1.0", message: "signed!", isSigned: true),
+    .init(name: "parent", message: ""),
+    .init(name: "parent/child", message: ""),
+    .init(name: "work/things", message: ""),
+  ])
+}
+
+#Preview("Empty") {
+  TagListPreview(tags: [])
 }
 #endif

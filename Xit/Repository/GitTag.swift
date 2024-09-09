@@ -2,7 +2,7 @@ import Cocoa
 import FakedMacro
 
 @Faked
-public protocol Tag
+public protocol Tag: TreeItemData
 {
   associatedtype Commit: Xit.Commit
 
@@ -15,6 +15,11 @@ public protocol Tag
   var message: String? { get }
   var type: TagType { get }
   var isSigned: Bool { get }
+}
+
+public extension Tag
+{
+  var treeItemPath: String { name }
 }
 
 public enum TagType
