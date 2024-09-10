@@ -7,20 +7,30 @@ public protocol PathTreeData
 
 /// An element in a hirerarchy of items where each item is identified by
 /// a slash-separated path name.
-enum PathTreeNode<T: PathTreeData>
+enum PathTreeNode<Item: PathTreeData>
 {
   /// An item in the hierarchy that never has child items
-  case leaf(T)
+  case leaf(Item)
   /// An item in the hierarchy with a possibly empty list of sub-items
-  indirect case node(path: String, item: T? = nil, children: [Self])
+  indirect case node(content: NodeContent<Item>, children: [Self])
+
+  static func node(path: String, children: [Self]) -> Self
+  {
+    .node(content: .virtual(path: path), children: children)
+  }
+
+  static func node(item: Item, children: [Self]) -> Self
+  {
+    .node(content: .item(item), children: children)
+  }
 
   var path: String
   {
     switch self {
       case .leaf(let item):
         return item.treeNodePath
-      case .node(let path, let item, _):
-        return item?.treeNodePath ?? path
+      case .node(let content, _):
+        return content.path
     }
   }
 
@@ -28,16 +38,39 @@ enum PathTreeNode<T: PathTreeData>
   {
     switch self {
       case .leaf: nil
-      case .node(_, _, let children): children
+      case .node(_, let children): children
     }
   }
 
-  var item: T?
+  var item: Item?
   {
     switch self {
       case .leaf(let item): item
-      case .node(_, let item, _): item
+      case .node(.item(let item), _): item
+      default: nil
     }
+  }
+}
+
+enum NodeContent<Item: PathTreeData>
+{
+  case virtual(path: String)
+  case item(Item)
+
+  var path: String
+  {
+    switch self {
+      case .virtual(let path): path
+      case .item(let item): item.treeNodePath
+    }
+  }
+}
+
+extension NodeContent: Equatable where Item: Equatable
+{
+  static func == (lhs: NodeContent<Item>, rhs: NodeContent<Item>) -> Bool
+  {
+    lhs.path == rhs.path
   }
 }
 
@@ -45,7 +78,7 @@ extension PathTreeNode
 {
   /// Creates a hierarchy from a list of items, adding container nodes
   /// for each "folder" represented in the path names.
-  static func makeHierarchy(from items: [T]) -> [Self]
+  static func makeHierarchy(from items: [Item]) -> [Self]
   {
     // TODO: case insensitive sort
     makeHierarchy(from: items.sorted(byKeyPath: \.treeNodePath), prefix: "")
@@ -53,7 +86,7 @@ extension PathTreeNode
 
   private static func makeHierarchy<C>(from items: C,
                                        prefix: String) -> [Self]
-    where C: RandomAccessCollection<T>,
+    where C: RandomAccessCollection<Item>,
           C.Index == Int
   {
     var result: [Self] = []
@@ -75,10 +108,10 @@ extension PathTreeNode
         if case let .leaf(lastItem) = result.last,
            lastItem.treeNodePath == prefix + components[0] {
           _ = result.popLast()
-          result.append(.node(path: nodePath, item: lastItem, children: subHierarchy))
+          result.append(.node(item: lastItem, children: subHierarchy))
         }
         else {
-          result.append(.node(path: nodePath, item: nil, children: subHierarchy))
+          result.append(.node(path: nodePath, children: subHierarchy))
         }
         index += subItems.count
       }
@@ -92,16 +125,16 @@ extension PathTreeNode
   }
 }
 
-extension PathTreeNode: Equatable where T: Equatable
+extension PathTreeNode: Equatable where Item: Equatable
 {
-  static func == (lhs: PathTreeNode<T>, rhs: PathTreeNode<T>) -> Bool
+  static func == (lhs: PathTreeNode<Item>, rhs: PathTreeNode<Item>) -> Bool
   {
     switch (lhs, rhs) {
       case (.leaf(let a), .leaf(let b)):
         a == b
-      case (.node(let nameA, let itemA, let itemsA),
-            .node(let nameB, let itemB, let itemsB)):
-        nameA == nameB && itemA == itemB && itemsA == itemsB
+      case (.node(let contentA, let itemsA),
+            .node(let contentB, let itemsB)):
+        contentA == contentB && itemsA == itemsB
       default:
         false
     }

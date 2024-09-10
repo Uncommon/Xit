@@ -52,7 +52,7 @@ final class PathTreeTest: XCTestCase
 
     print(items.printed())
     XCTAssertEqual(items, [
-      .node(path: "folder", item: "folder", children: [
+      .node(item: "folder", children: [
         .leaf("folder/item")]
       ),
       .leaf("other")
@@ -83,8 +83,12 @@ extension PathTreeNode
     switch self {
       case .leaf(let item):
         name = "- " + item.treeNodePath.lastPathComponent
-      case .node(let nodeName, let item, let children):
-        name = (item == nil ? "+ " : "* ") + nodeName + "\n" + children.printed(indent: indent + 1)
+      case .node(.virtual(let path), let children):
+        name = "+ " + path.lastPathComponent + "\n" +
+               children.printed(indent: indent + 1)
+      case .node(.item(let item), let children):
+        name = "* " + item.treeNodePath.lastPathComponent + "\n" +
+               children.printed(indent: indent + 1)
     }
     return String(repeating: "  ", count: indent) + name
   }
