@@ -7,16 +7,37 @@ class StashListViewModel<Stasher, Publisher>: ObservableObject
   let stasher: Stasher
   let publisher: Publisher
 
-  var sink: AnyCancellable?
+  @Published var stashes: [Stasher.Stash]
+  @Published var filter: String = ""
+
+  var sinks: [AnyCancellable] = []
 
   init(stasher: Stasher, publisher: Publisher)
   {
     self.stasher = stasher
     self.publisher = publisher
+    self.stashes = Array(stasher.stashes)
 
-    sink = publisher.stashPublisher.sinkOnMainQueue {
-      [weak self] in
-      self?.objectWillChange.send()
+    sinks.append(contentsOf: [
+      publisher.stashPublisher.sinkOnMainQueue {
+        [weak self] in
+        guard let self else { return }
+        applyFilter(filter)
+      },
+      $filter
+        .debounce(for: 0.5, scheduler: DispatchQueue.main)
+        .sink {
+          [weak self] in
+          self?.applyFilter($0)
+        },
+    ])
+  }
+
+  func applyFilter(_ filterString: String)
+  {
+    stashes = stasher.stashes.filter {
+      filterString.isEmpty ||
+      $0.message?.lowercased().contains(filterString.lowercased()) ?? false
     }
   }
 }
@@ -26,7 +47,6 @@ struct StashList<Stasher, Publisher>: View
 {
   @StateObject var model: StashListViewModel<Stasher, Publisher>
 
-  @State private var filterString: String = ""
   @State private var showAlert = false
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
@@ -74,26 +94,14 @@ struct StashList<Stasher, Publisher>: View
     }
   }
 
-  var filteredStashes: [Stasher.Stash]
-  {
-    if filterString.isEmpty {
-      Array(model.stasher.stashes)
-    }
-    else {
-      model.stasher.stashes.filter {
-        $0.message?.lowercased().contains(filterString.lowercased()) ?? false
-      }
-    }
-  }
-
   var body: some View
   {
     VStack(spacing: 0) {
-      List(filteredStashes, id: \.id, selection: $selection) {
+      List(model.stashes, id: \.id, selection: $selection) {
         (stash: Stasher.Stash) in
         let index = model.stasher.findStashIndex(stash) ?? 0
         HStack {
-          // using Label() placed the text too low relative to the icon
+          // Label() placed the text too low relative to the icon
           Image(systemName: "tray")
             .foregroundStyle(.tint)
           Text(stash.mainCommit?.messageSummary ?? "WIP")
@@ -131,7 +139,7 @@ struct StashList<Stasher, Publisher>: View
           Button("Apply top stash") {}
           Button("Drop top stash") {}
         }
-        FilterField(text: $filterString, prompt: Text(.filter)) {
+        FilterField(text: $model.filter, prompt: Text(.filter)) {
           FilterIndicator()
         } rightContent: {
           // toggle searching within file changes
