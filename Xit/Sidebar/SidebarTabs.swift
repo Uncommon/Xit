@@ -138,7 +138,7 @@ struct SidebarTabs: View
   let publisher: any RepositoryPublishing
   let stasher: any Stashing
   //let submobuleManager: any SubmoduleManagement
-  //let tagger: any Tagging
+  let tagger: any Tagging
 
   let remoteData: [TreeLabelItem] = [
     .init(name: "origin", image: .init(systemSymbolName: "network")!, children: [
@@ -170,10 +170,7 @@ struct SidebarTabs: View
                   icon: { Image(nsImage: item.image) })
           }
         case .tags:
-          List {
-            tagCell("someTag", annotated: true)
-            tagCell("otherTag", annotated: false)
-          }
+          AnyView(tagList(tagger: tagger, publisher: publisher))
         case .stashes:
           AnyView(stashList(stasher: stasher, publisher: publisher))
         case .submodules:
@@ -192,9 +189,9 @@ struct SidebarTabs: View
   init(//brancher: any Branching,
        //remoteManager: any RemoteManagement,
        publisher: any RepositoryPublishing,
-       stasher: any Stashing
+       stasher: any Stashing,
        //submoduleManager: any SubmoduleManagement,
-       //tagger: any Tagging
+       tagger: any Tagging
   )
   {
     //self.brancher = brancher
@@ -202,19 +199,26 @@ struct SidebarTabs: View
     self.publisher = publisher
     self.stasher = stasher
     //self.submobuleManager = submoduleManager
-    //self.tagger = tagger
+    self.tagger = tagger
   }
 
   init(repo: any FullRepository, publisher: any RepositoryPublishing)
   {
     self.init(//brancher: repo, remoteManager: repo,
               publisher: publisher,
-              stasher: repo
-              //submoduleManager: repo, tagger: repo
+              stasher: repo,
+              //submoduleManager: repo,
+              tagger: repo
     )
   }
 
-  // Needs a generic wrapper because StashList is generic
+  // These views need generic wrappers because the list views are generic
+  func tagList(tagger: some Tagging,
+               publisher: some RepositoryPublishing) -> some View
+  {
+    TagList(model: .init(tagger: tagger, publisher: publisher))
+  }
+
   func stashList(stasher: some Stashing,
                  publisher: some RepositoryPublishing) -> some View
   {
@@ -264,6 +268,12 @@ struct WorkspaceStatusView: View
 
 #Preview
 {
-  let repo = StashListPreview.PreviewStashing(["one", "two", "three"])
-  return SidebarTabs(publisher: repo, stasher: repo)
+  let publisher = NullRepositoryPublishing()
+  let stasher = StashListPreview.PreviewStashing(["one", "two", "three"])
+  let tagger = TagListPreview.Tagger(tagList: [
+    .init(name: "someWork"),
+    .init(name: "releases/v1.0"),
+    .init(name: "releases/v1.1"),
+  ])
+  return SidebarTabs(publisher: publisher, stasher: stasher, tagger: tagger)
 }

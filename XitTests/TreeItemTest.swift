@@ -47,12 +47,30 @@ final class TreeItemTest: XCTestCase
 
   func testItemIsFolder()
   {
-    let nodes = ["folder", "folder/item"]
+    let nodes = ["folder", "folder/item", "other"]
     let items = TreeItem.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
-      .node(path: "folder", item: "folder", children: [.leaf("folder/item")]),
+      .node(path: "folder", item: "folder", children: [
+        .leaf("folder/item")]
+      ),
+      .leaf("other")
+    ])
+  }
+
+  func testTwoSubItems()
+  {
+    let nodes = ["folder/item1", "folder/item2", "other"]
+    let items = TreeItem.makeHierarchy(from: nodes)
+
+    print(items.printed())
+    XCTAssertEqual(items, [
+      .node(path: "folder", children: [
+        .leaf("folder/item1"),
+        .leaf("folder/item2"),
+      ]),
+      .leaf("other")
     ])
   }
 }

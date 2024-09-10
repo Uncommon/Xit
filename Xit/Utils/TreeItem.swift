@@ -57,8 +57,9 @@ extension TreeItem
           C.Index == Int
   {
     var result: [Self] = []
+    var index = items.startIndex
 
-    for var index in items.startIndex..<items.endIndex {
+    repeat {
       let item = items[index]
       let path = item.treeItemPath.droppingPrefix(prefix)
       let components = path.pathComponents
@@ -83,8 +84,9 @@ extension TreeItem
       }
       else {
         result.append(.leaf(item))
+        index += 1
       }
-    }
+    } while index < items.endIndex
 
     return result
   }
