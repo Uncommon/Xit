@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-class ObservableStashModel<Stasher, Publisher>: ObservableObject
+class StashListViewModel<Stasher, Publisher>: ObservableObject
   where Stasher: Stashing, Publisher: RepositoryPublishing
 {
   let stasher: Stasher
@@ -24,7 +24,7 @@ class ObservableStashModel<Stasher, Publisher>: ObservableObject
 struct StashList<Stasher, Publisher>: View
   where Stasher: Stashing, Publisher: RepositoryPublishing
 {
-  @StateObject var model: ObservableStashModel<Stasher, Publisher>
+  @StateObject var model: StashListViewModel<Stasher, Publisher>
 
   @State private var filterString: String = ""
   @State private var showAlert = false

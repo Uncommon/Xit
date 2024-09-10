@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-class ObservableTagModel<Tagger: Tagging, Publisher: RepositoryPublishing>: ObservableObject
+class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: ObservableObject
 {
   let tagger: Tagger
   let publisher: Publisher
@@ -32,7 +32,7 @@ class ObservableTagModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Obse
 
 struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
 {
-  let model: ObservableTagModel<Tagger, Publisher>
+  let model: TagListViewModel<Tagger, Publisher>
 
   @State private var selection: String? = nil
 
