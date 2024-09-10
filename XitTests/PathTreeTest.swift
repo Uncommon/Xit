@@ -1,17 +1,17 @@
 import XCTest
 @testable import Xit
 
-extension String: TreeItemData
+extension String: PathTreeData
 {
-  public var treeItemPath: String { self }
+  public var treeNodePath: String { self }
 }
 
-final class TreeItemTest: XCTestCase
+final class PathTreeTest: XCTestCase
 {
   func testFlat() throws
   {
     let nodes = ["first", "second"]
-    let items = TreeItem.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     XCTAssertEqual(items, [
       .leaf("first"),
@@ -22,7 +22,7 @@ final class TreeItemTest: XCTestCase
   func testOneFolder()
   {
     let nodes = ["folder/item"]
-    let items = TreeItem.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -33,7 +33,7 @@ final class TreeItemTest: XCTestCase
   func testLevel2Folder()
   {
     let nodes = ["folder1/folder2/item"]
-    let items = TreeItem.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -48,7 +48,7 @@ final class TreeItemTest: XCTestCase
   func testItemIsFolder()
   {
     let nodes = ["folder", "folder/item", "other"]
-    let items = TreeItem.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -62,7 +62,7 @@ final class TreeItemTest: XCTestCase
   func testTwoSubItems()
   {
     let nodes = ["folder/item1", "folder/item2", "other"]
-    let items = TreeItem.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -75,14 +75,14 @@ final class TreeItemTest: XCTestCase
   }
 }
 
-extension TreeItem
+extension PathTreeNode
 {
   func printed(indent: Int) -> String
   {
     let name: String
     switch self {
       case .leaf(let item):
-        name = "- " + item.treeItemPath.lastPathComponent
+        name = "- " + item.treeNodePath.lastPathComponent
       case .node(let nodeName, let item, let children):
         name = (item == nil ? "+ " : "* ") + nodeName + "\n" + children.printed(indent: indent + 1)
     }
@@ -92,7 +92,7 @@ extension TreeItem
 
 extension Array
 {
-  func printed<T>(indent: Int = 0) -> String where Element == TreeItem<T>
+  func printed<T>(indent: Int = 0) -> String where Element == PathTreeNode<T>
   {
     map {
       $0.printed(indent: indent)

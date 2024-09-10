@@ -315,8 +315,8 @@
 		C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */; };
 		C9E594B92C8B4D7900C518C4 /* FilterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594B82C8B4D7900C518C4 /* FilterField.swift */; };
 		C9E594BB2C8BE9E400C518C4 /* TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BA2C8BE9E400C518C4 /* TagList.swift */; };
-		C9E594BD2C8F297000C518C4 /* TreeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BC2C8F297000C518C4 /* TreeItem.swift */; };
-		C9E594BF2C8F29BA00C518C4 /* TreeItemTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* TreeItemTest.swift */; };
+		C9E594BD2C8F297000C518C4 /* PathTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */; };
+		C9E594BF2C8F29BA00C518C4 /* PathTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -705,8 +705,8 @@
 		C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlameTest.swift; sourceTree = "<group>"; };
 		C9E594B82C8B4D7900C518C4 /* FilterField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterField.swift; sourceTree = "<group>"; };
 		C9E594BA2C8BE9E400C518C4 /* TagList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagList.swift; sourceTree = "<group>"; };
-		C9E594BC2C8F297000C518C4 /* TreeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeItem.swift; sourceTree = "<group>"; };
-		C9E594BE2C8F29BA00C518C4 /* TreeItemTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeItemTest.swift; sourceTree = "<group>"; };
+		C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeNode.swift; sourceTree = "<group>"; };
+		C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeTest.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -825,7 +825,7 @@
 				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				89009E5128820CB2004A684B /* Testing.swift */,
-				C9E594BC2C8F297000C518C4 /* TreeItem.swift */,
+				C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1020,7 +1020,7 @@
 				C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */,
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
-				C9E594BE2C8F29BA00C518C4 /* TreeItemTest.swift */,
+				C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
@@ -1611,7 +1611,7 @@
 				DDDDAF1418162212009F8BA1 /* XTQueueUtils.c in Sources */,
 				891C5F90267C2A830099695D /* GitCloner.swift in Sources */,
 				C957B8661D2D8D500040F858 /* PasswordStorage.swift in Sources */,
-				C9E594BD2C8F297000C518C4 /* TreeItem.swift in Sources */,
+				C9E594BD2C8F297000C518C4 /* PathTreeNode.swift in Sources */,
 				898A381827136881002639CC /* RepoDocument.swift in Sources */,
 				C931A0E92762B8AA007F441C /* ArrayBuilder.swift in Sources */,
 				C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */,
@@ -1817,7 +1817,7 @@
 				C953560A1D958E8D00AEEF49 /* StringExtensionsTest.swift in Sources */,
 				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
 				C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */,
-				C9E594BF2C8F29BA00C518C4 /* TreeItemTest.swift in Sources */,
+				C9E594BF2C8F29BA00C518C4 /* PathTreeTest.swift in Sources */,
 				89E4272A285D6E3D00A17651 /* ConfigTest.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,

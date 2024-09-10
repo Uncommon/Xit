@@ -1,13 +1,13 @@
 import Foundation
 
-public protocol TreeItemData
+public protocol PathTreeData
 {
-  var treeItemPath: String { get }
+  var treeNodePath: String { get }
 }
 
 /// An element in a hirerarchy of items where each item is identified by
 /// a slash-separated path name.
-enum TreeItem<T: TreeItemData>
+enum PathTreeNode<T: PathTreeData>
 {
   /// An item in the hierarchy that never has child items
   case leaf(T)
@@ -18,9 +18,9 @@ enum TreeItem<T: TreeItemData>
   {
     switch self {
       case .leaf(let item):
-        return item.treeItemPath
+        return item.treeNodePath
       case .node(let path, let item, _):
-        return item?.treeItemPath ?? path
+        return item?.treeNodePath ?? path
     }
   }
 
@@ -41,14 +41,14 @@ enum TreeItem<T: TreeItemData>
   }
 }
 
-extension TreeItem
+extension PathTreeNode
 {
   /// Creates a hierarchy from a list of items, adding container nodes
   /// for each "folder" represented in the path names.
   static func makeHierarchy(from items: [T]) -> [Self]
   {
     // TODO: case insensitive sort
-    makeHierarchy(from: items.sorted(byKeyPath: \.treeItemPath), prefix: "")
+    makeHierarchy(from: items.sorted(byKeyPath: \.treeNodePath), prefix: "")
   }
 
   private static func makeHierarchy<C>(from items: C,
@@ -61,19 +61,19 @@ extension TreeItem
 
     repeat {
       let item = items[index]
-      let path = item.treeItemPath.droppingPrefix(prefix)
+      let path = item.treeNodePath.droppingPrefix(prefix)
       let components = path.pathComponents
 
       if components.count > 1 {
         let pathPrefix = prefix + components[0] + "/"
         let subItems = items.dropFirst(index).prefix {
-          $0.treeItemPath.hasPrefix(pathPrefix)
+          $0.treeNodePath.hasPrefix(pathPrefix)
         }
         let subHierarchy = makeHierarchy(from: subItems, prefix: pathPrefix)
         let nodePath = prefix + components[0]
 
         if case let .leaf(lastItem) = result.last,
-           lastItem.treeItemPath == prefix + components[0] {
+           lastItem.treeNodePath == prefix + components[0] {
           _ = result.popLast()
           result.append(.node(path: nodePath, item: lastItem, children: subHierarchy))
         }
@@ -92,9 +92,9 @@ extension TreeItem
   }
 }
 
-extension TreeItem: Equatable where T: Equatable
+extension PathTreeNode: Equatable where T: Equatable
 {
-  static func == (lhs: TreeItem<T>, rhs: TreeItem<T>) -> Bool
+  static func == (lhs: PathTreeNode<T>, rhs: PathTreeNode<T>) -> Bool
   {
     switch (lhs, rhs) {
       case (.leaf(let a), .leaf(let b)):

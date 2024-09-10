@@ -6,7 +6,7 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
   let tagger: Tagger
   let publisher: Publisher
 
-  @Published var tags: [TreeItem<Tagger.Tag>] = []
+  @Published var tags: [PathTreeNode<Tagger.Tag>] = []
 
   var sink: AnyCancellable?
 
@@ -26,7 +26,7 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
   {
     let tagList = (try? tagger.tags()) ?? []
 
-    self.tags = TreeItem.makeHierarchy(from: tagList)
+    self.tags = PathTreeNode.makeHierarchy(from: tagList)
   }
 }
 
@@ -40,7 +40,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
   {
     VStack(spacing: 0) {
       List(model.tags, id: \.path, children: \.children, selection: $selection) {
-        (tag: TreeItem<Tagger.Tag>) in
+        (tag: PathTreeNode<Tagger.Tag>) in
         let item = tag.item
         Label(
           title: { Text(tag.path.lastPathComponent) },
