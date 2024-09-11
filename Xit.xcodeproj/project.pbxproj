@@ -319,6 +319,7 @@
 		C9E594BF2C8F29BA00C518C4 /* PathTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */; };
 		C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C02C914C2600C518C4 /* FilterBar.swift */; };
 		C9E594C32C91568200C518C4 /* SidebarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C22C91568200C518C4 /* SidebarButtons.swift */; };
+		C9E594C52C91C46300C518C4 /* RecursiveDisclosureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -711,6 +712,7 @@
 		C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeTest.swift; sourceTree = "<group>"; };
 		C9E594C02C914C2600C518C4 /* FilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBar.swift; sourceTree = "<group>"; };
 		C9E594C22C91568200C518C4 /* SidebarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarButtons.swift; sourceTree = "<group>"; };
+		C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecursiveDisclosureGroup.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -1288,6 +1290,7 @@
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 				C9E594C02C914C2600C518C4 /* FilterBar.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
+				C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
@@ -1633,6 +1636,7 @@
 				C959CDE91F859D3D00C1E282 /* BuildStatusController.swift in Sources */,
 				C98EBC152126188900EF739E /* ServicesData.swift in Sources */,
 				C967C4AF1F96BA55002166F7 /* Cache.swift in Sources */,
+				C9E594C52C91C46300C518C4 /* RecursiveDisclosureGroup.swift in Sources */,
 				C94D7E8D1EBA66180059AC21 /* XTRepository+Staging.swift in Sources */,
 				C94E4EDE22A989BC00D5B2B1 /* CLIRunner.swift in Sources */,
 				C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */,

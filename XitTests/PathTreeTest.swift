@@ -1,11 +1,6 @@
 import XCTest
 @testable import Xit
 
-extension String: PathTreeData
-{
-  public var treeNodePath: String { self }
-}
-
 final class PathTreeTest: XCTestCase
 {
   func testFlat() throws

@@ -142,6 +142,11 @@ extension PathTreeNode: Equatable where Item: Equatable
   }
 }
 
+extension String: PathTreeData
+{
+  public var treeNodePath: String { self }
+}
+
 // MARK: Filtering
 
 extension Array

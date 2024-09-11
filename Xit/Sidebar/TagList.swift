@@ -40,7 +40,9 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
     if !filter.isEmpty {
       tags = tags.filtered(with: filter)
     }
-    self.tags = tags
+    withAnimation {
+      self.tags = tags
+    }
   }
 }
 
