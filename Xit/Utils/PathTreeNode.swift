@@ -89,6 +89,7 @@ extension PathTreeNode
     where C: RandomAccessCollection<Item>,
           C.Index == Int
   {
+    guard !items.isEmpty else { return [] }
     var result: [Self] = []
     var index = items.startIndex
 
@@ -138,5 +139,49 @@ extension PathTreeNode: Equatable where Item: Equatable
       default:
         false
     }
+  }
+}
+
+// MARK: Filtering
+
+extension Array
+{
+  func filtered<T>(with text: String) -> Self where Element == PathTreeNode<T>
+  {
+    compactMap { $0.filtered(with: text) }
+  }
+}
+
+extension PathTreeNode
+{
+  func filtered(with text: String) -> Self?
+  {
+    switch self {
+      case .leaf(let item):
+        return item.passes(filter: text) ? self : nil
+      case .node(let content, let children):
+        let filteredChildren = children.filtered(with: text)
+
+        if filteredChildren.isEmpty {
+           if let item,
+              item.passes(filter: text) {
+             return .leaf(item)
+           }
+          else {
+            return nil
+          }
+        }
+        else {
+          return .node(content: content, children: filteredChildren)
+        }
+    }
+  }
+}
+
+fileprivate extension PathTreeData
+{
+  func passes(filter: String) -> Bool
+  {
+    treeNodePath.lastPathComponent.lowercased().contains(filter.lowercased())
   }
 }

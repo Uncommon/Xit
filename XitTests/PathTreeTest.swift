@@ -73,6 +73,30 @@ final class PathTreeTest: XCTestCase
       .leaf("other")
     ])
   }
+
+  func testFilter()
+  {
+    let data: [(nodes: [String], filter: String, expected: [String])] = [
+      (["item"], "i", ["item"]),
+      (["item"], "x", []),
+      (["first", "second"], "nd", ["second"]),
+      (["folder/item"], "i", ["folder/item"]),
+      (["folder/item"], "x", []),
+      (["folder", "folder/item"], "f", ["folder"]),
+      (["folder", "folder/item"], "i", ["folder/item"]),
+      (["folder/folder/item"], "i", ["folder/folder/item"]),
+      (["folder/folder/item"], "x", []),
+      (["folder/group/item"], "gr", []),
+    ]
+
+    for testCase in data {
+      let items = PathTreeNode.makeHierarchy(from: testCase.nodes)
+      let filtered = items.filtered(with: testCase.filter)
+      let expectedNodes = PathTreeNode.makeHierarchy(from: testCase.expected)
+
+      XCTAssertEqual(filtered, expectedNodes)
+    }
+  }
 }
 
 extension PathTreeNode
