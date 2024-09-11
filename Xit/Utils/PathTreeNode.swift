@@ -100,7 +100,7 @@ extension PathTreeNode
 
       if components.count > 1 {
         let pathPrefix = prefix + components[0] + "/"
-        let subItems = items.dropFirst(index).prefix {
+        let subItems = items.dropFirst(index - items.startIndex).prefix {
           $0.treeNodePath.hasPrefix(pathPrefix)
         }
         let subHierarchy = makeHierarchy(from: subItems, prefix: pathPrefix)

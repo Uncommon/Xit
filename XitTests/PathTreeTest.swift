@@ -45,6 +45,25 @@ final class PathTreeTest: XCTestCase
     ])
   }
 
+  func testLevel2FolderAsItems()
+  {
+    let nodes = [
+      "folder1",
+      "folder1/folder2",
+      "folder1/folder2/item",
+    ]
+    let items = PathTreeNode.makeHierarchy(from: nodes)
+
+    print(items.printed())
+    XCTAssertEqual(items, [
+      .node(item: "folder1", children: [
+        .node(item: "folder1/folder2", children: [
+          .leaf("folder1/folder2/item"),
+        ]),
+      ]),
+    ])
+  }
+
   func testItemIsFolder()
   {
     let nodes = ["folder", "folder/item", "other"]
