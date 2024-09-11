@@ -7,8 +7,10 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
   let publisher: Publisher
 
   @Published var tags: [PathTreeNode<Tagger.Tag>] = []
+  @Published var filter: String = ""
 
   var sink: AnyCancellable?
+  var sinks: [AnyCancellable] = []
 
   init(tagger: Tagger, publisher: Publisher)
   {
@@ -16,23 +18,35 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
     self.publisher = publisher
 
     setTagHierarchy()
-    sink = publisher.refsPublisher.sink {
-      [weak self] in
-      self?.setTagHierarchy()
-    }
+    sinks.append(contentsOf: [
+      publisher.refsPublisher.sink {
+        [weak self] in
+        self?.setTagHierarchy()
+      },
+      $filter
+        .debounce(for: 0.5, scheduler: DispatchQueue.main)
+        .sink {
+          [weak self] _ in
+          self?.setTagHierarchy()
+        }
+    ])
   }
 
   func setTagHierarchy()
   {
     let tagList = (try? tagger.tags()) ?? []
+    var tags = PathTreeNode.makeHierarchy(from: tagList)
 
-    self.tags = PathTreeNode.makeHierarchy(from: tagList)
+    if !filter.isEmpty {
+      tags = tags.filtered(with: filter)
+    }
+    self.tags = tags
   }
 }
 
 struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
 {
-  let model: TagListViewModel<Tagger, Publisher>
+  @ObservedObject var model: TagListViewModel<Tagger, Publisher>
 
   @State private var selection: String? = nil
 
@@ -60,7 +74,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
             ContentUnavailableView("No Tags", systemImage: "tag")
           }
         }
-      FilterBar(text: .constant("")) {
+      FilterBar(text: $model.filter) {
         Button {
           // new tag panel
         } label: {
