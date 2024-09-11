@@ -318,13 +318,14 @@
 		C9E594BD2C8F297000C518C4 /* PathTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */; };
 		C9E594BF2C8F29BA00C518C4 /* PathTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */; };
 		C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C02C914C2600C518C4 /* FilterBar.swift */; };
+		C9E594C32C91568200C518C4 /* SidebarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C22C91568200C518C4 /* SidebarButtons.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
 		C9E602FA2C1BB02C00326726 /* FileChangeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F92C1BB02C00326726 /* FileChangeNode.swift */; };
 		C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */; };
 		C9E7DA3A2C82215F00B539E0 /* SwiftUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */; };
-		C9E7DA3C2C83CA1400B539E0 /* SidebarTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */; };
+		C9E7DA3C2C83CA1400B539E0 /* TabbedSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */; };
 		C9E7DA3E2C86038100B539E0 /* IconTabPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */; };
 		C9E7DA402C87415700B539E0 /* StashList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3F2C87415700B539E0 /* StashList.swift */; };
 		C9E8815D1E95988700BFA7E5 /* XTRepository+MergePushPull.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */; };
@@ -709,13 +710,14 @@
 		C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeNode.swift; sourceTree = "<group>"; };
 		C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeTest.swift; sourceTree = "<group>"; };
 		C9E594C02C914C2600C518C4 /* FilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBar.swift; sourceTree = "<group>"; };
+		C9E594C22C91568200C518C4 /* SidebarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarButtons.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
 		C9E602F92C1BB02C00326726 /* FileChangeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChangeNode.swift; sourceTree = "<group>"; };
 		C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XTFileChangesModelTest.swift; sourceTree = "<group>"; };
 		C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIExtensions.swift; sourceTree = "<group>"; };
-		C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarTabs.swift; sourceTree = "<group>"; };
+		C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbedSidebar.swift; sourceTree = "<group>"; };
 		C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTabPicker.swift; sourceTree = "<group>"; };
 		C9E7DA3F2C87415700B539E0 /* StashList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashList.swift; sourceTree = "<group>"; };
 		C9E8815C1E95988700BFA7E5 /* XTRepository+MergePushPull.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+MergePushPull.swift"; sourceTree = "<group>"; };
@@ -1286,8 +1288,9 @@
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
 				C9E594C02C914C2600C518C4 /* FilterBar.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
-				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
+				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
+				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
 				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
 			);
 			path = Sidebar;
@@ -1566,6 +1569,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9E594C32C91568200C518C4 /* SidebarButtons.swift in Sources */,
 				C9416355213EF42E0015F1C0 /* StagedFileListController.swift in Sources */,
 				C93FFCBD1F13D3B200FDDD78 /* ValidatedSegment.swift in Sources */,
 				C90839A623E4C646008C2787 /* WorkspaceStatusIndicator.swift in Sources */,
@@ -1679,7 +1683,7 @@
 				C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */,
 				C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
-				C9E7DA3C2C83CA1400B539E0 /* SidebarTabs.swift in Sources */,
+				C9E7DA3C2C83CA1400B539E0 /* TabbedSidebar.swift in Sources */,
 				89B1C9B228778BE6006724EA /* MemoryPasswordStorage.swift in Sources */,
 				C9DEA4AD1E4B82B200DF4069 /* Signature.swift in Sources */,
 				C9473B9125A64D3000DA95BF /* HistorySplitController.swift in Sources */,

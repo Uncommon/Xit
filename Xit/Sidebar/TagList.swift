@@ -75,11 +75,9 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
           }
         }
       FilterBar(text: $model.filter) {
-        Button {
+        SidebarBottomButton(systemImage: "plus") {
           // new tag panel
-        } label: {
-          Image(systemName: "plus")
-        }.buttonStyle(.plain).padding(.horizontal, 3)
+        }
       }
     }
   }

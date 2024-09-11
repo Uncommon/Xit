@@ -128,7 +128,7 @@ struct TreeLabelList: View
   }
 }
 
-struct SidebarTabs: View
+struct TabbedSidebar: View
 {
   @State var tab: SidebarTab = .remote
 
@@ -191,8 +191,7 @@ struct SidebarTabs: View
        publisher: any RepositoryPublishing,
        stasher: any Stashing,
        //submoduleManager: any SubmoduleManagement,
-       tagger: any Tagging
-  )
+       tagger: any Tagging)
   {
     //self.brancher = brancher
     //self.remoteManager = remoteManager
@@ -224,33 +223,6 @@ struct SidebarTabs: View
   {
     StashList(stasher: stasher, publisher: publisher)
   }
-
-  func tagCell(_ name: String, annotated: Bool) -> some View {
-    Label(name, systemImage: "tag")
-      .symbolVariant(annotated ? .fill : .none)
-  }
-}
-
-/// Action pop-up button that goes next to the filter field at the bottom
-/// of the sidebar
-struct SidebarActionButton<Content: View>: View
-{
-  let content: () -> Content
-
-  var body: some View
-  {
-    Menu(content: content, label: {
-      Image(systemName: "ellipsis.circle")
-    })
-      .menuStyle(.borderlessButton)
-      .menuIndicator(.hidden)
-      .frame(width: 24)
-  }
-
-  init(@ViewBuilder content: @escaping () -> Content)
-  {
-    self.content = content
-  }
 }
 
 struct WorkspaceStatusView: View
@@ -275,5 +247,5 @@ struct WorkspaceStatusView: View
     .init(name: "releases/v1.0"),
     .init(name: "releases/v1.1"),
   ])
-  return SidebarTabs(publisher: publisher, stasher: stasher, tagger: tagger)
+  return TabbedSidebar(publisher: publisher, stasher: stasher, tagger: tagger)
 }
