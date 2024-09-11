@@ -317,6 +317,7 @@
 		C9E594BB2C8BE9E400C518C4 /* TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BA2C8BE9E400C518C4 /* TagList.swift */; };
 		C9E594BD2C8F297000C518C4 /* PathTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */; };
 		C9E594BF2C8F29BA00C518C4 /* PathTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */; };
+		C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C02C914C2600C518C4 /* FilterBar.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -707,6 +708,7 @@
 		C9E594BA2C8BE9E400C518C4 /* TagList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagList.swift; sourceTree = "<group>"; };
 		C9E594BC2C8F297000C518C4 /* PathTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeNode.swift; sourceTree = "<group>"; };
 		C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathTreeTest.swift; sourceTree = "<group>"; };
+		C9E594C02C914C2600C518C4 /* FilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBar.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -1282,6 +1284,7 @@
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
+				C9E594C02C914C2600C518C4 /* FilterBar.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* SidebarTabs.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
@@ -1776,6 +1779,7 @@
 				C9F5334D2187608300B2432C /* UIString.swift in Sources */,
 				C9DEA49C1E4A900300DF4069 /* OID.swift in Sources */,
 				C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */,
+				C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */,
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
 				891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */,

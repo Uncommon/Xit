@@ -131,7 +131,7 @@ struct StashList<Stasher, Publisher>: View
             ContentUnavailableView("No Stashes", systemImage: "tray")
           }
         }
-      HStack(spacing: 0) {
+      FilterBar(text: $model.filter) {
         SidebarActionButton {
           Button("Stash current changes") {}
           Divider()
@@ -139,13 +139,7 @@ struct StashList<Stasher, Publisher>: View
           Button("Apply top stash") {}
           Button("Drop top stash") {}
         }
-        FilterField(text: $model.filter, prompt: Text(.filter)) {
-          FilterIndicator()
-        } rightContent: {
-          // toggle searching within file changes
-          EmptyView()
-        }.padding(2)
-      }.padding(.horizontal, 4)
+      }
     }
   }
 

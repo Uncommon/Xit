@@ -60,16 +60,13 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
             ContentUnavailableView("No Tags", systemImage: "tag")
           }
         }
-      HStack(spacing: 0) {
+      FilterBar(text: .constant("")) {
         Button {
           // new tag panel
         } label: {
           Image(systemName: "plus")
         }.buttonStyle(.plain).padding(.horizontal, 3)
-        FilterField(text: .constant(""), prompt: Text(.filter)) {
-          FilterIndicator()
-        }.padding(2)
-      }.padding(.horizontal, 4)
+      }
     }
   }
 }
