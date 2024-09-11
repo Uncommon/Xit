@@ -59,28 +59,47 @@ struct RDGPreview: View
   var body: some View
   {
     List {
-      RecursiveDisclosureGroup(data: data,
-                               id: \.self.path,
-                               children: \.children,
-                               expandedItems: $expandedItems) {
-        Text($0.path.lastPathComponent)
+      Section("RecursiveDisclosureGroup") {
+        RecursiveDisclosureGroup(data: data,
+                                 id: \.path,
+                                 children: \.children,
+                                 expandedItems: $expandedItems) {
+          nodeLabel($0)
+        }
       }
-      // This generates a checkbox for every item. All that is really needed
-      // is a checkbox for every folder, but filtering those out is too much
-      // work for a preview.
-      ForEach(folderPaths, id: \.self) {
-        (path) in
-        Toggle(path, isOn: .init {
-          expandedItems.contains(path)
-        } set: {
-          if $0 {
-            expandedItems.insert(path)
-          }
-          else {
-            expandedItems.remove(path)
-          }
-        })
+      Section("External toggles") {
+        // This generates a checkbox for every item. All that is really needed
+        // is a checkbox for every folder, but filtering those out is too much
+        // work for a preview.
+        ForEach(folderPaths, id: \.self) {
+          (path) in
+          Toggle(path, isOn: .init {
+            expandedItems.contains(path)
+          } set: {
+            if $0 {
+              expandedItems.insert(path)
+            }
+            else {
+              expandedItems.remove(path)
+            }
+          })
+        }
       }
+      // For comparison
+      Section("OutlineGroup") {
+        OutlineGroup(data, id: \.path, children: \.children) {
+          nodeLabel($0)
+        }
+      }
+    }
+  }
+
+  func nodeLabel(_ node: PathTreeNode<String>) -> some View
+  {
+    Label {
+      Text(node.path.lastPathComponent)
+    } icon: {
+      Image(systemName: node.children == nil ? "doc" : "folder")
     }
   }
 
