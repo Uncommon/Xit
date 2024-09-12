@@ -7,7 +7,7 @@ extension XTWindowController
   func refresh(_ sender: AnyObject)
   {
     historyController.reload()
-    sidebarController.reload()
+//    sidebarController.reload()
   }
   
   @IBAction

@@ -320,6 +320,7 @@
 		C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C02C914C2600C518C4 /* FilterBar.swift */; };
 		C9E594C32C91568200C518C4 /* SidebarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C22C91568200C518C4 /* SidebarButtons.swift */; };
 		C9E594C52C91C46300C518C4 /* RecursiveDisclosureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */; };
+		C9E594C72C931B8B00C518C4 /* TabbedSidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */; };
 		C9E5E26C210917FD0069FBD8 /* BranchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E26B210917FD0069FBD8 /* BranchTest.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E602F82C1BAFD000326726 /* FileChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E602F72C1BAFD000326726 /* FileChange.swift */; };
@@ -713,6 +714,7 @@
 		C9E594C02C914C2600C518C4 /* FilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBar.swift; sourceTree = "<group>"; };
 		C9E594C22C91568200C518C4 /* SidebarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarButtons.swift; sourceTree = "<group>"; };
 		C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecursiveDisclosureGroup.swift; sourceTree = "<group>"; };
+		C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbedSidebarController.swift; sourceTree = "<group>"; };
 		C9E5E26B210917FD0069FBD8 /* BranchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTest.swift; sourceTree = "<group>"; };
 		C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryViewController+Search.swift"; sourceTree = "<group>"; };
 		C9E602F72C1BAFD000326726 /* FileChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileChange.swift; sourceTree = "<group>"; };
@@ -1295,6 +1297,7 @@
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
 				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
+				C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1732,6 +1735,7 @@
 				89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */,
 				89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */,
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
+				C9E594C72C931B8B00C518C4 /* TabbedSidebarController.swift in Sources */,
 				C959A7271F6C8440004277CD /* GitBlob.swift in Sources */,
 				89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */,
 				C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */,

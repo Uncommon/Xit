@@ -150,11 +150,11 @@ extension XTWindowController: NSTouchBarDelegate
   @IBAction
   func showStaging(_ sender: Any?)
   {
-    guard let outline = sidebarController.sidebarOutline
-    else { return }
-    let stagingRow = outline.row(forItem: sidebarController.sidebarDS.stagingItem)
-  
-    outline.selectRowIndexes(IndexSet(integer: stagingRow),
-                             byExtendingSelection: false)
+//    guard let outline = sidebarController.sidebarOutline
+//    else { return }
+//    let stagingRow = outline.row(forItem: sidebarController.sidebarDS.stagingItem)
+//  
+//    outline.selectRowIndexes(IndexSet(integer: stagingRow),
+//                             byExtendingSelection: false)
   }
 }

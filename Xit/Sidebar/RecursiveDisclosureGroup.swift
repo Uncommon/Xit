@@ -65,9 +65,10 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
 
 extension RecursiveDisclosureGroup
 {
-  init<Item: PathTreeData>(_ data: Data,
-                           expandedItems: Binding<Set<String>>,
-                           @ViewBuilder content: @escaping (DataElement) -> RowContent)
+  init<Item: PathTreeData>(
+      _ data: Data,
+      expandedItems: Binding<Set<String>>,
+      @ViewBuilder content: @escaping (DataElement) -> RowContent)
     where Data == [PathTreeNode<Item>], ID == String
   {
     self.data = data
@@ -89,10 +90,7 @@ struct RDGPreview: View
   {
     List {
       Section("RecursiveDisclosureGroup") {
-        RecursiveDisclosureGroup(data,
-                                 id: \.path,
-                                 children: \.children,
-                                 expandedItems: $expandedItems) {
+        RecursiveDisclosureGroup(data, expandedItems: $expandedItems) {
           nodeLabel($0)
         }
       }
