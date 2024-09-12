@@ -171,6 +171,11 @@ extension XTRepository: Branching
 
 extension XTRepository: Tagging
 {
+  public func tag(named name: String) -> GitTag?
+  {
+    GitTag(repository: self, name: name)
+  }
+
   public func createTag(name: String, targetOID: GitOID, message: String?) throws
   {
     try performWriting {

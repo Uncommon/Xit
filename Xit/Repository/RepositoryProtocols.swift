@@ -539,6 +539,7 @@ public protocol Tagging: AnyObject
 {
   associatedtype Tag: Xit.Tag
   func tags() throws -> [Tag]
+  func tag(named name: String) -> Tag?
   func createTag(name: String, targetOID: GitOID, message: String?) throws
   func createLightweightTag(name: String, targetOID: GitOID) throws
   func deleteTag(name: String) throws

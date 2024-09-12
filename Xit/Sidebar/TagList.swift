@@ -50,13 +50,13 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
 {
   @ObservedObject var model: TagListViewModel<Tagger, Publisher>
 
-  @State private var selection: String? = nil
+  var selection: Binding<String?>
   @State private var expandedItems: Binding<Set<String>>
 
   var body: some View
   {
     VStack(spacing: 0) {
-      List(selection: $selection) {
+      List(selection: selection) {
         RecursiveDisclosureGroup(model.tags,
                                  expandedItems: expandedItems) {
           (tag: PathTreeNode<Tagger.Tag>) in
@@ -89,9 +89,11 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
   }
 
   init(model: TagListViewModel<Tagger, Publisher>,
+       selection: Binding<String?>,
        expandedItems: Binding<Set<String>>)
   {
     self.model = model
+    self.selection = selection
     self.expandedItems = expandedItems
   }
 }
@@ -136,6 +138,7 @@ struct TagListPreview: View
     }
 
     func tags() -> [Tag] { tagList }
+    func tag(named name: String) -> Tag? { .init(name: name) }
     func createTag(name: String, targetOID: GitOID, message: String?) throws {}
     func createLightweightTag(name: String, targetOID: GitOID) throws {}
     
@@ -149,11 +152,13 @@ struct TagListPreview: View
   }
 
   let tagger: Tagger
+  @State var selection: String?
   @State var expandedItems: Set<String> = []
 
   var body: some View
   {
     TagList(model: .init(tagger: tagger, publisher: tagger),
+            selection: $selection,
             expandedItems: $expandedItems)
       .listStyle(.sidebar)
   }

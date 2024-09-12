@@ -4,9 +4,12 @@ import SwiftUI
 
 class TabbedSidebarController: NSHostingController<TabbedSidebar>
 {
-  init(repo: any FullRepository, publisher: any RepositoryPublishing)
+  init(repo: any FullRepository,
+       controller: any RepositoryUIController)
   {
-    let view = TabbedSidebar(repo: repo, publisher: publisher)
+    let view = TabbedSidebar(repo: repo,
+                             publisher: controller.repoController,
+                             selection: controller.selectionBinding)
 
     super.init(rootView: view)
   }

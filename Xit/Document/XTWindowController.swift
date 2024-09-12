@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import SwiftUI
 
 @MainActor
 protocol RepositoryUIController: AnyObject
@@ -15,6 +16,21 @@ protocol RepositoryUIController: AnyObject
   func reselect()
   func updateForFocus()
   func showErrorMessage(error: RepoError)
+}
+
+extension RepositoryUIController
+{
+  var selectionBinding: Binding<(any RepositorySelection)?>
+  {
+    .init {
+      [weak self] in
+      self?.selection
+    }
+    set: {
+      [weak self] in
+      self?.selection = $0
+    }
+  }
 }
 
 extension RepositoryUIController
@@ -118,9 +134,10 @@ final class XTWindowController: NSWindowController,
     updateTabStatus()
     updateWindowStyle(window)
 
-    var tabbedSidebarController =
-          TabbedSidebarController(repo: repo, publisher: repoController)
-    var tabbedSidebarItem =
+    let tabbedSidebarController =
+        TabbedSidebarController(repo: repo,
+                                controller: self)
+    let tabbedSidebarItem =
           NSSplitViewItem(sidebarWithViewController: tabbedSidebarController)
 
     splitViewController.splitViewItems.remove(at: 0)

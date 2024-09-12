@@ -133,6 +133,9 @@ struct TabbedSidebar: View
   @State var tab: SidebarTab = .remote
   @State var expandedTags: Set<String> = []
 
+  let repoSelection: Binding<(any RepositorySelection)?>
+  @State private var selectedTag: String? = nil
+
   // These are separate for testing/preview convenience
   //let brancher: any Branching
   //let remoteManager: any RemoteManagement
@@ -150,6 +153,7 @@ struct TabbedSidebar: View
 
   var body: some View {
     VStack(spacing: 0) {
+      Divider()
       IconTabPicker(items: SidebarTab.cleanCases, selection: $tab)
         .padding(6)
       Divider()
@@ -192,7 +196,8 @@ struct TabbedSidebar: View
        publisher: any RepositoryPublishing,
        stasher: any Stashing,
        //submoduleManager: any SubmoduleManagement,
-       tagger: any Tagging)
+       tagger: any Tagging,
+       selection: Binding<(any RepositorySelection)?>)
   {
     //self.brancher = brancher
     //self.remoteManager = remoteManager
@@ -200,16 +205,19 @@ struct TabbedSidebar: View
     self.stasher = stasher
     //self.submobuleManager = submoduleManager
     self.tagger = tagger
+    self.repoSelection = selection
   }
 
-  init(repo: any FullRepository, publisher: any RepositoryPublishing)
+  init(repo: any FullRepository,
+       publisher: any RepositoryPublishing,
+       selection: Binding<(any RepositorySelection)?>)
   {
     self.init(//brancher: repo, remoteManager: repo,
               publisher: publisher,
               stasher: repo,
               //submoduleManager: repo,
-              tagger: repo
-    )
+              tagger: repo,
+              selection: selection)
   }
 
   // These views need generic wrappers because the list views are generic
@@ -217,7 +225,20 @@ struct TabbedSidebar: View
                publisher: some RepositoryPublishing) -> some View
   {
     TagList(model: .init(tagger: tagger, publisher: publisher),
+            selection: $selectedTag,
             expandedItems: $expandedTags)
+      .onChange(of: selectedTag) {
+        if let selectedTag,
+           let tag = tagger.tag(named: selectedTag),
+           let commit = tag.commit,
+           let repo = tagger as? any FileChangesRepo {
+          repoSelection.wrappedValue = CommitSelection(repository: repo,
+                                                       commit: commit)
+        }
+        else {
+          repoSelection.wrappedValue = nil
+        }
+      }
   }
 
   func stashList(stasher: some Stashing,
@@ -249,5 +270,6 @@ struct WorkspaceStatusView: View
     .init(name: "releases/v1.0"),
     .init(name: "releases/v1.1"),
   ])
-  return TabbedSidebar(publisher: publisher, stasher: stasher, tagger: tagger)
+  return TabbedSidebar(publisher: publisher, stasher: stasher, tagger: tagger,
+                       selection: .constant(nil))
 }

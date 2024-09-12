@@ -1296,8 +1296,8 @@
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
-				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
 				C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */,
+				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
