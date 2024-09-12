@@ -131,6 +131,7 @@ struct TreeLabelList: View
 struct TabbedSidebar: View
 {
   @State var tab: SidebarTab = .remote
+  @State var expandedTags: Set<String> = []
 
   // These are separate for testing/preview convenience
   //let brancher: any Branching
@@ -215,7 +216,8 @@ struct TabbedSidebar: View
   func tagList(tagger: some Tagging,
                publisher: some RepositoryPublishing) -> some View
   {
-    TagList(model: .init(tagger: tagger, publisher: publisher))
+    TagList(model: .init(tagger: tagger, publisher: publisher),
+            expandedItems: $expandedTags)
   }
 
   func stashList(stasher: some Stashing,

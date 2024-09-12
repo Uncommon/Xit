@@ -51,20 +51,24 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
   @ObservedObject var model: TagListViewModel<Tagger, Publisher>
 
   @State private var selection: String? = nil
+  @State private var expandedItems: Binding<Set<String>>
 
   var body: some View
   {
     VStack(spacing: 0) {
-      List(model.tags, id: \.path, children: \.children, selection: $selection) {
-        (tag: PathTreeNode<Tagger.Tag>) in
-        let item = tag.item
-        Label(
-          title: { Text(tag.path.lastPathComponent) },
-          icon: {
-            Image(systemName: item.map { $0.isSigned ? "seal" : "tag" } ?? "folder")
-              .symbolVariant(item?.type == .lightweight ? .none : .fill)
-          }
-        ).selectionDisabled(item == nil)
+      List(selection: $selection) {
+        RecursiveDisclosureGroup(model.tags,
+                                 expandedItems: expandedItems) {
+          (tag: PathTreeNode<Tagger.Tag>) in
+          let item = tag.item
+          Label(
+            title: { Text(tag.path.lastPathComponent) },
+            icon: {
+              Image(systemName: item.map { $0.isSigned ? "seal" : "tag" } ?? "folder")
+                .symbolVariant(item?.type == .lightweight ? .none : .fill)
+            }
+          ).selectionDisabled(item == nil)
+        }
       }
         .contextMenu(forSelectionType: String.self) {
           if let _ = $0.first {
@@ -82,6 +86,13 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
         }
       }
     }
+  }
+
+  init(model: TagListViewModel<Tagger, Publisher>,
+       expandedItems: Binding<Set<String>>)
+  {
+    self.model = model
+    self.expandedItems = expandedItems
   }
 }
 
@@ -138,10 +149,12 @@ struct TagListPreview: View
   }
 
   let tagger: Tagger
+  @State var expandedItems: Set<String> = []
 
   var body: some View
   {
-    TagList(model: .init(tagger: tagger, publisher: tagger))
+    TagList(model: .init(tagger: tagger, publisher: tagger),
+            expandedItems: $expandedItems)
       .listStyle(.sidebar)
   }
 

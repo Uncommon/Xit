@@ -142,6 +142,14 @@ extension PathTreeNode: Equatable where Item: Equatable
   }
 }
 
+extension PathTreeNode: Hashable where Item: Equatable
+{
+  func hash(into hasher: inout Hasher)
+  {
+    path.hash(into: &hasher)
+  }
+}
+
 extension String: PathTreeData
 {
   public var treeNodePath: String { self }

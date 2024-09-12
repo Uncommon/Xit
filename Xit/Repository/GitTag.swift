@@ -2,7 +2,7 @@ import Cocoa
 import FakedMacro
 
 @Faked
-public protocol Tag: PathTreeData
+public protocol Tag: PathTreeData, Equatable
 {
   associatedtype Commit: Xit.Commit
 
@@ -17,9 +17,14 @@ public protocol Tag: PathTreeData
   var isSigned: Bool { get }
 }
 
-public extension Tag
+public extension Tag // PathTreeData, Equatable
 {
   var treeNodePath: String { name }
+
+  static func == (lhs: Self, rhs: Self) -> Bool
+  {
+    lhs.name == rhs.name
+  }
 }
 
 public enum TagType

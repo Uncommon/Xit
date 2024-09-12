@@ -21,7 +21,7 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
         DisclosureGroup(
           isExpanded: binding(for: element[keyPath: id]),
           content: {
-            RecursiveDisclosureGroup(data: subElements, id: id,
+            RecursiveDisclosureGroup(subElements, id: id,
                                      children: children,
                                      expandedItems: expandedItems,
                                      content: content)
@@ -33,6 +33,19 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
         content(element)
       }
     }
+  }
+
+  init(_ data: Data,
+       id: KeyPath<DataElement, ID>,
+       children: KeyPath<DataElement, Data?>,
+       expandedItems: Binding<Set<ID>>,
+       @ViewBuilder content: @escaping (DataElement) -> RowContent)
+  {
+    self.data = data
+    self.id = id
+    self.children = children
+    self.expandedItems = expandedItems
+    self.content = content
   }
 
   private func binding(for id: ID) -> Binding<Bool>
@@ -50,6 +63,22 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
   }
 }
 
+extension RecursiveDisclosureGroup
+{
+  init<Item: PathTreeData>(_ data: Data,
+                           expandedItems: Binding<Set<String>>,
+                           @ViewBuilder content: @escaping (DataElement) -> RowContent)
+    where Data == [PathTreeNode<Item>], ID == String
+  {
+    self.data = data
+    self.id = \.path
+    self.children = \.children
+    self.expandedItems = expandedItems
+    self.content = content
+  }
+}
+
+#if DEBUG
 struct RDGPreview: View
 {
   let data: [PathTreeNode<String>]
@@ -60,7 +89,7 @@ struct RDGPreview: View
   {
     List {
       Section("RecursiveDisclosureGroup") {
-        RecursiveDisclosureGroup(data: data,
+        RecursiveDisclosureGroup(data,
                                  id: \.path,
                                  children: \.children,
                                  expandedItems: $expandedItems) {
@@ -120,3 +149,4 @@ struct RDGPreview: View
     "folder/folder2/item2",
   ])
 }
+#endif
