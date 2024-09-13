@@ -51,7 +51,7 @@ struct StashList<Stasher, Publisher>: View
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
 
-  @State var selection: GitOID?
+  let selection: Binding<GitOID?>
 
   enum StashAction
   {
@@ -97,7 +97,7 @@ struct StashList<Stasher, Publisher>: View
   var body: some View
   {
     VStack(spacing: 0) {
-      List(model.stashes, id: \.id, selection: $selection) {
+      List(model.stashes, id: \.id, selection: selection) {
         (stash: Stasher.Stash) in
         let index = model.stasher.findStashIndex(stash) ?? 0
         HStack {
@@ -143,10 +143,11 @@ struct StashList<Stasher, Publisher>: View
     }
   }
 
-  init(stasher: Stasher, publisher: Publisher)
+  init(stasher: Stasher, publisher: Publisher, selection: Binding<GitOID?>)
   {
-    self._model = .init(wrappedValue:
-        .init(stasher: stasher, publisher: publisher))
+    self._model = .init(wrappedValue: .init(stasher: stasher,
+                                            publisher: publisher))
+    self.selection = selection
   }
 
   func confirm(_ action: StashAction)
@@ -177,6 +178,7 @@ struct StashList<Stasher, Publisher>: View
 struct StashListPreview: View
 {
   let stashes: [Stash]
+  @State var selection: GitOID?
 
   class Stash: EmptyStash
   {
@@ -238,7 +240,7 @@ struct StashListPreview: View
   var body: some View
   {
     let repo = StashListPreview.PreviewStashing(stashes: stashes)
-    StashList(stasher: repo, publisher: repo)
+    StashList(stasher: repo, publisher: repo, selection: $selection)
       .listStyle(.sidebar)
   }
 }

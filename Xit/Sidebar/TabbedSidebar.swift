@@ -135,6 +135,7 @@ struct TabbedSidebar: View
 
   let repoSelection: Binding<(any RepositorySelection)?>
   @State private var selectedTag: String? = nil
+  @State private var selectedStash: GitOID? = nil
 
   // These are separate for testing/preview convenience
   //let brancher: any Branching
@@ -244,7 +245,18 @@ struct TabbedSidebar: View
   func stashList(stasher: some Stashing,
                  publisher: some RepositoryPublishing) -> some View
   {
-    StashList(stasher: stasher, publisher: publisher)
+    StashList(stasher: stasher, publisher: publisher, selection: $selectedStash)
+      .onChange(of: selectedStash) {
+        if let selectedStash,
+           let index = stasher.findStashIndex(selectedStash),
+           let repo = stasher as? (any FileChangesRepo & Stashing) {
+          repoSelection.wrappedValue = StashSelection(repository: repo,
+                                                      index: UInt(index))
+        }
+        else {
+          repoSelection.wrappedValue = nil
+        }
+      }
   }
 }
 
