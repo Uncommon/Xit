@@ -99,15 +99,14 @@ struct StashList<Stasher, Publisher>: View
     VStack(spacing: 0) {
       List(model.stashes, id: \.id, selection: selection) {
         (stash: Stasher.Stash) in
-        let index = model.stasher.findStashIndex(stash) ?? 0
         HStack {
           // Label() placed the text too low relative to the icon
           Image(systemName: "tray")
             .foregroundStyle(.tint)
           Text(stash.mainCommit?.messageSummary ?? "WIP")
           Spacer()
-          // TODO: calculate the actual counts
-          WorkspaceStatusView(unstagedCount: 1, stagedCount: index)
+          WorkspaceStatusView(unstagedCount: stash.workspaceChanges().count,
+                              stagedCount: stash.indexChanges().count)
         }
       }
         .contextMenu(forSelectionType: GitOID.self) {
@@ -187,9 +186,20 @@ struct StashListPreview: View
     var untrackedCommit: FakeCommit?
     var message: String? { mainCommit?.messageSummary }
 
-    init(message: String, oid: GitOID)
+    var index: [FileChange]
+    var workspace: [FileChange]
+
+    init(message: String, oid: GitOID,
+         stagedCount: Int = 0, unstagedCount: Int = 0)
     {
-      mainCommit = .init(parentOIDs: [], message: message, id: oid)
+      self.mainCommit = .init(parentOIDs: [], message: message, id: oid)
+
+      self.index = (0..<stagedCount).map {
+        .init(path: "\($0)", change: .modified)
+      }
+      self.workspace = (0..<unstagedCount).map {
+        .init(path: "\($0)", change: .modified)
+      }
     }
 
     static func makeList(_ messages: [String]) -> [Stash]
@@ -203,8 +213,8 @@ struct StashListPreview: View
     // These are supposed to be unnecessary because of the EmptyStash
     // default implementations, but there are still issues with the compiler
     // and/or the @Faked macro.
-    func indexChanges() -> [FileChange] { [] }
-    func workspaceChanges() -> [FileChange] { [] }
+    func indexChanges() -> [FileChange] { index }
+    func workspaceChanges() -> [FileChange] { workspace }
     func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
     func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult? { nil }
   }
@@ -247,9 +257,12 @@ struct StashListPreview: View
 
 #Preview("With items") {
   StashListPreview(stashes: [
-    .init(message: "WIP first", oid: .init(stringLiteral: "1")),
-    .init(message: "WIP second", oid: .init(stringLiteral: "2")),
-    .init(message: "WIP third", oid: .init(stringLiteral: "3")),
+    .init(message: "WIP first", oid: .init(stringLiteral: "1"),
+          stagedCount: 1, unstagedCount: 2),
+    .init(message: "WIP second", oid: .init(stringLiteral: "2"),
+          stagedCount: 2, unstagedCount: 3),
+    .init(message: "WIP third", oid: .init(stringLiteral: "3"),
+          stagedCount: 3, unstagedCount: 0),
   ])
 }
 
