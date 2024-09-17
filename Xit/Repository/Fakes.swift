@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Siesta
-@testable import Xit
 
 extension FakeCommit
 {
@@ -151,8 +150,10 @@ class FakeRepoController: RepositoryController
   var refLogPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
   var refsPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
   var stashPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
-  var progressPublisher: AnyPublisher<ProgressValue, Never> { Empty().eraseToAnyPublisher() }
-  var workspacePublisher: AnyPublisher<[String], Never> { Empty().eraseToAnyPublisher() }
+  var progressPublisher: AnyPublisher<ProgressValue, Never>
+  { Empty().eraseToAnyPublisher() }
+  var workspacePublisher: AnyPublisher<[String], Never>
+  { Empty().eraseToAnyPublisher() }
 
   init(repository: FakeRepo)
   {

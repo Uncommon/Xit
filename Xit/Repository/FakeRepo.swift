@@ -1,5 +1,4 @@
 import Foundation
-@testable import Xit
 
 class FakeRepo: FileChangesRepo &
   EmptyCommitReferencing & EmptyFileDiffing & EmptyFileContents &
@@ -17,13 +16,15 @@ class FakeRepo: FileChangesRepo &
 
   let localBranch1 = FakeLocalBranch(name: "branch1", oid: "a")
   let localBranch2 = FakeLocalBranch(name: "branch2", oid: "b")
-  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1", name: "branch1", oid: "c")
-  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2", name: "branch2", oid: "d")
+  let remoteBranch1 = FakeRemoteBranch(remoteName: "origin1",
+                                       name: "branch1", oid: "c")
+  let remoteBranch2 = FakeRemoteBranch(remoteName: "origin2",
+                                       name: "branch2", oid: "d")
   
   let remote1 = FakeRemote()
   let remote2 = FakeRemote()
   
-  var isWriting: Bool { return false }
+  var isWriting: Bool { false }
   
   var commits: [GitOID: FakeCommit] = [:]
 
@@ -103,8 +104,8 @@ extension FakeRepo: EmptyCommitStorage
 
 extension FakeRepo: EmptyStashing
 {
-  var stashes: AnyRandomAccessCollection<FakeStash> { return .init([]) }
-  func stash(index: UInt, message: String?) -> FakeStash { return FakeStash() }
+  var stashes: AnyRandomAccessCollection<FakeStash> { .init([]) }
+  func stash(index: UInt, message: String?) -> FakeStash { FakeStash() }
 }
 
 extension FakeRepo: SubmoduleManagement
