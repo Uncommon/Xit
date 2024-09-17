@@ -2,7 +2,6 @@ import Cocoa
 import Siesta
 import os
 
-nonisolated(unsafe)
 let serviceLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
                            category: "services")
 

@@ -60,7 +60,7 @@ extension EmptyRepositoryPublishing {
 
 struct NullRepositoryPublishing: EmptyRepositoryPublishing {}
 
-extension AnyPublisher: Fakable
+extension AnyPublisher: @retroactive Fakable
 {
   public static func fakeDefault() -> AnyPublisher<Output, Failure>
   {
@@ -232,7 +232,7 @@ public protocol FileContents: AnyObject
   func fileURL(_ file: String) -> URL
 }
 
-extension URL: Fakable
+extension URL: @retroactive Fakable
 {
   public static func fakeDefault() -> Self { .init(filePath: "/") }
 }
