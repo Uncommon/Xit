@@ -9,7 +9,7 @@ extension XTWindowController
 
     titleBarController?.updateBranchList(
         repo.localBranches.compactMap { $0.shortName },
-        current: repo.currentBranch)
+        current: repo.currentBranch?.name)
   }
 
   func updateNavButtons()
@@ -44,7 +44,7 @@ extension XTWindowController
       [weak viewController] in
       viewController?.progressHidden = !$0
     })
-    viewController.selectedBranch = repository.currentBranch
+    viewController.selectedBranch = repository.currentBranch?.name
     if let controller = repository.controller {
       viewController.observe(controller: controller)
     }

@@ -10,7 +10,7 @@ final class NewBranchOpController: OperationController
     let panel = NewBranchPanelController.controller()
     
     panel.configure(branchName: "",
-                    startingPoint: repository.currentBranch ?? "",
+                    startingPoint: repository.currentBranch?.name ?? "",
                     repository: repository)
     windowController!.window!.beginSheet(panel.window!) {
       (response) in

@@ -311,8 +311,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
       case let remoteBranchItem as RemoteBranchSidebarItem:
         guard let repository = model?.repository,
               let branchName = repository.currentBranch,
-              let refName = LocalBranchRefName(branchName),
-              let currentBranch = repository.localBranch(named: refName),
+              let currentBranch = repository.localBranch(named: branchName),
               currentBranch.trackingBranchName == remoteBranchItem.remoteName +/
                                                   remoteBranchItem.title
         else { return nil }

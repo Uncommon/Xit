@@ -184,7 +184,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
   override var isCurrent: Bool
   {
     if let currentBranch = selection!.repository.currentBranch {
-      return currentBranch == title
+      return currentBranch.name == title
     }
     return false
   }

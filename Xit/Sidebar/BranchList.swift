@@ -90,7 +90,7 @@ struct BranchList<Brancher: Branching,
     let branch = node.item
     
     return HStack {
-      let isCurrent = branch?.name == brancher.currentBranch
+      let isCurrent = branch?.name == brancher.currentBranch?.name
       Label(
         title: {
           Text(node.path.lastPathComponent)
@@ -162,7 +162,7 @@ struct BranchListPreview: View
     { .init(localBranchArray) }
     var remoteBranches: AnySequence<FakeRemoteBranch>
     { .init(remoteBranchArray) }
-    var currentBranch: String?
+    var currentBranch: LocalBranchRefName?
     
     let publisher = PassthroughSubject<Void, Never>()
 
@@ -222,7 +222,8 @@ struct BranchListPreview: View
                expandedItems: $expandedItems)
   }
   
-  init(localBranches: [String], currentBranch: String? = nil)
+  init(localBranches: [String],
+       currentBranch: LocalBranchRefName? = nil)
   {
     self.brancher = Brancher(
         localBranches: localBranches.map { .init(name: $0) },
@@ -237,6 +238,6 @@ struct BranchListPreview: View
       "feature/things",
       "someWork",
     ],
-    currentBranch: "refs/heads/master")
+    currentBranch: .init("refs/heads/master"))
 }
 #endif

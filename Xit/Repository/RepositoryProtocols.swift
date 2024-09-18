@@ -446,12 +446,13 @@ public protocol SubmoduleManagement: AnyObject
 }
 
 @Faked
-public protocol Branching: AnyObject {
+public protocol Branching: AnyObject
+{
   associatedtype LocalBranch: Xit.LocalBranch
   typealias RemoteBranch = LocalBranch.RemoteBranch
 
   /// Returns the current checked out branch, or nil if in a detached head state
-  var currentBranch: String? { get }
+  var currentBranch: LocalBranchRefName? { get }
   var localBranches: AnySequence<LocalBranch> { get }
   var remoteBranches: AnySequence<RemoteBranch> { get }
   

@@ -15,13 +15,13 @@ extension ResetMode
 
 extension XTRepository: Branching
 {
-  public var currentBranch: String?
+  public var currentBranch: LocalBranchRefName?
   {
     mutex.withLock {
       if currentBranchSubject.value == nil {
         refsChanged()
       }
-      return currentBranchSubject.value
+      return currentBranchSubject.value.flatMap { .init(rawValue: $0) }
     }
   }
 

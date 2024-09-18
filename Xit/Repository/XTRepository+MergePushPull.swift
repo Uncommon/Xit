@@ -259,7 +259,7 @@ extension XTRepository: Merging
       
       guard let currentBranchName = currentBranch,
             let targetBranch = GitLocalBranch(repository: gitRepo,
-                                              name: currentBranchName,
+                                              name: currentBranchName.name,
                                               config: config)
       else { throw RepoError.detachedHead }
       guard let targetCommit = targetBranch.targetCommit as? GitCommit,

@@ -40,7 +40,8 @@ extension SidebarCommandHandler
         guard let branch = (item as? BranchSidebarItem)?.branchObject()
         else { return false }
         sidebarCommand.titleString = .checkOut(branch.strippedName)
-        return !repository.isWriting && item.title != repository.currentBranch
+        return !repository.isWriting &&
+               item.title != repository.currentBranch?.name
       
       case #selector(SidebarController.createTrackingBranch(_:)):
         return !repository.isWriting && item is RemoteBranchSidebarItem
@@ -55,7 +56,7 @@ extension SidebarCommandHandler
           sidebarCommand.isHidden = item.refType == .remoteBranch
         }
         if action == #selector(SidebarController.deleteBranch(_:)) {
-          return repository.currentBranch != item.title
+          return repository.currentBranch?.name != item.title
         }
         if action == #selector(SidebarController.mergeBranch(_:)) {
           var clickedBranch = item.title
@@ -72,7 +73,7 @@ extension SidebarCommandHandler
               break
           }
           
-          guard let currentBranch = repository.currentBranch
+          guard let currentBranch = repository.currentBranch?.name
           else { return false }
           
           sidebarCommand.titleString = .merge(clickedBranch, currentBranch)
