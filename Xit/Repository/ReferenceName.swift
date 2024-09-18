@@ -63,7 +63,7 @@ public struct ReferenceName<T>: RawRepresentable where T: ReferenceKind
     guard !name.hasPrefix("/") && GitReference.isValidName(T.prefix +/ name)
     else { return nil }
     
-    self.name = name
+    self.name = name.droppingPrefix(T.prefix)
   }
 }
 
@@ -71,6 +71,7 @@ extension ReferenceName where T == RemoteBranchReference
 {
   var remoteName: String
   { name.components(separatedBy: "/").first ?? "" }
+  
   var branchName: String
   {
     guard let slashIndex = name.firstIndex(of: "/")

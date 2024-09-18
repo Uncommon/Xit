@@ -1,6 +1,23 @@
 import SwiftUI
 import Combine
 
+protocol BranchAccessorizing<Content>
+{
+  associatedtype Content: View
+  
+  func accessoryView(for branch: any Branch) -> Content
+}
+
+struct EmptyBranchAccessorizer: BranchAccessorizing
+{
+  func accessoryView(for branch: any Branch) -> some View { EmptyView() }
+}
+
+extension BranchAccessorizing where Self == EmptyBranchAccessorizer
+{
+  static var empty: EmptyBranchAccessorizer { .init() }
+}
+
 class BranchListViewModel<Brancher: Branching,
                           Publisher: RepositoryPublishing>: ObservableObject
 {
@@ -50,7 +67,8 @@ class BranchListViewModel<Brancher: Branching,
 
 struct BranchList<Brancher: Branching,
                   Referencer: CommitReferencing,
-                  Publisher: RepositoryPublishing>: View
+                  Publisher: RepositoryPublishing,
+                  Accessorizer: BranchAccessorizing>: View
   where Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.RemoteBranch == Referencer.RemoteBranch
 {
@@ -58,6 +76,7 @@ struct BranchList<Brancher: Branching,
 
   let brancher: Brancher
   let referencer: Referencer
+  let accessorizer: Accessorizer
   let selection: Binding<String?>
   var expandedItems: Binding<Set<String>>
 
@@ -90,14 +109,24 @@ struct BranchList<Brancher: Branching,
     let branch = node.item
     
     return HStack {
-      let isCurrent = branch?.name == brancher.currentBranch?.name
+      let isCurrent = branch?.name == brancher.currentBranch?.rawValue
       Label(
         title: {
           Text(node.path.lastPathComponent)
             .bold(isCurrent)
+            .padding(.horizontal, 4)
+            // tried hiding this background when the row is selected,
+            // but there is a delay so it doesn't look good.
+            .background(isCurrent
+                        ? AnyShapeStyle(.quaternary)
+                        : AnyShapeStyle(.clear))
+            .cornerRadius(4)
         },
         icon: {
-          if let branch {
+          if branch == nil {
+            Image(systemName: "folder.fill")
+          }
+          else {
             if isCurrent {
               Image(systemName: "checkmark.circle").fontWeight(.black)
             }
@@ -105,16 +134,12 @@ struct BranchList<Brancher: Branching,
               Image("scm.branch")
             }
           }
-          else {
-            Image(systemName: "folder.fill")
-          }
         }
       )
+      Spacer()
       if let branch {
-        // check mark for current branch
-        // pull request
-        // build status
         upstreamIndicator(for: branch)
+        accessorizer.accessoryView(for: branch)
       }
     }
       .listRowSeparator(.hidden)
@@ -151,7 +176,7 @@ struct BranchList<Brancher: Branching,
 
 struct BranchListPreview: View
 {
-  class Brancher: EmptyBranching, EmptyRepositoryPublishing
+  class Brancher: EmptyBranching, EmptyRepositoryPublishing, BranchAccessorizing
   {
     typealias LocalBranch = FakeLocalBranch
     typealias RemoteBranch = FakeRemoteBranch
@@ -168,14 +193,18 @@ struct BranchListPreview: View
 
     var refsPublisher: AnyPublisher<Void, Never>
     { publisher.eraseToAnyPublisher() }
+    
+    let builtBranches: [LocalBranchRefName]
 
     init(localBranches: [LocalBranch],
          remoteBranches: [RemoteBranch] = [],
-         currentBranch: String? = nil)
+         currentBranch: LocalBranchRefName? = nil,
+         builtBranches: [LocalBranchRefName] = [])
     {
       self.localBranchArray = localBranches
       self.remoteBranchArray = remoteBranches
       self.currentBranch = currentBranch
+      self.builtBranches = builtBranches
     }
 
     func localBranch(named refName: LocalBranchRefName) -> LocalBranch?
@@ -183,27 +212,18 @@ struct BranchListPreview: View
       localBranchArray.first { $0.name == refName.rawValue }
     }
     
-    func createBranch(named name: String, target: String) throws
-      -> LocalBranch?
-    { nil }
-
-    func localTrackingBranch(forBranch branch: RemoteBranchRefName)
-      -> LocalBranch?
-    { nil }
-
-    func localBranch(tracking remoteBranch: RemoteBranch) -> LocalBranch?
-    { nil }
-
     func remoteBranch(named name: String) -> RemoteBranch?
     {
       remoteBranchArray.first { $0.name == name }
     }
     
-    func remoteBranch(named name: String, remote: String) -> RemoteBranch?
-    { nil }
-    
-    func rename(branch: String, to: String) throws {}
-    func reset(toCommit target: any Commit, mode: ResetMode) throws {}
+    @ViewBuilder
+    func accessoryView(for branch: any Branch) -> some View
+    {
+      if builtBranches.contains(where: { $0.name == branch.strippedName }) {
+        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+      }
+    }
   }
   
   let brancher: Brancher
@@ -218,16 +238,20 @@ struct BranchListPreview: View
     BranchList(model: .init(brancher: brancher, publisher: brancher),
                brancher: brancher,
                referencer: CommitReferencer(),
+               accessorizer: brancher,
                selection: $selection,
                expandedItems: $expandedItems)
+      .frame(maxWidth: 250)
   }
   
   init(localBranches: [String],
-       currentBranch: LocalBranchRefName? = nil)
+       currentBranch: LocalBranchRefName? = nil,
+       builtBranches: [LocalBranchRefName] = [])
   {
     self.brancher = Brancher(
         localBranches: localBranches.map { .init(name: $0) },
-        currentBranch: currentBranch)
+        currentBranch: currentBranch,
+        builtBranches: builtBranches)
   }
 }
 
@@ -238,6 +262,7 @@ struct BranchListPreview: View
       "feature/things",
       "someWork",
     ],
-    currentBranch: .init("refs/heads/master"))
+    currentBranch: .init("refs/heads/master"),
+                    builtBranches: ["refs/heads/someWork"].map { .init($0)! })
 }
 #endif
