@@ -90,16 +90,23 @@ struct BranchList<Brancher: Branching,
     let branch = node.item
     
     return HStack {
+      let isCurrent = branch?.name == brancher.currentBranch
       Label(
         title: {
           Text(node.path.lastPathComponent)
+            .bold(isCurrent)
         },
         icon: {
-          if branch == nil {
-            Image(systemName: "folder.fill")
+          if let branch {
+            if isCurrent {
+              Image(systemName: "checkmark.circle").fontWeight(.black)
+            }
+            else {
+              Image("scm.branch")
+            }
           }
           else {
-            Image("scm.branch")
+            Image(systemName: "folder.fill")
           }
         }
       )
@@ -163,7 +170,7 @@ struct BranchListPreview: View
     { publisher.eraseToAnyPublisher() }
 
     init(localBranches: [LocalBranch],
-         remoteBranches: [RemoteBranch],
+         remoteBranches: [RemoteBranch] = [],
          currentBranch: String? = nil)
     {
       self.localBranchArray = localBranches
@@ -215,20 +222,21 @@ struct BranchListPreview: View
                expandedItems: $expandedItems)
   }
   
-  init(localBranches: [String])
+  init(localBranches: [String], currentBranch: String? = nil)
   {
     self.brancher = Brancher(
         localBranches: localBranches.map { .init(name: $0) },
-        remoteBranches: [])
+        currentBranch: currentBranch)
   }
 }
 
 #Preview
 {
   BranchListPreview(localBranches: [
-    "master",
-    "feature/things",
-    "someWork",
-  ])
+      "master",
+      "feature/things",
+      "someWork",
+    ],
+    currentBranch: "refs/heads/master")
 }
 #endif
