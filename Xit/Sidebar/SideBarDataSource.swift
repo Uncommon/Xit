@@ -108,7 +108,7 @@ final class SideBarDataSource: NSObject
       for remoteItem in model.rootItem(.remotes).children {
         outline.expandItem(remoteItem)
       }
-      if let currentBranch = repository.currentBranch,
+      if let currentBranch = repository.currentBranch?.name,
          currentBranch.contains("/") {
         showItem(branchName: currentBranch)
       }

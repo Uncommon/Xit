@@ -15,7 +15,7 @@ extension ResetMode
 
 extension XTRepository: Branching
 {
-  public var currentBranch: String?
+  public var currentBranch: LocalBranchRefName?
   {
     mutex.withLock {
       if currentBranchSubject.value == nil {
@@ -25,7 +25,7 @@ extension XTRepository: Branching
     }
   }
 
-  public var currentBranchPublisher: AnyPublisher<String?, Never>
+  public var currentBranchPublisher: AnyPublisher<LocalBranchRefName?, Never>
   { currentBranchSubject.eraseToAnyPublisher() }
   
   public var localBranches: AnySequence<GitLocalBranch>

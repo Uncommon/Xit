@@ -59,7 +59,7 @@ extension ReferenceName
   public var rawValue: String { fullPath }
 }
 
-public struct PrefixedRefName<Kind>: ReferenceName
+public struct PrefixedRefName<Kind>: ReferenceName, Equatable
   where Kind: ReferenceKind
 {
   public let name: String

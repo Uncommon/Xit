@@ -183,7 +183,7 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   var controller: (any RepositoryController)?
 
   var headRef: String? = nil
-  var currentBranch: String? = nil
+  var currentBranch: LocalBranchRefName? = nil
   
   func sha(forRef: String) -> SHA? { nil }
 

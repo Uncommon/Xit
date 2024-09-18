@@ -17,7 +17,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   let mutex = NSRecursiveLock()
   var refsIndex = [SHA: [String]]()
 
-  let currentBranchSubject = CurrentValueSubject<String?, Never>(nil)
+  let currentBranchSubject = CurrentValueSubject<LocalBranchRefName?, Never>(nil)
   
   public weak var controller: RepositoryController? = nil
   

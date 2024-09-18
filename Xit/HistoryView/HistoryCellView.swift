@@ -4,7 +4,7 @@ import Cocoa
 final class HistoryCellView: NSTableCellView
 {
   private var entry: CommitEntry<GitCommit>!
-  private var currentBranch: String?
+  private var currentBranch: LocalBranchRefName?
   private var refs = [String]()
 
   var mutex: NSRecursiveLock!
@@ -109,7 +109,8 @@ final class HistoryCellView: NSTableCellView
 
         if let (_, name) = ref.splitRefName() {
           view.text = name
-          view.type = RefType(refName: ref, currentBranch: currentBranch ?? "")
+          view.type = RefType(refName: ref,
+                              currentBranch: currentBranch?.name ?? "")
         }
         return view
       })

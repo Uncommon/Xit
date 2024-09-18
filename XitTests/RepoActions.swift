@@ -367,7 +367,7 @@ struct CreateBranch: RepoAction
     else { throw UnreachableError() }
 
     _ = try repository.createBranch(named: branch,
-                                    target: RefPrefixes.heads + currentBranch)
+                                    target: currentBranch.fullPath)
     if checkOut {
       try repository.checkOut(branch: branch)
     }

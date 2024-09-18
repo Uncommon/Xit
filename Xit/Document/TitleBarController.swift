@@ -301,20 +301,22 @@ class TitleBarController: NSObject
     }
   }
   
-  func updateBranchList(_ branches: [String], current: String?)
+  func updateBranchList(_ branches: [LocalBranchRefName],
+                        current: LocalBranchRefName?)
   {
     branchPopup.removeAllItems()
     for branch in branches {
-      let item = NSMenuItem(title: branch, action: nil, keyEquivalent: "")
-      
+      let item = NSMenuItem(title: branch.name, action: nil, keyEquivalent: "")
+
       item.image = .xtBranch
       branchPopup.menu?.addItem(item)
     }
     if let current = current, branches.contains(current) {
-      selectedBranch = current
+      selectedBranch = current.name
     }
     else {
-      let detachedItem = NSMenuItem(title: current ?? UIString.detached.rawValue,
+      let detachedItem = NSMenuItem(title: current?.name ??
+                                           UIString.detached.rawValue,
                                     action: nil, keyEquivalent: "")
       
       detachedItem.isEnabled = false

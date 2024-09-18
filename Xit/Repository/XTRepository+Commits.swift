@@ -128,11 +128,15 @@ extension XTRepository: CommitReferencing
     return cachedHeadRef
   }
   
-  func calculateCurrentBranch() -> String?
+  func calculateCurrentBranch() -> LocalBranchRefName?
   {
-    return headReference?.resolve()?.name.droppingPrefix(RefPrefixes.heads)
+    guard let name = headReference?.resolve()?.name
+    else {
+      return nil
+    }
+    return .init(rawValue: name)
   }
-  
+
   func hasHeadReference() -> Bool
   {
     return headReference != nil
