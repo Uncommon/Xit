@@ -67,19 +67,12 @@ struct TabbedSidebar: View
   @State private var selectedStash: GitOID? = nil
 
   // These are separate for testing/preview convenience
-  //let brancher: any Branching
+  let brancher: any Branching
   //let remoteManager: any RemoteManagement
   let publisher: any RepositoryPublishing
   let stasher: any Stashing
   //let submobuleManager: any SubmoduleManagement
   let tagger: any Tagging
-
-  let remoteData: [TreeLabelItem] = [
-    .init(name: "origin", image: .init(systemSymbolName: "network")!, children: [
-      .init(name: "branch", image: .xtBranch, children: nil),
-      .init(name: "main", image: .xtBranch, children: nil),
-    ]),
-  ]
 
   var body: some View {
     VStack(spacing: 0) {
@@ -100,9 +93,9 @@ struct TabbedSidebar: View
             Label("main", image: "scm.branch")
           }
         case .remote:
-          List(remoteData, children: \.children) { item in
-            Label(title: { Text(item.name) },
-                  icon: { Image(nsImage: item.image) })
+          List {
+          }.overlay {
+            ContentUnavailableView("No Remotes", systemImage: "network")
           }
         case .tags:
           AnyView(tagList(tagger: tagger, publisher: publisher))
@@ -121,7 +114,7 @@ struct TabbedSidebar: View
       .frame(width: 300)
   }
 
-  init(//brancher: any Branching,
+  init(brancher: any Branching,
        //remoteManager: any RemoteManagement,
        publisher: any RepositoryPublishing,
        stasher: any Stashing,
@@ -129,7 +122,7 @@ struct TabbedSidebar: View
        tagger: any Tagging,
        selection: Binding<(any RepositorySelection)?>)
   {
-    //self.brancher = brancher
+    self.brancher = brancher
     //self.remoteManager = remoteManager
     self.publisher = publisher
     self.stasher = stasher
@@ -142,7 +135,8 @@ struct TabbedSidebar: View
        publisher: any RepositoryPublishing,
        selection: Binding<(any RepositorySelection)?>)
   {
-    self.init(//brancher: repo, remoteManager: repo,
+    self.init(brancher: repo,
+              //remoteManager: repo,
               publisher: publisher,
               stasher: repo,
               //submoduleManager: repo,
@@ -191,13 +185,20 @@ struct TabbedSidebar: View
 
 #Preview
 {
+  let brancher = BranchListPreview.Brancher(localBranches: [
+    "master",
+    "feature/things",
+    "someWork",
+  ].map { .init(name: $0) })
   let publisher = NullRepositoryPublishing()
   let stasher = StashListPreview.PreviewStashing(["one", "two", "three"])
   let tagger = TagListPreview.Tagger(tagList: [
-    .init(name: "someWork"),
-    .init(name: "releases/v1.0"),
-    .init(name: "releases/v1.1"),
-  ])
-  return TabbedSidebar(publisher: publisher, stasher: stasher, tagger: tagger,
-                       selection: .constant(nil))
+    "someWork",
+    "releases/v1.0",
+    "releases/v1.1",
+  ].map { .init(name: $0) })
+  
+  TabbedSidebar(brancher: brancher, publisher: publisher,
+                stasher: stasher, tagger: tagger,
+                selection: .constant(nil))
 }
