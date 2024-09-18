@@ -51,6 +51,8 @@
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
 		892F408D27ECCD2700659BF9 /* NoOpKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */; };
+		893FCF072C946D550070FB25 /* BranchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FCF062C946D550070FB25 /* BranchList.swift */; };
+		893FCF092C95C6C30070FB25 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FCF082C95C6C30070FB25 /* StatusBadge.swift */; };
 		893FCF0A2C9865EA0070FB25 /* Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC1C212CC56600EF739E /* Fakes.swift */; };
 		894C5D712C99B59700AC06E8 /* FakeRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */; };
 		8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8959E6E02856E35400AD88C4 /* TagPanel.swift */; };
@@ -434,6 +436,8 @@
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
 		892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoOpKeychain.swift; sourceTree = "<group>"; };
+		893FCF062C946D550070FB25 /* BranchList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchList.swift; sourceTree = "<group>"; };
+		893FCF082C95C6C30070FB25 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
 		894C8DE51CCD06FE001A4B80 /* Xit-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Xit-Bridging-Header.h"; sourceTree = "<group>"; };
 		8959E6E02856E35400AD88C4 /* TagPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPanel.swift; sourceTree = "<group>"; };
 		895CBA372B4061E70094D534 /* LibGit2Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibGit2Test.swift; sourceTree = "<group>"; };
@@ -1287,6 +1291,7 @@
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
+				893FCF062C946D550070FB25 /* BranchList.swift */,
 				C9E594C02C914C2600C518C4 /* FilterBar.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
 				C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */,
@@ -1295,6 +1300,7 @@
 				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
 				C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */,
 				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
+				893FCF082C95C6C30070FB25 /* StatusBadge.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -1713,6 +1719,7 @@
 				C92E30EF1D4FF358001985F7 /* CommitHistory.swift in Sources */,
 				89C927881D43B0460074F71A /* PullOpController.swift in Sources */,
 				C94866B61D256C24000BDB0A /* FetchOpController.swift in Sources */,
+				893FCF092C95C6C30070FB25 /* StatusBadge.swift in Sources */,
 				C9E594B92C8B4D7900C518C4 /* FilterField.swift in Sources */,
 				C957B87C1D2DBBC00040F858 /* AccountsManager.swift in Sources */,
 				C98CAD961F952173005DB419 /* GitDiffDelta.swift in Sources */,
@@ -1741,6 +1748,7 @@
 				C9B68A5E27B425BC00EE4C3A /* GitODB.swift in Sources */,
 				C92E3C0222F1FB0A004306C1 /* ConfigWatcher.swift in Sources */,
 				895ED19329BBC82A00757AEA /* CheckOutRemotePanel.swift in Sources */,
+				893FCF072C946D550070FB25 /* BranchList.swift in Sources */,
 				8983E1A7266596BD0075370C /* PathField.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */,

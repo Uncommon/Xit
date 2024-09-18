@@ -1,7 +1,8 @@
 import Foundation
 import SwiftUI
 
-protocol RepoSelectionItem: Identifiable where ID == String {
+protocol RepoSelectionItem: Identifiable where ID == String
+{
   associatedtype Icon: View
   typealias Element = Self
 
@@ -10,60 +11,6 @@ protocol RepoSelectionItem: Identifiable where ID == String {
   var image: Icon { get }
 }
 
-
-protocol SidebarTreeItem: RepoSelectionItem
-{
-  var children: [any SidebarTreeItem]? { get }
-}
-
-enum RemoteItemContent
-{
-  indirect case remote(String, [RemoteItemContent])
-  indirect case folder(String, [RemoteItemContent])
-  case branch(String)
-}
-
-struct RemoteTreeItem: SidebarTreeItem
-{
-  let content: RemoteItemContent
-  let name: String
-  var children: [any SidebarTreeItem]? {
-    switch content {
-      case .remote: []
-      case .folder: []
-      case .branch: nil
-    }
-  }
-
-  var image: some View {
-    switch content {
-      case .remote: Image(systemName: "network")
-      case .folder: Image(systemName: "folder")
-      case .branch: Image("scm.branch")
-    }
-  }
-
-  var repoSelection: (any RepositorySelection)? { nil }
-}
-
-extension RemoteTreeItem: Identifiable
-{
-  var id: String { name }
-}
-
-struct FolderTreeItem: SidebarTreeItem
-{
-  let name: String
-  let children: [any SidebarTreeItem]?
-  var image: some View { Image(systemName: "folder") }
-
-  var repoSelection: (any RepositorySelection)? { nil }
-}
-
-extension FolderTreeItem: Identifiable
-{
-  var id: String { name }
-}
 
 enum SidebarTab: TabItem, Hashable
 {
@@ -110,24 +57,6 @@ enum SidebarTab: TabItem, Hashable
   }
 }
 
-struct TreeLabelItem {
-  let name: String
-  let image: NSImage
-  let children: [TreeLabelItem]?
-}
-extension TreeLabelItem: Identifiable { var id: String { name } }
-
-struct TreeLabelList: View
-{
-  let items: [TreeLabelItem]
-  var body: some View {
-    List(items, children: \.children) { item in
-      Label(title: { Text(item.name) },
-            icon: { Image(nsImage: item.image) })
-    }
-  }
-}
-
 struct TabbedSidebar: View
 {
   @State var tab: SidebarTab = .remote
@@ -164,7 +93,7 @@ struct TabbedSidebar: View
             HStack {
               Label("Staging", systemImage: "folder")
               Spacer()
-              WorkspaceStatusView(unstagedCount: 0, stagedCount: 5)
+              WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
             }
             Divider()
             Label("branch", image: "scm.branch")
@@ -257,19 +186,6 @@ struct TabbedSidebar: View
           repoSelection.wrappedValue = nil
         }
       }
-  }
-}
-
-struct WorkspaceStatusView: View
-{
-  let unstagedCount, stagedCount: Int
-
-  var body: some View {
-    Text("\(unstagedCount) ▸ \(stagedCount)")
-      .padding(EdgeInsets(top: 1, leading: 5, bottom: 1, trailing: 5))
-      .background(Color(nsColor: .controlColor))
-      .clipShape(.capsule)
-      .font(.system(size: 10))
   }
 }
 

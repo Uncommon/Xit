@@ -50,6 +50,14 @@ enum PathTreeNode<Item: PathTreeData>
       default: nil
     }
   }
+
+  var isLeaf: Bool
+  {
+    switch self {
+      case .leaf: true
+      case .node: false
+    }
+  }
 }
 
 enum NodeContent<Item: PathTreeData>
@@ -89,7 +97,8 @@ extension PathTreeNode
     where C: RandomAccessCollection<Item>,
           C.Index == Int
   {
-    guard !items.isEmpty else { return [] }
+    guard !items.isEmpty
+    else { return [] }
     var result: [Self] = []
     var index = items.startIndex
 
@@ -176,10 +185,10 @@ extension PathTreeNode
         let filteredChildren = children.filtered(with: text)
 
         if filteredChildren.isEmpty {
-           if let item,
-              item.passes(filter: text) {
-             return .leaf(item)
-           }
+          if let item,
+             item.passes(filter: text) {
+            return .leaf(item)
+          }
           else {
             return nil
           }

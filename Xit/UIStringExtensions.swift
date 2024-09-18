@@ -145,7 +145,9 @@ extension LabeledContent where Label == Text, Content: View
 
 extension Picker where Label == Text
 {
-  init(_ title: UIString, selection: Binding<SelectionValue>, @ViewBuilder content: () -> Content)
+  init(_ title: UIString,
+       selection: Binding<SelectionValue>,
+       @ViewBuilder content: () -> Content)
   {
     self.init(title.rawValue, selection: selection, content: content)
   }

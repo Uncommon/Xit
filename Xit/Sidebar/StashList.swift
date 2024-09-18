@@ -21,7 +21,8 @@ class StashListViewModel<Stasher, Publisher>: ObservableObject
     sinks.append(contentsOf: [
       publisher.stashPublisher.sinkOnMainQueue {
         [weak self] in
-        guard let self else { return }
+        guard let self
+        else { return }
         applyFilter(filter)
       },
       $filter
@@ -105,7 +106,7 @@ struct StashList<Stasher, Publisher>: View
             .foregroundStyle(.tint)
           Text(stash.mainCommit?.messageSummary ?? "WIP")
           Spacer()
-          WorkspaceStatusView(unstagedCount: stash.workspaceChanges().count,
+          WorkspaceStatusBadge(unstagedCount: stash.workspaceChanges().count,
                               stagedCount: stash.indexChanges().count)
         }
       }

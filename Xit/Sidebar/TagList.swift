@@ -1,7 +1,8 @@
 import SwiftUI
 import Combine
 
-class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: ObservableObject
+class TagListViewModel<Tagger: Tagging,
+                       Publisher: RepositoryPublishing>: ObservableObject
 {
   let tagger: Tagger
   let publisher: Publisher
@@ -9,7 +10,6 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
   @Published var tags: [PathTreeNode<Tagger.Tag>] = []
   @Published var filter: String = ""
 
-  var sink: AnyCancellable?
   var sinks: [AnyCancellable] = []
 
   init(tagger: Tagger, publisher: Publisher)
@@ -19,7 +19,7 @@ class TagListViewModel<Tagger: Tagging, Publisher: RepositoryPublishing>: Observ
 
     setTagHierarchy()
     sinks.append(contentsOf: [
-      publisher.refsPublisher.sink {
+      publisher.refsPublisher.sinkOnMainQueue {
         [weak self] in
         self?.setTagHierarchy()
       },
@@ -51,7 +51,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
   @ObservedObject var model: TagListViewModel<Tagger, Publisher>
 
   var selection: Binding<String?>
-  @State private var expandedItems: Binding<Set<String>>
+  var expandedItems: Binding<Set<String>>
 
   var body: some View
   {
@@ -64,15 +64,17 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
           Label(
             title: { Text(tag.path.lastPathComponent) },
             icon: {
-              Image(systemName: item.map { $0.isSigned ? "seal" : "tag" } ?? "folder")
+              Image(systemName: item.map {
+                $0.isSigned ? "seal" : "tag"
+              } ?? "folder")
                 .symbolVariant(item?.type == .lightweight ? .none : .fill)
             }
           ).selectionDisabled(item == nil)
         }
       }
         .contextMenu(forSelectionType: String.self) {
-          if let _ = $0.first {
-            Button(.delete, role: .destructive) {  }
+          if $0.first != nil {
+            Button(.delete, role: .destructive) { }
           }
         }
         .overlay {

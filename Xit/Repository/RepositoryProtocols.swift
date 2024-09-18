@@ -137,6 +137,12 @@ public protocol CommitReferencing: AnyObject
                     updatingReference refName: String) throws -> GitOID
 }
 
+class FakeCommitReferencing<
+    Commit: Xit.Commit,
+    Tree: Xit.Tree,
+    LocalBranch: Xit.LocalBranch,
+    RemoteBranch: Xit.RemoteBranch>: EmptyCommitReferencing {}
+
 extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
@@ -442,7 +448,7 @@ public protocol SubmoduleManagement: AnyObject
 @Faked
 public protocol Branching: AnyObject {
   associatedtype LocalBranch: Xit.LocalBranch
-  associatedtype RemoteBranch: Xit.RemoteBranch
+  typealias RemoteBranch = LocalBranch.RemoteBranch
 
   /// Returns the current checked out branch, or nil if in a detached head state
   var currentBranch: String? { get }

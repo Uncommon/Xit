@@ -88,7 +88,7 @@ struct FilterFieldPreview: View {
     FilterField(text: $text, prompt: Text("Filter")) {
       FilterIndicator()
     } rightContent: {
-      Button {} label: { Image(systemName: "clock")}
+      Button {} label: { Image(systemName: "clock") }
     }
   }
 }

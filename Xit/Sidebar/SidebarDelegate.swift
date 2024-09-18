@@ -31,9 +31,7 @@ final class SidebarDelegate: NSObject
   {
     guard let refName = LocalBranchRefName(item.title),
           let localBranch = repository.localBranch(named: refName),
-          let trackingBranch = localBranch.trackingBranch
-            // Repository and LocalBranch each have a RemoteBranch type
-            as? R.RemoteBranch,
+          let trackingBranch = localBranch.trackingBranch,
           let graph = repository.graphBetween(localBranch: localBranch,
                                               upstreamBranch: trackingBranch)
     else { return nil }

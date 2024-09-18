@@ -1,8 +1,8 @@
 import Cocoa
 import FakedMacro
 
-@Faked(skip: ["prefix", "remoteName"], createNull: false)
-public protocol Branch: AnyObject
+@Faked(skip: ["prefix", "remoteName", "shortName"], createNull: false)
+public protocol Branch: AnyObject, PathTreeData
 {
   /// The full reference name
   var name: String { get }
@@ -21,6 +21,11 @@ public protocol Branch: AnyObject
   var remoteName: String? { get }
 }
 
+extension Branch // PathTreeData
+{
+  public var treeNodePath: String { strippedName }
+}
+
 extension Branch
 {
   public var strippedName: String
@@ -28,7 +33,7 @@ extension Branch
 }
 
 
-@Faked(anyObject: true, inherit: ["EmptyBranch"])
+@Faked(skip: ["shortName"], anyObject: true, inherit: ["EmptyBranch"])
 public protocol LocalBranch: Branch
 {
   associatedtype RemoteBranch: Xit.RemoteBranch
@@ -39,6 +44,7 @@ public protocol LocalBranch: Branch
 
 extension LocalBranch
 {
+  public var shortName: String { strippedName }
   public var remoteName: String? { trackingBranch?.remoteName }
   public var prefix: String { RefPrefixes.heads }
 }
@@ -47,6 +53,10 @@ extension LocalBranch
 @Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol RemoteBranch: Branch
 {
+}
+extension EmptyRemoteBranch
+{
+  public var shortName: String { "" }
 }
 
 extension RemoteBranch
@@ -129,8 +139,6 @@ public class GitBranch
 
 public final class GitLocalBranch: GitBranch, LocalBranch
 {
-  public var shortName: String { strippedName }
-  
   init?(repository: OpaquePointer, name: String, config: any Config)
   {
     guard let branch = GitBranch.lookUpBranch(name: name,
