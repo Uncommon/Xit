@@ -69,12 +69,14 @@ enum SidebarTab: TabItem, Hashable
 {
   typealias ID = Self
 
-  case local(modified: Bool), remote, tags, stashes, submodules
+  case local(modified: Bool), remote, tags, stashes, submodules, search, history
 
   static var cleanCases: [SidebarTab] =
-      [.local(modified: false), .remote, .tags, .stashes, .submodules]
+      [.local(modified: false),
+       .remote, .tags, .stashes, .submodules, .search, .history]
   static var modifiedCases: [SidebarTab] =
-      [.local(modified: true), .remote, .tags, .stashes, .submodules]
+      [.local(modified: true),
+       .remote, .tags, .stashes, .submodules, .search, .history]
 
   var id: Self
   {
@@ -96,6 +98,8 @@ enum SidebarTab: TabItem, Hashable
       case .tags: Image(systemName: "tag")
       case .stashes: Image(systemName: "tray")
       case .submodules: Image(systemName: "square.split.bottomrightquarter")
+      case .search: Image(systemName: "magnifyingglass")
+      case .history: Image(systemName: "square.stack")
     }
   }
 
@@ -106,6 +110,8 @@ enum SidebarTab: TabItem, Hashable
       case .tags: .tags
       case .stashes: .stashes
       case .submodules: .submodules
+      case .search: ›"Search"
+      case .history: ›"History"
     }
   }
 }
@@ -130,12 +136,15 @@ struct TreeLabelList: View
 
 struct TabbedSidebar: View
 {
-  @State var tab: SidebarTab = .remote
+  @State var tab: SidebarTab = .local(modified: false)
   @State var expandedTags: Set<String> = []
 
   let repoSelection: Binding<(any RepositorySelection)?>
   @State private var selectedTag: String? = nil
   @State private var selectedStash: GitOID? = nil
+
+  @State private var searchRegex: Bool = false
+  @State private var searchCaseSensitive: Bool = false
 
   // These are separate for testing/preview convenience
   //let brancher: any Branching
@@ -186,6 +195,31 @@ struct TabbedSidebar: View
             Label("submodule2",
                   systemImage: "square.split.bottomrightquarter")
           }
+        case .search:
+          HStack(spacing: 0) {
+            Text("Commit messages")
+            Spacer()
+            Group {
+              Toggle("", systemImage: "asterisk.circle", isOn: $searchRegex)
+              Toggle("", systemImage: "textformat", isOn: $searchCaseSensitive)
+            }.fontWeight(.bold).toggleStyle(.button).buttonStyle(.borderless)
+          }
+            .padding(4)
+            .font(.system(size: NSFont.smallSystemFontSize))
+          FilterField(text: .constant("Text"), leftContent: {
+            Image(systemName: "magnifyingglass")
+          })
+            .padding(4)
+          Divider()
+          Spacer()
+          ContentUnavailableView("No results", systemImage: "magnifyingglass")
+          Spacer()
+        case .history:
+          Spacer()
+          ContentUnavailableView("No selection", systemImage: "square.stack",
+                                 description:
+                                  Text("Drag a file here to see its history"))
+          Spacer()
       }
     }
       .listStyle(.sidebar)
@@ -273,6 +307,7 @@ struct WorkspaceStatusView: View
   }
 }
 
+#if DEBUG
 #Preview
 {
   let publisher = NullRepositoryPublishing()
@@ -285,3 +320,4 @@ struct WorkspaceStatusView: View
   return TabbedSidebar(publisher: publisher, stasher: stasher, tagger: tagger,
                        selection: .constant(nil))
 }
+#endif

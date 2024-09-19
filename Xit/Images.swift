@@ -27,13 +27,13 @@ extension NSImage
   
   static var xtBranchFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtBranch: NSImage { .init(named: "scm.branch")! }
-  static var xtCloud: NSImage { .init(systemSymbolName: "cloud")! }
+  static var xtCloud: NSImage { .init(systemSymbolName: "network")! }
   static var xtCurrentBranch: NSImage { .init(named: NSImage.menuOnStateTemplateName)! }
   static var xtCurrentRemoteBranch: NSImage { .init(systemSymbolName: "checkmark.circle")! }
   static var xtFile: NSImage { .init(systemSymbolName: "doc")! }
   static var xtFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtRefresh: NSImage { .init(named: NSImage.refreshTemplateName)! }
-  static var xtRemote: NSImage { .init(systemSymbolName: "cloud")! }
+  static var xtRemote: NSImage { .init(systemSymbolName: "network")! }
   static var xtStageAll: NSImage { .init(named: .xtStageAllTemplate)! }
   static var xtStageButton: NSImage { .init(systemSymbolName: "circle")! }
   static var xtStageButtonHover: NSImage { .init(systemSymbolName: "chevron.up.circle")! }
