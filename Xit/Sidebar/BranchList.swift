@@ -18,11 +18,10 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
-class BranchListViewModel<Brancher: Branching,
-                          Publisher: RepositoryPublishing>: ObservableObject
+class BranchListViewModel<Brancher: Branching>: ObservableObject
 {
   let brancher: Brancher
-  let publisher: Publisher
+  let publisher: any RepositoryPublishing
 
   var unfilteredList: [PathTreeNode<Brancher.LocalBranch>] = []
   @Published var branches: [PathTreeNode<Brancher.LocalBranch>] = []
@@ -30,7 +29,7 @@ class BranchListViewModel<Brancher: Branching,
 
   var sinks: [AnyCancellable] = []
 
-  init(brancher: Brancher, publisher: Publisher)
+  init(brancher: Brancher, publisher: any RepositoryPublishing)
   {
     self.brancher = brancher
     self.publisher = publisher
@@ -67,12 +66,11 @@ class BranchListViewModel<Brancher: Branching,
 
 struct BranchList<Brancher: Branching,
                   Referencer: CommitReferencing,
-                  Publisher: RepositoryPublishing,
                   Accessorizer: BranchAccessorizing>: View
   where Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.RemoteBranch == Referencer.RemoteBranch
 {
-  @ObservedObject var model: BranchListViewModel<Brancher, Publisher>
+  @ObservedObject var model: BranchListViewModel<Brancher>
 
   let brancher: Brancher
   let referencer: Referencer
@@ -84,6 +82,12 @@ struct BranchList<Brancher: Branching,
   {
     VStack(spacing: 0) {
       List(selection: selection) {
+        HStack {
+          Label("Staging", systemImage: "folder")
+          Spacer()
+          WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
+        }
+        Divider()
         RecursiveDisclosureGroup(model.branches,
                                  expandedItems: expandedItems,
                                  content: branchCell)

@@ -114,7 +114,7 @@ public protocol CommitReferencing: AnyObject
   associatedtype Commit: Xit.Commit
   associatedtype Tree: Xit.Tree
   associatedtype LocalBranch: Xit.LocalBranch
-  associatedtype RemoteBranch: Xit.RemoteBranch
+  typealias RemoteBranch = LocalBranch.RemoteBranch
 
   var headRef: String? { get }
 

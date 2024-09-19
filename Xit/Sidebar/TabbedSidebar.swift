@@ -57,22 +57,28 @@ enum SidebarTab: TabItem, Hashable
   }
 }
 
-struct TabbedSidebar: View
+struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
+  where Brancher: Branching, Referencer: CommitReferencing,
+        Stasher: Stashing, Tagger: Tagging,
+        Brancher.LocalBranch == Referencer.LocalBranch
 {
   @State var tab: SidebarTab = .remote
+  @State var expandedBranches: Set<String> = []
   @State var expandedTags: Set<String> = []
 
   let repoSelection: Binding<(any RepositorySelection)?>
+  @State private var selectedBranch: String? = nil
   @State private var selectedTag: String? = nil
   @State private var selectedStash: GitOID? = nil
 
   // These are separate for testing/preview convenience
-  let brancher: any Branching
+  let brancher: Brancher
   //let remoteManager: any RemoteManagement
+  let referencer: Referencer
   let publisher: any RepositoryPublishing
-  let stasher: any Stashing
+  let stasher: Stasher
   //let submobuleManager: any SubmoduleManagement
-  let tagger: any Tagging
+  let tagger: Tagger
 
   var body: some View {
     VStack(spacing: 0) {
@@ -82,16 +88,15 @@ struct TabbedSidebar: View
       Divider()
       switch tab {
         case .local:
-          List {
-            HStack {
-              Label("Staging", systemImage: "folder")
-              Spacer()
-              WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
+          BranchList(model: .init(brancher: brancher, publisher: publisher),
+                     brancher: brancher,
+                     referencer: referencer,
+                     accessorizer: .empty,
+                     selection: $selectedBranch,
+                     expandedItems: $expandedBranches)
+            .onChange(of: selectedBranch) {
+              // either branch or staging selection
             }
-            Divider()
-            Label("branch", image: "scm.branch")
-            Label("main", image: "scm.branch")
-          }
         case .remote:
           List {
           }.overlay {
@@ -114,34 +119,23 @@ struct TabbedSidebar: View
       .frame(width: 300)
   }
 
-  init(brancher: any Branching,
+  init(brancher: Brancher,
        //remoteManager: any RemoteManagement,
+       referencer: Referencer,
        publisher: any RepositoryPublishing,
-       stasher: any Stashing,
+       stasher: Stasher,
        //submoduleManager: any SubmoduleManagement,
-       tagger: any Tagging,
+       tagger: Tagger,
        selection: Binding<(any RepositorySelection)?>)
   {
     self.brancher = brancher
     //self.remoteManager = remoteManager
+    self.referencer = referencer
     self.publisher = publisher
     self.stasher = stasher
     //self.submobuleManager = submoduleManager
     self.tagger = tagger
     self.repoSelection = selection
-  }
-
-  init(repo: any FullRepository,
-       publisher: any RepositoryPublishing,
-       selection: Binding<(any RepositorySelection)?>)
-  {
-    self.init(brancher: repo,
-              //remoteManager: repo,
-              publisher: publisher,
-              stasher: repo,
-              //submoduleManager: repo,
-              tagger: repo,
-              selection: selection)
   }
 
   // These views need generic wrappers because the list views are generic
@@ -197,8 +191,9 @@ struct TabbedSidebar: View
     "releases/v1.0",
     "releases/v1.1",
   ].map { .init(name: $0) })
+  let referencer = BranchListPreview.CommitReferencer()
   
-  TabbedSidebar(brancher: brancher, publisher: publisher,
+  TabbedSidebar(brancher: brancher, referencer: referencer, publisher: publisher,
                 stasher: stasher, tagger: tagger,
                 selection: .constant(nil))
 }

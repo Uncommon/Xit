@@ -2,13 +2,17 @@ import Foundation
 import AppKit
 import SwiftUI
 
-class TabbedSidebarController: NSHostingController<TabbedSidebar>
+class TabbedSidebarController<Repo: FullRepository>:
+  NSHostingController<TabbedSidebar<Repo, Repo, Repo, Repo>>
 {
-  init(repo: any FullRepository,
+  init(repo: Repo,
        controller: any RepositoryUIController)
   {
-    let view = TabbedSidebar(repo: repo,
+    let view = TabbedSidebar(brancher: repo,
+                             referencer: repo,
                              publisher: controller.repoController,
+                             stasher: repo,
+                             tagger: repo,
                              selection: controller.selectionBinding)
 
     super.init(rootView: view)
