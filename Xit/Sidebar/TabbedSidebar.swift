@@ -177,6 +177,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   }
 }
 
+#if DEBUG
 #Preview
 {
   let brancher = BranchListPreview.Brancher(localBranches: [
@@ -197,3 +198,4 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
                 stasher: stasher, tagger: tagger,
                 selection: .constant(nil))
 }
+#endif

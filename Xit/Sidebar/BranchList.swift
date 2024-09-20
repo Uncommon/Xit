@@ -158,7 +158,7 @@ struct BranchList<Brancher: Branching,
                 upstreamBranch: remoteBranch),
             ahead > 0 && behind > 0
       else {
-        return AnyView(Image("network"))
+        return AnyView(Image(systemName: "network"))
       }
       var numbers = [String]()
       

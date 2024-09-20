@@ -218,9 +218,11 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
   func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
   
-  func blame(for path: String, from startOID: GitOID?, to endOID: GitOID?) -> Blame?
+  func blame(for path: String, from startOID: GitOID?,
+             to endOID: GitOID?) -> Blame?
   { nil }
-  func blame(for path: String, data fromData: Data?, to endOID: GitOID?) -> Blame?
+  func blame(for path: String, data fromData: Data?,
+             to endOID: GitOID?) -> Blame?
   { nil }
   
   var index: (any StagingIndex)? { nil }

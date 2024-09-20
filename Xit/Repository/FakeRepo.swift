@@ -105,6 +105,7 @@ extension FakeRepo: EmptyCommitStorage
 extension FakeRepo: EmptyStashing
 {
   var stashes: AnyRandomAccessCollection<FakeStash> { .init([]) }
+  
   func stash(index: UInt, message: String?) -> FakeStash { FakeStash() }
 }
 

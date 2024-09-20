@@ -28,7 +28,3 @@ struct WorkspaceStatusBadge: View
     StatusBadge("\(unstagedCount) ▸ \(stagedCount)")
   }
 }
-
-//#Preview {
-//    StatusBadge()
-//}
