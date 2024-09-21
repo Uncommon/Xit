@@ -86,7 +86,7 @@ struct BranchList<Brancher: Branching,
           Label("Staging", systemImage: "folder")
           Spacer()
           WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
-        }
+        }.tag("")
         Divider()
         RecursiveDisclosureGroup(model.branches,
                                  expandedItems: expandedItems,

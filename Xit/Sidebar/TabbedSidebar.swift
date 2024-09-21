@@ -36,8 +36,8 @@ enum SidebarTab: TabItem, Hashable
   {
     switch self {
       case .local(true): Image("externaldrive.badge")
-          //.symbolRenderingMode(.palette)
-          //.foregroundStyle(.secondary, .tint)
+//          .symbolRenderingMode(.palette)
+//          .foregroundStyle(.secondary, .tint)
       case .local(modified: false): Image(systemName: "externaldrive")
       case .remote: Image(systemName: "network")
       case .tags: Image(systemName: "tag")
@@ -73,13 +73,13 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
 
   // These are separate for testing/preview convenience
   let brancher: Brancher
-  //let remoteManager: any RemoteManagement
+//  let remoteManager: any RemoteManagement
   let referencer: Referencer
   let publisher: any RepositoryPublishing
   let stasher: Stasher
-  //let submobuleManager: any SubmoduleManagement
+//  let submobuleManager: any SubmoduleManagement
   let tagger: Tagger
-
+  
   var body: some View {
     VStack(spacing: 0) {
       Divider()
@@ -88,15 +88,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
       Divider()
       switch tab {
         case .local:
-          BranchList(model: .init(brancher: brancher, publisher: publisher),
-                     brancher: brancher,
-                     referencer: referencer,
-                     accessorizer: .empty,
-                     selection: $selectedBranch,
-                     expandedItems: $expandedBranches)
-            .onChange(of: selectedBranch) {
-              // either branch or staging selection
-            }
+          branchList()
         case .remote:
           List {
           }.overlay {
@@ -120,27 +112,58 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   }
 
   init(brancher: Brancher,
-       //remoteManager: any RemoteManagement,
+//       remoteManager: any RemoteManagement,
        referencer: Referencer,
        publisher: any RepositoryPublishing,
        stasher: Stasher,
-       //submoduleManager: any SubmoduleManagement,
+//       submoduleManager: any SubmoduleManagement,
        tagger: Tagger,
        selection: Binding<(any RepositorySelection)?>)
   {
     self.brancher = brancher
-    //self.remoteManager = remoteManager
+//    self.remoteManager = remoteManager
     self.referencer = referencer
     self.publisher = publisher
     self.stasher = stasher
-    //self.submobuleManager = submoduleManager
+//    self.submobuleManager = submoduleManager
     self.tagger = tagger
     self.repoSelection = selection
   }
 
+  private func branchList() -> some View
+  {
+    BranchList(model: .init(brancher: brancher, publisher: publisher),
+                      brancher: brancher,
+                      referencer: referencer,
+                      accessorizer: .empty,
+                      selection: $selectedBranch,
+                      expandedItems: $expandedBranches)
+      .onChange(of: selectedBranch) {
+        guard let selectedBranch,
+              let repo = brancher as? any FileChangesRepo
+        else {
+          repoSelection.wrappedValue = nil
+          return
+        }
+        if selectedBranch.isEmpty {
+          repoSelection.wrappedValue = StagingSelection(repository: repo,
+                                                        amending: false)
+        }
+        else if let refName = LocalBranchRefName(selectedBranch),
+                let branch = brancher.localBranch(named: refName),
+                let commit = branch.targetCommit {
+          repoSelection.wrappedValue = CommitSelection(repository: repo,
+                                                       commit: commit)
+        }
+        else {
+          repoSelection.wrappedValue = nil
+        }
+      }
+  }
+
   // These views need generic wrappers because the list views are generic
-  func tagList(tagger: some Tagging,
-               publisher: some RepositoryPublishing) -> some View
+  private func tagList(tagger: some Tagging,
+                       publisher: some RepositoryPublishing) -> some View
   {
     TagList(model: .init(tagger: tagger, publisher: publisher),
             selection: $selectedTag,
@@ -159,8 +182,8 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
       }
   }
 
-  func stashList(stasher: some Stashing,
-                 publisher: some RepositoryPublishing) -> some View
+  private func stashList(stasher: some Stashing,
+                         publisher: some RepositoryPublishing) -> some View
   {
     StashList(stasher: stasher, publisher: publisher, selection: $selectedStash)
       .onChange(of: selectedStash) {
