@@ -184,6 +184,12 @@ final class StashUnstagedList: StashFileList, FileListModel
 
   func dataForFile(_ path: String) -> Data?
   {
+    dataForFile(path, stash: stash)
+  }
+  
+  // Generic to unwrap because the compiler was crashing in release mode
+  func dataForFile(_ path: String, stash: some Stash) -> Data?
+  {
     if let untrackedCommit = stash.untrackedCommit,
        let untrackedData = repository.contentsOfFile(path: path,
                                                      at: untrackedCommit) {
