@@ -46,7 +46,8 @@ enum SidebarTab: TabItem, Hashable
     }
   }
 
-  var toolTip: UIString {
+  var toolTip: UIString
+  {
     switch self {
       case .local: ›"Local"
       case .remote: .remotes
@@ -56,6 +57,12 @@ enum SidebarTab: TabItem, Hashable
     }
   }
 }
+
+let sidebarDateFormatStyle = Date.FormatStyle()
+  .day(.twoDigits)
+  .month(.twoDigits)
+  .year(.twoDigits)
+
 
 struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   where Brancher: Branching, Referencer: CommitReferencing,
@@ -108,6 +115,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
       }
     }
       .listStyle(.sidebar)
+      .environment(\.dateFormatStyle, sidebarDateFormatStyle)
       .frame(width: 300)
   }
 
