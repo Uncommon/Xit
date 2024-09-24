@@ -88,8 +88,8 @@ extension PathTreeNode
   /// for each "folder" represented in the path names.
   static func makeHierarchy(from items: [Item]) -> [Self]
   {
-    // TODO: case insensitive sort
-    makeHierarchy(from: items.sorted(byKeyPath: \.treeNodePath), prefix: "")
+    makeHierarchy(from: items.sorted(by: { $0.treeNodePath <~ $1.treeNodePath }),
+                  prefix: "")
   }
 
   private static func makeHierarchy<C>(from items: C,
