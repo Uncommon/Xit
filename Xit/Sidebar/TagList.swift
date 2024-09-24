@@ -61,15 +61,22 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
                                  expandedItems: expandedItems) {
           (tag: PathTreeNode<Tagger.Tag>) in
           let item = tag.item
-          Label(
-            title: { Text(tag.path.lastPathComponent) },
-            icon: {
-              Image(systemName: item.map {
-                $0.isSigned ? "seal" : "tag"
-              } ?? "folder")
-                .symbolVariant(item?.type == .lightweight ? .none : .fill)
+          HStack {
+            Label(
+              title: { Text(tag.path.lastPathComponent) },
+              icon: {
+                Image(systemName: item.map {
+                  $0.isSigned ? "seal" : "tag"
+                } ?? "folder")
+                  .symbolVariant(item?.type == .lightweight ? .none : .fill)
+              }
+            )
+            if let commit = item?.commit {
+              Spacer()
+              Text(commit.commitDate.formatted(.sidebar))
+                .foregroundStyle(.secondary)
             }
-          ).selectionDisabled(item == nil)
+          }.selectionDisabled(item == nil)
         }
       }
         .contextMenu(forSelectionType: String.self) {

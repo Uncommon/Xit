@@ -63,13 +63,18 @@ let sidebarDateFormatStyle = Date.FormatStyle()
   .month(.twoDigits)
   .year(.twoDigits)
 
+extension FormatStyle where Self == Date.FormatStyle
+{
+  static var sidebar: Self { sidebarDateFormatStyle }
+}
+
 
 struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   where Brancher: Branching, Referencer: CommitReferencing,
         Stasher: Stashing, Tagger: Tagging,
         Brancher.LocalBranch == Referencer.LocalBranch
 {
-  @State var tab: SidebarTab = .remote
+  @State var tab: SidebarTab = .local(modified: false)
   @State var expandedBranches: Set<String> = []
   @State var expandedTags: Set<String> = []
 
@@ -115,7 +120,6 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
       }
     }
       .listStyle(.sidebar)
-      .environment(\.dateFormatStyle, sidebarDateFormatStyle)
       .frame(width: 300)
   }
 

@@ -50,7 +50,6 @@ struct StashList<Stasher, Publisher>: View
 
   @State private var showAlert = false
   @State private var alertAction: StashAction?
-  @Environment(\.dateFormatStyle) private var dateFormatStyle
   @Environment(\.showError) private var showError
 
   let selection: Binding<GitOID?>
@@ -108,7 +107,7 @@ struct StashList<Stasher, Publisher>: View
           Text(stash.mainCommit?.messageSummary ?? "WIP")
           Spacer()
           if let commit = stash.mainCommit {
-            Text(commit.commitDate.formatted(dateFormatStyle))
+            Text(commit.commitDate.formatted(.sidebar))
               .foregroundStyle(.secondary)
           }
           WorkspaceStatusBadge(unstagedCount: stash.workspaceChanges().count,
@@ -257,7 +256,6 @@ struct StashListPreview: View
   {
     let repo = StashListPreview.PreviewStashing(stashes: stashes)
     StashList(stasher: repo, publisher: repo, selection: $selection)
-      .environment(\.dateFormatStyle, sidebarDateFormatStyle)
       .listStyle(.sidebar)
   }
 }
