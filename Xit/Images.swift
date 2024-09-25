@@ -38,8 +38,8 @@ extension NSImage
   static var xtStageButton: NSImage { .init(systemSymbolName: "circle")! }
   static var xtStageButtonHover: NSImage { .init(systemSymbolName: "chevron.up.circle")! }
   static var xtStageButtonPressed: NSImage { .init(systemSymbolName: "chevron.up.circle.fill")! }
-  static var xtStaged: NSImage { .init(systemSymbolName: "arrow.up.circle")! }
-  static var xtStaging: NSImage { .init(systemSymbolName: "arrow.up.and.down.circle")! }
+  static var xtStaged: NSImage { .init(systemSymbolName: "arrow.up.square")! }
+  static var xtStaging: NSImage { .init(systemSymbolName: "arrow.up.and.down.square")! }
   static var xtStash: NSImage { .init(systemSymbolName: "tray")! }
   static var xtSubmodule: NSImage { .init(systemSymbolName: "square.split.bottomrightquarter")! }
   static var xtTagLight: NSImage { .init(systemSymbolName: "tag")! }
