@@ -9,6 +9,7 @@ class TabbedSidebarController<Repo: FullRepository>:
        controller: any RepositoryUIController)
   {
     let view = TabbedSidebar(brancher: repo,
+                             detector: repo,
                              referencer: repo,
                              publisher: controller.repoController,
                              stasher: repo,

@@ -86,6 +86,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
 
   // These are separate for testing/preview convenience
   let brancher: Brancher
+  let detector: any FileStatusDetection
 //  let remoteManager: any RemoteManagement
   let referencer: Referencer
   let publisher: any RepositoryPublishing
@@ -120,6 +121,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   }
 
   init(brancher: Brancher,
+       detector: any FileStatusDetection,
 //       remoteManager: any RemoteManagement,
        referencer: Referencer,
        publisher: any RepositoryPublishing,
@@ -129,6 +131,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
        selection: Binding<(any RepositorySelection)?>)
   {
     self.brancher = brancher
+    self.detector = detector
 //    self.remoteManager = remoteManager
     self.referencer = referencer
     self.publisher = publisher
@@ -140,7 +143,9 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
 
   private func branchList() -> some View
   {
-    BranchList(model: .init(brancher: brancher, publisher: publisher),
+    BranchList(model: .init(brancher: brancher,
+                            detector: detector,
+                            publisher: publisher),
                       brancher: brancher,
                       referencer: referencer,
                       accessorizer: .empty,
@@ -215,6 +220,10 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
 }
 
 #if DEBUG
+// For some reason NullFileStatusDetection isn't visible, even though
+// calling this NullFileStatusDetection is an "invalid redeclaration"
+private class NFSD: EmptyFileStatusDetection {}
+
 #Preview
 {
   let brancher = BranchListPreview.Brancher(localBranches: [
@@ -232,7 +241,8 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   let subManager = SubmoduleListPreview.SubmoduleManager()
   let referencer = BranchListPreview.CommitReferencer()
   
-  TabbedSidebar(brancher: brancher, referencer: referencer, publisher: publisher,
+  TabbedSidebar(brancher: brancher, detector: NFSD(),
+                referencer: referencer, publisher: publisher,
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
                 selection: .constant(nil))
 }

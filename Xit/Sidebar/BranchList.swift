@@ -21,24 +21,38 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
 class BranchListViewModel<Brancher: Branching>: ObservableObject
 {
   let brancher: Brancher
+  let detector: any FileStatusDetection
   let publisher: any RepositoryPublishing
 
   var unfilteredList: [PathTreeNode<Brancher.LocalBranch>] = []
   @Published var branches: [PathTreeNode<Brancher.LocalBranch>] = []
   @Published var filter: String = ""
+  @Published var statusCounts: (staged: Int, unstaged: Int) = (0, 0)
 
   var sinks: [AnyCancellable] = []
 
-  init(brancher: Brancher, publisher: any RepositoryPublishing)
+  init(brancher: Brancher,
+       detector: any FileStatusDetection,
+       publisher: any RepositoryPublishing)
   {
     self.brancher = brancher
+    self.detector = detector
     self.publisher = publisher
     
     updateBranchList()
+    updateCounts()
     sinks.append(contentsOf: [
       publisher.refsPublisher.sinkOnMainQueue {
         [weak self] in
         self?.updateBranchList()
+      },
+      publisher.indexPublisher.sinkOnMainQueue {
+        [weak self] in
+        self?.updateCounts()
+      },
+      publisher.workspacePublisher.sinkOnMainQueue {
+        [weak self] _ in
+        self?.updateCounts()
       },
       $filter
         .debounce(for: 0.5, scheduler: DispatchQueue.main)
@@ -62,6 +76,12 @@ class BranchListViewModel<Brancher: Branching>: ObservableObject
     unfilteredList = PathTreeNode.makeHierarchy(from: branchList)
     branches = unfilteredList
   }
+  
+  func updateCounts()
+  {
+    statusCounts = (detector.stagedChanges().count,
+                    detector.unstagedChanges().count)
+  }
 }
 
 struct BranchList<Brancher: Branching,
@@ -83,9 +103,10 @@ struct BranchList<Brancher: Branching,
     VStack(spacing: 0) {
       List(selection: selection) {
         HStack {
-          Label("Staging", systemImage: "folder")
+          Label("Staging", systemImage: "arrow.up.square")
           Spacer()
-          WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
+          WorkspaceStatusBadge(unstagedCount: model.statusCounts.unstaged,
+                               stagedCount: model.statusCounts.staged)
         }.tag("").listRowSeparator(.hidden)
         // TODO: Reduce the divider height
         // This could be done with .environment(\.defaultMinListRowHeight, x)
@@ -243,12 +264,15 @@ struct BranchListPreview: View
   
   var body: some View
   {
-    BranchList(model: .init(brancher: brancher, publisher: brancher),
+    BranchList(model: .init(brancher: brancher,
+                            detector: NullFileStatusDetection(),
+                            publisher: brancher),
                brancher: brancher,
                referencer: CommitReferencer(),
                accessorizer: brancher,
                selection: $selection,
                expandedItems: $expandedItems)
+      .listStyle(.sidebar)
       .frame(maxWidth: 250)
   }
   
