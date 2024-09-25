@@ -86,7 +86,11 @@ struct BranchList<Brancher: Branching,
           Label("Staging", systemImage: "folder")
           Spacer()
           WorkspaceStatusBadge(unstagedCount: 0, stagedCount: 5)
-        }.tag("")
+        }.tag("").listRowSeparator(.hidden)
+        // TODO: Reduce the divider height
+        // This could be done with .environment(\.defaultMinListRowHeight, x)
+        // but then the row height would be dynamic for all other rows which
+        // could have a performance impact.
         Divider()
         RecursiveDisclosureGroup(model.branches,
                                  expandedItems: expandedItems,

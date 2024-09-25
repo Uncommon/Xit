@@ -14,10 +14,10 @@ disabled_rules:
     - redundant_optional_initialization # Why are only `var` optionals implicitly initialized?
     - multiple_closures_with_trailing_closure
     - implicit_getter # too many false positives as of 0.53.0
+    - conditional_returns_on_newline
 opt_in_rules:
     - anyobject_protocol
     - closure_spacing
-    - conditional_returns_on_newline
     - contains_over_filter_count
     - contains_over_filter_is_empty
     - contains_over_first_not_nil

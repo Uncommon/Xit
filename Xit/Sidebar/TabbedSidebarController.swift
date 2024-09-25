@@ -12,6 +12,7 @@ class TabbedSidebarController<Repo: FullRepository>:
                              referencer: repo,
                              publisher: controller.repoController,
                              stasher: repo,
+                             submoduleManager: repo,
                              tagger: repo,
                              selection: controller.selectionBinding)
 

@@ -90,6 +90,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
           }
         }
       FilterBar(text: $model.filter) {
+        // TODO: sort by date or name
         SidebarBottomButton(systemImage: "plus") {
           // new tag panel
         }

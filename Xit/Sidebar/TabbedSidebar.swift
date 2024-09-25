@@ -82,6 +82,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   @State private var selectedBranch: String? = nil
   @State private var selectedTag: String? = nil
   @State private var selectedStash: GitOID? = nil
+  @State private var selectedSubmodule: String? = nil
 
   // These are separate for testing/preview convenience
   let brancher: Brancher
@@ -89,7 +90,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   let referencer: Referencer
   let publisher: any RepositoryPublishing
   let stasher: Stasher
-//  let submobuleManager: any SubmoduleManagement
+  let submobuleManager: any SubmoduleManagement
   let tagger: Tagger
   
   var body: some View {
@@ -111,12 +112,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
         case .stashes:
           AnyView(stashList(stasher: stasher, publisher: publisher))
         case .submodules:
-          List {
-            Label("submodule1",
-                  systemImage: "square.split.bottomrightquarter")
-            Label("submodule2",
-                  systemImage: "square.split.bottomrightquarter")
-          }
+          AnyView(submoduleList(manager: submobuleManager))
       }
     }
       .listStyle(.sidebar)
@@ -128,7 +124,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
        referencer: Referencer,
        publisher: any RepositoryPublishing,
        stasher: Stasher,
-//       submoduleManager: any SubmoduleManagement,
+       submoduleManager: any SubmoduleManagement,
        tagger: Tagger,
        selection: Binding<(any RepositorySelection)?>)
   {
@@ -137,7 +133,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
     self.referencer = referencer
     self.publisher = publisher
     self.stasher = stasher
-//    self.submobuleManager = submoduleManager
+    self.submobuleManager = submoduleManager
     self.tagger = tagger
     self.repoSelection = selection
   }
@@ -210,6 +206,12 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
         }
       }
   }
+  
+  private func submoduleList(manager: some SubmoduleManagement) -> some View
+  {
+    SubmoduleList(model: .init(manager: manager, publisher: publisher),
+                  selection: $selectedSubmodule)
+  }
 }
 
 #if DEBUG
@@ -227,10 +229,11 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
     "releases/v1.0",
     "releases/v1.1",
   ].map { .init(name: $0) })
+  let subManager = SubmoduleListPreview.SubmoduleManager()
   let referencer = BranchListPreview.CommitReferencer()
   
   TabbedSidebar(brancher: brancher, referencer: referencer, publisher: publisher,
-                stasher: stasher, tagger: tagger,
+                stasher: stasher, submoduleManager: subManager, tagger: tagger,
                 selection: .constant(nil))
 }
 #endif

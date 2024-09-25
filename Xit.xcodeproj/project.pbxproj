@@ -65,6 +65,7 @@
 		897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */; };
 		897AE64F28BACDA500CC165C /* FileListModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE64E28BACDA500CC165C /* FileListModelTest.swift */; };
 		897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */; };
+		897ED3642CA2F6D000C990A3 /* SubmoduleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897ED3632CA2F6C800C990A3 /* SubmoduleList.swift */; };
 		8983E19126641BC20075370C /* ClonePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E19026641BC20075370C /* ClonePanel.swift */; };
 		8983E1A7266596BD0075370C /* PathField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E1A6266596BD0075370C /* PathField.swift */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
@@ -449,6 +450,7 @@
 		897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStringExtensions.swift; sourceTree = "<group>"; };
 		897AE64E28BACDA500CC165C /* FileListModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListModelTest.swift; sourceTree = "<group>"; };
 		897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchBar.swift; sourceTree = "<group>"; };
+		897ED3632CA2F6C800C990A3 /* SubmoduleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmoduleList.swift; sourceTree = "<group>"; };
 		8983E19026641BC20075370C /* ClonePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanel.swift; sourceTree = "<group>"; };
 		8983E1A6266596BD0075370C /* PathField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathField.swift; sourceTree = "<group>"; };
 		89880ECE20CF2B99007042F8 /* FlippedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlippedView.swift; sourceTree = "<group>"; };
@@ -1297,6 +1299,7 @@
 				C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
+				897ED3632CA2F6C800C990A3 /* SubmoduleList.swift */,
 				C9E7DA3B2C83CA1400B539E0 /* TabbedSidebar.swift */,
 				C9E594C62C931B8B00C518C4 /* TabbedSidebarController.swift */,
 				C9E594BA2C8BE9E400C518C4 /* TagList.swift */,
@@ -1636,6 +1639,7 @@
 				C90B4EC31FEB2B2300277B13 /* GitReference.swift in Sources */,
 				C9FD8FD9216C048400FCCE01 /* AccountType.swift in Sources */,
 				C94154B61EE5AC460030E481 /* XTRepository+Commands.swift in Sources */,
+				897ED3642CA2F6D000C990A3 /* SubmoduleList.swift in Sources */,
 				891260E2285BD11300053528 /* StashDialog.swift in Sources */,
 				C9ACC3432512699300C4FE4F /* SidebarCommandHandler.swift in Sources */,
 				C959CDE91F859D3D00C1E282 /* BuildStatusController.swift in Sources */,
