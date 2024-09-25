@@ -263,7 +263,7 @@ final class XTWindowController: NSWindowController,
       var newTitle: String!
     
       if let currentBranch = repo.currentBranch {
-        newTitle = "\(window.title) - \(currentBranch)"
+        newTitle = "\(window.title) - \(currentBranch.name)"
       }
       else {
         newTitle = window.title

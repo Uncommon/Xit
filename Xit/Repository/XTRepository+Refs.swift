@@ -21,7 +21,7 @@ extension XTRepository: Branching
       if currentBranchSubject.value == nil {
         refsChanged()
       }
-      return currentBranchSubject.value.flatMap { .init(rawValue: $0) }
+      return currentBranchSubject.value.flatMap { .init($0) }
     }
   }
 
