@@ -902,12 +902,12 @@
 			isa = PBXGroup;
 			children = (
 				C9C3013A269E4A7100EBBBC8 /* Environment.swift */,
+				891BC38B2CA5947E00455AA9 /* ExpansionText.swift */,
+				C9E594B82C8B4D7900C518C4 /* FilterField.swift */,
 				89BA11E528BE432200A7999A /* HostingTitlebarController.swift */,
 				C9C30136269E09EF00EBBBC8 /* PathControl.swift */,
 				8983E1A6266596BD0075370C /* PathField.swift */,
 				89BA11E128BD576D00A7999A /* SearchField.swift */,
-				C9E594B82C8B4D7900C518C4 /* FilterField.swift */,
-				891BC38B2CA5947E00455AA9 /* ExpansionText.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";

@@ -9,7 +9,7 @@ struct ExpansionText: NSViewRepresentable
   let color: NSColor
   
   init(_ text: String,
-       font: NSFont = .systemFont(ofSize: NSFont.systemFontSize),
+       font: NSFont = .systemFontSized,
        color: NSColor = .labelColor) {
     self.text = text
     self.font = font
@@ -42,7 +42,7 @@ struct ExpansionText: NSViewRepresentable
   {
     let intrinsic = nsView.intrinsicContentSize
     
-    return .init(width: proposal.width ?? intrinsic.width,
+    return .init(width: min(proposal.width ?? intrinsic.width, intrinsic.width),
                  height: intrinsic.height)
   }
 }

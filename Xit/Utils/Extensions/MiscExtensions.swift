@@ -294,6 +294,21 @@ extension DecodingError
   }
 }
 
+extension NSFont
+{
+  class var systemFontSized: NSFont
+  { systemFont(ofSize: systemFontSize) }
+  class var boldSystemFontSized: NSFont
+  { boldSystemFont(ofSize: systemFontSize) }
+  class var monospacedSystemFontSized: NSFont
+  { .monospacedSystemFont(ofSize: systemFontSize, weight: .regular) }
+  class var labelFontSized: NSFont
+  { labelFont(ofSize: labelFontSize) }
+
+  class func systemFontSized(weight: NSFont.Weight) -> NSFont
+  { systemFont(ofSize: systemFontSize, weight: weight) }
+}
+
 extension NSObject
 {
   func withSync<T>(block: () throws -> T) rethrows -> T

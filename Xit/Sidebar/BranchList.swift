@@ -71,8 +71,9 @@ struct BranchList<Brancher: Branching,
       let isCurrent = branch?.name == brancher.currentBranch?.rawValue
       Label(
         title: {
-          Text(node.path.lastPathComponent)
-            .bold(isCurrent)
+          ExpansionText(node.path.lastPathComponent,
+                        font: .systemFontSized(weight: isCurrent ? .bold
+                                                                 : .regular))
             .padding(.horizontal, 4)
             // tried hiding this background when the row is selected,
             // but there is a delay so it doesn't look good.
