@@ -2,34 +2,24 @@ import Combine
 import SwiftUI
 
 class TagListViewModel<Tagger: Tagging,
-                       Publisher: RepositoryPublishing>: ObservableObject
+                       Publisher: RepositoryPublishing>: FilteringListViewModel
 {
   let tagger: Tagger
   let publisher: Publisher
 
   @Published var tags: [PathTreeNode<Tagger.Tag>] = []
-  @Published var filter: String = ""
-
-  var sinks: [AnyCancellable] = []
 
   init(tagger: Tagger, publisher: Publisher)
   {
     self.tagger = tagger
     self.publisher = publisher
+    super.init()
 
     setTagHierarchy()
-    sinks.append(contentsOf: [
-      publisher.refsPublisher.sinkOnMainQueue {
-        [weak self] in
-        self?.setTagHierarchy()
-      },
-      $filter
-        .debounce(for: 0.5, scheduler: DispatchQueue.main)
-        .sink {
-          [weak self] _ in
-          self?.setTagHierarchy()
-        }
-    ])
+    sinks.append(publisher.refsPublisher.sinkOnMainQueue {
+      [weak self] in
+      self?.setTagHierarchy()
+    })
   }
 
   func setTagHierarchy()
@@ -43,5 +33,10 @@ class TagListViewModel<Tagger: Tagging,
     withAnimation {
       self.tags = tags
     }
+  }
+  
+  override func filterChanged(_ newFilter: String)
+  {
+    setTagHierarchy()
   }
 }

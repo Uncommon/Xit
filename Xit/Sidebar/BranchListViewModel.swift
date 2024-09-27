@@ -1,6 +1,6 @@
 import Combine
 
-class BranchListViewModel<Brancher: Branching>: ObservableObject
+class BranchListViewModel<Brancher: Branching>: FilteringListViewModel
 {
   let brancher: Brancher
   let detector: any FileStatusDetection
@@ -8,10 +8,7 @@ class BranchListViewModel<Brancher: Branching>: ObservableObject
 
   var unfilteredList: [PathTreeNode<Brancher.LocalBranch>] = []
   @Published var branches: [PathTreeNode<Brancher.LocalBranch>] = []
-  @Published var filter: String = ""
   @Published var statusCounts: (staged: Int, unstaged: Int) = (0, 0)
-
-  var sinks: [AnyCancellable] = []
 
   init(brancher: Brancher,
        detector: any FileStatusDetection,
@@ -20,6 +17,7 @@ class BranchListViewModel<Brancher: Branching>: ObservableObject
     self.brancher = brancher
     self.detector = detector
     self.publisher = publisher
+    super.init()
     
     updateBranchList()
     updateCounts()
@@ -36,19 +34,17 @@ class BranchListViewModel<Brancher: Branching>: ObservableObject
         [weak self] _ in
         self?.updateCounts()
       },
-      $filter
-        .debounce(for: 0.5, scheduler: DispatchQueue.main)
-        .sink {
-          [weak self] in
-          guard let self else { return }
-          if $0.isEmpty {
-            branches = unfilteredList
-          }
-          else {
-            branches = unfilteredList.filtered(with: $0)
-          }
-        }
     ])
+  }
+  
+  override func filterChanged(_ newFilter: String)
+  {
+    if newFilter.isEmpty {
+      branches = unfilteredList
+    }
+    else {
+      branches = unfilteredList.filtered(with: newFilter)
+    }
   }
   
   func updateBranchList()
