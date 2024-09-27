@@ -52,6 +52,7 @@
 		891BC3862CA477B400455AA9 /* StashListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3852CA477B400455AA9 /* StashListViewModel.swift */; };
 		891BC3882CA477FE00455AA9 /* SubmoduleListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3872CA477FE00455AA9 /* SubmoduleListModel.swift */; };
 		891BC38A2CA4D5BD00455AA9 /* FilteringListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */; };
+		891BC38C2CA5947E00455AA9 /* ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38B2CA5947E00455AA9 /* ExpansionText.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
@@ -443,6 +444,7 @@
 		891BC3852CA477B400455AA9 /* StashListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StashListViewModel.swift; sourceTree = "<group>"; };
 		891BC3872CA477FE00455AA9 /* SubmoduleListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmoduleListModel.swift; sourceTree = "<group>"; };
 		891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteringListViewModel.swift; sourceTree = "<group>"; };
+		891BC38B2CA5947E00455AA9 /* ExpansionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionText.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
@@ -905,6 +907,7 @@
 				8983E1A6266596BD0075370C /* PathField.swift */,
 				89BA11E128BD576D00A7999A /* SearchField.swift */,
 				C9E594B82C8B4D7900C518C4 /* FilterField.swift */,
+				891BC38B2CA5947E00455AA9 /* ExpansionText.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -1812,6 +1815,7 @@
 				C97E31B220BF2A2100E74D2F /* RepoError.swift in Sources */,
 				89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */,
 				897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */,
+				891BC38C2CA5947E00455AA9 /* ExpansionText.swift in Sources */,
 				C9E594BB2C8BE9E400C518C4 /* TagList.swift in Sources */,
 				89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */,
 				89E427302862CF2E00A17651 /* EditAccountPanel.swift in Sources */,

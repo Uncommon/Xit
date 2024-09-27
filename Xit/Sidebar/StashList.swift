@@ -62,7 +62,7 @@ struct StashList<Stasher, Publisher>: View
           // Label() placed the text too low relative to the icon
           Image(systemName: "tray")
             .foregroundStyle(.tint)
-          Text(stash.mainCommit?.messageSummary ?? "WIP")
+          ExpansionText(stash.mainCommit?.messageSummary ?? "WIP")
           Spacer()
           if let commit = stash.mainCommit {
             Text(commit.commitDate.formatted(.sidebar))

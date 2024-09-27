@@ -19,7 +19,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
           let item = tag.item
           HStack {
             Label(
-              title: { Text(tag.path.lastPathComponent) },
+              title: { ExpansionText(tag.path.lastPathComponent) },
               icon: {
                 Image(systemName: item.map {
                   $0.isSigned ? "seal" : "tag"
