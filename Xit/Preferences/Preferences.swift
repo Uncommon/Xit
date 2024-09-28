@@ -58,7 +58,7 @@ extension UserDefaults
   static var xit: UserDefaults
   {
     #if DEBUG
-    switch Testing.defaults {
+    switch TestSettings.defaults {
       case .standard:
         return .standard
       default:

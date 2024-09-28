@@ -14,7 +14,7 @@ final class AppDelegate: NSObject
   {
     super.init()
     #if DEBUG
-    Testing.initialize()
+    TestSettings.initialize()
     #endif
   }
   

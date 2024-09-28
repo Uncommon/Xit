@@ -1,7 +1,7 @@
 import Foundation
 
 #if DEBUG
-enum Testing
+enum TestSettings
 {
   enum Defaults: String, CaseIterable
   {

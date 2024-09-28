@@ -223,7 +223,7 @@ struct AccountsPrefsPane_Previews: PreviewProvider
     let manager = AccountsManager(defaults: defaults,
                                   passwordStorage: MemoryPasswordStorage.shared)
 
-    defaults.accounts = Testing.tempAccountsData
+    defaults.accounts = TestSettings.tempAccountsData
     manager.readAccounts()
     return manager
   }()

@@ -240,7 +240,7 @@ extension Services
   public static var xit: Services
   {
 #if DEBUG
-    return Testing.defaults == .standard ? .shared : .testing
+    return TestSettings.defaults == .standard ? .shared : .testing
 #else
     return shared
 #endif
