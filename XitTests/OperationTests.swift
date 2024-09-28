@@ -32,7 +32,7 @@ final class OperationTests: XTTest
     
     let currentBranch = repository.currentBranch
     
-    XCTAssertEqual(currentBranch, branchName)
+    XCTAssertEqual(currentBranch?.name, branchName)
   }
   
   func testNewBranch() throws
@@ -46,7 +46,7 @@ final class OperationTests: XTTest
     
     try operation.perform(using: parameters)
     
-    XCTAssertEqual(repository.currentBranch, "branch")
+    XCTAssertEqual(repository.currentBranch?.name, "branch")
   }
   
   func testNewBranchNoCheckout() throws
@@ -60,7 +60,7 @@ final class OperationTests: XTTest
     
     try operation.perform(using: parameters)
 
-    XCTAssertEqual(repository.currentBranch, "master")
+    XCTAssertEqual(repository.currentBranch?.name, "master")
     XCTAssertNotNil(repository.localBranch(named: .init("branch")!))
   }
 }

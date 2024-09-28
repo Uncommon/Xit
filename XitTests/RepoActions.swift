@@ -360,7 +360,7 @@ struct CreateBranch: RepoAction
 
   func execute(in repository: any FullRepository) throws
   {
-    guard let currentBranch = repository.currentBranch
+    guard let currentBranch = repository.currentBranch?.name
     else { throw UnreachableError() }
 
     _ = try repository.createBranch(named: branch,
