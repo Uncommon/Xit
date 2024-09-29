@@ -9,10 +9,14 @@ protocol BranchAccessorizing<Content>
 }
 
 struct EmptyBranchAccessorizer: BranchAccessorizing
-{ func accessoryView(for branch: any Branch) -> some View { EmptyView() } }
+{
+  func accessoryView(for branch: any Branch) -> some View { EmptyView() }
+}
 
 extension BranchAccessorizing where Self == EmptyBranchAccessorizer
-{ static var empty: EmptyBranchAccessorizer { .init() } }
+{
+  static var empty: EmptyBranchAccessorizer { .init() }
+}
 
 struct BranchList<Brancher: Branching,
                   Referencer: CommitReferencing,

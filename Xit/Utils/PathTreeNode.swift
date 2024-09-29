@@ -92,8 +92,8 @@ extension PathTreeNode
                   prefix: "")
   }
 
-  private static func makeHierarchy<C>(from items: C,
-                                       prefix: String) -> [Self]
+  static func makeHierarchy<C>(from items: C,
+                               prefix: String) -> [Self]
     where C: RandomAccessCollection<Item>,
           C.Index == Int
   {

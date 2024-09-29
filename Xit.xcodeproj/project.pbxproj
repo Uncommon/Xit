@@ -53,6 +53,8 @@
 		891BC3882CA477FE00455AA9 /* SubmoduleListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3872CA477FE00455AA9 /* SubmoduleListModel.swift */; };
 		891BC38A2CA4D5BD00455AA9 /* FilteringListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */; };
 		891BC38C2CA5947E00455AA9 /* ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38B2CA5947E00455AA9 /* ExpansionText.swift */; };
+		891BC38E2CA766F400455AA9 /* RemoteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */; };
+		891BC3932CA8409B00455AA9 /* RemoteListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
@@ -445,6 +447,8 @@
 		891BC3872CA477FE00455AA9 /* SubmoduleListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmoduleListModel.swift; sourceTree = "<group>"; };
 		891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteringListViewModel.swift; sourceTree = "<group>"; };
 		891BC38B2CA5947E00455AA9 /* ExpansionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionText.swift; sourceTree = "<group>"; };
+		891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModel.swift; sourceTree = "<group>"; };
+		891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModelTest.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
@@ -1060,6 +1064,7 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				895CBA372B4061E70094D534 /* LibGit2Test.swift */,
+				891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1312,6 +1317,7 @@
 				891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
 				C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */,
+				891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				891BC3852CA477B400455AA9 /* StashListViewModel.swift */,
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
@@ -1829,6 +1835,7 @@
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
 				891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */,
+				891BC38E2CA766F400455AA9 /* RemoteListViewModel.swift in Sources */,
 				89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */,
 				C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */,
 				C9C30139269E2D8100EBBBC8 /* CleanPanelController.swift in Sources */,
@@ -1880,6 +1887,7 @@
 				C94D9E0222A031BE00E46A28 /* SidebarDelegateTest.swift in Sources */,
 				895CBA382B4061E70094D534 /* LibGit2Test.swift in Sources */,
 				C94736761DEF28F8000E3A05 /* GitSwiftTests.swift in Sources */,
+				891BC3932CA8409B00455AA9 /* RemoteListViewModelTest.swift in Sources */,
 				C9A0223822EF4BE8001EFD7E /* XTRepositoryHunkTest.swift in Sources */,
 				C9DAB5AF1D47C23900586854 /* TeamCityTest.swift in Sources */,
 				C9FCC1D11D50EB1A00AC398E /* CommitHistoryTest.swift in Sources */,

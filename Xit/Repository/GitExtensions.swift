@@ -198,7 +198,7 @@ extension Array where Element == String
   func withGitStringArray<T>(block: (git_strarray) throws -> T) rethrows -> T
   {
     let lengths = map { $0.utf8.count + 1 }
-    let offsets = [0] + scan(lengths, 0, +)
+    let offsets = [0] + Xit.scan(lengths, 0, +)
     var buffer = [Int8]()
     
     buffer.reserveCapacity(offsets.last!)
