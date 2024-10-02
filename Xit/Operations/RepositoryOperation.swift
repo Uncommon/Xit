@@ -19,7 +19,7 @@ struct CheckOutRemoteOperation: RepositoryOperation
   
   func perform(using parameters: CheckOutRemotePanel.Model) throws
   {
-    let fullTarget = remoteBranch.rawValue
+    let fullTarget = remoteBranch.fullPath
     
     if let branch = try repository.createBranch(named: parameters.branchName,
                                                 target: fullTarget) {

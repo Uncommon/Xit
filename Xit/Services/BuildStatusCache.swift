@@ -61,7 +61,7 @@ final class BuildStatusCache: BuildStatusAccessor
 
           do {
             try await refresh(remoteName: remoteName,
-                              branchName: local.name)
+                              branchName: local.referenceName.fullPath)
           }
           catch {}
         }

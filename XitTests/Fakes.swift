@@ -108,6 +108,7 @@ class FakePRService : PullRequestService
 
 class FakeLocalBranch: LocalBranch
 {
+  var referenceName: LocalBranchRefName { .init(strippedName)! }
   var trackingBranchName: String?
   var trackingBranch: FakeRemoteBranch?
   var name: String
@@ -124,6 +125,7 @@ class FakeLocalBranch: LocalBranch
 
 class FakeRemoteBranch: RemoteBranch
 {
+  var referenceName: RemoteBranchRefName { .init(strippedName)! }
   var remoteName: String?
   var name: String
   public var shortName: String

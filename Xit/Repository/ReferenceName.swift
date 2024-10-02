@@ -1,4 +1,5 @@
 import Foundation
+import FakedMacro
 
 public protocol ReferenceKind
 {
@@ -31,12 +32,14 @@ public struct TagReference: ReferenceKind
 /// This addresses the issue of, for example, having a "branch" parameter
 /// that is a plain string, and it is not obvious if it should be the full
 /// reference name or just the branch name with no "refs/heads/" prefix.
-public struct ReferenceName<T>: RawRepresentable where T: ReferenceKind
+public struct ReferenceName<Kind>: RawRepresentable where Kind: ReferenceKind
 {
   /// The simple name, with no prefix.
   public let name: String
   /// The fully qualified reference name.
-  public var rawValue: String { T.prefix +/ name }
+  public var fullPath: String { rawValue }
+
+  public var rawValue: String { Kind.prefix +/ name }
   
   var isValid: Bool
   {
@@ -51,23 +54,23 @@ public struct ReferenceName<T>: RawRepresentable where T: ReferenceKind
   public init?(rawValue: String)
   {
     guard GitReference.isValidName(rawValue) &&
-          rawValue.hasPrefix(T.prefix)
+          rawValue.hasPrefix(Kind.prefix)
     else { return nil }
 
-    self.name = rawValue.droppingPrefix(T.prefix)
+    self.name = rawValue.droppingPrefix(Kind.prefix)
   }
   
   public init?(_ name: String)
   {
     // +/ (appending path components) will quietly consume leading slashes
-    guard !name.hasPrefix("/") && GitReference.isValidName(T.prefix +/ name)
+    guard !name.hasPrefix("/") && GitReference.isValidName(Kind.prefix +/ name)
     else { return nil }
     
     self.name = name
   }
 }
 
-extension ReferenceName where T == RemoteBranchReference
+extension ReferenceName where Kind == RemoteBranchReference
 {
   var remoteName: String
   { name.components(separatedBy: "/").first ?? "" }
@@ -98,3 +101,6 @@ extension ReferenceName where T == RemoteBranchReference
 public typealias LocalBranchRefName = ReferenceName<LocalBranchReference>
 public typealias RemoteBranchRefName = ReferenceName<RemoteBranchReference>
 public typealias TagRefName = ReferenceName<TagReference>
+
+extension ReferenceName: Fakable
+{ public static func fakeDefault() -> Self { .init("fake")! } }

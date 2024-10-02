@@ -4,6 +4,10 @@ import FakedMacro
 @Faked(skip: ["prefix", "remoteName"], createNull: false)
 public protocol Branch: AnyObject
 {
+  associatedtype BranchRefKind: ReferenceKind
+  typealias BranchRefName = ReferenceName<BranchRefKind>
+
+  var referenceName: BranchRefName { get }
   /// The full reference name
   var name: String { get }
   /// Like `strippedName` but including the remote name for remote branches
@@ -30,6 +34,7 @@ extension Branch
 
 @Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol LocalBranch: Branch
+  where BranchRefKind == LocalBranchReference
 {
   associatedtype RemoteBranch: Xit.RemoteBranch
 
@@ -46,6 +51,7 @@ extension LocalBranch
 
 @Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol RemoteBranch: Branch
+  where BranchRefKind == RemoteBranchReference
 {
 }
 
@@ -129,6 +135,7 @@ public class GitBranch
 
 public final class GitLocalBranch: GitBranch, LocalBranch
 {
+  public var referenceName: LocalBranchRefName { .init(rawValue: name)! }
   public var shortName: String { strippedName }
   
   init?(repository: OpaquePointer, name: String, config: any Config)
@@ -199,6 +206,8 @@ public final class GitLocalBranch: GitBranch, LocalBranch
 
 public final class GitRemoteBranch: GitBranch, RemoteBranch
 {
+  public var referenceName: RemoteBranchRefName { .init(rawValue: name)! }
+
   public var shortName: String
   { name.droppingPrefix(RefPrefixes.remotes) }
 

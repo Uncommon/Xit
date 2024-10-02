@@ -72,7 +72,7 @@ extension XTRepository: Branching
 
   public func localBranch(named refName: LocalBranchRefName) -> GitLocalBranch?
   {
-    let fullName = refName.rawValue
+    let fullName = refName.fullPath
     
     if let branch = cachedBranches[fullName] as? GitLocalBranch {
       return branch
@@ -114,13 +114,7 @@ extension XTRepository: Branching
   public func localBranch(tracking remoteBranch: GitRemoteBranch)
     -> GitLocalBranch?
   {
-    guard let remoteBranchName = RemoteBranchRefName(rawValue: remoteBranch.name)
-    else {
-      assertionFailure("remote branch had invalid name")
-      return nil
-    }
-    
-    return localTrackingBranch(forBranch: remoteBranchName)
+    return localTrackingBranch(forBranch: remoteBranch.referenceName)
   }
   
   // swiftlint:disable:next force_try

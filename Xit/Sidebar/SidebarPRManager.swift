@@ -65,7 +65,7 @@ final class SidebarPRManager
     // Make sure we have the local version of the branch name
     switch branch {
       case let localBranch as any LocalBranch:
-        branchName = localBranch.name
+        branchName = localBranch.referenceName.fullPath
       case let remoteBranch as any RemoteBranch:
         branchName = remoteBranch.localBranchName
       default:

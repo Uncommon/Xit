@@ -29,11 +29,11 @@ class BranchTest: XTTest
     let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "master",
                                                              remote: "origin"))
     
-    XCTAssertEqual(localBranch.name, "refs/heads/master")
+    XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/master")
     XCTAssertEqual(localBranch.shortName, "master")
     XCTAssertEqual(localBranch.strippedName, "master")
     
-    XCTAssertEqual(remoteBranch.name, "refs/remotes/origin/master")
+    XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/master")
     XCTAssertEqual(remoteBranch.shortName, "origin/master")
     XCTAssertEqual(remoteBranch.strippedName, "master")
   }
