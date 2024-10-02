@@ -4,6 +4,7 @@ import FakedMacro
 @Faked(skip: ["prefix", "remoteName", "shortName"], createNull: false)
 public protocol Branch: AnyObject, PathTreeData
 {
+  // TODO: accessor for name as ReferenceName
   /// The full reference name
   var name: String { get }
   /// Like `strippedName` but including the remote name for remote branches
@@ -23,7 +24,7 @@ public protocol Branch: AnyObject, PathTreeData
 
 extension Branch // PathTreeData
 {
-  public var treeNodePath: String { strippedName }
+  public var treeNodePath: String { name }
 }
 
 extension Branch

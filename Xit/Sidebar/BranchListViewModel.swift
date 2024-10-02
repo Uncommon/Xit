@@ -51,7 +51,8 @@ class BranchListViewModel<Brancher: Branching>: FilteringListViewModel
   {
     let branchList = Array(brancher.localBranches)
     
-    unfilteredList = PathTreeNode.makeHierarchy(from: branchList)
+    unfilteredList = PathTreeNode.makeHierarchy(from: branchList,
+                                                prefix: RefPrefixes.heads)
     branches = unfilteredList
   }
   

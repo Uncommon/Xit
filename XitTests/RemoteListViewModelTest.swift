@@ -45,4 +45,25 @@ struct RemoteListViewModelTest
     #expect(model.remotes[0].name == remoteName)
     #expect(model.remotes[0].branches.count == 1)
   }
+  
+  @Test
+  func twoRemotesWithBranches() throws
+  {
+    let remoteNames = ["origin1", "origin2"]
+    let branches1 = ["main1", "work/things1"]
+    let branches2 = ["feature", "main2", "work/things2"]
+    let manager = RemoteManager(remoteNames: remoteNames)
+    let brancher = Brancher(remoteBranches: branches1.map {
+      .init(remoteName: remoteNames[0], name: $0)
+    } + branches2.map {
+      .init(remoteName: remoteNames[1], name: $0)
+    })
+    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    
+    try #require(model.remotes.count == 2)
+    #expect(model.remotes[0].name == remoteNames[0])
+    #expect(model.remotes[1].name == remoteNames[1])
+    #expect(model.remotes[0].branches.count == 2)
+    #expect(model.remotes[1].branches.count == 3)
+  }
 }

@@ -123,11 +123,11 @@ extension PathTreeNode
         else {
           result.append(.node(path: nodePath, children: subHierarchy))
         }
-        index += subItems.count
+        index = items.index(index, offsetBy: subItems.count)
       }
       else {
         result.append(.leaf(item))
-        index += 1
+        index = items.index(after: index)
       }
     } while index < items.endIndex
 

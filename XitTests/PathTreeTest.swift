@@ -87,6 +87,20 @@ final class PathTreeTest: XCTestCase
       .leaf("other")
     ])
   }
+  
+  func testSingeAndSubWithPrefx()
+  {
+    let nodes = ["refs/heads/main1", "refs/heads/work/things1"]
+    let items = PathTreeNode.makeHierarchy(from: nodes, prefix: "refs/heads/")
+
+    print(items.printed())
+    XCTAssertEqual(items, [
+      .leaf("refs/heads/main1"),
+      .node(item: "refs/heads/work", children: [
+        .leaf("refs/heads/work/things1")
+      ])
+    ])
+  }
 
   func testFilter()
   {

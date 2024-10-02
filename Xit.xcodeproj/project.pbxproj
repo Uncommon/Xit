@@ -1041,6 +1041,7 @@
 				89CB619B1E788C6000D69FE4 /* PatchTest.swift */,
 				C98EBC1E212CCC6D00EF739E /* PullRequestManagerTest.swift */,
 				898F75892A55CDCA00C157D7 /* ReferenceNameTests.swift */,
+				891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
 				C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */,
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
@@ -1064,7 +1065,6 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				895CBA372B4061E70094D534 /* LibGit2Test.swift */,
-				891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
