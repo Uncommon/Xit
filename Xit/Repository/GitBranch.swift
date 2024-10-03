@@ -12,8 +12,6 @@ public protocol Branch: AnyObject
   var localRefName: LocalBranchRefName { get }
   /// The full reference name
   var name: String { get }
-  /// The reference name without the prefix
-  var shortName: String { get }
   /// OID of the branch's head commit
   var oid: GitOID? { get }
   /// The branch's head commit
@@ -124,7 +122,6 @@ public class GitBranch
 public final class GitLocalBranch: GitBranch, LocalBranch
 {
   public var referenceName: LocalBranchRefName { .init(rawValue: name)! }
-  public var shortName: String { referenceName.name }
 
   init?(repository: OpaquePointer, name: String, config: any Config)
   {
@@ -150,7 +147,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
     {
       // Re-implement `git_branch_upstream_name` but with our cached-snapshot
       // config optimization.
-      let name = self.shortName
+      let name = referenceName.name
       guard let remoteName = config.branchRemote(name),
             let mergeName = config.branchMerge(name)
       else { return nil }
@@ -195,9 +192,6 @@ public final class GitLocalBranch: GitBranch, LocalBranch
 public final class GitRemoteBranch: GitBranch, RemoteBranch
 {
   public var referenceName: RemoteBranchRefName { .init(rawValue: name)! }
-
-  public var shortName: String
-  { name.droppingPrefix(RefPrefixes.remotes) }
 
   public var remoteName: String?
   { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }

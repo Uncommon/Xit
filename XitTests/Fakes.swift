@@ -8,7 +8,7 @@ extension FakeCommit
   init(branchHead branch: any Branch)
   {
     self.init(parentOIDs: [],
-              message: branch.shortName,
+              message: branch.referenceName.name,
               isSigned: false,
               id: branch.oid!)
   }

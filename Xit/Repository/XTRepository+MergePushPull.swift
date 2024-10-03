@@ -93,7 +93,7 @@ extension XTRepository: Merging
       case let localBranch as GitLocalBranch:
         branchName = localBranch.referenceName.fullPath
       case let remoteBranch as GitRemoteBranch:
-        branchName = remoteBranch.shortName
+        branchName = remoteBranch.referenceName.name
       default:
         assertionFailure("unexpected branch type: \(remoteBranch)")
         throw RepoError.unexpected

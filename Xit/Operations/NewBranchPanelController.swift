@@ -45,8 +45,8 @@ final class NewBranchPanelController: SheetController
 
   func getBranchNames(_ repository: some Branching) -> ([String], [String])
   {
-    (repository.localBranches.map { $0.shortName },
-     repository.remoteBranches.map { $0.shortName })
+    (repository.localBranches.map { $0.referenceName.name },
+     repository.remoteBranches.map { $0.referenceName.name })
   }
 
   private func validateNames() -> Bool
