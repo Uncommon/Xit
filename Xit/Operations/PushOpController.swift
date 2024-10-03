@@ -144,8 +144,9 @@ final class PushOpController: PasswordOpController
         if let remoteName = remote.name {
           DispatchQueue.main.async {
             if sheetController.setTrackingBranch {
-              currentBranch.trackingBranchName = remoteName +/
-              currentBranch.strippedName
+              currentBranch.trackingBranchName =
+                  remoteName +/
+                  currentBranch.referenceName.localName
             }
           }
         }

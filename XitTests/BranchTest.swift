@@ -30,11 +30,11 @@ class BranchTest: XTTest
                                                              remote: "origin"))
     
     XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/master")
-    XCTAssertEqual(localBranch.shortName, "master")
-    XCTAssertEqual(localBranch.strippedName, "master")
-    
+    XCTAssertEqual(localBranch.referenceName.name, "master")
+    XCTAssertEqual(localBranch.referenceName.localName, "master")
+
     XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/master")
-    XCTAssertEqual(remoteBranch.shortName, "origin/master")
-    XCTAssertEqual(remoteBranch.strippedName, "master")
+    XCTAssertEqual(remoteBranch.referenceName.name, "origin/master")
+    XCTAssertEqual(remoteBranch.referenceName.localName, "master")
   }
 }

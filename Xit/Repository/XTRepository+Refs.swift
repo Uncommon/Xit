@@ -122,7 +122,7 @@ extension XTRepository: Branching
       NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
                           options: [])
 
-  public func localTrackingBranch(forBranch branch: RemoteBranchRefName)
+  public func localTrackingBranch(forBranch branchRef: RemoteBranchRefName)
     -> GitLocalBranch?
   {
     let config = self.config as! GitConfig
@@ -135,13 +135,13 @@ extension XTRepository: Branching
                                                 range: name.fullNSRange),
             match.numberOfRanges == 2,
             let branchRange = Range(match.range(at: 1), in: name),
-            entry.stringValue == branch.remoteName
+            entry.stringValue == branchRef.remoteName
       else { continue }
       let entryBranch = String(name[branchRange])
       guard let mergeName = config.branchMerge(entryBranch)
       else { continue }
 
-      let expectedMergeName = RefPrefixes.heads +/ branch.branchName
+      let expectedMergeName = RefPrefixes.heads +/ branchRef.localName
       
       if mergeName == expectedMergeName,
          let refName = LocalBranchRefName(entryBranch) {

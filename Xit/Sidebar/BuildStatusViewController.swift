@@ -46,7 +46,7 @@ final class BuildStatusViewController: NSViewController
   override func viewDidLoad()
   {
     super.viewDidLoad()
-    headingLabel.uiStringValue = .buildStatus(branch.strippedName)
+    headingLabel.uiStringValue = .buildStatus(branch.referenceName.localName)
   }
 
   override func viewWillDisappear()
@@ -63,10 +63,8 @@ final class BuildStatusViewController: NSViewController
     guard let api = self.api
     else { return }
     
-    let branchName = (branch is any RemoteBranch)
-          ? RefPrefixes.heads + branch.strippedName
-          : branch.name
-    
+    let branchName = branch.localRefName.fullPath
+
     for (buildType, branchStatuses) in buildStatusCache.statuses {
       let roots = api.vcsRootsForBuildType(buildType)
       guard !roots.isEmpty
@@ -94,7 +92,7 @@ final class BuildStatusViewController: NSViewController
     }
     builds = Array(buildsByNumber.values)
   }
-  
+
   func setProgressVisible(_ visible: Bool)
   {
     if visible {

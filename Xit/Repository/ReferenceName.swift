@@ -27,20 +27,44 @@ public struct TagReference: ReferenceKind
   public static var prefix: String { RefPrefixes.tags}
 }
 
-/// A type that wraps a full reference name for a specific kind of reference.
+/// A type that wraps a full reference name for a specific kind of reference:
+/// branch, tag, etc.
 ///
 /// This addresses the issue of, for example, having a "branch" parameter
 /// that is a plain string, and it is not obvious if it should be the full
 /// reference name or just the branch name with no "refs/heads/" prefix.
-public struct ReferenceName<Kind>: RawRepresentable where Kind: ReferenceKind
+///
+/// As a `RawRepresentable` type, the raw value is the full path.
+public protocol ReferenceName: Fakable, RawRepresentable where RawValue == String
 {
-  /// The simple name, with no prefix.
-  public let name: String
-  /// The fully qualified reference name.
-  public var fullPath: String { rawValue }
+  /// The main name, with no prefix.
+  ///
+  /// "refs/heads/branch" → "branch"
+  /// "refs/remotes/origin/branch" → "origin/branch"
+  var name: String { get }
 
-  public var rawValue: String { Kind.prefix +/ name }
+  /// The name without prefix or other parent elements such as remote name.
+  ///
+  /// "refs/heads/branch" → "branch"
+  /// "refs/remotes/origin/branch" → "branch"
+  var localName: String { get }
   
+  /// The fully qualified reference name.
+  var fullPath: String { get }
+}
+
+extension ReferenceName
+{
+  public var localName: String { name }
+  public var rawValue: String { fullPath }
+}
+
+public struct PrefixedRefName<Kind>: ReferenceName
+  where Kind: ReferenceKind
+{
+  public let name: String
+  public var fullPath: String { Kind.prefix +/ name }
+
   var isValid: Bool
   {
     Self.validate(name: rawValue)
@@ -62,7 +86,7 @@ public struct ReferenceName<Kind>: RawRepresentable where Kind: ReferenceKind
   
   public init?(_ name: String)
   {
-    // +/ (appending path components) will quietly consume leading slashes
+    // +/ (appending path component) will quietly consume leading slashes
     guard !name.hasPrefix("/") && GitReference.isValidName(Kind.prefix +/ name)
     else { return nil }
     
@@ -70,14 +94,17 @@ public struct ReferenceName<Kind>: RawRepresentable where Kind: ReferenceKind
   }
 }
 
-extension ReferenceName where Kind == RemoteBranchReference
+extension PrefixedRefName where Kind == RemoteBranchReference
 {
   var remoteName: String
-  { name.components(separatedBy: "/").first ?? "" }
-  var branchName: String
+  { String(name.split(maxSplits: 1) { $0 == "/" }.first ?? "") }
+  var localName: String
   {
     guard let slashIndex = name.firstIndex(of: "/")
-    else { return "" }
+    else {
+      assertionFailure("remote branch ref parse failure")
+      return ""
+    }
     let index = name.index(slashIndex, offsetBy: 1)
 
     return String(name[index...])
@@ -98,9 +125,9 @@ extension ReferenceName where Kind == RemoteBranchReference
   }
 }
 
-public typealias LocalBranchRefName = ReferenceName<LocalBranchReference>
-public typealias RemoteBranchRefName = ReferenceName<RemoteBranchReference>
-public typealias TagRefName = ReferenceName<TagReference>
+public typealias LocalBranchRefName = PrefixedRefName<LocalBranchReference>
+public typealias RemoteBranchRefName = PrefixedRefName<RemoteBranchReference>
+public typealias TagRefName = PrefixedRefName<TagReference>
 
-extension ReferenceName: Fakable
+extension PrefixedRefName: Fakable
 { public static func fakeDefault() -> Self { .init("fake")! } }
