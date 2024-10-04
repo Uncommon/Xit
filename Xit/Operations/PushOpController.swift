@@ -94,7 +94,8 @@ final class PushOpController: PasswordOpController
     let alert = NSAlert()
     let remoteName = remote.name ?? "origin"
     let message: UIString = branches.count == 1 ?
-          .confirmPush(localBranch: branches.first!.name, remote: remoteName) :
+          .confirmPush(localBranch: branches.first!.referenceName.fullPath,
+                       remote: remoteName) :
           .confirmPushAll(remote: remoteName)
     
     alert.messageString = message

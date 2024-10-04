@@ -10,8 +10,6 @@ public protocol Branch: AnyObject
   /// If a remote branch, then the local counterpart (removing the remote name).
   /// Otherwise the same as `referenceName`.
   var localRefName: LocalBranchRefName { get }
-  /// The full reference name
-  var name: String { get }
   /// OID of the branch's head commit
   var oid: GitOID? { get }
   /// The branch's head commit
@@ -82,6 +80,7 @@ public class GitBranch
     git_reference_free(branchRef)
   }
 
+  /// The full branch name including "refs/heads/"
   public var name: String
   {
     guard let name = git_reference_name(branchRef)

@@ -134,14 +134,15 @@ final class SidebarDataModel: @unchecked Sendable
   {
     let newRoots = makeRoots()
     let branchesGroup = newRoots[SidebarGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches.sorted { $0.name <~ $1.name }
-    
+    let localBranches = repo.localBranches.sorted
+    { $0.referenceName <~ $1.referenceName }
+
     for branch in localBranches {
       guard let oid = branch.oid,
             let commit = repo.commit(forOID: oid)
       else { continue }
       
-      let name = branch.name.droppingPrefix("refs/heads/")
+      let name = branch.referenceName.name
       let selection = CommitSelection(repository: repo, commit: commit)
       let branchItem = LocalBranchSidebarItem(title: name, selection: selection)
       let parent = self.parent(for: name, groupItem: branchesGroup)
@@ -151,7 +152,8 @@ final class SidebarDataModel: @unchecked Sendable
     
     let remoteItems = repo.remoteNames().map {
           RemoteSidebarItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches.sorted { $0.name <~ $1.name }
+    let remoteBranches = repo.remoteBranches.sorted
+    { $0.referenceName <~ $1.referenceName }
 
     for branch in remoteBranches {
       guard let remote = remoteItems.first(where: { $0.title ==
@@ -160,7 +162,7 @@ final class SidebarDataModel: @unchecked Sendable
             let oid = branch.oid,
             let commit = repo.commit(forOID: oid)
       else { continue }
-      let name = branch.name.droppingPrefix("refs/remotes/\(remote.title)/")
+      let name = branch.referenceName.localName
       let selection = CommitSelection(repository: repo, commit: commit)
       let remoteParent = parent(for: name, groupItem: remote)
       

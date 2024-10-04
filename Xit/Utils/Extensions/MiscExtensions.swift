@@ -343,6 +343,14 @@ extension String
   }
 }
 
+extension RawRepresentable where RawValue == String
+{
+  static func <~ (a: Self, b: Self) -> Bool
+  {
+    return a.rawValue.localizedStandardCompare(b.rawValue) == .orderedAscending
+  }
+}
+
 extension Timer
 {
   static func mainScheduledTimer(
