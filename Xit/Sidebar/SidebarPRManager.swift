@@ -48,7 +48,8 @@ final class SidebarPRManager
                                   .droppingPrefix(RefPrefixes.heads)
     
     return remote.findChild {
-      let name = ($0 as? RemoteBranchSidebarItem)?.branchObject()?.strippedName
+      let name = ($0 as? RemoteBranchSidebarItem)?
+          .branchObject()?.referenceName.localName
       return name == sourceBranch
     } as? RemoteBranchSidebarItem
   }
@@ -65,9 +66,9 @@ final class SidebarPRManager
     // Make sure we have the local version of the branch name
     switch branch {
       case let localBranch as any LocalBranch:
-        branchName = localBranch.name
+        branchName = localBranch.referenceName.fullPath
       case let remoteBranch as any RemoteBranch:
-        branchName = remoteBranch.localBranchName
+        branchName = remoteBranch.localRefName.fullPath
       default:
         return nil
     }

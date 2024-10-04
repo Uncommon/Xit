@@ -72,7 +72,7 @@ extension XTRepository: Branching
 
   public func localBranch(named refName: LocalBranchRefName) -> GitLocalBranch?
   {
-    let fullName = refName.rawValue
+    let fullName = refName.fullPath
     
     if let branch = cachedBranches[fullName] as? GitLocalBranch {
       return branch
@@ -114,13 +114,7 @@ extension XTRepository: Branching
   public func localBranch(tracking remoteBranch: GitRemoteBranch)
     -> GitLocalBranch?
   {
-    guard let remoteBranchName = RemoteBranchRefName(rawValue: remoteBranch.name)
-    else {
-      assertionFailure("remote branch had invalid name")
-      return nil
-    }
-    
-    return localTrackingBranch(forBranch: remoteBranchName)
+    return localTrackingBranch(forBranch: remoteBranch.referenceName)
   }
   
   // swiftlint:disable:next force_try
@@ -128,7 +122,7 @@ extension XTRepository: Branching
       NSRegularExpression(pattern: "\\Abranch\\.(.*)\\.remote",
                           options: [])
 
-  public func localTrackingBranch(forBranch branch: RemoteBranchRefName)
+  public func localTrackingBranch(forBranch branchRef: RemoteBranchRefName)
     -> GitLocalBranch?
   {
     let config = self.config as! GitConfig
@@ -141,13 +135,13 @@ extension XTRepository: Branching
                                                 range: name.fullNSRange),
             match.numberOfRanges == 2,
             let branchRange = Range(match.range(at: 1), in: name),
-            entry.stringValue == branch.remoteName
+            entry.stringValue == branchRef.remoteName
       else { continue }
       let entryBranch = String(name[branchRange])
       guard let mergeName = config.branchMerge(entryBranch)
       else { continue }
 
-      let expectedMergeName = RefPrefixes.heads +/ branch.branchName
+      let expectedMergeName = RefPrefixes.heads +/ branchRef.localName
       
       if mergeName == expectedMergeName,
          let refName = LocalBranchRefName(entryBranch) {

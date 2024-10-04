@@ -72,7 +72,7 @@ struct BranchList<Brancher: Branching,
     let branch = node.item
     
     return HStack {
-      let isCurrent = branch?.name == brancher.currentBranch?.rawValue
+      let isCurrent = branch?.referenceName == brancher.currentBranch
       Label(
         title: {
           ExpansionText(node.path.lastPathComponent,
@@ -184,7 +184,9 @@ struct BranchListPreview: View
     @ViewBuilder
     func accessoryView(for branch: any Branch) -> some View
     {
-      if builtBranches.contains(where: { $0.name == branch.strippedName }) {
+      let branchName = branch.referenceName.name
+      
+      if builtBranches.contains(where: { $0.name == branchName }) {
         Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
       }
     }

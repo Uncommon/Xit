@@ -1,18 +1,15 @@
 import Cocoa
 import FakedMacro
 
-@Faked(skip: ["prefix", "remoteName", "shortName"], createNull: false)
+@Faked(skip: ["localRefName", "remoteName"], createNull: false)
 public protocol Branch: AnyObject, PathTreeData
 {
-  // TODO: accessor for name as ReferenceName
-  /// The full reference name
-  var name: String { get }
-  /// Like `strippedName` but including the remote name for remote branches
-  var shortName: String { get }
-  /// The name without `prefix`
-  var strippedName: String { get }
-  /// Text that is not part of the specific branch name
-  var prefix: String { get }
+  associatedtype BranchRefName: ReferenceName
+
+  var referenceName: BranchRefName { get }
+  /// If a remote branch, then the local counterpart (removing the remote name).
+  /// Otherwise the same as `referenceName`.
+  var localRefName: LocalBranchRefName { get }
   /// OID of the branch's head commit
   var oid: GitOID? { get }
   /// The branch's head commit
@@ -24,18 +21,12 @@ public protocol Branch: AnyObject, PathTreeData
 
 extension Branch // PathTreeData
 {
-  public var treeNodePath: String { name }
+  public var treeNodePath: String { referenceName.fullPath }
 }
-
-extension Branch
-{
-  public var strippedName: String
-  { name.droppingPrefix(prefix) }
-}
-
 
 @Faked(skip: ["shortName"], anyObject: true, inherit: ["EmptyBranch"])
 public protocol LocalBranch: Branch
+  where BranchRefName == LocalBranchRefName
 {
   associatedtype RemoteBranch: Xit.RemoteBranch
 
@@ -45,14 +36,14 @@ public protocol LocalBranch: Branch
 
 extension LocalBranch
 {
-  public var shortName: String { strippedName }
+  public var localRefName: LocalBranchRefName { referenceName }
   public var remoteName: String? { trackingBranch?.remoteName }
-  public var prefix: String { RefPrefixes.heads }
 }
 
 
 @Faked(anyObject: true, inherit: ["EmptyBranch"])
 public protocol RemoteBranch: Branch
+  where BranchRefName == RemoteBranchRefName
 {
 }
 extension EmptyRemoteBranch
@@ -62,12 +53,8 @@ extension EmptyRemoteBranch
 
 extension RemoteBranch
 {
-  public var prefix: String
-  { "\(RefPrefixes.remotes)\(remoteName ?? "")/" }
-  
-  /// What the branch name would look like if it were a local branch
-  public var localBranchName: String
-  { RefPrefixes.heads + strippedName }
+  public var localRefName: LocalBranchRefName
+  { .init(rawValue: RefPrefixes.heads + referenceName.localName)! }
 }
 
 // EmptyRemoteBranch can't be extended outside the macro
@@ -101,6 +88,7 @@ public class GitBranch
     git_reference_free(branchRef)
   }
 
+  /// The full branch name including "refs/heads/"
   public var name: String
   {
     guard let name = git_reference_name(branchRef)
@@ -140,6 +128,8 @@ public class GitBranch
 
 public final class GitLocalBranch: GitBranch, LocalBranch
 {
+  public var referenceName: LocalBranchRefName { .init(rawValue: name)! }
+
   init?(repository: OpaquePointer, name: String, config: any Config)
   {
     guard let branch = GitBranch.lookUpBranch(name: name,
@@ -164,7 +154,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
     {
       // Re-implement `git_branch_upstream_name` but with our cached-snapshot
       // config optimization.
-      let name = self.shortName
+      let name = referenceName.name
       guard let remoteName = config.branchRemote(name),
             let mergeName = config.branchMerge(name)
       else { return nil }
@@ -208,8 +198,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
 
 public final class GitRemoteBranch: GitBranch, RemoteBranch
 {
-  public var shortName: String
-  { name.droppingPrefix(RefPrefixes.remotes) }
+  public var referenceName: RemoteBranchRefName { .init(rawValue: name)! }
 
   public var remoteName: String?
   { name.droppingPrefix(RefPrefixes.remotes).firstPathComponent }

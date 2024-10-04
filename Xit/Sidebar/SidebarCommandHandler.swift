@@ -39,7 +39,7 @@ extension SidebarCommandHandler
       case #selector(SidebarController.checkOutBranch(_:)):
         guard let branch = (item as? BranchSidebarItem)?.branchObject()
         else { return false }
-        sidebarCommand.titleString = .checkOut(branch.strippedName)
+        sidebarCommand.titleString = .checkOut(branch.referenceName.localName)
         return !repository.isWriting &&
                item.title != repository.currentBranch?.name
       

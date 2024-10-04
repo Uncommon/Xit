@@ -8,7 +8,7 @@ extension XTWindowController
     else { return }
 
     titleBarController?.updateBranchList(
-        repo.localBranches.compactMap { $0.shortName },
+        repo.localBranches.compactMap { $0.referenceName.name },
         current: repo.currentBranch?.name)
   }
 

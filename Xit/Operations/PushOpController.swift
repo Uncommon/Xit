@@ -94,7 +94,8 @@ final class PushOpController: PasswordOpController
     let alert = NSAlert()
     let remoteName = remote.name ?? "origin"
     let message: UIString = branches.count == 1 ?
-          .confirmPush(localBranch: branches.first!.name, remote: remoteName) :
+          .confirmPush(localBranch: branches.first!.referenceName.fullPath,
+                       remote: remoteName) :
           .confirmPushAll(remote: remoteName)
     
     alert.messageString = message
@@ -144,8 +145,9 @@ final class PushOpController: PasswordOpController
         if let remoteName = remote.name {
           DispatchQueue.main.async {
             if sheetController.setTrackingBranch {
-              currentBranch.trackingBranchName = remoteName +/
-              currentBranch.strippedName
+              currentBranch.trackingBranchName =
+                  remoteName +/
+                  currentBranch.referenceName.localName
             }
           }
         }

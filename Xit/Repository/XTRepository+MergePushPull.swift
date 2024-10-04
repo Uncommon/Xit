@@ -8,7 +8,7 @@ extension XTRepository: RemoteManagement
   {
     try performWriting {
       var result: Int32
-      let names = branches.map { $0.name }
+      let names = branches.map { $0.referenceName.fullPath }
 
       result = names.withGitStringArray {
         (refspecs) in
@@ -91,9 +91,9 @@ extension XTRepository: Merging
 
     switch remoteBranch {
       case let localBranch as GitLocalBranch:
-        branchName = localBranch.name
+        branchName = localBranch.referenceName.fullPath
       case let remoteBranch as GitRemoteBranch:
-        branchName = remoteBranch.shortName
+        branchName = remoteBranch.referenceName.name
       default:
         assertionFailure("unexpected branch type: \(remoteBranch)")
         throw RepoError.unexpected

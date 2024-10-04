@@ -135,8 +135,8 @@ final class BuildStatusController: NSObject
     var overallState = DisplayState.unknown
     
     for buildType in buildTypes {
-      if let branchName = api.displayName(forBranch: localBranch.name,
-                                          buildType: buildType),
+      if let branchName = api.displayName(
+            forBranch: localBranch.referenceName.fullPath, buildType: buildType),
          let status = buildStatusCache.statuses[buildType],
          let branchStatus = status[branchName] {
         overallState += DisplayState(build: branchStatus)
