@@ -27,7 +27,7 @@ class FakeRemote: Remote
   var pushURLString: String? { urlString }
   
   var refSpecs: AnyCollection<FakeRefSpec>
-  { return AnyCollection([FakeRefSpec]()) }
+  { AnyCollection([FakeRefSpec]()) }
 
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
@@ -90,7 +90,7 @@ struct FakePullRequest: PullRequest
   mutating func setReviewerStatus(userID: String, status: PullRequestApproval) {}
 }
 
-class FakePRService : PullRequestService
+class FakePRService: PullRequestService
 {
   init() {}
   

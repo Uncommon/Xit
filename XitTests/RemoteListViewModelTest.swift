@@ -3,40 +3,12 @@ import Testing
 
 struct RemoteListViewModelTest
 {
-  class RemoteManager: EmptyRemoteManagement
-  {
-    typealias LocalBranch = FakeLocalBranch
-    typealias Remote = FakeRemote
-    
-    var remoteNames: [String]
-    
-    init(remoteNames: [String])
-    {
-      self.remoteNames = remoteNames
-    }
-  }
-  
-  class Brancher: EmptyBranching
-  {
-    typealias LocalBranch = FakeLocalBranch
-    typealias RemoteBranch = LocalBranch.RemoteBranch
-    
-    var remoteBranchArray: [RemoteBranch]
-    var remoteBranches: AnySequence<RemoteBranch>
-    { .init(remoteBranchArray) }
-    
-    init(remoteBranches: [LocalBranch.RemoteBranch])
-    {
-      self.remoteBranchArray = remoteBranches
-    }
-  }
-  
   @Test
-  func singleEmptyRemote() throws
+  func singleRemote() throws
   {
     let remoteName = "origin"
-    let manager = RemoteManager(remoteNames: [remoteName])
-    let brancher = Brancher(remoteBranches: [
+    let manager = FakeRemoteManager(remoteNames: [remoteName])
+    let brancher = FakeBrancher(remoteBranches: [
       .init(remoteName: remoteName, name: "main")
     ])
     let model = RemoteListViewModel(manager: manager, brancher: brancher)
@@ -52,8 +24,8 @@ struct RemoteListViewModelTest
     let remoteNames = ["origin1", "origin2"]
     let branches1 = ["main1", "work/things1"]
     let branches2 = ["feature", "main2", "work/things2"]
-    let manager = RemoteManager(remoteNames: remoteNames)
-    let brancher = Brancher(remoteBranches: branches1.map {
+    let manager = FakeRemoteManager(remoteNames: remoteNames)
+    let brancher = FakeBrancher(remoteBranches: branches1.map {
       .init(remoteName: remoteNames[0], name: $0)
     } + branches2.map {
       .init(remoteName: remoteNames[1], name: $0)

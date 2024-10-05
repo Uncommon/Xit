@@ -55,6 +55,7 @@
 		891BC38C2CA5947E00455AA9 /* ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38B2CA5947E00455AA9 /* ExpansionText.swift */; };
 		891BC38E2CA766F400455AA9 /* RemoteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */; };
 		891BC3932CA8409B00455AA9 /* RemoteListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */; };
+		891BC3992CB176B500455AA9 /* RepoFakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3982CB176B100455AA9 /* RepoFakes.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		891C5F90267C2A830099695D /* GitCloner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8F267C2A830099695D /* GitCloner.swift */; };
@@ -449,6 +450,7 @@
 		891BC38B2CA5947E00455AA9 /* ExpansionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionText.swift; sourceTree = "<group>"; };
 		891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModel.swift; sourceTree = "<group>"; };
 		891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModelTest.swift; sourceTree = "<group>"; };
+		891BC3982CB176B100455AA9 /* RepoFakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoFakes.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
 		891C5F8F267C2A830099695D /* GitCloner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCloner.swift; sourceTree = "<group>"; };
@@ -1188,6 +1190,7 @@
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
 				89CAF5812852A9E2000D2014 /* StringFakes.swift */,
 				C9E602F92C1BB02C00326726 /* FileChangeNode.swift */,
+				891BC3982CB176B100455AA9 /* RepoFakes.swift */,
 				C94D9DEF229D9D7000E46A28 /* FakeRepo.swift */,
 				C98EBC1C212CC56600EF739E /* Fakes.swift */,
 			);
@@ -1639,6 +1642,7 @@
 				C9470B8423073A5B003895A9 /* GitRefLog.swift in Sources */,
 				C9E7DA3E2C86038100B539E0 /* IconTabPicker.swift in Sources */,
 				C95BF6681FCF5DBD0020C51D /* StashSelection.swift in Sources */,
+				891BC3992CB176B500455AA9 /* RepoFakes.swift in Sources */,
 				C99A6AEC1E48FA140030DC01 /* FileListDataSourceBase.swift in Sources */,
 				C9AEE083278CAA33008BA92C /* FileListModel.swift in Sources */,
 				C957B8721D2DB44E0040F858 /* RemoteSheetController.swift in Sources */,
