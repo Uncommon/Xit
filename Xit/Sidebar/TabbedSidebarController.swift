@@ -3,13 +3,14 @@ import AppKit
 import SwiftUI
 
 class TabbedSidebarController<Repo: FullRepository>:
-  NSHostingController<TabbedSidebar<Repo, Repo, Repo, Repo>>
+  NSHostingController<TabbedSidebar<Repo, Repo, Repo, Repo, Repo>>
 {
   init(repo: Repo,
        controller: any RepositoryUIController)
   {
     let view = TabbedSidebar(brancher: repo,
                              detector: repo,
+                             remoteManager: repo,
                              referencer: repo,
                              publisher: controller.repoController,
                              stasher: repo,

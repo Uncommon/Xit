@@ -18,6 +18,8 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
+private let stagingSelectionTag = ""
+
 struct BranchList<Brancher: Branching,
                   Referencer: CommitReferencing,
                   Accessorizer: BranchAccessorizing>: View
@@ -30,10 +32,12 @@ struct BranchList<Brancher: Branching,
   let referencer: Referencer
   let accessorizer: Accessorizer
   let selection: Binding<String?>
-  var expandedItems: Binding<Set<String>>
+  let expandedItems: Binding<Set<String>>
 
   var body: some View
   {
+    let currentBranch = brancher.currentBranch
+    
     VStack(spacing: 0) {
       List(selection: selection) {
         HStack {
@@ -41,21 +45,30 @@ struct BranchList<Brancher: Branching,
           Spacer()
           WorkspaceStatusBadge(unstagedCount: model.statusCounts.unstaged,
                                stagedCount: model.statusCounts.staged)
-        }.tag("").listRowSeparator(.hidden)
+        }.tag(stagingSelectionTag).listRowSeparator(.hidden)
         // TODO: Reduce the divider height
         // This could be done with .environment(\.defaultMinListRowHeight, x)
         // but then the row height would be dynamic for all other rows which
         // could have a performance impact.
         Divider()
         RecursiveDisclosureGroup(model.branches,
-                                 expandedItems: expandedItems,
-                                 content: branchCell)
+                                 expandedItems: expandedItems) {
+          (node) in
+          BranchCell(node: node,
+                     isCurrent: node.item?.referenceName == currentBranch,
+                     trailingContent: {
+            if let branch = node.item {
+              upstreamIndicator(for: branch)
+              accessorizer.accessoryView(for: branch)
+            }
+          })
+        }
       }.overlay {
         if model.branches.isEmpty {
           ContentUnavailableView("No Branches", image: "scm.branch")
         }
       }
-      FilterBar(text: $model.filter) {
+      FilterBar(text: $model.filter, leftContent: {
         SidebarActionButton {
           Button("New branch...") {}
           Button("Rename branch") {}
@@ -63,51 +76,8 @@ struct BranchList<Brancher: Branching,
           Button("Delete branch") {}
             .disabled(selection.wrappedValue == nil)
         }
-      }
+      })
     }
-  }
-  
-  func branchCell(_ node: PathTreeNode<Referencer.LocalBranch>) -> some View
-  {
-    let branch = node.item
-    
-    return HStack {
-      let isCurrent = branch?.referenceName == brancher.currentBranch
-      Label(
-        title: {
-          ExpansionText(node.path.lastPathComponent,
-                        font: .systemFontSized(weight: isCurrent ? .bold
-                                                                 : .regular))
-            .padding(.horizontal, 4)
-            // tried hiding this background when the row is selected,
-            // but there is a delay so it doesn't look good.
-            .background(isCurrent
-                        ? AnyShapeStyle(.quaternary)
-                        : AnyShapeStyle(.clear))
-            .cornerRadius(4)
-        },
-        icon: {
-          if branch == nil {
-            Image(systemName: "folder.fill")
-          }
-          else {
-            if isCurrent {
-              Image(systemName: "checkmark.circle").fontWeight(.black)
-            }
-            else {
-              Image("scm.branch")
-            }
-          }
-        }
-      )
-      Spacer()
-      if let branch {
-        upstreamIndicator(for: branch)
-        accessorizer.accessoryView(for: branch)
-      }
-    }
-      .listRowSeparator(.hidden)
-      .selectionDisabled(branch == nil)
   }
   
   func upstreamIndicator(for branch: Referencer.LocalBranch) -> some View

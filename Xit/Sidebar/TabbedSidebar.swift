@@ -69,13 +69,16 @@ extension FormatStyle where Self == Date.FormatStyle
 }
 
 
-struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
-  where Brancher: Branching, Referencer: CommitReferencing,
+struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
+  where Brancher: Branching, Manager: RemoteManagement,
+        Referencer: CommitReferencing,
         Stasher: Stashing, Tagger: Tagging,
-        Brancher.LocalBranch == Referencer.LocalBranch
+        Brancher.LocalBranch == Referencer.LocalBranch,
+        Brancher.LocalBranch == Manager.LocalBranch
 {
   @State var tab: SidebarTab = .local(modified: false)
   @State var expandedBranches: Set<String> = []
+  @State var expandedRemotes: Set<String> = []
   @State var expandedTags: Set<String> = []
 
   let repoSelection: Binding<(any RepositorySelection)?>
@@ -87,7 +90,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   // These are separate for testing/preview convenience
   let brancher: Brancher
   let detector: any FileStatusDetection
-//  let remoteManager: any RemoteManagement
+  let remoteManager: Manager
   let referencer: Referencer
   let publisher: any RepositoryPublishing
   let stasher: Stasher
@@ -104,10 +107,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
         case .local:
           branchList()
         case .remote:
-          List {
-          }.overlay {
-            ContentUnavailableView("No Remotes", systemImage: "network")
-          }
+          remoteList()
         case .tags:
           AnyView(tagList(tagger: tagger, publisher: publisher))
         case .stashes:
@@ -122,7 +122,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
 
   init(brancher: Brancher,
        detector: any FileStatusDetection,
-//       remoteManager: any RemoteManagement,
+       remoteManager: Manager,
        referencer: Referencer,
        publisher: any RepositoryPublishing,
        stasher: Stasher,
@@ -132,7 +132,7 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
   {
     self.brancher = brancher
     self.detector = detector
-//    self.remoteManager = remoteManager
+    self.remoteManager = remoteManager
     self.referencer = referencer
     self.publisher = publisher
     self.stasher = stasher
@@ -171,6 +171,19 @@ struct TabbedSidebar<Brancher, Referencer, Stasher, Tagger>: View
         else {
           repoSelection.wrappedValue = nil
         }
+      }
+  }
+  
+  private func remoteList() -> some View
+  {
+    RemoteList(model: .init(manager: remoteManager, brancher: brancher),
+               manager: remoteManager,
+               brancher: brancher,
+               accessorizer: .empty,
+               selection: $selectedBranch,
+               expandedItems: $expandedRemotes)
+      .onChange(of: selectedBranch) {
+        
       }
   }
 
@@ -231,6 +244,7 @@ private class NFSD: EmptyFileStatusDetection {}
     "feature/things",
     "someWork",
   ].map { .init(name: $0) })
+  let manager = FakeRemoteManager(remoteNames: ["origin"])
   let publisher = NullRepositoryPublishing()
   let stasher = StashListPreview.PreviewStashing(["one", "two", "three"])
   let tagger = TagListPreview.Tagger(tagList: [
@@ -241,7 +255,7 @@ private class NFSD: EmptyFileStatusDetection {}
   let subManager = SubmoduleListPreview.SubmoduleManager()
   let referencer = BranchListPreview.CommitReferencer()
   
-  TabbedSidebar(brancher: brancher, detector: NFSD(),
+  TabbedSidebar(brancher: brancher, detector: NFSD(), remoteManager: manager,
                 referencer: referencer, publisher: publisher,
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
                 selection: .constant(nil))

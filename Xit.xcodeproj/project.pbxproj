@@ -55,6 +55,8 @@
 		891BC38C2CA5947E00455AA9 /* ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38B2CA5947E00455AA9 /* ExpansionText.swift */; };
 		891BC38E2CA766F400455AA9 /* RemoteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */; };
 		891BC3932CA8409B00455AA9 /* RemoteListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */; };
+		891BC3952CB0A3E500455AA9 /* RemoteList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3942CB0A3E500455AA9 /* RemoteList.swift */; };
+		891BC3972CB0FFA500455AA9 /* BranchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3962CB0FFA500455AA9 /* BranchCell.swift */; };
 		891BC3992CB176B500455AA9 /* RepoFakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3982CB176B100455AA9 /* RepoFakes.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
@@ -450,6 +452,8 @@
 		891BC38B2CA5947E00455AA9 /* ExpansionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionText.swift; sourceTree = "<group>"; };
 		891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModel.swift; sourceTree = "<group>"; };
 		891BC3922CA8409B00455AA9 /* RemoteListViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteListViewModelTest.swift; sourceTree = "<group>"; };
+		891BC3942CB0A3E500455AA9 /* RemoteList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteList.swift; sourceTree = "<group>"; };
+		891BC3962CB0FFA500455AA9 /* BranchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchCell.swift; sourceTree = "<group>"; };
 		891BC3982CB176B100455AA9 /* RepoFakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoFakes.swift; sourceTree = "<group>"; };
 		891C5F7226715C8A0099695D /* PrioritizedResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrioritizedResults.swift; sourceTree = "<group>"; };
 		891C5F8526739AF80099695D /* ProgressPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressPanel.swift; sourceTree = "<group>"; };
@@ -1314,12 +1318,14 @@
 				C9ACC3422512699300C4FE4F /* SidebarCommandHandler.swift */,
 				C9AEE086279F4AEC008BA92C /* TagInfoView.swift */,
 				C908399523E4C645008C2787 /* WorkspaceStatusIndicator.swift */,
+				891BC3962CB0FFA500455AA9 /* BranchCell.swift */,
 				893FCF062C946D550070FB25 /* BranchList.swift */,
 				891BC3812CA476B200455AA9 /* BranchListViewModel.swift */,
 				C9E594C02C914C2600C518C4 /* FilterBar.swift */,
 				891BC3892CA4D5BD00455AA9 /* FilteringListViewModel.swift */,
 				C9E7DA3D2C86038100B539E0 /* IconTabPicker.swift */,
 				C9E594C42C91C46300C518C4 /* RecursiveDisclosureGroup.swift */,
+				891BC3942CB0A3E500455AA9 /* RemoteList.swift */,
 				891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				891BC3852CA477B400455AA9 /* StashListViewModel.swift */,
@@ -1788,6 +1794,7 @@
 				8983E1A7266596BD0075370C /* PathField.swift in Sources */,
 				C932110C1E48E92C00232B61 /* FileTreeDataSource.swift in Sources */,
 				891BC38A2CA4D5BD00455AA9 /* FilteringListViewModel.swift in Sources */,
+				891BC3952CB0A3E500455AA9 /* RemoteList.swift in Sources */,
 				891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */,
 				C9F764851F72F486000A208B /* Images.swift in Sources */,
 				89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */,
@@ -1815,6 +1822,7 @@
 				C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */,
 				C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */,
 				89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */,
+				891BC3972CB0FFA500455AA9 /* BranchCell.swift in Sources */,
 				C9328B141D776BC700EFF7F7 /* RepositoryWatcher.swift in Sources */,
 				C9EB87241D01D93400C47D13 /* GitStash.swift in Sources */,
 				C9416343213EF3E10015F1C0 /* WorkspaceFileListController.swift in Sources */,
