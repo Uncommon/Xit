@@ -1,5 +1,28 @@
 import SwiftUI
 
+enum RemoteSearchScope: CaseIterable, Identifiable
+{
+  case branches, remotes
+  
+  var id: Self { self }
+  
+  var image: some View
+  {
+    switch self {
+      case .branches: Image("scm.branch")
+      case .remotes: Image(systemName: "network")
+    }
+  }
+  
+  var text: String
+  {
+    switch self {
+      case .branches: "Search in branches"
+      case .remotes: "Search in remotes"
+    }
+  }
+}
+
 struct RemoteList<Manager: RemoteManagement,
                   Brancher: Branching,
                   Accessorizer: BranchAccessorizing>: View
@@ -38,34 +61,31 @@ struct RemoteList<Manager: RemoteManagement,
           ContentUnavailableView("No Remotes", systemImage: "network")
         }
       }
+      FilterBar(text: $model.filter, leftContent: {
+        SidebarActionButton {
+          Button("New remote...") {}
+          Button("Rename remote") {}
+            .disabled(selection.wrappedValue == nil)
+          Button("Delete remote") {}
+            .disabled(selection.wrappedValue == nil)
+        }
+      }, fieldRightContent: {
+        Picker(selection: $model.searchScope, content: {
+          ForEach(RemoteSearchScope.allCases) {
+            // TODO: Get Picker to use a smaller image size
+            $0.image.help($0.text)
+          }
+        }, label: { EmptyView() })
+          .pickerStyle(.segmented)
+          .frame(maxHeight: 10)
+          .fixedSize(horizontal: true, vertical: false)
+      })
     }
   }
   
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
     return expandedItems.binding(for: RefPrefixes.remotes + remoteName)
-  }
-}
-
-extension Binding
-{
-  /// Returns a binding that sets whether or not the given element is included
-  /// in the set.
-  func binding<S>(for element: S) -> Binding<Bool>
-    where Value == Set<S>
-  {
-    return .init(
-      get: { self.wrappedValue.contains(element) },
-      set: {
-        if $0
-        {
-          self.wrappedValue.insert(element)
-        }
-        else
-        {
-          self.wrappedValue.remove(element)
-        }
-      })
   }
 }
 

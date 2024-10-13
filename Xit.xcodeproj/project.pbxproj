@@ -116,6 +116,7 @@
 		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
+		89D942DD2CBAB8B10026C5E8 /* LowerCaseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D942DC2CBAB8B10026C5E8 /* LowerCaseString.swift */; };
 		89DAE199267EAD61005AEA8F /* CloneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE198267EAD61005AEA8F /* CloneData.swift */; };
 		89DAE19B267FE176005AEA8F /* ProgressHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19A267FE176005AEA8F /* ProgressHost.swift */; };
 		89DAE19D2680D7E3005AEA8F /* RemoteProgressPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */; };
@@ -512,6 +513,7 @@
 		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
+		89D942DC2CBAB8B10026C5E8 /* LowerCaseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LowerCaseString.swift; sourceTree = "<group>"; };
 		89DAE198267EAD61005AEA8F /* CloneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneData.swift; sourceTree = "<group>"; };
 		89DAE19A267FE176005AEA8F /* ProgressHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHost.swift; sourceTree = "<group>"; };
 		89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteProgressPublisher.swift; sourceTree = "<group>"; };
@@ -847,6 +849,7 @@
 				C9FFCC851FABC24B00FA2F21 /* ExpansionTextField.swift */,
 				C9BC1B9A1DDF51B900C71562 /* FileEventStream.swift */,
 				89880ECE20CF2B99007042F8 /* FlippedView.swift */,
+				89D942DC2CBAB8B10026C5E8 /* LowerCaseString.swift */,
 				89B1C9B128778BE6006724EA /* MemoryPasswordStorage.swift */,
 				C931A0E627627E84007F441C /* MenuBuilder.swift */,
 				C9F43FCC29AFC30100F325BF /* MutexProtected.swift */,
@@ -1626,6 +1629,7 @@
 				C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */,
 				C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */,
 				C957B84B1D2D53040040F858 /* SheetController.swift in Sources */,
+				89D942DD2CBAB8B10026C5E8 /* LowerCaseString.swift in Sources */,
 				C947367C1DF079DB000E3A05 /* SideBarOutlineView.swift in Sources */,
 				89C927941D43B23B0074F71A /* XTRepository.swift in Sources */,
 				C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */,

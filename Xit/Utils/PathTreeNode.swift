@@ -170,13 +170,18 @@ extension Array
 {
   func filtered<T>(with text: String) -> Self where Element == PathTreeNode<T>
   {
+    filtered(with: LowerCaseString(text))
+  }
+  
+  func filtered<T>(with text: LowerCaseString) -> Self where Element == PathTreeNode<T>
+  {
     compactMap { $0.filtered(with: text) }
   }
 }
 
 extension PathTreeNode
 {
-  func filtered(with text: String) -> Self?
+  func filtered(with text: LowerCaseString) -> Self?
   {
     switch self {
       case .leaf(let item):
@@ -202,8 +207,8 @@ extension PathTreeNode
 
 fileprivate extension PathTreeData
 {
-  func passes(filter: String) -> Bool
+  func passes(filter: LowerCaseString) -> Bool
   {
-    treeNodePath.lastPathComponent.lowercased().contains(filter.lowercased())
+    treeNodePath.lastPathComponent.lowercased().contains(filter.rawValue)
   }
 }

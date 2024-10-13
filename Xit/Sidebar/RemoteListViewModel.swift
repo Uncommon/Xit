@@ -19,6 +19,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   
   var unfilteredRemotes: [RemoteItem] = []
   @Published var remotes: [RemoteItem] = []
+  @Published var searchScope: RemoteSearchScope = .branches
   
   init(manager: Manager, brancher: Brancher)
   {
@@ -49,6 +50,23 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   
   override func filterChanged(_ newFilter: String)
   {
-    remotes = unfilteredRemotes // TODO: actual filtering
+    if newFilter.isEmpty {
+      remotes = unfilteredRemotes
+    }
+    else {
+      let lowerCased = LowerCaseString(newFilter)
+      
+      remotes = switch searchScope {
+        case .branches:
+          unfilteredRemotes.map {
+            .init(name: $0.name,
+                  branches: $0.branches.filtered(with: lowerCased))
+          }
+        case .remotes:
+          unfilteredRemotes.filter {
+            lowerCased.isSubString(of: $0.name)
+          }
+      }
+    }
   }
 }

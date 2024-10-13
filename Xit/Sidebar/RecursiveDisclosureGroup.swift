@@ -19,7 +19,7 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
       (element) in
       if let subElements = element[keyPath: children] {
         DisclosureGroup(
-          isExpanded: binding(for: element[keyPath: id]),
+          isExpanded: expandedItems.binding(for: element[keyPath: id]),
           content: {
             RecursiveDisclosureGroup(subElements, id: id,
                                      children: children,
@@ -46,20 +46,6 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
     self.children = children
     self.expandedItems = expandedItems
     self.content = content
-  }
-
-  private func binding(for id: ID) -> Binding<Bool>
-  {
-    .init {
-      expandedItems.wrappedValue.contains(id)
-    } set: {
-      if $0 {
-        expandedItems.wrappedValue.insert(id)
-      }
-      else {
-        expandedItems.wrappedValue.remove(id)
-      }
-    }
   }
 }
 
