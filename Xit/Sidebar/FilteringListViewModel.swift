@@ -5,7 +5,7 @@ class FilteringListViewModel: ObservableObject
   @Published var filter: String = ""
   var sinks: [AnyCancellable] = []
   
-  func sinkFilter()
+  init()
   {
     sinks.append($filter
       .debounce(for: 0.5, scheduler: DispatchQueue.main)
