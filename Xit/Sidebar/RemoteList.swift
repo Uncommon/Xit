@@ -58,7 +58,7 @@ struct RemoteList<Manager: RemoteManagement,
         }
       }.overlay {
         if model.remotes.isEmpty {
-          ContentUnavailableView("No Remotes", systemImage: "network")
+          model.contentUnavailableView("No Remotes", systemImage: "network")
         }
       }
       FilterBar(text: $model.filter,
@@ -67,6 +67,7 @@ struct RemoteList<Manager: RemoteManagement,
         SidebarActionButton {
           Button("New remote...") {}
           Button("Rename remote") {}
+          // TODO: enabled specifically if a remote is selected
             .disabled(selection.wrappedValue == nil)
           Button("Delete remote") {}
             .disabled(selection.wrappedValue == nil)

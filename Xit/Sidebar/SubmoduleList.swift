@@ -13,8 +13,8 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
         Label($0.name, systemImage: "square.split.bottomrightquarter")
       }.overlay {
         if model.submodules.isEmpty {
-          ContentUnavailableView("No Submodules",
-                                 systemImage: "square.split.bottomrightquarter")
+          model.contentUnavailableView(
+              "No Submodules", systemImage: "square.split.bottomrightquarter")
         }
       }
       FilterBar(text: $model.filter)

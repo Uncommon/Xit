@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 
 class FilteringListViewModel: ObservableObject
 {
@@ -19,5 +20,30 @@ class FilteringListViewModel: ObservableObject
   func filterChanged(_ newFilter: String)
   {
     assertionFailure("filterChanged not implemented")
+  }
+  
+  // TODO: Probably should be moved out of the view model and into a protocol
+  @ViewBuilder
+  func contentUnavailableView(_ label: String,
+                              systemImage: String) -> some View
+  {
+    if filter.isEmpty {
+      ContentUnavailableView(label, systemImage: systemImage)
+    }
+    else {
+      ContentUnavailableView.search(text: filter)
+    }
+  }
+  
+  @ViewBuilder
+  func contentUnavailableView(_ label: String,
+                              image: String) -> some View
+  {
+    if filter.isEmpty {
+      ContentUnavailableView(label, image: image)
+    }
+    else {
+      ContentUnavailableView.search(text: filter)
+    }
   }
 }

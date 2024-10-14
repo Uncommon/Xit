@@ -90,7 +90,7 @@ struct StashList<Stasher, Publisher>: View
         }
         .overlay {
           if model.stasher.stashes.isEmpty {
-            ContentUnavailableView("No Stashes", systemImage: "tray")
+            model.contentUnavailableView("No Stashes", systemImage: "tray")
           }
         }
       FilterBar(text: $model.filter) {

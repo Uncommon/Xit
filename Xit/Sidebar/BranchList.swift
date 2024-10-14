@@ -65,7 +65,7 @@ struct BranchList<Brancher: Branching,
         }
       }.overlay {
         if model.branches.isEmpty {
-          ContentUnavailableView("No Branches", image: "scm.branch")
+          model.contentUnavailableView("No Branches", image: "scm.branch")
         }
       }
       FilterBar(text: $model.filter, leftContent: {

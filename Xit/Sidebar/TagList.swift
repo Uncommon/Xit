@@ -42,7 +42,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
         }
         .overlay {
           if model.tags.isEmpty {
-            ContentUnavailableView("No Tags", systemImage: "tag")
+            model.contentUnavailableView("No Tags", systemImage: "tag")
           }
         }
       FilterBar(text: $model.filter) {
