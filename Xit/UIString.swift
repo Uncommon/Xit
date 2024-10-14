@@ -113,6 +113,9 @@ public struct UIString: RawRepresentable, Sendable
   static let tags = ›"Tags"
   static let stashes = ›"Stashes"
   static let submodules = ›"Submodules"
+  
+  static let filterBranches = ›"Filter branches"
+  static let filterRemotes = ›"Filter remotes"
 
   // File preview strings
   static let binaryFile = ›"Not a text file"

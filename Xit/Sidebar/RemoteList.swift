@@ -14,11 +14,11 @@ enum RemoteSearchScope: CaseIterable, Identifiable
     }
   }
   
-  var text: String
+  var text: UIString
   {
     switch self {
-      case .branches: "Search in branches"
-      case .remotes: "Search in remotes"
+      case .branches: .filterBranches
+      case .remotes: .filterRemotes
     }
   }
 }
@@ -61,7 +61,9 @@ struct RemoteList<Manager: RemoteManagement,
           ContentUnavailableView("No Remotes", systemImage: "network")
         }
       }
-      FilterBar(text: $model.filter, leftContent: {
+      FilterBar(text: $model.filter,
+                prompt: model.searchScope.text,
+                leftContent: {
         SidebarActionButton {
           Button("New remote...") {}
           Button("Rename remote") {}
@@ -73,7 +75,7 @@ struct RemoteList<Manager: RemoteManagement,
         Picker(selection: $model.searchScope, content: {
           ForEach(RemoteSearchScope.allCases) {
             // TODO: Get Picker to use a smaller image size
-            $0.image.help($0.text)
+            $0.image.help($0.text.rawValue)
           }
         }, label: { EmptyView() })
           .pickerStyle(.segmented)

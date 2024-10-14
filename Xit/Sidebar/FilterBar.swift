@@ -4,6 +4,7 @@ import SwiftUI
 struct FilterBar<LeftContent: View, RightContent: View>: View
 {
   let text: Binding<String>
+  let prompt: UIString
   let leftContent: () -> LeftContent
   let fieldRightContent: () -> RightContent
 
@@ -11,7 +12,7 @@ struct FilterBar<LeftContent: View, RightContent: View>: View
   {
     HStack(spacing: 0) {
       leftContent()
-      FilterField(text: text, prompt: Text(.filter)) {
+      FilterField(text: text, prompt: Text(prompt)) {
         FilterIndicator()
       } rightContent: {
         fieldRightContent()
@@ -20,10 +21,12 @@ struct FilterBar<LeftContent: View, RightContent: View>: View
   }
 
   init(text: Binding<String>,
+       prompt: UIString = .filter,
        @ViewBuilder leftContent: @escaping () -> LeftContent,
        @ViewBuilder fieldRightContent: @escaping () -> RightContent)
   {
     self.text = text
+    self.prompt = prompt
     self.leftContent = leftContent
     self.fieldRightContent = fieldRightContent
   }
@@ -32,9 +35,11 @@ struct FilterBar<LeftContent: View, RightContent: View>: View
 extension FilterBar where RightContent == EmptyView
 {
   init(text: Binding<String>,
+       prompt: UIString = .filter,
        @ViewBuilder leftContent: @escaping () -> LeftContent)
   {
     self.text = text
+    self.prompt = prompt
     self.leftContent = leftContent
     self.fieldRightContent = EmptyView.init
   }
@@ -42,9 +47,10 @@ extension FilterBar where RightContent == EmptyView
 
 extension FilterBar where LeftContent == EmptyView, RightContent == EmptyView
 {
-  init(text: Binding<String>)
+  init(text: Binding<String>, prompt: UIString = .filter)
   {
     self.text = text
+    self.prompt = prompt
     self.leftContent = EmptyView.init
     self.fieldRightContent = EmptyView.init
   }
