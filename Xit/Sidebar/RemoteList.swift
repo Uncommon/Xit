@@ -83,6 +83,12 @@ struct RemoteList<Manager: RemoteManagement,
           .frame(maxHeight: 10)
           .fixedSize(horizontal: true, vertical: false)
       })
+        // Using a publisher for model.searchScope doesn't work well because
+        // it publishes before the change, making it harder to get the new
+        // value inside filterChanged()
+        .onChange(of: model.searchScope) {
+          model.filterChanged(model.filter)
+        }
     }
   }
   
