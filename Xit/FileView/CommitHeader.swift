@@ -108,9 +108,9 @@ struct CommitHeader: View
               Button {
                 let pasteboard = NSPasteboard.general
                 pasteboard.clearContents()
-                pasteboard.setString(commit.id.sha, forType: .string)
+                pasteboard.setString(commit.id.sha.rawValue, forType: .string)
               } label: {
-                Text(commit.id.sha.firstSix())
+                Text(commit.id.sha.shortString)
                 Image(systemName: "doc.on.clipboard")
                   .imageScale(.small)
                   .foregroundColor(.secondary)

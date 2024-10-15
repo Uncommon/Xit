@@ -321,28 +321,31 @@ struct DropStash: RepoAction
 
 struct CheckOut: RepoAction
 {
-  let branch: String
-  let sha: String
+  enum Reference
+  {
+    case branch(String)
+    case sha(SHA)
+  }
+
+  let reference: Reference
 
   init(branch: String)
   {
-    self.branch = branch
-    self.sha = ""
+    self.reference = .branch(branch)
   }
 
-  init(sha: String)
+  init(sha: SHA)
   {
-    self.branch = ""
-    self.sha = sha
+    self.reference = .sha(sha)
   }
 
   func execute(in repository: any FullRepository) throws
   {
-    if sha.isEmpty {
-      try repository.checkOut(branch: branch)
-    }
-    else {
-      try repository.checkOut(sha: sha)
+    switch reference {
+      case .branch(let branch):
+        try repository.checkOut(branch: branch)
+      case .sha(let sha):
+        try repository.checkOut(sha: sha)
     }
   }
 }

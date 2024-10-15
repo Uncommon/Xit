@@ -251,7 +251,7 @@ final class FileDiffController: WebViewController,
     }
   }
   
-  override nonisolated func webMessage(action: String, sha: String?, index: Int?)
+  override nonisolated func webMessage(action: String, sha: SHA?, index: Int?)
   {
     guard let index
     else { return }

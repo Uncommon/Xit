@@ -10,7 +10,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
   
   class CommitColoring
   {
-    var commitColors = [String: NSColor]()
+    var commitColors = [SHA: NSColor]()
     var lastHue = 120
     
     init(firstOID: GitOID)
@@ -77,7 +77,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     {
       let `class` = isCurrent ? " class = 'currentsha'" : ""
       
-      return "<div\(`class`)>\(hunk.finalLine.oid.sha.firstSix())</div>"
+      return "<div\(`class`)>\(hunk.finalLine.oid.sha.shortString)</div>"
     }
     
     static func textLine(_ text: String) -> String
@@ -125,7 +125,8 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     for hunk in blame.hunks {
       let finalOID = hunk.finalLine.oid
       var hunkColor = coloring.color(for: finalOID)
-      let jumpButton = finalOID == currentOID ? "" : HTML.jumpButton(finalOID.sha)
+      let jumpButton = finalOID == currentOID ? ""
+          : HTML.jumpButton(finalOID.sha.rawValue)
 
       htmlLines.append(HTML.headerStart(color: hunkColor,
                                         button: jumpButton,
@@ -168,7 +169,7 @@ final class BlameViewController: WebViewController, RepositoryWindowViewControll
     }
   }
   
-  override nonisolated func webMessage(action: String, sha: String?, index: Int?)
+  override nonisolated func webMessage(action: String, sha: SHA?, index: Int?)
   {
     guard let sha,
           let oid = GitOID(sha: sha)

@@ -37,7 +37,7 @@ extension HistoryTableController
     let pasteboard = NSPasteboard.general
 
     pasteboard.clearContents()
-    pasteboard.setString(history.entries[clickedCell.0].commit.id.sha,
+    pasteboard.setString(history.entries[clickedCell.0].commit.id.sha.rawValue,
                          forType: .string)
   }
 

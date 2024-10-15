@@ -23,7 +23,7 @@ class XTEmptyRepositoryTest: XTTest
   func testEmptyRepositoryHead()
   {
     XCTAssertFalse(repository.hasHeadReference())
-    XCTAssertEqual(repository.parentTree(), kEmptyTreeHash)
+    XCTAssertEqual(repository.parentTree(), SHA.emptyTree.rawValue)
   }
   
   func testIsTextFileName()
@@ -506,16 +506,7 @@ class XTRepositoryTest: XTTest
   func testHeadRef()
   {
     XCTAssertEqual(repository.headRef, "refs/heads/master")
-    
-    guard let headSHA = repository.headSHA
-    else {
-      XCTFail("no head SHA")
-      return
-    }
-    let hexChars = CharacterSet(charactersIn: "0123456789abcdefABCDEF")
-    
-    XCTAssertEqual(headSHA.utf8.count, 40)
-    XCTAssertTrue(headSHA.trimmingCharacters(in: hexChars).isEmpty)
+    XCTAssertNotNil(repository.headSHA)
   }
   
   func testDetachedCheckout() throws

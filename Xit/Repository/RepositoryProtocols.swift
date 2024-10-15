@@ -72,7 +72,7 @@ public protocol CommitStorage: AnyObject
   associatedtype Commit: Xit.Commit
   associatedtype RevWalk: Xit.RevWalk
 
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: SHA) -> Commit?
   func commit(forOID oid: GitOID) -> Commit?
 
   func commit(message: String, amend: Bool) throws
@@ -93,7 +93,7 @@ public protocol CommitReferencing: AnyObject
   var headRef: String? { get }
 
   func oid(forRef: String) -> GitOID?
-  func sha(forRef: String) -> String?
+  func sha(forRef: String) -> SHA?
   func tags() throws -> [Tag]
   func graphBetween(localBranch: LocalBranch,
                     upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
@@ -115,7 +115,7 @@ public protocol CommitReferencing: AnyObject
 extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
-  var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
+  var headSHA: SHA? { headRef.flatMap { self.sha(forRef: $0) } }
   var headOID: GitOID? { headRef.flatMap { self.oid(forRef: $0) } }
 }
 
@@ -486,5 +486,5 @@ public protocol Workspace: AnyObject
 {
   func checkOut(branch: String) throws
   func checkOut(refName: String) throws
-  func checkOut(sha: String) throws
+  func checkOut(sha: SHA) throws
 }

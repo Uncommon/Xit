@@ -26,6 +26,6 @@ extension GitOID
     let digits = "0123456789ABCDEF"
     let shaString = String((0..<40).map { _ in  digits.randomElement()! })
 
-    return .init(sha: shaString)!
+    return .init(sha: SHA(shaString)!)!
   }
 }

@@ -230,7 +230,7 @@ extension XTRepository
   /// or to a specific parent.
   func diff(forOID oid: GitOID, parent parentOID: GitOID?) -> (any Diff)?
   {
-    let key = oid.sha.appending(parentOID?.sha ?? "")
+    let key = oid.sha.rawValue.appending(parentOID?.sha.rawValue ?? "")
     
     if let diff = diffCache[key] {
       return diff
@@ -359,7 +359,7 @@ extension XTRepository
   
     static func emptyTree(repo: XTRepository) -> OpaquePointer?
     {
-      guard let emptyOID = GitOID(sha: kEmptyTreeHash)
+      guard let emptyOID = GitOID(sha: .emptyTree)
       else { return nil }
       
       return try? OpaquePointer.from {

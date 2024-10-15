@@ -280,6 +280,8 @@
 		C9BDF4D01D99A7660034841F /* RenameBranchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */; };
 		C9BDF4D11D99A7660034841F /* RenameBranchPanelController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */; };
 		C9BF41181EA11AAC00028C84 /* XTWindowController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */; };
+		C9BF72B82CBF0F5900210BB1 /* SHA.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF72B72CBF0F5900210BB1 /* SHA.swift */; };
+		C9BF72BA2CBF141000210BB1 /* SHATest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BF72B92CBF141000210BB1 /* SHATest.swift */; };
 		C9C1B7CF1EEAFD790011F343 /* XTRepository+Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */; };
 		C9C30124269DE81F00EBBBC8 /* CleanPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */; };
 		C9C30137269E09EF00EBBBC8 /* PathControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C30136269E09EF00EBBBC8 /* PathControl.swift */; };
@@ -662,6 +664,8 @@
 		C9BDF4CE1D99A7660034841F /* RenameBranchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenameBranchPanelController.swift; sourceTree = "<group>"; };
 		C9BDF4CF1D99A7660034841F /* RenameBranchPanelController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RenameBranchPanelController.xib; sourceTree = "<group>"; };
 		C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTWindowController+Actions.swift"; sourceTree = "<group>"; };
+		C9BF72B72CBF0F5900210BB1 /* SHA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHA.swift; sourceTree = "<group>"; };
+		C9BF72B92CBF141000210BB1 /* SHATest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SHATest.swift; sourceTree = "<group>"; };
 		C9C1B7CE1EEAFD790011F343 /* XTRepository+Files.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Files.swift"; sourceTree = "<group>"; };
 		C9C30123269DE81F00EBBBC8 /* CleanPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPanel.swift; sourceTree = "<group>"; };
 		C9C30136269E09EF00EBBBC8 /* PathControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathControl.swift; sourceTree = "<group>"; };
@@ -1020,6 +1024,7 @@
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				895CBA372B4061E70094D534 /* LibGit2Test.swift */,
+				C9BF72B92CBF141000210BB1 /* SHATest.swift */,
 			);
 			path = XitTests;
 			sourceTree = "<group>";
@@ -1136,6 +1141,7 @@
 				C9065F4D20FCFA8B00C01110 /* RefType.swift */,
 				C9063D092412B29700574A93 /* RepositoryController.swift */,
 				C959A7221F6C6974004277CD /* RepositoryProtocols.swift */,
+				C9BF72B72CBF0F5900210BB1 /* SHA.swift */,
 				C9DEA4AC1E4B82B200DF4069 /* Signature.swift */,
 				891748D128B6B7B00091DF3B /* StringOID.swift */,
 				C9FFCC871FB3B1D000FA2F21 /* TreeLoader.swift */,
@@ -1558,6 +1564,7 @@
 				C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */,
 				C9BAE6141D3039C500A87F13 /* OperationController.swift in Sources */,
 				C991732D1F91255200054154 /* GitPatch.swift in Sources */,
+				C9BF72B82CBF0F5900210BB1 /* SHA.swift in Sources */,
 				C9FFCC861FABC24B00FA2F21 /* ExpansionTextField.swift in Sources */,
 				895CD52E265379450073F15A /* CommitPanel.swift in Sources */,
 				C9C30137269E09EF00EBBBC8 /* PathControl.swift in Sources */,
@@ -1809,6 +1816,7 @@
 				C9FCC1D11D50EB1A00AC398E /* CommitHistoryTest.swift in Sources */,
 				C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */,
 				C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */,
+				C9BF72BA2CBF141000210BB1 /* SHATest.swift in Sources */,
 				C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */,
 				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */,

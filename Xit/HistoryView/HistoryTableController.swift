@@ -350,7 +350,7 @@ extension HistoryTableController: NSTableViewDelegate
         (result as! DateCellView).date = entry.commit.commitDate
 
       case ColumnID.sha:
-        result.textField?.stringValue = entry.commit.id.sha.firstSix()
+        result.textField?.stringValue = entry.commit.id.sha.shortString
 
       case ColumnID.refs:
         let refsCell = result as! HistoryCellView

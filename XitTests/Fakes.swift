@@ -185,8 +185,8 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   var headRef: String? = nil
   var currentBranch: String? = nil
   
-  func sha(forRef: String) -> String? { nil }
-  
+  func sha(forRef: String) -> SHA? { nil }
+
   func tags() throws -> [Tag] { [] }
   func graphBetween(localBranch: LocalBranch, upstreamBranch: RemoteBranch)
     -> (ahead: Int, behind: Int)?

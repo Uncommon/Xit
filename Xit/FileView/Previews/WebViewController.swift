@@ -158,11 +158,11 @@ class WebViewController: NSViewController
     guard let action = params["action"] as? String
     else { return }
 
-    webMessage(action: action, sha: params["sha"] as? String,
+    webMessage(action: action, sha: (params["sha"] as? String).flatMap { SHA($0) },
                index: params["index"] as? Int)
   }
 
-  nonisolated func webMessage(action: String, sha: String?, index: Int?)
+  nonisolated func webMessage(action: String, sha: SHA?, index: Int?)
   {
     // override
   }

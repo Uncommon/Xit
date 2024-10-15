@@ -9,15 +9,13 @@ let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
 
-let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-
 public final class XTRepository: BasicRepository, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
   let gitRunner: CLIRunner
   let mutex = NSRecursiveLock()
-  var refsIndex = [String: [String]]()
+  var refsIndex = [SHA: [String]]()
 
   let currentBranchSubject = CurrentValueSubject<String?, Never>(nil)
   
@@ -25,7 +23,8 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   
   fileprivate(set) public var isWriting = false
 
-  fileprivate(set) var cachedHeadRef, cachedHeadSHA: String?
+  fileprivate(set) var cachedHeadRef: String?
+  fileprivate(set) var cachedHeadSHA: SHA?
   var cachedStagedChanges: [FileChange]?
   {
     get { controller?.cache.stagedChanges }

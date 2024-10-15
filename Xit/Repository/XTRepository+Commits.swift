@@ -2,7 +2,7 @@ import Foundation
 
 extension XTRepository: CommitStorage
 {
-  public func commit(forSHA sha: String) -> GitCommit?
+  public func commit(forSHA sha: SHA) -> GitCommit?
   {
     return GitCommit(sha: sha, repository: gitRepo)
   }
@@ -140,10 +140,10 @@ extension XTRepository: CommitReferencing
   
   func parentTree() -> String
   {
-    return hasHeadReference() ? "HEAD" : kEmptyTreeHash
+    return hasHeadReference() ? "HEAD" : SHA.emptyTree.rawValue
   }
   
-  public func sha(forRef ref: String) -> String?
+  public func sha(forRef ref: String) -> SHA?
   {
     return oid(forRef: ref)?.sha
   }

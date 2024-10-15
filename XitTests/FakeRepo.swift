@@ -88,9 +88,9 @@ extension FakeRepo: EmptyCommitStorage
   typealias ID = GitOID
   typealias RevWalk = NullRevWalk
 
-  func oid(forSHA sha: String) -> ID? { .init(sha: sha) }
+  func oid(forSHA sha: SHA) -> ID? { .init(sha: sha) }
 
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: SHA) -> Commit?
   {
     GitOID(sha: sha).flatMap { commits[$0] }
   }
