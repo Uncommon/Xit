@@ -1,18 +1,15 @@
 import Combine
 import SwiftUI
 
-class TagListViewModel<Tagger: Tagging,
-                       Publisher: RepositoryPublishing>: FilteringListViewModel
+class TagListViewModel<Tagger: Tagging>: FilteringListViewModel
 {
   let tagger: Tagger
-  let publisher: Publisher
 
   @Published var tags: [PathTreeNode<Tagger.Tag>] = []
 
-  init(tagger: Tagger, publisher: Publisher)
+  init(tagger: Tagger, publisher: any RepositoryPublishing)
   {
     self.tagger = tagger
-    self.publisher = publisher
     super.init()
 
     setTagHierarchy()

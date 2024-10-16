@@ -68,11 +68,27 @@ extension FormatStyle where Self == Date.FormatStyle
   static var sidebar: Self { sidebarDateFormatStyle }
 }
 
-
-struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
+struct SidebarViewModel<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   where Brancher: Branching, Manager: RemoteManagement,
         Referencer: CommitReferencing,
         Stasher: Stashing, Tagger: Tagging,
+        SubManager: SubmoduleManagement,
+        Brancher.LocalBranch == Referencer.LocalBranch,
+        Brancher.LocalBranch == Manager.LocalBranch
+{
+  let brachModel: BranchListViewModel<Brancher>
+  let remoteModel: RemoteListViewModel<Manager, Brancher>
+  let tagModel: TagListViewModel<Tagger>
+  let stashModel: StashListViewModel<Stasher>
+  let submoduleModel: SubmoduleListModel<SubManager>
+}
+
+
+struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
+  : View
+  where Brancher: Branching, Manager: RemoteManagement,
+        Referencer: CommitReferencing,
+        Stasher: Stashing, Tagger: Tagging, SubManager: SubmoduleManagement,
         Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.LocalBranch == Manager.LocalBranch
 {
@@ -94,8 +110,11 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
   let referencer: Referencer
   let publisher: any RepositoryPublishing
   let stasher: Stasher
-  let submobuleManager: any SubmoduleManagement
+  let submobuleManager: SubManager
   let tagger: Tagger
+  
+  @State var model: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
+                                     Tagger, SubManager>
   
   var body: some View {
     VStack(spacing: 0) {
@@ -111,7 +130,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
         case .tags:
           AnyView(tagList(tagger: tagger, publisher: publisher))
         case .stashes:
-          AnyView(stashList(stasher: stasher, publisher: publisher))
+          AnyView(stashList(publisher: publisher))
         case .submodules:
           AnyView(submoduleList(manager: submobuleManager))
       }
@@ -126,7 +145,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
        referencer: Referencer,
        publisher: any RepositoryPublishing,
        stasher: Stasher,
-       submoduleManager: any SubmoduleManagement,
+       submoduleManager: SubManager,
        tagger: Tagger,
        selection: Binding<(any RepositorySelection)?>)
   {
@@ -139,18 +158,24 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
     self.submobuleManager = submoduleManager
     self.tagger = tagger
     self.repoSelection = selection
+    self.model = .init(
+        brachModel: .init(brancher: brancher,
+                          detector: detector,
+                          publisher: publisher),
+        remoteModel: .init(manager: remoteManager, brancher: brancher),
+        tagModel: .init(tagger: tagger, publisher: publisher),
+        stashModel: .init(stasher: stasher, publisher: publisher),
+        submoduleModel: .init(manager: submobuleManager, publisher: publisher))
   }
 
   private func branchList() -> some View
   {
-    BranchList(model: .init(brancher: brancher,
-                            detector: detector,
-                            publisher: publisher),
-                      brancher: brancher,
-                      referencer: referencer,
-                      accessorizer: .empty,
-                      selection: $selectedBranch,
-                      expandedItems: $expandedBranches)
+    BranchList(model: model.brachModel,
+               brancher: brancher,
+               referencer: referencer,
+               accessorizer: .empty,
+               selection: $selectedBranch,
+               expandedItems: $expandedBranches)
       .onChange(of: selectedBranch) {
         guard let selectedBranch,
               let repo = brancher as? any FileChangesRepo
@@ -176,7 +201,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
   
   private func remoteList() -> some View
   {
-    RemoteList(model: .init(manager: remoteManager, brancher: brancher),
+    RemoteList(model: model.remoteModel,
                manager: remoteManager,
                brancher: brancher,
                accessorizer: .empty,
@@ -191,7 +216,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
   private func tagList(tagger: some Tagging,
                        publisher: some RepositoryPublishing) -> some View
   {
-    TagList(model: .init(tagger: tagger, publisher: publisher),
+    TagList(model: model.tagModel,
             selection: $selectedTag,
             expandedItems: $expandedTags)
       .onChange(of: selectedTag) {
@@ -208,10 +233,12 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
       }
   }
 
-  private func stashList(stasher: some Stashing,
-                         publisher: some RepositoryPublishing) -> some View
+  private func stashList(publisher: some RepositoryPublishing) -> some View
   {
-    StashList(stasher: stasher, publisher: publisher, selection: $selectedStash)
+    StashList(model: model.stashModel,
+              stasher: stasher,
+              publisher: publisher,
+              selection: $selectedStash)
       .onChange(of: selectedStash) {
         if let selectedStash,
            let index = stasher.findStashIndex(selectedStash),
@@ -227,7 +254,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger>: View
   
   private func submoduleList(manager: some SubmoduleManagement) -> some View
   {
-    SubmoduleList(model: .init(manager: manager, publisher: publisher),
+    SubmoduleList(model: model.submoduleModel,
                   selection: $selectedSubmodule)
   }
 }

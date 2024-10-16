@@ -2,9 +2,9 @@ import SwiftUI
 import Combine
 
 
-struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
+struct TagList<Tagger: Tagging>: View
 {
-  @ObservedObject var model: TagListViewModel<Tagger, Publisher>
+  @ObservedObject var model: TagListViewModel<Tagger>
 
   var selection: Binding<String?>
   var expandedItems: Binding<Set<String>>
@@ -54,7 +54,7 @@ struct TagList<Tagger: Tagging, Publisher: RepositoryPublishing>: View
     }
   }
 
-  init(model: TagListViewModel<Tagger, Publisher>,
+  init(model: TagListViewModel<Tagger>,
        selection: Binding<String?>,
        expandedItems: Binding<Set<String>>)
   {

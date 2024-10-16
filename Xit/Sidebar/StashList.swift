@@ -1,10 +1,9 @@
 import SwiftUI
 import Combine
 
-struct StashList<Stasher, Publisher>: View
-  where Stasher: Stashing, Publisher: RepositoryPublishing
+struct StashList<Stasher: Stashing>: View
 {
-  @StateObject var model: StashListViewModel<Stasher, Publisher>
+  @StateObject var model: StashListViewModel<Stasher>
 
   @State private var showAlert = false
   @State private var alertAction: StashAction?
@@ -105,10 +104,12 @@ struct StashList<Stasher, Publisher>: View
     }
   }
 
-  init(stasher: Stasher, publisher: Publisher, selection: Binding<GitOID?>)
+  init(model: StashListViewModel<Stasher>,
+       stasher: Stasher,
+       publisher: any RepositoryPublishing,
+       selection: Binding<GitOID?>)
   {
-    self._model = .init(wrappedValue: .init(stasher: stasher,
-                                            publisher: publisher))
+    self._model = .init(wrappedValue: model)
     self.selection = selection
   }
 
@@ -213,7 +214,8 @@ struct StashListPreview: View
   var body: some View
   {
     let repo = StashListPreview.PreviewStashing(stashes: stashes)
-    StashList(stasher: repo, publisher: repo, selection: $selection)
+    StashList(model: .init(stasher: repo, publisher: repo),
+              stasher: repo, publisher: repo, selection: $selection)
       .listStyle(.sidebar)
   }
 }

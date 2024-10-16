@@ -1,17 +1,14 @@
 import Combine
 
-class StashListViewModel<Stasher, Publisher>: FilteringListViewModel
-  where Stasher: Stashing, Publisher: RepositoryPublishing
+class StashListViewModel<Stasher: Stashing>: FilteringListViewModel
 {
   let stasher: Stasher
-  let publisher: Publisher
 
   @Published var stashes: [Stasher.Stash]
 
-  init(stasher: Stasher, publisher: Publisher)
+  init(stasher: Stasher, publisher: any RepositoryPublishing)
   {
     self.stasher = stasher
-    self.publisher = publisher
     self.stashes = Array(stasher.stashes)
     super.init()
 

@@ -1,5 +1,4 @@
 import Foundation
-import Algorithms
 
 class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   : FilteringListViewModel
