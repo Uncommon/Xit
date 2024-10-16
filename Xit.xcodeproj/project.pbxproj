@@ -111,9 +111,7 @@
 		89CB61981E788A3900D69FE4 /* lorem.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61971E788A3900D69FE4 /* lorem.txt */; };
 		89CB619A1E788B6800D69FE4 /* lorem2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61991E788B6800D69FE4 /* lorem2.txt */; };
 		89CB619C1E788C6000D69FE4 /* PatchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB619B1E788C6000D69FE4 /* PatchTest.swift */; };
-		89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CD209117089D220051C3D4 /* XTCategoryTests.m */; };
 		89D0630E25CC5C6D00EF5020 /* CommitHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D0630D25CC5C6D00EF5020 /* CommitHeader.swift */; };
-		89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */; };
 		89D5FDB21EDE1DC50067E886 /* XTRepository+Refs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */; };
 		89D8BE221CF0A4ED00D640AA /* RolloverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */; };
 		89D942DD2CBAB8B10026C5E8 /* LowerCaseString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D942DC2CBAB8B10026C5E8 /* LowerCaseString.swift */; };
@@ -506,11 +504,7 @@
 		89CB61971E788A3900D69FE4 /* lorem.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem.txt; sourceTree = "<group>"; };
 		89CB61991E788B6800D69FE4 /* lorem2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem2.txt; sourceTree = "<group>"; };
 		89CB619B1E788C6000D69FE4 /* PatchTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchTest.swift; sourceTree = "<group>"; };
-		89CD209017089D220051C3D4 /* XTCategoryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = XTCategoryTests.h; sourceTree = "<group>"; tabWidth = 2; };
-		89CD209117089D220051C3D4 /* XTCategoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = XTCategoryTests.m; sourceTree = "<group>"; tabWidth = 2; };
 		89D0630D25CC5C6D00EF5020 /* CommitHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitHeader.swift; sourceTree = "<group>"; };
-		89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "NSAttributedString+XTExtensions.h"; sourceTree = "<group>"; };
-		89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = "NSAttributedString+XTExtensions.m"; sourceTree = "<group>"; };
 		89D5FDB11EDE1DC50067E886 /* XTRepository+Refs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XTRepository+Refs.swift"; sourceTree = "<group>"; };
 		89D8BE211CF0A4ED00D640AA /* RolloverButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RolloverButton.swift; sourceTree = "<group>"; };
 		89D942DC2CBAB8B10026C5E8 /* LowerCaseString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LowerCaseString.swift; sourceTree = "<group>"; };
@@ -901,8 +895,6 @@
 			children = (
 				89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */,
 				8992E23E26BF45F500DD5357 /* MiscExtensions.swift */,
-				89D47941170894A200C04D89 /* NSAttributedString+XTExtensions.h */,
-				89D47942170894A200C04D89 /* NSAttributedString+XTExtensions.m */,
 				89009E322878CE52004A684B /* SiestaExtensions.swift */,
 				C97E31AF20BF271300E74D2F /* StringExtensions.swift */,
 				C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */,
@@ -1058,8 +1050,6 @@
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
 				C9E594BE2C8F29BA00C518C4 /* PathTreeTest.swift */,
-				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
-				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
 				C9E640111D1095C700192454 /* XTFileChangesModelTest.swift */,
 				C9A0223722EF4BE8001EFD7E /* XTRepositoryHunkTest.swift */,
@@ -1804,7 +1794,6 @@
 				89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */,
 				899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */,
 				C97E31B020BF271300E74D2F /* StringExtensions.swift in Sources */,
-				89D47943170894A200C04D89 /* NSAttributedString+XTExtensions.m in Sources */,
 				C9F1B5F22217293D00293305 /* TeamCityAPI+Types.swift in Sources */,
 				C9E7DA402C87415700B539E0 /* StashList.swift in Sources */,
 				C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */,
@@ -1910,7 +1899,6 @@
 				C9E8816C1E983B6F00BFA7E5 /* XTRepositoryMergeTest.swift in Sources */,
 				C9088CC722BA8BC500DB4A02 /* BuildStatusControllerTest.swift in Sources */,
 				C9E640121D1095C700192454 /* XTFileChangesModelTest.swift in Sources */,
-				89CD209217089D220051C3D4 /* XTCategoryTests.m in Sources */,
 				C9CB017F2329B1B6006D23B5 /* SidebarDataModelTest.swift in Sources */,
 				C94736881DF1DDDE000E3A05 /* XTRepositoryTest.swift in Sources */,
 				C9F5331D217A90B800B2432C /* KeychainTest.swift in Sources */,

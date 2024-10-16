@@ -5,7 +5,5 @@
 #import "XTQueueUtils.h"
 #import "GitEnums.h"
 
-#import "NSAttributedString+XTExtensions.h"
-
 #import <git2.h>
 #import <git2/sys/config.h>
