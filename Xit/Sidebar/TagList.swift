@@ -27,11 +27,7 @@ struct TagList<Tagger: Tagging>: View
                   .symbolVariant(item?.type == .lightweight ? .none : .fill)
               }
             )
-            if let commit = item?.commit {
-              Spacer()
-              Text(commit.commitDate.formatted(.sidebar))
-                .foregroundStyle(.secondary)
-            }
+            // TODO: Asynchronously load dates as needed
           }.selectionDisabled(item == nil)
         }
       }
