@@ -30,9 +30,7 @@ class TagListViewModel<Tagger: Tagging,
     if !filter.isEmpty {
       tags = tags.filtered(with: filter)
     }
-    withAnimation {
-      self.tags = tags
-    }
+    self.tags = tags
   }
   
   override func filterChanged(_ newFilter: String)
