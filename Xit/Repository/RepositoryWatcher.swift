@@ -42,7 +42,7 @@ final class RepositoryWatcher
     }
   }
   
-  var refsCache: [String: GitOID]
+  var refsCache: [GeneralRefName: GitOID]
 
   var packedRefsSink, stashSink: AnyCancellable?
 
@@ -110,11 +110,11 @@ final class RepositoryWatcher
     }
   }
   
-  static func index(from repository: XTRepository) -> [String: GitOID]
+  static func index(from repository: XTRepository) -> [GeneralRefName: GitOID]
   {
     let refs = repository.allRefs()
-    var result = [String: GitOID]()
-    
+    var result = [GeneralRefName: GitOID]()
+
     for ref in refs {
       guard let oid = repository.sha(forRef: ref).flatMap({ GitOID(sha: $0) })
       else { continue }
@@ -206,7 +206,7 @@ final class RepositoryWatcher
       return oldOID != newOID
     }
     
-    var refChanges = [String: Set<String>]()
+    var refChanges = [String: Set<GeneralRefName>]()
     
     if !addedRefs.isEmpty {
       refChanges[RefKey.added] = addedRefs

@@ -23,7 +23,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   
   fileprivate(set) public var isWriting = false
 
-  fileprivate(set) var cachedHeadRef: String?
+  fileprivate(set) var cachedHeadRef: (any ReferenceName)?
   fileprivate(set) var cachedHeadSHA: SHA?
   var cachedStagedChanges: [FileChange]?
   {

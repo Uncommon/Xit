@@ -505,7 +505,7 @@ class XTRepositoryTest: XTTest
 
   func testHeadRef()
   {
-    XCTAssertEqual(repository.headRef, "refs/heads/master")
+    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/master")
     XCTAssertNotNil(repository.headSHA)
   }
   
@@ -544,7 +544,8 @@ class XTRepositoryTest: XTTest
   
   func testFileBlob() throws
   {
-    let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: TestFileName.file1.rawValue))
+    let blob = try XCTUnwrap(repository.fileBlob(ref: GeneralRefName.head,
+                                                 path: TestFileName.file1.rawValue))
     var blobString: String? = nil
     
     blob.withUnsafeBytes({ blobString = String(bytes: $0, encoding: .utf8) })

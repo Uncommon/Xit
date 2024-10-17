@@ -94,7 +94,7 @@ extension XTRepository: FileContents
     commit?.tree?.entry(path: path)?.object as? GitBlob
   }
   
-  public func fileBlob(ref: String, path: String) -> GitBlob?
+  public func fileBlob(ref: any ReferenceName, path: String) -> GitBlob?
   {
     commitBlob(commit: oid(forRef: ref).flatMap { commit(forOID: $0) },
                path: path)
@@ -151,7 +151,7 @@ extension XTRepository: FileDiffing
     guard isTextFile(file, context: .index)
     else { return .binary }
     
-    guard let headRef = self.headRef
+    guard let headRef = self.headRefName
     else { return nil }
     let indexBlob = stagedBlob(file: file)
     let headBlob = fileBlob(ref: headRef, path: file)

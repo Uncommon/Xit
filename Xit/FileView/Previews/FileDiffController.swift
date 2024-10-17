@@ -122,7 +122,7 @@ final class FileDiffController: WebViewController,
   func diffTargetBlob() -> (any Blob)?
   {
     guard let diffMaker = diffMaker,
-          let headRef = repo?.headRef
+          let headRef = repo?.headRefName
     else { return nil }
 
     switch stagingType {

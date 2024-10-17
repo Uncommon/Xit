@@ -127,7 +127,7 @@ final class HistoryTableController: NSViewController,
       
       let refs = repository.allRefs()
       
-      for ref in refs where ref != "refs/stash" {
+      for ref in refs where ref.fullPath != "refs/stash" {
         if let oid = repository.oid(forRef: ref) {
           walker.push(oid: oid)
         }

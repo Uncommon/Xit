@@ -7,12 +7,12 @@ public protocol Reference
   /// Peels a tag reference
   var peeledTargetOID: GitOID? { get }
   /// For a symbolic reference, the name of the target
-  var symbolicTargetName: String? { get }
+  var symbolicTargetName: (any ReferenceName)? { get }
   /// Type of reference: oid (direct) or symbolic
   var type: ReferenceType { get }
   /// The reference name
-  var name: String { get }
-  
+  var name: any ReferenceName { get }
+
   /// Peels a symbolic reference until a direct reference is reached
   func resolve() -> Self?
   /// Changes the ref to point to a different object
@@ -86,13 +86,26 @@ final class GitReference: Reference
     
     return .init(oid: oid.pointee)
   }
-  
-  public var symbolicTargetName: String?
+
+  private func specificRefName(_ name: String) -> (any ReferenceName)?
   {
-    guard let name = git_reference_symbolic_target(ref)
+    guard let general = GeneralRefName(rawValue: name)
     else { return nil }
-    
-    return String(cString: name)
+
+    return
+        LocalBranchRefName(general) ??
+        RemoteBranchRefName(general) ??
+        TagRefName(general) ??
+        general
+  }
+
+  public var symbolicTargetName: (any ReferenceName)?
+  {
+    guard let cName = git_reference_symbolic_target(ref)
+    else { return nil }
+    let name = String(cString: cName)
+
+    return specificRefName(name)
   }
 
   public var type: ReferenceType
@@ -100,12 +113,19 @@ final class GitReference: Reference
     ReferenceType(rawValue: Int32(git_reference_type(ref).rawValue)) ?? .invalid
   }
   
-  public var name: String
+  public var name: any ReferenceName
   {
-    guard let name = git_reference_name(ref)
-    else { return "" }
-    
-    return String(cString: name)
+    guard let cName = git_reference_name(ref)
+    else {
+      assertionFailure("can't get reference name")
+      return GeneralRefName(unchecked: "")
+    }
+    let name = String(cString: cName)
+
+    return specificRefName(name) ?? {
+      assertionFailure("reference name is invalid")
+      return GeneralRefName(unchecked: name)
+    }()
   }
   
   public func resolve() -> GitReference?
