@@ -55,7 +55,7 @@ final class PushOpController: PasswordOpController
         return
       
       case .currentBranch, nil:
-        guard let branchName = repository.currentBranchRefName,
+        guard let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName)
         else {
           repoLogger.debug("Can't get current branch")
@@ -117,7 +117,7 @@ final class PushOpController: PasswordOpController
                      CommitReferencing & Branching) throws
   {
     guard let window = windowController?.window,
-          let branchName = repository.currentBranchRefName,
+          let branchName = repository.currentBranch,
           let currentBranch = repository.localBranch(named: branchName)
     else {
       throw RepoError.unexpected

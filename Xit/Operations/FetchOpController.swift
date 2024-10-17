@@ -35,7 +35,7 @@ class FetchOpController: PasswordOpController
           }
 
         case .currentBranch:
-          guard let branchName = repository.currentBranchRefName,
+          guard let branchName = repository.currentBranch,
                 let branch = repository.localBranch(named: branchName),
                 let remote = branch.trackingBranch?.remoteName
           else { break }

@@ -124,12 +124,6 @@ extension CommitReferencing where Self: CommitStorage
   var headCommit: Commit? { headOID.flatMap { commit(forOID: $0) } }
 }
 
-extension CommitReferencing where Self: Branching
-{
-  var currentBranchRefName: LocalBranchRefName?
-  { currentBranch.flatMap { .init($0) } }
-}
-
 @Faked
 public protocol FileStatusDetection: AnyObject
 {
