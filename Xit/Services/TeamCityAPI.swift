@@ -4,7 +4,8 @@ import Combine
 
 protocol BuildStatusService: AnyObject
 {
-  func displayName(forBranch branch: String, buildType: String) -> String?
+  func displayName(for branch: LocalBranchRefName, buildType: String) -> String?
+  /// Branch name is supplied as a plain string because it could be a display name
   @MainActor
   func buildStatus(_ branch: String, buildType: String) -> Resource
 
@@ -96,11 +97,11 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   // Applies the given closure to the build statuses for the given branch and
   // build type, asynchronously if the data is not yet cached.
   @MainActor
-  func enumerateBuildStatus(_ branch: String, buildType: String,
+  func enumerateBuildStatus(_ branch: LocalBranchRefName, buildType: String,
                             processor: @escaping ([String: String]) -> Void)
   {
-    let statusResource = buildStatus(branch, buildType: buildType)
-    
+    let statusResource = buildStatus(branch.fullPath, buildType: buildType)
+
     statusResource.useData(owner: self) {
       (data) in
       guard let xml = data.content as? XMLDocument,
@@ -117,11 +118,11 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   }
   
   /// Use the branchSpecs to determine the display name for the given build type
-  func displayName(forBranch branch: String, buildType: String) -> String?
+  func displayName(for branch: LocalBranchRefName, buildType: String) -> String?
   {
     let vcsRoots = vcsRootsForBuildType(buildType)
     let displayNames = vcsRoots.compactMap
-        { vcsBranchSpecs[$0]?.match(branch: branch) }
+        { vcsBranchSpecs[$0]?.match(branch: branch.fullPath) }
     
     return displayNames.reduce(nil) {
       (shortest, name) -> String? in

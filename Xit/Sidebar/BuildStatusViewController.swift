@@ -115,9 +115,8 @@ final class BuildStatusViewController: NSViewController
       setProgressVisible(true)
       Task {
         do {
-          try await buildStatusCache.refresh(
-              remoteName: remoteName,
-              branchName: localBranch.referenceName.fullPath)
+          try await buildStatusCache.refresh(remoteName: remoteName,
+                                             branch: localBranch.referenceName)
         }
         catch {
           self.setProgressVisible(false)
