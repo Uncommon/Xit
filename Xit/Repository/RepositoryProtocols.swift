@@ -273,7 +273,6 @@ public protocol Stashing: AnyObject
 @Faked
 public protocol RemoteManagement: AnyObject
 {
-  associatedtype LocalBranch: Xit.LocalBranch
   associatedtype Remote: Xit.Remote
 
   func remoteNames() -> [String]
@@ -285,7 +284,7 @@ public protocol RemoteManagement: AnyObject
   /// - parameter branches: Local branches to push; must have a tracking branch set
   /// - parameter remote: Target remote to push to
   /// - parameter callbacks: Password and progress callbacks
-  func push(branches: [LocalBranch],
+  func push(branches: [LocalBranchRefName],
             remote: Remote,
             callbacks: RemoteCallbacks) throws
 

@@ -129,7 +129,7 @@ extension FakeRepo: RemoteManagement
   func addRemote(named name: String, url: URL) throws {}
   func deleteRemote(named name: String) throws {}
 
-  func push(branches: [LocalBranch],
+  func push(branches: [LocalBranchRefName],
             remote: FakeRemote,
             callbacks: RemoteCallbacks) throws {}
   func fetch(remote: FakeRemote, options: FetchOptions) throws {}
