@@ -865,7 +865,7 @@ class XTRepositoryTest: XTTest
   }
 }
 
-extension PatchMaker.PatchResult: Equatable
+extension PatchMaker.PatchResult: @retroactive Equatable
 {
   public static func ==(lhs: PatchMaker.PatchResult, rhs: PatchMaker.PatchResult) -> Bool
   {

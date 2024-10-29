@@ -191,7 +191,7 @@ extension BuildStatusController: NSPopoverDelegate
   }
 }
 
-extension BuildStatusController: BuildStatusAccessor
+extension BuildStatusController: @preconcurrency BuildStatusAccessor
 {
   var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { model.repository }
