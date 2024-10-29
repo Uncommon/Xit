@@ -18,6 +18,14 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
+protocol BranchListDelegate
+{
+  func checkOut(_ branch: LocalBranchRefName)
+  func merge(_ branch: LocalBranchRefName)
+  func rename(_ branch: LocalBranchRefName)
+  func delete(_ branch: LocalBranchRefName)
+}
+
 private let stagingSelectionTag = ""
 
 struct BranchList<Brancher: Branching,
@@ -33,6 +41,8 @@ struct BranchList<Brancher: Branching,
   let accessorizer: Accessorizer
   let selection: Binding<String?>
   let expandedItems: Binding<Set<String>>
+  
+  var delegate: BranchListDelegate?
 
   var body: some View
   {
@@ -63,11 +73,22 @@ struct BranchList<Brancher: Branching,
             }
           })
         }
-      }.overlay {
-        if model.branches.isEmpty {
-          model.contentUnavailableView("No Branches", image: "scm.branch")
-        }
       }
+        .contextMenu(forSelectionType: String.self) {
+          if let ref = branchRef(from: $0),
+             ref != brancher.currentBranch {
+            Button(.checkOut) { delegate?.checkOut(ref) }
+          }
+        } primaryAction: {
+          if let ref = branchRef(from: $0) {
+            delegate?.checkOut(ref)
+          }
+        }
+        .overlay {
+          if model.branches.isEmpty {
+            model.contentUnavailableView("No Branches", image: "scm.branch")
+          }
+        }
       FilterBar(text: $model.filter, leftContent: {
         SidebarActionButton {
           Button("New branch...") {}
@@ -78,6 +99,11 @@ struct BranchList<Brancher: Branching,
         }
       })
     }
+  }
+  
+  func branchRef(from selection: Set<String>) -> LocalBranchRefName?
+  {
+    selection.first.flatMap { LocalBranchRefName(rawValue: $0) }
   }
   
   func upstreamIndicator(for branch: BranchListItem) -> some View
@@ -181,7 +207,8 @@ struct BranchListPreview: View
                referencer: referencer,
                accessorizer: brancher,
                selection: $selection,
-               expandedItems: $expandedItems)
+               expandedItems: $expandedItems,
+               delegate: PrintingBranchDelegate())
       .listStyle(.sidebar)
       .frame(maxWidth: 250)
   }
@@ -195,6 +222,18 @@ struct BranchListPreview: View
         currentBranch: currentBranch,
         builtBranches: builtBranches)
   }
+}
+
+struct PrintingBranchDelegate: BranchListDelegate
+{
+  func checkOut(_ branch: LocalBranchRefName)
+  { print("check out \(branch.name)") }
+  func merge(_ branch: LocalBranchRefName)
+  { print("merge \(branch.name)") }
+  func rename(_ branch: LocalBranchRefName)
+  { print("rename \(branch.name)") }
+  func delete(_ branch: LocalBranchRefName)
+  { print("delete \(branch.name)") }
 }
 
 #Preview
