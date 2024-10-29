@@ -32,9 +32,9 @@ class FakeRepo: FileChangesRepo &
   {
     self.remote1.name = "origin1"
     self.remote2.name = "origin2"
-    self.localBranch1.trackingBranchName = remoteBranch1.name
+    self.localBranch1.trackingBranchName = remoteBranch1.referenceName
     self.localBranch1.trackingBranch = remoteBranch1
-    self.localBranch2.trackingBranchName = remoteBranch2.name
+    self.localBranch2.trackingBranchName = remoteBranch2.referenceName
     self.localBranch2.trackingBranch = remoteBranch2
     self.remoteBranch1.remoteName = remote1.name
     self.remoteBranch2.remoteName = remote2.name

@@ -23,7 +23,7 @@ struct CheckOutRemoteOperation: RepositoryOperation
     
     if let branch = try repository.createBranch(named: parameters.branchName,
                                                 target: fullTarget) {
-      branch.trackingBranchName = fullTarget
+      branch.trackingBranchName = remoteBranch
       if parameters.checkOut {
         try repository.checkOut(branch: parameters.branchName)
       }
@@ -55,7 +55,7 @@ struct NewBranchOperation: RepositoryOperation
     else { throw RepoError.unexpected }
     
     if parameters.track {
-      branch.trackingBranchName = parameters.startPoint
+      branch.trackingBranchName = LocalBranchRefName(parameters.startPoint)
     }
     if parameters.checkOut {
       try repository.checkOut(branch: parameters.name)

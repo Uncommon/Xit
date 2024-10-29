@@ -35,7 +35,8 @@ public struct TagReference: ReferenceKind
 /// reference name or just the branch name with no "refs/heads/" prefix.
 ///
 /// As a `RawRepresentable` type, the raw value is the full path.
-public protocol ReferenceName: Fakable, RawRepresentable where RawValue == String
+public protocol ReferenceName: Fakable, PathTreeData, Sendable, RawRepresentable
+  where RawValue == String
 {
   /// The main name, with no prefix.
   ///
@@ -57,9 +58,10 @@ extension ReferenceName
 {
   public var localName: String { name }
   public var rawValue: String { fullPath }
+  public var treeNodePath: String { fullPath }
 }
 
-public struct PrefixedRefName<Kind>: ReferenceName, Equatable
+public struct PrefixedRefName<Kind>: ReferenceName, Hashable
   where Kind: ReferenceKind
 {
   public let name: String

@@ -531,9 +531,9 @@ extension Branching
     if let localBranchRef = LocalBranchRefName(branch),
        let localBranch = localBranch(named: localBranchRef),
        let trackingBranchName = localBranch.trackingBranchName {
-      return remoteBranch(named: trackingBranchName) == nil
-          ? .missing(trackingBranchName)
-          : .set(trackingBranchName)
+      return remoteBranch(named: trackingBranchName.name) == nil
+          ? .missing(trackingBranchName.fullPath)
+          : .set(trackingBranchName.fullPath)
     }
     else {
       return .none

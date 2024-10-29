@@ -856,7 +856,7 @@ class XTRepositoryTest: XTTest
     
     let masterBranch = try XCTUnwrap(repository.localBranch(named: .init(masterBranchName)!))
     
-    XCTAssertEqual(masterBranch.trackingBranchName, remoteBranchName.name)
+    XCTAssertEqual(masterBranch.trackingBranchName?.fullPath, remoteBranchName.fullPath)
     
     let localBranch = try XCTUnwrap(repository.localTrackingBranch(
       forBranch: remoteBranchName))

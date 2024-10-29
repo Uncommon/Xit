@@ -30,7 +30,9 @@ public protocol LocalBranch: Branch
 {
   associatedtype RemoteBranch: Xit.RemoteBranch
 
-  var trackingBranchName: String? { get set }
+  /// Can be a `LocalBranchRefName` or a `RemoteBranchRefName` depeding on
+  /// the configuration.
+  var trackingBranchName: (any ReferenceName)? { get set }
   var trackingBranch: RemoteBranch? { get }
 }
 
@@ -38,6 +40,8 @@ extension LocalBranch
 {
   public var localRefName: LocalBranchRefName { referenceName }
   public var remoteName: String? { trackingBranch?.remoteName }
+  public var remoteTrackingBranchName: RemoteBranchRefName?
+  { trackingBranchName as? RemoteBranchRefName }
 }
 
 
@@ -148,7 +152,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   
   /// The name of this branch's remote tracking branch, even if the
   /// referenced branch does not exist.
-  public var trackingBranchName: String?
+  public var trackingBranchName: (any ReferenceName)?
   {
     get
     {
@@ -160,7 +164,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
       else { return nil }
       
       if remoteName == "." {
-        return mergeName
+        return LocalBranchRefName(mergeName)
       }
       else {
         guard let repo = git_reference_owner(branchRef),
@@ -171,13 +175,14 @@ public final class GitLocalBranch: GitBranch, LocalBranch
               })
         else { return nil }
         
-        return refSpec.transformToTarget(name: mergeName)?
-                      .droppingPrefix(RefPrefixes.remotes)
+        return refSpec.transformToTarget(name: mergeName).flatMap {
+          RemoteBranchRefName($0)
+        }
       }
     }
     set
     {
-      git_branch_set_upstream(branchRef, newValue)
+      git_branch_set_upstream(branchRef, newValue?.fullPath)
       (config as? GitConfig)?.loadSnapshot()
     }
   }

@@ -106,7 +106,7 @@ final class SidebarDelegate: NSObject
       if let localBranchItem = item as? LocalBranchSidebarItem,
          let localBranch = localBranchItem.branchObject() as? any LocalBranch,
          let tracked = localBranch.trackingBranchName {
-        cell.statusButton.toolTip = tracked
+        cell.statusButton.toolTip = tracked.name
       }
       cell.statusButton.target = controller
       cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
@@ -312,8 +312,8 @@ extension SidebarDelegate: NSOutlineViewDelegate
         guard let repository = model?.repository,
               let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName),
-              currentBranch.trackingBranchName == remoteBranchItem.remoteName +/
-                                                  remoteBranchItem.title
+              currentBranch.trackingBranchName?.name ==
+                  remoteBranchItem.remoteName +/ remoteBranchItem.title
         else { return nil }
         let rowView = SidebarCheckedRowView(image: .xtCurrentRemoteBranch,
                                             toolTip: .trackingToolTip)
