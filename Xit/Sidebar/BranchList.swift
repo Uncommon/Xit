@@ -5,12 +5,12 @@ protocol BranchAccessorizing<Content>
 {
   associatedtype Content: View
   
-  func accessoryView(for branch: any Branch) -> Content
+  func accessoryView(for branch: any ReferenceName) -> Content
 }
 
 struct EmptyBranchAccessorizer: BranchAccessorizing
 {
-  func accessoryView(for branch: any Branch) -> some View { EmptyView() }
+  func accessoryView(for branch: any ReferenceName) -> some View { EmptyView() }
 }
 
 extension BranchAccessorizing where Self == EmptyBranchAccessorizer
@@ -26,7 +26,7 @@ struct BranchList<Brancher: Branching,
   where Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.RemoteBranch == Referencer.RemoteBranch
 {
-  @ObservedObject var model: BranchListViewModel<Brancher>
+  @ObservedObject var model: BranchListViewModel<Brancher, Referencer>
 
   let brancher: Brancher
   let referencer: Referencer
@@ -55,11 +55,11 @@ struct BranchList<Brancher: Branching,
                                  expandedItems: expandedItems) {
           (node) in
           BranchCell(node: node,
-                     isCurrent: node.item?.referenceName == currentBranch,
+                     isCurrent: node.item?.refName == currentBranch,
                      trailingContent: {
-            if let branch = node.item {
-              upstreamIndicator(for: branch)
-              accessorizer.accessoryView(for: branch)
+            if let item = node.item {
+              upstreamIndicator(for: item)
+              accessorizer.accessoryView(for: item.refName)
             }
           })
         }
@@ -80,23 +80,24 @@ struct BranchList<Brancher: Branching,
     }
   }
   
-  func upstreamIndicator(for branch: Referencer.LocalBranch) -> some View
+  func upstreamIndicator(for branch: BranchListItem) -> some View
   {
-    if let remoteBranch = branch.trackingBranch {
-      guard let (ahead, behind) = referencer.graphBetween(
-                localBranch: branch,
+    if let remoteBranch = branch.trackingRefName {
+      // TODO: Cache graphBetween values
+      guard let status = referencer.graphBetween(
+                localBranch: branch.refName,
                 upstreamBranch: remoteBranch),
-            ahead > 0 && behind > 0
+            status.ahead > 0 && status.behind > 0
       else {
         return AnyView(Image(systemName: "network"))
       }
       var numbers = [String]()
       
-      if ahead > 0 {
-        numbers.append("↑\(ahead)")
+      if status.ahead > 0 {
+        numbers.append("↑\(status.ahead)")
       }
-      if behind > 0 {
-        numbers.append("↓\(behind)")
+      if status.behind > 0 {
+        numbers.append("↓\(status.behind)")
       }
       return AnyView(StatusBadge(numbers.joined(separator: " ")))
     }
@@ -152,9 +153,9 @@ struct BranchListPreview: View
     }
     
     @ViewBuilder
-    func accessoryView(for branch: any Branch) -> some View
+    func accessoryView(for branch: any ReferenceName) -> some View
     {
-      let branchName = branch.referenceName.name
+      let branchName = branch.name
       
       if builtBranches.contains(where: { $0.name == branchName }) {
         Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
@@ -171,11 +172,13 @@ struct BranchListPreview: View
   
   var body: some View
   {
+    let referencer = CommitReferencer()
     BranchList(model: .init(brancher: brancher,
+                            referencer: referencer,
                             detector: NullFileStatusDetection(),
                             publisher: brancher),
                brancher: brancher,
-               referencer: CommitReferencer(),
+               referencer: referencer,
                accessorizer: brancher,
                selection: $selection,
                expandedItems: $expandedItems)

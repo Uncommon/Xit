@@ -107,6 +107,13 @@ public protocol CommitStorage: AnyObject
   func walker() -> RevWalk?
 }
 
+/// How many commits one commit is compared to another in the graph.
+public struct GraphStatus: Sendable
+{
+  let ahead, behind: Int
+  
+  static var zero: GraphStatus { .init(ahead: 0, behind: 0) }
+}
 
 @Faked(types: ["Tree": "FakeTree"])
 public protocol CommitReferencing: AnyObject
@@ -120,8 +127,8 @@ public protocol CommitReferencing: AnyObject
 
   func oid(forRef: String) -> GitOID?
   func sha(forRef: String) -> String?
-  func graphBetween(localBranch: LocalBranch,
-                    upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
+  func graphBetween(localBranch: LocalBranchRefName,
+                    upstreamBranch: any ReferenceName) -> GraphStatus?
 
   func reference(named name: String) -> (any Reference)?
   func refs(at oid: GitOID) -> [String]

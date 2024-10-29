@@ -31,8 +31,8 @@ final class SidebarDelegate: NSObject
   {
     guard let refName = LocalBranchRefName(item.title),
           let localBranch = repository.localBranch(named: refName),
-          let trackingBranch = localBranch.trackingBranch,
-          let graph = repository.graphBetween(localBranch: localBranch,
+          let trackingBranch = localBranch.trackingBranchName,
+          let graph = repository.graphBetween(localBranch: refName,
                                               upstreamBranch: trackingBranch)
     else { return nil }
     

@@ -13,7 +13,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   struct RemoteItem
   {
     let name: String
-    let branches: [PathTreeNode<RemoteBranch>]
+    let branches: [PathTreeNode<RemoteBranchRefName>]
   }
   
   var unfilteredRemotes: [RemoteItem] = []
@@ -31,17 +31,17 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   
   func updateList()
   {
-    var branchesByRemote: [String: [RemoteBranch]] = [:]
+    var branchesByRemote: [String: [RemoteBranchRefName]] = [:]
     
     for branch in brancher.remoteBranches {
       if let remoteName = branch.remoteName {
-        branchesByRemote[remoteName, default: []].append(branch)
+        branchesByRemote[remoteName, default: []].append(branch.referenceName)
       }
     }
     
     unfilteredRemotes = branchesByRemote.map {
       .init(name: $0.key,
-            branches: PathTreeNode<RemoteBranch>.makeHierarchy(
+            branches: PathTreeNode<RemoteBranchRefName>.makeHierarchy(
               from: $0.value, prefix: "refs/remotes/\($0.key)/"))
     }
     filterChanged(filter)

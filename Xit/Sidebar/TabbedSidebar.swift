@@ -76,7 +76,7 @@ struct SidebarViewModel<Brancher, Manager, Referencer, Stasher, Tagger, SubManag
         Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.LocalBranch == Manager.LocalBranch
 {
-  let brachModel: BranchListViewModel<Brancher>
+  let brachModel: BranchListViewModel<Brancher, Referencer>
   let remoteModel: RemoteListViewModel<Manager, Brancher>
   let tagModel: TagListViewModel<Tagger>
   let stashModel: StashListViewModel<Stasher>
@@ -160,6 +160,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     self.repoSelection = selection
     self.model = .init(
         brachModel: .init(brancher: brancher,
+                          referencer: referencer,
                           detector: detector,
                           publisher: publisher),
         remoteModel: .init(manager: remoteManager, brancher: brancher),

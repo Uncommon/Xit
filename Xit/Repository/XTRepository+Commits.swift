@@ -50,6 +50,9 @@ extension XTRepository: CommitStorage
 
 extension XTRepository: CommitReferencing
 {
+  public typealias Tree = GitTree
+  public typealias LocalBranch = GitLocalBranch
+  
   var headReference: (any Reference)?
   { GitReference(headForRepo: gitRepo) }
   
