@@ -99,7 +99,7 @@ public protocol CommitStorage: AnyObject
   associatedtype Commit: Xit.Commit
   associatedtype RevWalk: Xit.RevWalk
 
-  func commit(forSHA sha: String) -> Commit?
+  func commit(forSHA sha: SHA) -> Commit?
   func commit(forOID oid: GitOID) -> Commit?
 
   func commit(message: String, amend: Bool) throws
@@ -123,17 +123,17 @@ public protocol CommitReferencing: AnyObject
   associatedtype LocalBranch: Xit.LocalBranch
   typealias RemoteBranch = LocalBranch.RemoteBranch
 
-  var headRef: String? { get }
+  var headRefName: (any ReferenceName)? { get }
 
-  func oid(forRef: String) -> GitOID?
-  func sha(forRef: String) -> String?
+  func oid(forRef: any ReferenceName) -> GitOID?
+  func sha(forRef: any ReferenceName) -> SHA?
   func graphBetween(localBranch: LocalBranchRefName,
                     upstreamBranch: any ReferenceName) -> GraphStatus?
 
   func reference(named name: String) -> (any Reference)?
   func refs(at oid: GitOID) -> [String]
-  func allRefs() -> [String]
-  
+  func allRefs() -> [GeneralRefName]
+
   func rebuildRefsIndex()
   
   /// Creates a commit with the given content.
@@ -153,19 +153,13 @@ class FakeCommitReferencing<
 extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
-  var headSHA: String? { headRef.flatMap { self.sha(forRef: $0) } }
-  var headOID: GitOID? { headRef.flatMap { self.oid(forRef: $0) } }
+  var headSHA: SHA? { headRefName.flatMap { self.sha(forRef: $0) } }
+  var headOID: GitOID? { headRefName.flatMap { self.oid(forRef: $0) } }
 }
 
 extension CommitReferencing where Self: CommitStorage
 {
   var headCommit: Commit? { headOID.flatMap { commit(forOID: $0) } }
-}
-
-extension CommitReferencing where Self: Branching
-{
-  var currentBranchRefName: LocalBranchRefName?
-  { currentBranch.flatMap { .init($0) } }
 }
 
 @Faked
@@ -238,7 +232,7 @@ public protocol FileContents: AnyObject
   var repoURL: URL { get }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool
-  func fileBlob(ref: String, path: String) -> Blob?
+  func fileBlob(ref: any ReferenceName, path: String) -> Blob?
   func stagedBlob(file: String) -> Blob?
   func contentsOfFile(path: String, at commit: any Commit) -> Data?
   func contentsOfStagedFile(path: String) -> Data?
@@ -347,7 +341,6 @@ extension Stashing
 @Faked
 public protocol RemoteManagement: AnyObject
 {
-  associatedtype LocalBranch: Xit.LocalBranch
   associatedtype Remote: Xit.Remote
 
   func remoteNames() -> [String]
@@ -359,7 +352,7 @@ public protocol RemoteManagement: AnyObject
   /// - parameter branches: Local branches to push; must have a tracking branch set
   /// - parameter remote: Target remote to push to
   /// - parameter callbacks: Password and progress callbacks
-  func push(branches: [LocalBranch],
+  func push(branches: [LocalBranchRefName],
             remote: Remote,
             callbacks: RemoteCallbacks) throws
 
@@ -564,5 +557,5 @@ public protocol Workspace: AnyObject
 {
   func checkOut(branch: String) throws
   func checkOut(refName: String) throws
-  func checkOut(sha: String) throws
+  func checkOut(sha: SHA) throws
 }

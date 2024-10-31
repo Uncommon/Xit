@@ -26,7 +26,6 @@ enum RemoteSearchScope: CaseIterable, Identifiable
 struct RemoteList<Manager: RemoteManagement,
                   Brancher: Branching,
                   Accessorizer: BranchAccessorizing>: View
-  where Manager.LocalBranch == Brancher.LocalBranch
 {
   @StateObject var model: RemoteListViewModel<Manager, Brancher>
   

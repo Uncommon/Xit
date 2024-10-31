@@ -109,7 +109,6 @@ public class GitBranch
     return GitOID(oidPtr: oid)
   }
 
-  var sha: String? { oid?.sha }
   public var targetCommit: (any Commit)?
   {
     guard let oid = oid,

@@ -35,9 +35,11 @@ public struct TagReference: ReferenceKind
 /// reference name or just the branch name with no "refs/heads/" prefix.
 ///
 /// As a `RawRepresentable` type, the raw value is the full path.
-public protocol ReferenceName: Fakable, PathTreeData, Sendable, RawRepresentable
+public protocol ReferenceName: Fakable, PathTreeData,
+                               Sendable, Equatable, RawRepresentable
   where RawValue == String
 {
+  // TODO: Maybe remove from protocol since GeneralRefName doesn't need it
   /// The main name, with no prefix.
   ///
   /// "refs/heads/branch" → "branch"
@@ -59,6 +61,33 @@ extension ReferenceName
   public var localName: String { name }
   public var rawValue: String { fullPath }
   public var treeNodePath: String { fullPath }
+}
+
+public struct GeneralRefName: ReferenceName, Hashable
+{
+  public let rawValue: String
+
+  public var fullPath: String { rawValue }
+  public var name: String { rawValue.lastPathComponent } // probably not used
+
+  public static func fakeDefault() -> GeneralRefName { .init(unchecked: "fake") }
+
+  static var head: GeneralRefName { .init(unchecked: "HEAD") }
+
+  public init?(rawValue: String)
+  {
+    guard GitReference.isValidName(rawValue)
+    else { return nil }
+
+    self.rawValue = rawValue
+  }
+
+  /// Use when the name is statically known to be valid, or when an instance must
+  /// exist but there is no valid value due to unexpected circumstances.
+  init(unchecked: String)
+  {
+    self.rawValue = unchecked
+  }
 }
 
 public struct PrefixedRefName<Kind>: ReferenceName, Hashable
@@ -85,7 +114,16 @@ public struct PrefixedRefName<Kind>: ReferenceName, Hashable
 
     self.name = rawValue.droppingPrefix(Kind.prefix)
   }
-  
+
+  public init?(_ refName: GeneralRefName)
+  {
+    let fullPath = refName.fullPath
+    guard fullPath.hasPrefix(Kind.prefix)
+    else { return nil }
+
+    self.name = fullPath.droppingPrefix(Kind.prefix)
+  }
+
   public init?(_ name: String)
   {
     // +/ (appending path component) will quietly consume leading slashes

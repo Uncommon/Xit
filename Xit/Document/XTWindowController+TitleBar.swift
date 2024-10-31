@@ -8,8 +8,8 @@ extension XTWindowController
     else { return }
 
     titleBarController?.updateBranchList(
-        repo.localBranches.compactMap { $0.referenceName.name },
-        current: repo.currentBranch?.name)
+        repo.localBranches.compactMap { $0.referenceName },
+        current: repo.currentBranch)
   }
 
   func updateNavButtons()

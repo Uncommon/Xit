@@ -42,7 +42,7 @@ extension Commit
 
 extension Commit
 {
-  public var parentSHAs: [String]
+  public var parentSHAs: [SHA]
   { parentOIDs.compactMap { $0.sha } }
   
   public var messageSummary: String
@@ -56,7 +56,7 @@ extension Commit
   }
 
   public var description: String
-  { id.sha.firstSix() }
+  { id.sha.shortString }
 }
 
 public final class GitCommit: Commit
@@ -169,7 +169,7 @@ public final class GitCommit: Commit
     self.init(gitCommit: commit)
   }
   
-  convenience init?(sha: String, repository: OpaquePointer)
+  convenience init?(sha: SHA, repository: OpaquePointer)
   {
     guard let oid = GitOID(sha: sha)
     else { return nil }

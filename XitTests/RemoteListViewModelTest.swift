@@ -54,8 +54,8 @@ struct RemoteListViewModelTest
     try #require(model.remotes.count == 1)
     #expect(model.remotes[0].name == remoteName)
     try #require(model.remotes[0].branches.count == 2)
-    #expect(model.remotes[0].branches[0].item?.name == "refs/remotes/origin/main")
-    #expect(model.remotes[0].branches[1].item?.name == "refs/remotes/origin/superBranch")
+    #expect(model.remotes[0].branches[0].item?.name == "origin/main")
+    #expect(model.remotes[0].branches[1].item?.name == "origin/superBranch")
     #expect(model.remotes[0].branches[1].children?.count == 1)
   }
   

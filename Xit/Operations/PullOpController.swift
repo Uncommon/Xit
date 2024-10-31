@@ -8,7 +8,7 @@ final class PullOpController: FetchOpController
       windowController?.operationEnded(self)
     }
     guard let repository = repository,
-          let branchName = repository.currentBranchRefName
+          let branchName = repository.currentBranch
     else {
       repoLogger.debug("Can't get current branch")
       throw RepoError.detachedHead

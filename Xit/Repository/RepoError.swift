@@ -18,7 +18,7 @@ public enum RepoError: Swift.Error
   case alreadyWriting
   case authenticationFailed
   case cherryPickInProgress
-  case commitNotFound(sha: String?)
+  case commitNotFound(sha: SHA?)
   case conflict  // List of conflicted files?
   case detachedHead
   case duplicateName
@@ -82,7 +82,7 @@ public enum RepoError: Swift.Error
       case .patchMismatch:
         return .patchMismatch
       case .commitNotFound(let sha):
-        return .commitNotFound(sha?.firstSix())
+        return .commitNotFound(sha?.shortString)
       case .fileNotFound(let path):
         return .fileNotFound(path)
       case .notFound:

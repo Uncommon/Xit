@@ -344,8 +344,8 @@ extension BranchResult: CustomStringConvertible
 {
   var description: String
   {
-    guard let first = entries.first?.commit.id.sha.firstSix(),
-          let last = entries.last?.commit.id.sha.firstSix()
+    guard let first = entries.first?.commit.id.sha.shortString,
+          let last = entries.last?.commit.id.sha.shortString
     else { return "empty" }
     
     return "\(first)..\(last)"
@@ -433,7 +433,7 @@ extension CommitHistory
             let lastSecondaryIndex = entries.firstIndex(where:
                 { $0.commit.id == lastSecondaryEntry.commit.id }) {
       #if DEBUGLOG
-      print(" ** after secondary \(lastSecondaryOID.SHA!.firstSix())")
+      print(" ** after secondary \(lastSecondaryOID.sha!.shortString)")
       #endif
       entries.insert(contentsOf: result.entries, at: lastSecondaryIndex)
     }
@@ -484,12 +484,12 @@ extension CommitHistory
     let branchResult = BranchResult<C>(entries: result, queue: queue)
     
 #if DEBUGLOG
-    let before = entries.last?.commit.parentOIDs.map { $0.SHA.firstSix() }
+    let before = entries.last?.commit.parentOIDs.map { $0.sha.shortString }
                         .joinWithSeparator(" ")
     
     print("\(branchResult) ‹ \(before ?? "-")", terminator: "")
     for (commit, after) in queue {
-      print(" (\(commit.SHA!.firstSix()) › \(after.SHA!.firstSix()))",
+      print(" (\(commit.sha!.shortString) › \(after.sha!.shortString))",
             terminator: "")
     }
     print("")

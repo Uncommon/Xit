@@ -14,12 +14,12 @@ class StringRepository: CommitStorage
     self.commits = commits
   }
   
-  func oid(forSHA sha: String) -> GitOID?
+  func oid(forSHA sha: SHA) -> GitOID?
   {
     .init(sha: sha)
   }
   
-  func commit(forSHA sha: String) -> StringCommit?
+  func commit(forSHA sha: SHA) -> StringCommit?
   {
     commits.first { $0.id.sha == sha }
   }
@@ -100,7 +100,7 @@ class CommitHistoryTest: XCTestCase
         }
         
         XCTAssert(parentIndex > index,
-                  "\(entry.commit.id.sha.firstSix()) ≮ \(parentOID.sha.firstSix())")
+                  "\(entry.commit.id.sha.shortString) ≮ \(parentOID.sha.shortString)")
       }
     }
   }
@@ -563,8 +563,10 @@ class CommitHistoryTest: XCTestCase
       heads: ["a", "b", "f"])
     else { return }
     
-    history.entries.sort(by: { $0.commit.id.sha < $1.commit.id.sha })
-    
+    history.entries.sort(by: {
+      $0.commit.id.sha.rawValue < $1.commit.id.sha.rawValue
+    })
+
     let connections = generateConnections(history)
     
     let aToD = CommitConnection(parentOID: "d", childOID: "a", colorIndex: 0)

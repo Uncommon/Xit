@@ -8,23 +8,22 @@ let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
 
-let kEmptyTreeHash = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
-
 public final class XTRepository: BasicRepository, RepoConfiguring
 {
   let gitRepo: OpaquePointer
   @objc public let repoURL: URL
   let gitRunner: CLIRunner
   let mutex = NSRecursiveLock()
-  var refsIndex = [String: [String]]()
+  var refsIndex = [SHA: [String]]()
 
-  let currentBranchSubject = CurrentValueSubject<String?, Never>(nil)
+  let currentBranchSubject = CurrentValueSubject<LocalBranchRefName?, Never>(nil)
   
   public weak var controller: RepositoryController? = nil
   
   fileprivate(set) public var isWriting = false
 
-  fileprivate(set) var cachedHeadRef, cachedHeadSHA: String?
+  fileprivate(set) var cachedHeadRef: (any ReferenceName)?
+  fileprivate(set) var cachedHeadSHA: SHA?
   var cachedStagedChanges: [FileChange]?
   {
     get { controller?.cache.stagedChanges }
@@ -269,8 +268,8 @@ extension XTRepository
   public func graphBetween(localBranch: LocalBranchRefName,
                            upstreamBranch: any ReferenceName) -> GraphStatus?
   {
-    if let localOID = oid(forRef: localBranch.fullPath),
-       let upstreamOID = oid(forRef: upstreamBranch.fullPath) {
+    if let localOID = oid(forRef: localBranch),
+       let upstreamOID = oid(forRef: upstreamBranch) {
       return graphBetween(local: localOID, upstream: upstreamOID)
     }
     else {

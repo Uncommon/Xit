@@ -170,7 +170,7 @@ struct StashListPreview: View
     {
       messages.enumerated().map {
         (index, message) in
-        Stash(message: message, oid: .init(string: "\(index+1)"))
+        Stash(message: message, oid: .init(sha: "\(index+1)")!)
       }
     }
 

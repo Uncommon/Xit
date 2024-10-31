@@ -2,7 +2,6 @@ import Foundation
 
 class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   : FilteringListViewModel
-    where Manager.LocalBranch == Brancher.LocalBranch
 {
   typealias Remote = Manager.Remote
   typealias RemoteBranch = Brancher.RemoteBranch

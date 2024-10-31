@@ -127,7 +127,7 @@ final class HistoryTableController: NSViewController,
       
       let refs = repository.allRefs()
       
-      for ref in refs where ref != "refs/stash" {
+      for ref in refs where ref.fullPath != "refs/stash" {
         if let oid = repository.oid(forRef: ref) {
           walker.push(oid: oid)
         }
@@ -350,7 +350,7 @@ extension HistoryTableController: NSTableViewDelegate
         (result as! DateCellView).date = entry.commit.commitDate
 
       case ColumnID.sha:
-        result.textField?.stringValue = entry.commit.id.sha.firstSix()
+        result.textField?.stringValue = entry.commit.id.sha.shortString
 
       case ColumnID.refs:
         let refsCell = result as! HistoryCellView

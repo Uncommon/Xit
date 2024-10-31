@@ -61,7 +61,7 @@ final class BuildStatusCache: BuildStatusAccessor
 
           do {
             try await refresh(remoteName: remoteName,
-                              branchName: local.referenceName.fullPath)
+                              branch: local.referenceName)
           }
           catch {}
         }
@@ -81,7 +81,7 @@ final class BuildStatusCache: BuildStatusAccessor
   }
 
   @MainActor
-  func refresh(remoteName: String, branchName: String) async throws
+  func refresh(remoteName: String, branch: LocalBranchRefName) async throws
   {
     guard let (api, buildTypes) = matchBuildStatusService(remoteName)
     else {
@@ -91,7 +91,7 @@ final class BuildStatusCache: BuildStatusAccessor
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for buildType in buildTypes {
-        guard let branchName = api.displayName(forBranch: branchName,
+        guard let branchName = api.displayName(for: branch,
                                                buildType: buildType)
         else { continue }
         let statusResource = api.buildStatus(branchName, buildType: buildType)

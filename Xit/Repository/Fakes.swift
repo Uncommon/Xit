@@ -183,11 +183,11 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
 
   var controller: (any RepositoryController)?
 
-  var headRef: String? = nil
+  var headRefName: (any ReferenceName)? = nil
   var currentBranch: LocalBranchRefName? = nil
-  
-  func sha(forRef: String) -> String? { nil }
-  
+    
+  func sha(forRef: any ReferenceName) -> SHA? { nil }
+
   func tags() throws -> [Tag] { [] }
   func graphBetween(localBranch: LocalBranchRefName,
                     upstreamBranch: any ReferenceName) -> GraphStatus?
@@ -197,17 +197,17 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   { nil }
   func reference(named name: String) -> (any Reference)? { nil }
   func refs(at oid: GitOID) -> [String] { [] }
-  func allRefs() -> [String] { [] }
+  func allRefs() -> [GeneralRefName] { [] }
   func rebuildRefsIndex() {}
   func createCommit(with tree: Tree, message: String, parents: [Commit],
                     updatingReference refName: String) throws -> GitOID
   { .zero() }
-  func oid(forRef: String) -> GitOID? { nil }
+  func oid(forRef: any ReferenceName) -> GitOID? { nil }
 
   var repoURL: URL { URL(fileURLWithPath: "") }
   
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: String, path: String) -> Blob? { nil }
+  func fileBlob(ref: any ReferenceName, path: String) -> Blob? { nil }
   func stagedBlob(file: String) -> Blob? { nil }
   func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }

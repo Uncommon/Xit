@@ -44,7 +44,7 @@ final class PushOpController: PasswordOpController
   func start<R>(_ repository: R) throws where R: FullRepository
   {
     let remote: R.Remote
-    let branches: [R.LocalBranch]
+    let branches: [LocalBranchRefName]
 
     switch remoteOption {
       case .all:
@@ -55,7 +55,7 @@ final class PushOpController: PasswordOpController
         return
       
       case .currentBranch, nil:
-        guard let branchName = repository.currentBranchRefName,
+        guard let branchName = repository.currentBranch,
               let currentBranch = repository.localBranch(named: branchName)
         else {
           repoLogger.debug("Can't get current branch")
@@ -70,7 +70,7 @@ final class PushOpController: PasswordOpController
         }
 
         remote = trackedRemote
-        branches = [currentBranch]
+        branches = [branchName]
 
       case .named(let remoteName):
         guard let namedRemote = repository.remote(named: remoteName)
@@ -88,13 +88,13 @@ final class PushOpController: PasswordOpController
         }
 
         remote = namedRemote
-        branches = localTrackingBranches
+        branches = localTrackingBranches.map { $0.referenceName }
     }
 
     let alert = NSAlert()
     let remoteName = remote.name ?? "origin"
     let message: UIString = branches.count == 1 ?
-          .confirmPush(localBranch: branches.first!.referenceName.fullPath,
+          .confirmPush(localBranch: branches.first!.fullPath,
                        remote: remoteName) :
           .confirmPushAll(remote: remoteName)
     
@@ -117,7 +117,7 @@ final class PushOpController: PasswordOpController
                      CommitReferencing & Branching) throws
   {
     guard let window = windowController?.window,
-          let branchName = repository.currentBranchRefName,
+          let branchName = repository.currentBranch,
           let currentBranch = repository.localBranch(named: branchName)
     else {
       throw RepoError.unexpected
@@ -140,7 +140,7 @@ final class PushOpController: PasswordOpController
         return
       }
       
-      self.push(repository, branches: [currentBranch], remote: remote, then: {
+      self.push(repository, branches: [branchName], remote: remote, then: {
         // This is now on the repo queue
         if let remoteName = remote.name {
           DispatchQueue.main.async {
@@ -171,7 +171,7 @@ final class PushOpController: PasswordOpController
   }
   
   func push<R>(_ repository: R,
-               branches: [R.LocalBranch],
+               branches: [LocalBranchRefName],
                remote: R.Remote,
                then callback: (@Sendable () -> Void)? = nil)
     where R: RemoteManagement

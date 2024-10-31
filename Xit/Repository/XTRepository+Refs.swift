@@ -25,7 +25,7 @@ extension XTRepository: Branching
     }
   }
 
-  public var currentBranchPublisher: AnyPublisher<String?, Never>
+  public var currentBranchPublisher: AnyPublisher<LocalBranchRefName?, Never>
   { currentBranchSubject.eraseToAnyPublisher() }
   
   public var localBranches: AnySequence<GitLocalBranch>

@@ -23,7 +23,7 @@ class XTEmptyRepositoryTest: XTTest
   func testEmptyRepositoryHead()
   {
     XCTAssertFalse(repository.hasHeadReference())
-    XCTAssertEqual(repository.parentTree(), kEmptyTreeHash)
+    XCTAssertEqual(repository.parentTree(), SHA.emptyTree.rawValue)
   }
   
   func testIsTextFileName()
@@ -505,17 +505,8 @@ class XTRepositoryTest: XTTest
 
   func testHeadRef()
   {
-    XCTAssertEqual(repository.headRef, "refs/heads/master")
-    
-    guard let headSHA = repository.headSHA
-    else {
-      XCTFail("no head SHA")
-      return
-    }
-    let hexChars = CharacterSet(charactersIn: "0123456789abcdefABCDEF")
-    
-    XCTAssertEqual(headSHA.utf8.count, 40)
-    XCTAssertTrue(headSHA.trimmingCharacters(in: hexChars).isEmpty)
+    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/master")
+    XCTAssertNotNil(repository.headSHA)
   }
   
   func testDetachedCheckout() throws
@@ -553,7 +544,8 @@ class XTRepositoryTest: XTTest
   
   func testFileBlob() throws
   {
-    let blob = try XCTUnwrap(repository.fileBlob(ref: "HEAD", path: TestFileName.file1.rawValue))
+    let blob = try XCTUnwrap(repository.fileBlob(ref: GeneralRefName.head,
+                                                 path: TestFileName.file1.rawValue))
     var blobString: String? = nil
     
     blob.withUnsafeBytes({ blobString = String(bytes: $0, encoding: .utf8) })

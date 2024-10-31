@@ -13,7 +13,7 @@ extension HistoryTableController: NSMenuItemValidation
       case #selector(resetToCommit(sender:)):
         if let (clickedRow, _) = tableView.contextMenuCell,
            clickedRow >= 0,
-           let branchName = repository.currentBranchRefName,
+           let branchName = repository.currentBranch,
            let branch = repository.localBranch(named: branchName),
            let branchOID = branch.oid {
           return branchOID != history.entries[clickedRow].commit.id
@@ -37,7 +37,7 @@ extension HistoryTableController
     let pasteboard = NSPasteboard.general
 
     pasteboard.clearContents()
-    pasteboard.setString(history.entries[clickedCell.0].commit.id.sha,
+    pasteboard.setString(history.entries[clickedCell.0].commit.id.sha.rawValue,
                          forType: .string)
   }
 

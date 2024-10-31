@@ -84,7 +84,7 @@ extension XTRepository: Workspace
     clearCachedBranch()
   }
   
-  public func checkOut(sha: String) throws
+  public func checkOut(sha: SHA) throws
   {
     guard let oid = GitOID(sha: sha)
     else { throw RepoError.notFound }

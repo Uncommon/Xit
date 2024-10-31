@@ -19,7 +19,8 @@ final class NewTagOpController: OperationController
     }
 
     Task {
-      let dialog = NewTagDialog(commitMessage: commit.message ?? selectedOID.sha,
+      let dialog = NewTagDialog(commitMessage: commit.message ??
+                                               selectedOID.sha.rawValue,
                                 signature: .init(name: userName,
                                                  email: userEmail,
                                                  when: .now))

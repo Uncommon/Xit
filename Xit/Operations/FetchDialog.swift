@@ -33,7 +33,7 @@ struct FetchDialog: SheetDialog
   /// - the one remote, if there is only one
   func defaultRemoteName() -> String?
   {
-    if let branchName = repository.currentBranchRefName {
+    if let branchName = repository.currentBranch {
       let currentBranch = repository.localBranch(named: branchName)
 
       if let trackingBranch = currentBranch?.trackingBranch {

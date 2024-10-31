@@ -117,7 +117,7 @@ final class XTWindowController: NSWindowController,
       },
       repo.currentBranchPublisher.sink {
         [weak self] in
-        self?.titleBarController?.selectedBranch = $0
+        self?.titleBarController?.selectedBranch = $0?.name
         self?.updateMiniwindowTitle()
       },
       window.publisher(for: \.tabbedWindows).sink {

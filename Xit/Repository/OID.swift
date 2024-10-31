@@ -54,28 +54,16 @@ public struct GitOID: Sendable
     }
   }
   
-  init?(sha: String)
+  init?(sha: SHA)
   {
-    guard sha.lengthOfBytes(using: .ascii) == GitOID.shaLength
-    else { return nil }
-    
     var oid = git_oid()
-    guard git_oid_fromstr(&oid, sha) == 0
+    guard git_oid_fromstr(&oid, sha.rawValue) == 0
     else { return nil }
     
     self.oid = oid
   }
 
-  init(string: String)
-  {
-    let padded = String(repeating: "0",
-                        count: GitOID.shaLength - string.count) + string
-
-    self.oid = .init()
-    precondition(git_oid_fromstr(&oid, padded) == 0, "failed to parse OID string")
-  }
-
-  public var sha: String
+  public var sha: SHA
   {
     let length = GitOID.shaLength + 1
     let storage = UnsafeMutablePointer<Int8>.allocate(capacity: length)
@@ -87,7 +75,7 @@ public struct GitOID: Sendable
     git_oid_fmt(storage, &oid)
     // `git_oid_fmt()` doesn't add the terminator
     (storage + GitOID.shaLength).pointee = 0
-    return String(cString: storage)
+    return .init(String(cString: storage))!
   }
 
   public var isZero: Bool
@@ -129,12 +117,15 @@ extension GitOID: Hashable
 
 extension GitOID: CustomStringConvertible
 {
-  public var description: String { sha }
+  public var description: String { sha.rawValue }
 }
 
 extension GitOID: CustomDebugStringConvertible
 {
-  public var debugDescription: String { .init(sha.drop(while: { $0 == "0" })) }
+  public var debugDescription: String
+  {
+    .init(sha.rawValue.drop(while: { $0 == "0" }))
+  }
 }
 
 extension GitOID // Fakable

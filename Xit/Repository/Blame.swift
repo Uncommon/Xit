@@ -50,7 +50,8 @@ public final class GitBlame: Blame
       if startHunk {
         let parts = line.components(separatedBy: .whitespaces)
         guard parts.count >= 3,
-              let oid = GitOID(sha: parts[0])
+              let sha = SHA(parts[0]),
+              let oid = GitOID(sha: sha)
         else { continue }
         
         if var last = hunks.last,
@@ -108,7 +109,7 @@ public final class GitBlame: Blame
     var args = ["blame", "-p", path]
     
     if let sha = startOID?.sha {
-      args.insert(contentsOf: [sha, "--"], at: 2)
+      args.insert(contentsOf: [sha.rawValue, "--"], at: 2)
     }
     
     guard let data = try? repository.executeGit(args: args, writes: false),

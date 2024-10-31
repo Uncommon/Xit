@@ -73,8 +73,7 @@ struct SidebarViewModel<Brancher, Manager, Referencer, Stasher, Tagger, SubManag
         Referencer: CommitReferencing,
         Stasher: Stashing, Tagger: Tagging,
         SubManager: SubmoduleManagement,
-        Brancher.LocalBranch == Referencer.LocalBranch,
-        Brancher.LocalBranch == Manager.LocalBranch
+        Brancher.LocalBranch == Referencer.LocalBranch
 {
   let brachModel: BranchListViewModel<Brancher, Referencer>
   let remoteModel: RemoteListViewModel<Manager, Brancher>
@@ -89,8 +88,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   where Brancher: Branching, Manager: RemoteManagement,
         Referencer: CommitReferencing,
         Stasher: Stashing, Tagger: Tagging, SubManager: SubmoduleManagement,
-        Brancher.LocalBranch == Referencer.LocalBranch,
-        Brancher.LocalBranch == Manager.LocalBranch
+        Brancher.LocalBranch == Referencer.LocalBranch
 {
   @State var tab: SidebarTab = .local(modified: false)
   @State var expandedBranches: Set<String> = []
