@@ -39,17 +39,17 @@ struct BranchList<Brancher: Branching,
   let brancher: Brancher
   let referencer: Referencer
   let accessorizer: Accessorizer
-  let selection: Binding<String?>
-  let expandedItems: Binding<Set<String>>
   
   var delegate: BranchListDelegate?
+  @Binding var selection: String?
+  @Binding var expandedItems: Set<String>
 
   var body: some View
   {
     let currentBranch = brancher.currentBranch
     
     VStack(spacing: 0) {
-      List(selection: selection) {
+      List(selection: $selection) {
         HStack {
           Label("Staging", systemImage: "arrow.up.square")
           Spacer()
@@ -62,7 +62,7 @@ struct BranchList<Brancher: Branching,
         // could have a performance impact.
         Divider()
         RecursiveDisclosureGroup(model.branches,
-                                 expandedItems: expandedItems) {
+                                 expandedItems: $expandedItems) {
           (node) in
           BranchCell(node: node,
                      isCurrent: node.item?.refName == currentBranch,

@@ -32,18 +32,18 @@ struct RemoteList<Manager: RemoteManagement,
   let manager: Manager
   let brancher: Brancher
   let accessorizer: Accessorizer
-  let selection: Binding<String?>
-  var expandedItems: Binding<Set<String>>
+  @Binding var selection: String?
+  @Binding var expandedItems: Set<String>
 
   var body: some View
   {
     VStack(spacing: 0) {
-      List(selection: selection) {
+      List(selection: $selection) {
         ForEach(model.remotes, id: \.name) {
           (remote) in
           DisclosureGroup(isExpanded: remoteExpandedBinding(remote.name)) {
             RecursiveDisclosureGroup(remote.branches,
-                                     expandedItems: expandedItems) {
+                                     expandedItems: $expandedItems) {
               (node) in
               BranchCell(node: node, trailingContent: {
                 if let branch = node.item {
@@ -67,9 +67,9 @@ struct RemoteList<Manager: RemoteManagement,
           Button("New remote...") {}
           Button("Rename remote") {}
           // TODO: enabled specifically if a remote is selected
-            .disabled(selection.wrappedValue == nil)
+            .disabled(selection == nil)
           Button("Delete remote") {}
-            .disabled(selection.wrappedValue == nil)
+            .disabled(selection == nil)
         }
       }, fieldRightContent: {
         Picker(selection: $model.searchScope, content: {
@@ -93,7 +93,7 @@ struct RemoteList<Manager: RemoteManagement,
   
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
-    return expandedItems.binding(for: RefPrefixes.remotes + remoteName)
+    return $expandedItems.binding(for: RefPrefixes.remotes + remoteName)
   }
 }
 

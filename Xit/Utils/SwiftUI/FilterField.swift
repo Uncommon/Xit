@@ -5,7 +5,7 @@ import SwiftUI
 /// of the text.
 struct FilterField<LeftContent: View, RightContent: View>: View
 {
-  let text: Binding<String>
+  @Binding var text: String
   let prompt: Text?
   let leftContent: () -> LeftContent
   let rightContent: () -> RightContent
@@ -16,12 +16,12 @@ struct FilterField<LeftContent: View, RightContent: View>: View
   {
     HStack(spacing: 4) {
       leftContent()
-        .environment(\.filterActive, !text.wrappedValue.isEmpty)
-      TextField("", text: text, prompt: prompt)
+        .environment(\.filterActive, !text.isEmpty)
+      TextField("", text: $text, prompt: prompt)
         .textFieldStyle(.plain)
         .focused($isFocused)
       rightContent()
-        .environment(\.filterActive, !text.wrappedValue.isEmpty)
+        .environment(\.filterActive, !text.isEmpty)
     }
       .buttonStyle(.borderless)
       .padding(4)
@@ -37,7 +37,7 @@ struct FilterField<LeftContent: View, RightContent: View>: View
        @ViewBuilder leftContent: @escaping () -> LeftContent,
        @ViewBuilder rightContent: @escaping () -> RightContent)
   {
-    self.text = text
+    self._text = text
     self.prompt = prompt
     self.leftContent = leftContent
     self.rightContent = rightContent

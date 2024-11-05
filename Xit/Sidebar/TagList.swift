@@ -6,15 +6,15 @@ struct TagList<Tagger: Tagging>: View
 {
   @ObservedObject var model: TagListViewModel<Tagger>
 
-  var selection: Binding<String?>
-  var expandedItems: Binding<Set<String>>
+  @Binding var selection: String?
+  @Binding var expandedItems: Set<String>
 
   var body: some View
   {
     VStack(spacing: 0) {
-      List(selection: selection) {
+      List(selection: $selection) {
         RecursiveDisclosureGroup(model.tags,
-                                 expandedItems: expandedItems) {
+                                 expandedItems: $expandedItems) {
           (tag: PathTreeNode<Tagger.Tag>) in
           let item = tag.item
           HStack {
@@ -48,15 +48,6 @@ struct TagList<Tagger: Tagging>: View
         }
       }
     }
-  }
-
-  init(model: TagListViewModel<Tagger>,
-       selection: Binding<String?>,
-       expandedItems: Binding<Set<String>>)
-  {
-    self.model = model
-    self.selection = selection
-    self.expandedItems = expandedItems
   }
 }
 

@@ -95,7 +95,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   @State var expandedRemotes: Set<String> = []
   @State var expandedTags: Set<String> = []
 
-  let repoSelection: Binding<(any RepositorySelection)?>
+  @Binding var repoSelection: (any RepositorySelection)?
   @State private var selectedBranch: String? = nil
   @State private var selectedTag: String? = nil
   @State private var selectedStash: GitOID? = nil
@@ -155,7 +155,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     self.stasher = stasher
     self.submobuleManager = submoduleManager
     self.tagger = tagger
-    self.repoSelection = selection
+    self._repoSelection = selection
     self.model = .init(
         brachModel: .init(brancher: brancher,
                           referencer: referencer,
@@ -179,21 +179,19 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
         guard let selectedBranch,
               let repo = brancher as? any FileChangesRepo
         else {
-          repoSelection.wrappedValue = nil
+          repoSelection = nil
           return
         }
         if selectedBranch.isEmpty {
-          repoSelection.wrappedValue = StagingSelection(repository: repo,
-                                                        amending: false)
+          repoSelection = StagingSelection(repository: repo, amending: false)
         }
         else if let refName = LocalBranchRefName(selectedBranch),
                 let branch = brancher.localBranch(named: refName),
                 let commit = branch.targetCommit {
-          repoSelection.wrappedValue = CommitSelection(repository: repo,
-                                                       commit: commit)
+          repoSelection = CommitSelection(repository: repo, commit: commit)
         }
         else {
-          repoSelection.wrappedValue = nil
+          repoSelection = nil
         }
       }
   }
@@ -223,11 +221,10 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
            let tag = tagger.tag(named: selectedTag),
            let commit = tag.commit,
            let repo = tagger as? any FileChangesRepo {
-          repoSelection.wrappedValue = CommitSelection(repository: repo,
-                                                       commit: commit)
+          repoSelection = CommitSelection(repository: repo, commit: commit)
         }
         else {
-          repoSelection.wrappedValue = nil
+          repoSelection = nil
         }
       }
   }
@@ -242,11 +239,10 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
         if let selectedStash,
            let index = stasher.findStashIndex(selectedStash),
            let repo = stasher as? (any FileChangesRepo & Stashing) {
-          repoSelection.wrappedValue = StashSelection(repository: repo,
-                                                      index: UInt(index))
+          repoSelection = StashSelection(repository: repo, index: UInt(index))
         }
         else {
-          repoSelection.wrappedValue = nil
+          repoSelection = nil
         }
       }
   }

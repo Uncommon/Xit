@@ -14,14 +14,14 @@ extension TabItem {
 
 struct IconTabPicker<Item>: View where Item: TabItem {
   let items: [Item]
-  let selection: Binding<Item>
+  @Binding var selection: Item
 
   var body: some View {
     HStack {
       ForEach(items) {
         (item) in
-        let isSelected = item == selection.wrappedValue
-        Button(action: { selection.wrappedValue = item },
+        let isSelected = item == selection
+        Button(action: { selection = item },
                label: {
           item.icon
             .padding(.horizontal, 6)

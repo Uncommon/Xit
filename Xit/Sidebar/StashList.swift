@@ -9,7 +9,7 @@ struct StashList<Stasher: Stashing>: View
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
 
-  let selection: Binding<GitOID?>
+  @Binding var selection: GitOID?
 
   enum StashAction
   {
@@ -55,7 +55,7 @@ struct StashList<Stasher: Stashing>: View
   var body: some View
   {
     VStack(spacing: 0) {
-      List(model.stashes, id: \.id, selection: selection) {
+      List(model.stashes, id: \.id, selection: $selection) {
         (stash: Stasher.Stash) in
         HStack {
           // Label() placed the text too low relative to the icon
@@ -110,7 +110,7 @@ struct StashList<Stasher: Stashing>: View
        selection: Binding<GitOID?>)
   {
     self._model = .init(wrappedValue: model)
-    self.selection = selection
+    self._selection = selection
   }
 
   func confirm(_ action: StashAction)

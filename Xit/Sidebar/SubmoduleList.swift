@@ -4,12 +4,12 @@ import Combine
 struct SubmoduleList<Manager: SubmoduleManagement>: View
 {
   @ObservedObject var model: SubmoduleListModel<Manager>
-  let selection: Binding<String?>
+  @Binding var selection: String?
 
   var body: some View
   {
     VStack {
-      List(model.submodules, id: \.name, selection: selection) {
+      List(model.submodules, id: \.name, selection: $selection) {
         Label($0.name, systemImage: "square.split.bottomrightquarter")
       }.overlay {
         if model.submodules.isEmpty {
