@@ -56,7 +56,13 @@ extension XTWindowController: TitleBarDelegate
 {
   func branchSelecetd(_ branch: String)
   {
-    try? repoDocument!.repository.checkOut(branch: branch)
+    guard let branchRef = LocalBranchRefName.named(branch)
+    else {
+      // show error?
+      return
+    }
+
+    try? repoDocument!.repository.checkOut(branch: branchRef)
   }
 
   var viewStates: (sidebar: Bool, history: Bool, details: Bool)

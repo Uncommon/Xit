@@ -6,12 +6,12 @@ final class ReferenceNameTests: XCTestCase
   func testInit()
   {
     XCTAssertNil(LocalBranchRefName(rawValue: "/"))
-    XCTAssertNil(LocalBranchRefName("/"))
+    XCTAssertNil(LocalBranchRefName.named("/"))
     XCTAssertNil(LocalBranchRefName(rawValue: "refs/tags/branch"))
     XCTAssertNil(RemoteBranchRefName(remote: "origin", branch: "/oops"))
 
     XCTAssertNotNil(LocalBranchRefName(rawValue: "refs/heads/branch"))
-    XCTAssertNotNil(LocalBranchRefName("branch"))
+    XCTAssertNotNil(LocalBranchRefName.named("branch"))
     XCTAssertNotNil(RemoteBranchRefName(remote: "origin", branch: "branch"))
     XCTAssertNotNil(TagRefName(rawValue: "refs/tags/marker"))
   }

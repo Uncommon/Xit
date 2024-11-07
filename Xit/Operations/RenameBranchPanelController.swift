@@ -5,14 +5,16 @@ final class RenameBranchPanelController: SheetController
   @IBOutlet weak var promptLabel: NSTextField!
   @IBOutlet weak var textField: NSTextField!
   
-  var branchName: String
+  var branchName: LocalBranchRefName?
   {
     get
-    { textField.stringValue }
+    { .named(textField.stringValue) }
     set
     {
-      promptLabel.uiStringValue = .renamePrompt(newValue)
-      textField.stringValue = newValue
+      guard let newValue
+      else { preconditionFailure("shouldn't set nil branch") }
+      promptLabel.uiStringValue = .renamePrompt(newValue.name)
+      textField.stringValue = newValue.name
     }
   }
 }

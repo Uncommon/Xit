@@ -7,10 +7,10 @@ extension XTRepository
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
   }
   
-  func moveHead(to refName: String) throws
+  func moveHead(to refName: some ReferenceName) throws
   {
-    let result = git_repository_set_head(gitRepo, refName)
-    
+    let result = git_repository_set_head(gitRepo, refName.fullPath)
+
     try RepoError.throwIfGitError(result)
   }
   
@@ -55,19 +55,17 @@ extension XTRepository
 
 extension XTRepository: Workspace
 {
-  public func checkOut(branch: String) throws
+  public func checkOut(branch: LocalBranchRefName) throws
   {
     try performWriting {
       // invalidate ref caches
       
-      let branchRef = RefPrefixes.heads.appending(pathComponent: branch)
-      
-      try checkOut(refName: branchRef)
-      try moveHead(to: branchRef)
+      try checkOut(refName: branch)
+      try moveHead(to: branch)
     }
   }
   
-  public func checkOut(refName: String) throws
+  public func checkOut(refName: some ReferenceName) throws
   {
     guard let ref = reference(named: refName),
           let oid = ref.targetOID

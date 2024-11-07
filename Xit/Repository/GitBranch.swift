@@ -163,7 +163,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
       else { return nil }
       
       if remoteName == "." {
-        return LocalBranchRefName(mergeName)
+        return LocalBranchRefName.named(mergeName)
       }
       else {
         guard let repo = git_reference_owner(branchRef),
@@ -175,7 +175,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
         else { return nil }
         
         return refSpec.transformToTarget(name: mergeName).flatMap {
-          RemoteBranchRefName($0)
+          RemoteBranchRefName(rawValue: $0)
         }
       }
     }

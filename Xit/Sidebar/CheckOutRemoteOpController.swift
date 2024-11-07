@@ -65,7 +65,7 @@ final class CheckOutRemoteOpController: OperationController
   func validateBranch(_ branchName: String) -> CheckOutRemotePanel.BranchNameStatus
   {
     guard !branchName.isEmpty,
-          let refName = LocalBranchRefName(branchName),
+          let refName = LocalBranchRefName.named(branchName),
           refName.isValid
     else {
       return .invalid

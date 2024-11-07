@@ -195,7 +195,7 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   func localBranch(named name: LocalBranchRefName) -> LocalBranch? { nil }
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
   { nil }
-  func reference(named name: String) -> (any Reference)? { nil }
+  func reference(named name: some ReferenceName) -> (any Reference)? { nil }
   func refs(at oid: GitOID) -> [String] { [] }
   func allRefs() -> [GeneralRefName] { [] }
   func rebuildRefsIndex() {}

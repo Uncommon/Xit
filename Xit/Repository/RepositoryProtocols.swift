@@ -130,7 +130,7 @@ public protocol CommitReferencing: AnyObject
   func graphBetween(localBranch: LocalBranchRefName,
                     upstreamBranch: any ReferenceName) -> GraphStatus?
 
-  func reference(named name: String) -> (any Reference)?
+  func reference(named name: some ReferenceName) -> (any Reference)?
   func refs(at oid: GitOID) -> [String]
   func allRefs() -> [GeneralRefName]
 
@@ -152,7 +152,7 @@ class FakeCommitReferencing<
 
 extension CommitReferencing
 {
-  var headReference: (any Reference)? { reference(named: "HEAD") }
+  var headReference: (any Reference)? { reference(named: .head) }
   var headSHA: SHA? { headRefName.flatMap { self.sha(forRef: $0) } }
   var headOID: GitOID? { headRefName.flatMap { self.oid(forRef: $0) } }
 }
@@ -457,9 +457,9 @@ public protocol Branching: AnyObject
   var remoteBranches: AnySequence<RemoteBranch> { get }
   
   /// Creates a branch at the given target ref
-  func createBranch(named name: String,
-                    target: String) throws -> LocalBranch?
-  func rename(branch: String, to: String) throws
+  func createBranch(named name: LocalBranchRefName,
+                    target: some ReferenceName) throws -> LocalBranch?
+  func rename(branch: LocalBranchRefName, to: LocalBranchRefName) throws
   func localBranch(named refName: LocalBranchRefName) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
@@ -526,10 +526,9 @@ enum TrackingBranchStatus: Sendable
 
 extension Branching
 {
-  func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
+  func trackingBranchStatus(for branch: LocalBranchRefName) -> TrackingBranchStatus
   {
-    if let localBranchRef = LocalBranchRefName(branch),
-       let localBranch = localBranch(named: localBranchRef),
+    if let localBranch = self.localBranch(named: branch),
        let trackingBranchName = localBranch.trackingBranchName {
       return remoteBranch(named: trackingBranchName.name) == nil
           ? .missing(trackingBranchName.fullPath)
@@ -546,16 +545,16 @@ public protocol Tagging: AnyObject
 {
   associatedtype Tag: Xit.Tag
   func tags() throws -> [Tag]
-  func tag(named name: String) -> Tag?
+  func tag(named name: TagRefName) -> Tag?
   func createTag(name: String, targetOID: GitOID, message: String?) throws
   func createLightweightTag(name: String, targetOID: GitOID) throws
-  func deleteTag(name: String) throws
+  func deleteTag(name: TagRefName) throws
 }
 
 @Faked
 public protocol Workspace: AnyObject
 {
-  func checkOut(branch: String) throws
-  func checkOut(refName: String) throws
+  func checkOut(branch: LocalBranchRefName) throws
+  func checkOut(refName: some ReferenceName) throws
   func checkOut(sha: SHA) throws
 }

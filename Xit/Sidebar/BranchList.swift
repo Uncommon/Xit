@@ -244,6 +244,6 @@ struct PrintingBranchDelegate: BranchListDelegate
       "someWork",
     ],
     currentBranch: .init("refs/heads/master"),
-                    builtBranches: ["refs/heads/someWork"].map { .init($0)! })
+                    builtBranches: ["refs/heads/someWork"].map { .named($0)! })
 }
 #endif

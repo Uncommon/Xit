@@ -19,13 +19,12 @@ struct CheckOutRemoteOperation: RepositoryOperation
   
   func perform(using parameters: CheckOutRemotePanel.Model) throws
   {
-    let fullTarget = remoteBranch.fullPath
-    
-    if let branch = try repository.createBranch(named: parameters.branchName,
-                                                target: fullTarget) {
+    if let branchName = LocalBranchRefName.named(parameters.branchName),
+       let branch = try repository.createBranch(named: branchName,
+                                                target: remoteBranch) {
       branch.trackingBranchName = remoteBranch
       if parameters.checkOut {
-        try repository.checkOut(branch: parameters.branchName)
+        try repository.checkOut(branch: branchName)
       }
     }
     else {
@@ -49,16 +48,17 @@ struct NewBranchOperation: RepositoryOperation
   
   func perform(using parameters: Parameters) throws
   {
-    guard let branch = try repository.createBranch(
-        named: parameters.name,
-        target: RefPrefixes.heads + parameters.startPoint)
+    guard let branchName = LocalBranchRefName.named(parameters.name),
+          let target = LocalBranchRefName.named(parameters.startPoint),
+          let branch = try repository.createBranch(named: branchName,
+                                                   target: target)
     else { throw RepoError.unexpected }
     
     if parameters.track {
-      branch.trackingBranchName = LocalBranchRefName(parameters.startPoint)
+      branch.trackingBranchName = LocalBranchRefName.named(parameters.startPoint)
     }
     if parameters.checkOut {
-      try repository.checkOut(branch: parameters.name)
+      try repository.checkOut(branch: branchName)
     }
   }
 }

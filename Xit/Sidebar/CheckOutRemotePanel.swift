@@ -86,7 +86,7 @@ struct CheckOutRemotePanel_Previews: PreviewProvider {
   static var previews: some View {
     CheckOutRemotePanel(
         model: .init(),
-        originBranch: .init("origin/something/branch")!,
+        originBranch: .init(remote: "origin", branch: "something/branch")!,
         validateBranch: { _ in .valid },
         cancelAction: {},
         createAction: {}).padding()
@@ -97,7 +97,7 @@ struct CheckOutRemotePanel_Previews: PreviewProvider {
           model.branchName = "name"
           return model
         }(),
-        originBranch: .init("origin/something/branch")!,
+        originBranch: .init(remote: "origin", branch: "something/branch")!,
         validateBranch: { _ in .invalid },
         cancelAction: {},
         createAction: {}).padding()

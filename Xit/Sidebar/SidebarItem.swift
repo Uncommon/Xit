@@ -192,7 +192,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
 
   override func branchObject() -> (any Branch)?
   {
-    guard let refName = LocalBranchRefName(title)
+    guard let refName = LocalBranchRefName.named(title)
     else { return nil }
     
     return selection!.repository.localBranch(named: refName)
@@ -210,7 +210,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
 
   func hasTrackingBranch() -> Bool
   {
-    guard let refName = LocalBranchRefName(title),
+    guard let refName = LocalBranchRefName.named(title),
           let branch = selection!.repository.localBranch(named: refName)
     else { return false }
     
@@ -353,8 +353,8 @@ final class TagSidebarItem: SidebarItem
   {
     self.tag = tag
     
-    super.init(title: tag.name)
-    
+    super.init(title: tag.name.name)
+
     // The cast to GitTag is unfortunate but hard to get around. It doesn't seem
     // to make sense to have a repository property in the Tag protocol.
     if let commit = tag.commit as (any Commit)?,

@@ -94,7 +94,7 @@ class XTRepositoryMergeTest: XTTest
 
   func mergeC0C1(useCLI: Bool) throws
   {
-    guard let c1OID = repository.localBranch(named: .init("c1")!)?.oid
+    guard let c1OID = repository.localBranch(named: .named("c1")!)?.oid
     else {
       XCTFail("c1 branch missing")
       return

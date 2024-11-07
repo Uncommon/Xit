@@ -327,7 +327,9 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       if await confirmDelete(kind: "branch", name: item.title) {
         self.callCommand(targetItem: item) {
           [weak self] (item) in
-          _ = try? self?.repo.deleteBranch(item.title)
+          guard let branch = LocalBranchRefName.named(item.title)
+          else { return }
+          _ = try? self?.repo.deleteBranch(branch)
         }
       }
     }

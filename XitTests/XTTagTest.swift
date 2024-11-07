@@ -2,20 +2,21 @@ import XCTest
 @testable import Xit
 
 let message = "testing"
-let tagName = "testTag"
+let tagName = TagRefName("testTag")
 
 class XTTagTest: XTTest
 {
   func testAnnotatedTag() throws
   {
-    _ = try repository.executeGit(args: ["tag", "-a", tagName, "-m", message],
+    _ = try repository.executeGit(args: ["tag", "-a", tagName.name,
+                                         "-m", message],
                                   writes: true)
     try checkTag(hasMessage: true)
   }
   
   func testLightweightTag() throws
   {
-    _ = try repository.executeGit(args: ["tag", tagName],
+    _ = try repository.executeGit(args: ["tag", tagName.name],
                                   writes: true)
     try checkTag(hasMessage: false)
   }
@@ -29,7 +30,7 @@ class XTTagTest: XTTest
   
   func checkTag(hasMessage: Bool) throws
   {
-    let tag = try XCTUnwrap(GitTag(repository: repository, name:tagName),
+    let tag = try XCTUnwrap(GitTag(repository: repository, name: tagName),
                             "tag not found")
 
     XCTAssertNotNil(tag.targetOID)
@@ -38,7 +39,7 @@ class XTTagTest: XTTest
     }
     
     let fullTag = try XCTUnwrap(GitTag(repository: repository,
-                                       name: "refs/tags/" + tagName),
+                                       name: tagName),
                                 "tag not found by full name")
 
     XCTAssertNotNil(fullTag.targetOID)

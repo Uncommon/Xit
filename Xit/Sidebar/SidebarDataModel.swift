@@ -67,7 +67,7 @@ final class SidebarDataModel: @unchecked Sendable
       case let remoteBranchItem as RemoteBranchSidebarItem:
         return remoteBranchItem.remoteName
       case let localBranchItem as LocalBranchSidebarItem:
-        guard let refName = LocalBranchRefName(localBranchItem.title),
+        guard let refName = LocalBranchRefName.named(localBranchItem.title),
               let branch = repo.localBranch(named: refName)
         else {
           repoLogger.debug("Can't get branch for branch item: \(branchItem.title)")
@@ -186,7 +186,7 @@ final class SidebarDataModel: @unchecked Sendable
       
       for tag in sortedTags {
         let tagItem = TagSidebarItem(tag: tag)
-        let tagParent = parent(for: tag.name, groupItem: tagsGroup)
+        let tagParent = parent(for: tag.name.name, groupItem: tagsGroup)
         
         tagParent.children.append(tagItem)
       }

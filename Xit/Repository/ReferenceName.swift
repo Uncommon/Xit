@@ -72,8 +72,6 @@ public struct GeneralRefName: ReferenceName, Hashable
 
   public static func fakeDefault() -> GeneralRefName { .init(unchecked: "fake") }
 
-  static var head: GeneralRefName { .init(unchecked: "HEAD") }
-
   public init?(rawValue: String)
   {
     guard GitReference.isValidName(rawValue)
@@ -82,12 +80,22 @@ public struct GeneralRefName: ReferenceName, Hashable
     self.rawValue = rawValue
   }
 
+  public init(_ refName: some ReferenceName)
+  {
+    self.rawValue = refName.rawValue
+  }
+
   /// Use when the name is statically known to be valid, or when an instance must
   /// exist but there is no valid value due to unexpected circumstances.
   init(unchecked: String)
   {
     self.rawValue = unchecked
   }
+}
+
+extension ReferenceName where Self == GeneralRefName
+{
+  static var head: GeneralRefName { .init(unchecked: "HEAD") }
 }
 
 public struct PrefixedRefName<Kind>: ReferenceName, Hashable
@@ -124,13 +132,16 @@ public struct PrefixedRefName<Kind>: ReferenceName, Hashable
     self.name = fullPath.droppingPrefix(Kind.prefix)
   }
 
-  public init?(_ name: String)
+  // Originally, the intent was to have init(_:) be checked, and
+  // init(stringLiteral:) be unchecked. But because of SE-0213 the compiler
+  // always prefers the stringLiteral version.
+  static func named(_ name: String) -> Self?
   {
     // +/ (appending path component) will quietly consume leading slashes
     guard !name.hasPrefix("/") && GitReference.isValidName(Kind.prefix +/ name)
     else { return nil }
-    
-    self.name = name.droppingPrefix(Kind.prefix)
+
+    return .init(rawValue: Kind.prefix +/ name)
   }
 }
 
@@ -161,8 +172,17 @@ extension PrefixedRefName where Kind == RemoteBranchReference
   {
     guard !remote.hasPrefix("/") && !branch.hasPrefix("/")
     else { return nil }
-    
-    self.init(remote +/ branch)
+
+    self.init(rawValue: Kind.prefix +/ remote +/ branch)
+  }
+}
+
+extension PrefixedRefName: ExpressibleByStringLiteral,
+                           ExpressibleByStringInterpolation
+{
+  public init(stringLiteral: StringLiteralType)
+  {
+    self.init(rawValue: Kind.prefix +/ stringLiteral)!
   }
 }
 
@@ -171,4 +191,4 @@ public typealias RemoteBranchRefName = PrefixedRefName<RemoteBranchReference>
 public typealias TagRefName = PrefixedRefName<TagReference>
 
 extension PrefixedRefName: Fakable
-{ public static func fakeDefault() -> Self { .init("fake")! } }
+{ public static func fakeDefault() -> Self { .named("fake")! } }

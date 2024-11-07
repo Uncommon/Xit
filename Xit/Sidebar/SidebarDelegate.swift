@@ -29,7 +29,7 @@ final class SidebarDelegate: NSObject
                     for item: SidebarItem) -> String?
     where R: SidebarDataModel.Repository
   {
-    guard let refName = LocalBranchRefName(item.title),
+    guard let refName = LocalBranchRefName.named(item.title),
           let localBranch = repository.localBranch(named: refName),
           let trackingBranch = localBranch.trackingBranchName,
           let graph = repository.graphBetween(localBranch: refName,
@@ -128,7 +128,9 @@ final class SidebarDelegate: NSObject
       dataView.statusText.isHidden = false
     }
     else if dataView.statusButton.image == nil {
-      switch repository.trackingBranchStatus(for: sideBarItem.title) {
+      guard let branch = LocalBranchRefName.named(sideBarItem.title)
+      else { return }
+      switch repository.trackingBranchStatus(for: branch) {
         case .none:
           break
         case .missing(let tracking):

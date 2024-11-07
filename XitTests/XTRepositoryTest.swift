@@ -452,10 +452,10 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockBranches()
   {
-    let masterBranch = "master"
-    let testBranch1 = "testBranch1"
-    let testBranch2 = "testBranch2"
-    
+    let masterBranch: LocalBranchRefName = "master"
+    let testBranch1: LocalBranchRefName = "testBranch1"
+    let testBranch2: LocalBranchRefName = "testBranch2"
+
     assertWriteAction(name: "create") {
       CreateBranch(testBranch1)
     }
@@ -830,7 +830,7 @@ class XTRepositoryTest: XTTest
   {
     let remoteName = "origin"
     let masterBranchName = "master"
-    let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remoteName +/ masterBranchName))
+    let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remote: remoteName, branch: masterBranchName))
 
     makeRemoteRepo()
     try execute(in: remoteRepository) {
@@ -846,8 +846,8 @@ class XTRepositoryTest: XTTest
     
     repository.config.invalidate()
     
-    let masterBranch = try XCTUnwrap(repository.localBranch(named: .init(masterBranchName)!))
-    
+    let masterBranch = try XCTUnwrap(repository.localBranch(named: .named(masterBranchName)!))
+
     XCTAssertEqual(masterBranch.trackingBranchName?.fullPath, remoteBranchName.fullPath)
     
     let localBranch = try XCTUnwrap(repository.localTrackingBranch(

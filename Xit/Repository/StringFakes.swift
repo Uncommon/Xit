@@ -73,7 +73,7 @@ struct FakeTree: Tree
 
 struct FakeTag: Tag
 {
-  let name: String
+  let name: TagRefName
   let signature: Signature?
   let targetOID: GitOID?
   let commit: FakeCommit?

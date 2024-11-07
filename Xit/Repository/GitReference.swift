@@ -35,10 +35,10 @@ final class GitReference: Reference
     self.ref = reference
   }
   
-  init?(name: String, repository: OpaquePointer)
+  init?(name: some ReferenceName, repository: OpaquePointer)
   {
     guard let ref = try? OpaquePointer.from({
-      git_reference_lookup(&$0, repository, name)
+      git_reference_lookup(&$0, repository, name.fullPath)
     })
     else { return nil }
     

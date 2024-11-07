@@ -5,8 +5,8 @@ final class OperationTests: XTTest
 {
   func testCheckOutRemote() throws
   {
-    let branchName = "branch"
-    
+    let branchName: LocalBranchRefName = "branch"
+
     makeRemoteRepo()
     try execute(in: remoteRepository) {
       CommitFiles {
@@ -20,19 +20,19 @@ final class OperationTests: XTTest
     }
 
     let remoteBranchName = try XCTUnwrap(
-      RemoteBranchRefName(remote: "origin", branch: branchName))
+      RemoteBranchRefName(remote: "origin", branch: branchName.name))
     let operation = CheckOutRemoteOperation(repository: repository,
                                             remoteBranch: remoteBranchName)
     let model = CheckOutRemotePanel.Model()
     
-    model.branchName = branchName
+    model.branchName = branchName.name
     model.checkOut = true
     
     try operation.perform(using: model)
     
     let currentBranch = repository.currentBranch
     
-    XCTAssertEqual(currentBranch?.name, branchName)
+    XCTAssertEqual(currentBranch?.name, branchName.name)
   }
   
   func testNewBranch() throws
@@ -61,6 +61,6 @@ final class OperationTests: XTTest
     try operation.perform(using: parameters)
 
     XCTAssertEqual(repository.currentBranch?.name, "master")
-    XCTAssertNotNil(repository.localBranch(named: .init("branch")!))
+    XCTAssertNotNil(repository.localBranch(named: .named("branch")!))
   }
 }

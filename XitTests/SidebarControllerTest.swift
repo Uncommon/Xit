@@ -81,7 +81,7 @@ class SidebarHandlerTest: XTTest
   func testDeleteOtherBranch() throws
   {
     _ = try repository.createBranch(named: "other",
-                                    target: "refs/heads/master")
+                                    target: LocalBranchRefName("master"))
     XCTAssertTrue(checkDeleteBranch(named: "other"))
   }
 

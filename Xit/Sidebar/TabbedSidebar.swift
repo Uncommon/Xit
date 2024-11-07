@@ -185,7 +185,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
         if selectedBranch.isEmpty {
           repoSelection = StagingSelection(repository: repo, amending: false)
         }
-        else if let refName = LocalBranchRefName(selectedBranch),
+        else if let refName = LocalBranchRefName.named(selectedBranch),
                 let branch = brancher.localBranch(named: refName),
                 let commit = branch.targetCommit {
           repoSelection = CommitSelection(repository: repo, commit: commit)
@@ -218,7 +218,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
             expandedItems: $expandedTags)
       .onChange(of: selectedTag) {
         if let selectedTag,
-           let tag = tagger.tag(named: selectedTag),
+           let tagRef = TagRefName.named(selectedTag),
+           let tag = tagger.tag(named: tagRef),
            let commit = tag.commit,
            let repo = tagger as? any FileChangesRepo {
           repoSelection = CommitSelection(repository: repo, commit: commit)

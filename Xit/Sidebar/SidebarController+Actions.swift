@@ -27,7 +27,9 @@ extension SidebarController
     callCommand {
       [weak self] (item) in
       do {
-        try self?.repo.checkOut(branch: item.title)
+        guard let branch = LocalBranchRefName.named(item.title)
+        else { return }
+        try self?.repo.checkOut(branch: branch)
       }
       catch let error as RepoError {
         switch error {
@@ -54,7 +56,7 @@ extension SidebarController
     guard let item = targetItem() as? RemoteBranchSidebarItem,
           let controller = view.window?.windowController as? XTWindowController
     else { return }
-    guard let refName = RemoteBranchRefName(item.fullName)
+    guard let refName = RemoteBranchRefName.named(item.fullName)
     else {
       assertionFailure("can't resolve item ref name")
       return
@@ -70,10 +72,11 @@ extension SidebarController
   func renameBranch(_ sender: Any?)
   {
     guard let selectedItem = targetItem(),
-          let controller = view.window?.windowController as? XTWindowController
+          let controller = view.window?.windowController as? XTWindowController,
+          let branchName = LocalBranchRefName.named(selectedItem.title)
     else { return }
     
-    controller.startRenameBranch(selectedItem.title)
+    controller.startRenameBranch(branchName)
   }
   
   @IBAction
@@ -129,7 +132,9 @@ extension SidebarController
       if await confirmDelete(kind: "tag", name: item.title) {
         self.callCommand(targetItem: item) {
           [weak self] (item) in
-          try self?.repo.deleteTag(name: item.title)
+          guard let tag = TagRefName.named(item.title)
+          else { return }
+          try self?.repo.deleteTag(name: tag)
         }
       }
     }
@@ -259,7 +264,7 @@ extension SidebarController
       switch response {
         
         case .alertFirstButtonReturn: // Clear
-          if let refName = LocalBranchRefName(item.title),
+          if let refName = LocalBranchRefName.named(item.title),
              let branch = self.repo.localBranch(named: refName) {
             branch.trackingBranchName = nil
           }

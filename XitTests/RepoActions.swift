@@ -323,13 +323,13 @@ struct CheckOut: RepoAction
 {
   enum Reference
   {
-    case branch(String)
+    case branch(LocalBranchRefName)
     case sha(SHA)
   }
 
   let reference: Reference
 
-  init(branch: String)
+  init(branch: LocalBranchRefName)
   {
     self.reference = .branch(branch)
   }
@@ -352,10 +352,10 @@ struct CheckOut: RepoAction
 
 struct CreateBranch: RepoAction
 {
-  let branch: String
+  let branch: LocalBranchRefName
   let checkOut: Bool
 
-  init(_ branch: String, checkOut: Bool = false)
+  init(_ branch: LocalBranchRefName, checkOut: Bool = false)
   {
     self.branch = branch
     self.checkOut = checkOut
@@ -367,7 +367,7 @@ struct CreateBranch: RepoAction
     else { throw UnreachableError() }
 
     _ = try repository.createBranch(named: branch,
-                                    target: currentBranch.fullPath)
+                                    target: currentBranch)
     if checkOut {
       try repository.checkOut(branch: branch)
     }
@@ -394,7 +394,7 @@ struct Merge: RepoAction
   func execute(in repository: any FullRepository) throws
   {
     guard let branch = sourceBranch ??
-            branchName.flatMap({ repository.localBranch(named: .init($0)!) })
+            branchName.flatMap({ repository.localBranch(named: .named($0)!) })
     else { throw RepoError.unexpected }
 
     try repository.merge(branch: branch)

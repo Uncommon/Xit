@@ -296,7 +296,7 @@ final class XTWindowController: NSWindowController,
 //    tab.accessoryView = tabButton
   }
 
-  public func startRenameBranch(_ branchName: String)
+  public func startRenameBranch(_ branchName: LocalBranchRefName)
   {
     _ = startOperation { RenameBranchOpController(windowController: self,
                                                   branchName: branchName) }
