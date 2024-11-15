@@ -192,7 +192,7 @@ class RemoteBranchTests: UnicodeRepoUITests
   {
     XCTContext.runActivity(named: "open Create Tracking Branch sheet") {
       _ in
-      Sidebar.cell(named: newBranchName).rightClick()
+      Sidebar.Branches.cell(named: newBranchName).rightClick()
       Sidebar.remoteBranchPopup
              .menuItems[.RemoteBranchPopup.createTracking].tap()
     }

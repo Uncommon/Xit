@@ -68,26 +68,43 @@ enum PrefsWindow
   }
 }
 
+protocol SidebarList
+{
+  static var list: XCUIElement { get }
+}
+
+extension SidebarList
+{
+  static func cell(named name: String) -> XCUIElement
+  {
+    return list.cells.containing(.staticText, identifier: name).firstMatch
+  }
+}
+
 enum Sidebar
 {
+  enum Branches: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.branchList]
+    static let currentBranchCell =
+        list.cells.containing(.any,
+                              identifier: .Sidebar.currentBranch).firstMatch
+  }
+
+  enum Tags: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.tagList]
+  }
+
   static let list = Window.window.outlines[.Sidebar.list]
-  static let branchList = Window.window.outlines[.Sidebar.branchList]
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
   static let stagingCell = list.cells.element(boundBy: 1)
-  static let currentBranchCell =
-      list.cells.containing(.any,
-                            identifier: .Sidebar.currentBranch).firstMatch
 
   static let branchPopup = XitApp.menus[.Menu.branch]
   static let remoteBranchPopup = XitApp.menus[.Menu.remoteBranch]
   static let tagPopup = XitApp.menus[.Menu.tag]
 
-  static func cell(named name: String) -> XCUIElement
-  {
-    return list.cells.containing(.staticText, identifier: name).firstMatch
-  }
-  
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
     let expected = "\(workspace)▸\(staged)"

@@ -42,8 +42,8 @@ class ReadOnlyUITests: XCTestCase
   {
     let aBranches = Self.env.repo.defaultBranches.filter { $0.contains("a") }
     let andBranches = aBranches.filter { $0.contains("and") }
-    let masterBranchCell = Sidebar.cell(named: "master")
-    let newBranchCell = Sidebar.cell(named: "new")
+    let masterBranchCell = Sidebar.Branches.cell(named: "master")
+    let newBranchCell = Sidebar.Branches.cell(named: "new")
     
     XCTContext.runActivity(named: "Filter with 'a'") { _ in
       Sidebar.filter.click()

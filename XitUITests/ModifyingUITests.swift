@@ -62,11 +62,11 @@ class ModifyingUITests: XCTestCase
     let oldBranchName = "and-how"
     let newBranchName = "and-then"
 
-    BranchList.cell(named: oldBranchName).rightClick()
+    Sidebar.Branches.list.staticTexts[oldBranchName].rightClick()
     Window.window.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
 
-    XCTAssertTrue(Sidebar.branchList.staticTexts[newBranchName]
+    XCTAssertTrue(Sidebar.Branches.list.staticTexts[newBranchName]
         .waitForExistence(timeout: 1.0))
 
     let branches = env.git.branches()
@@ -85,22 +85,22 @@ class ModifyingUITests: XCTestCase
     XCTAssert(Window.window.waitForExistence(timeout: 2))
     XCTContext.runActivity(named: "Cancel delete branch") {
       _ in
-      Sidebar.branchList.staticTexts[branchName].rightClick()
+      Sidebar.Branches.list.staticTexts[branchName].rightClick()
       Window.window.menuItems[.BranchPopup.delete].click()
 
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
-      XCTAssertTrue(Sidebar.branchList.staticTexts[branchName].exists)
+      XCTAssertTrue(Sidebar.Branches.list.staticTexts[branchName].exists)
       XCTAssertTrue(env.git.branches().contains(branchName))
     }
 
     XCTContext.runActivity(named: "Actually delete branch") {
       _ in
-      Sidebar.branchList.staticTexts[branchName].rightClick()
+      Sidebar.Branches.list.staticTexts[branchName].rightClick()
       Window.window.menuItems[.BranchPopup.delete].click()
 
       sheet.buttons["Delete"].click()
-      wait(for: [absence(of: Sidebar.branchList.staticTexts[branchName])],
+      wait(for: [absence(of: Sidebar.Branches.list.staticTexts[branchName])],
            timeout: 5.0)
       XCTAssertFalse(env.git.branches().contains(branchName))
     }
@@ -142,7 +142,7 @@ class ModifyingUITests: XCTestCase
   {
     env.open()
 
-    let branchText = Sidebar.currentBranchCell.staticTexts.firstMatch
+    let branchText = Sidebar.Branches.currentBranchCell.staticTexts.firstMatch
     let featureBranch = "feature"
 
     XCTAssertEqual(branchText.stringValue, "master")
@@ -150,7 +150,7 @@ class ModifyingUITests: XCTestCase
     env.git.checkOut(branch: featureBranch)
 
     wait(for: [expectation(for: .init(format: "value == %@", featureBranch),
-                          evaluatedWith: branchText)],
+                           evaluatedWith: branchText)],
          timeout: 5)
   }
   
@@ -179,7 +179,7 @@ class ModifyingUITests: XCTestCase
     env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
     env.open()
     
-    let newBranchCell = Sidebar.cell(named: "new")
+    let newBranchCell = Sidebar.Branches.cell(named: "new")
 
     XCTAssertTrue(newBranchCell.waitForExistence(timeout: 1))
     
@@ -188,12 +188,12 @@ class ModifyingUITests: XCTestCase
     wait(for: [absence(of: newBranchCell)], timeout: 5.0)
 
     // Expand the folder
-    Sidebar.list.children(matching: .outlineRow).element(boundBy: 9)
+    Sidebar.Branches.list.children(matching: .outlineRow).element(boundBy: 9)
            .disclosureTriangles.firstMatch.click()
 
-    let folderCell = Sidebar.cell(named: folderName)
-    let subBranchCell = Sidebar.cell(named: subBranchName)
-    
+    let folderCell = Sidebar.Branches.cell(named: folderName)
+    let subBranchCell = Sidebar.Branches.cell(named: subBranchName)
+
     XCTAssertTrue(folderCell.exists)
     XCTAssertTrue(subBranchCell.waitForExistence(timeout: 1.0))
 
