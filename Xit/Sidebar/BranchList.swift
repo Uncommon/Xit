@@ -71,16 +71,18 @@ struct BranchList<Brancher: Branching,
         RecursiveDisclosureGroup(model.branches,
                                  expandedItems: $expandedItems) {
           (node) in
+          let isCurrent = node.item?.refName == currentBranch
           BranchCell(node: node,
-                     isCurrent: node.item?.refName == currentBranch,
+                     isCurrent: isCurrent,
                      trailingContent: {
             if let item = node.item {
               upstreamIndicator(for: item)
               accessorizer.accessoryView(for: item.refName)
             }
-          })
+          }).accessibilityIdentifier(isCurrent ? .Sidebar.currentBranch : .empty)
         }
       }
+        .accessibilityIdentifier(.Sidebar.branchList)
         .contextMenu(forSelectionType: String.self) {
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {

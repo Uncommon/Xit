@@ -32,9 +32,8 @@ extension NSAccessibilityProtocol
 
 extension View
 {
-  public func accessibilityIdentifier(_ id: AXID)
-    -> ModifiedContent<Self, AccessibilityAttachmentModifier>
+  public func accessibilityIdentifier(_ id: AXID) -> some View
   {
-    accessibility(identifier: id.rawValue)
+    accessibilityIdentifier(id.rawValue)
   }
 }

@@ -71,11 +71,12 @@ enum PrefsWindow
 enum Sidebar
 {
   static let list = Window.window.outlines[.Sidebar.list]
+  static let branchList = Window.window.outlines[.Sidebar.branchList]
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
   static let stagingCell = list.cells.element(boundBy: 1)
   static let currentBranchCell =
-      list.cells.containing(.staticText,
+      list.cells.containing(.any,
                             identifier: .Sidebar.currentBranch).firstMatch
 
   static let branchPopup = XitApp.menus[.Menu.branch]
