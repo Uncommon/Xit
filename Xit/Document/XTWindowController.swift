@@ -15,7 +15,8 @@ protocol RepositoryUIController: AnyObject
   func select(oid: GitOID)
   func reselect()
   func updateForFocus()
-  func showErrorMessage(error: RepoError)
+  func showAlert(message: UIString, info: UIString)
+  func showAlert(nsError: NSError)
 }
 
 extension RepositoryUIController
@@ -30,6 +31,11 @@ extension RepositoryUIController
       [weak self] in
       self?.selection = $0
     }
+  }
+
+  func showErrorMessage(error: RepoError)
+  {
+    showAlert(message: error.message, info: .empty)
   }
 }
 

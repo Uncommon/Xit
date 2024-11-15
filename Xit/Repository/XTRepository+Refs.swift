@@ -73,6 +73,16 @@ extension XTRepository: Branching
     try RepoError.throwIfGitError(result)
   }
 
+  public func deleteBranch(_ name: LocalBranchRefName) throws
+  {
+    return try writing {
+      guard let branch = localBranch(named: name)
+      else { throw RepoError.notFound }
+
+      try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))
+    }
+  }
+
   public func localBranch(named refName: LocalBranchRefName) -> GitLocalBranch?
   {
     let fullName = refName.fullPath

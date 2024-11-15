@@ -460,6 +460,7 @@ public protocol Branching: AnyObject
   func createBranch(named name: LocalBranchRefName,
                     target: some ReferenceName) throws -> LocalBranch?
   func rename(branch: LocalBranchRefName, to: LocalBranchRefName) throws
+  func deleteBranch(_ name: LocalBranchRefName) throws
   func localBranch(named refName: LocalBranchRefName) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
@@ -490,6 +491,7 @@ extension Branching
 
 public protocol Merging: AnyObject
 {
+  // TODO: take a reference name instead of a branch object
   func merge(branch: any Branch) throws
   // In the future, expose more merge analysis and options
 }
@@ -516,6 +518,7 @@ public enum ResetMode: Sendable
 
 enum TrackingBranchStatus: Sendable
 {
+  // TODO: use reference name instead of string
   /// No tracking branch set
   case none
   /// References a non-existent branch

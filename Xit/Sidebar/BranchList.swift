@@ -18,12 +18,19 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
+@MainActor
 protocol BranchListDelegate
 {
+  func newBranch()
   func checkOut(_ branch: LocalBranchRefName)
   func merge(_ branch: LocalBranchRefName)
   func rename(_ branch: LocalBranchRefName)
   func delete(_ branch: LocalBranchRefName)
+}
+
+extension EnvironmentValues
+{
+  @Entry var branchListDelegate: (any BranchListDelegate)? = nil
 }
 
 private let stagingSelectionTag = ""
@@ -39,10 +46,10 @@ struct BranchList<Brancher: Branching,
   let brancher: Brancher
   let referencer: Referencer
   let accessorizer: Accessorizer
-  
-  var delegate: BranchListDelegate?
   @Binding var selection: String?
   @Binding var expandedItems: Set<String>
+
+  @Environment(\.branchListDelegate) var delegate: BranchListDelegate?
 
   var body: some View
   {
@@ -75,9 +82,12 @@ struct BranchList<Brancher: Branching,
         }
       }
         .contextMenu(forSelectionType: String.self) {
-          if let ref = branchRef(from: $0),
-             ref != brancher.currentBranch {
-            Button(.checkOut) { delegate?.checkOut(ref) }
+          if let ref = branchRef(from: $0) {
+            if ref != brancher.currentBranch {
+              Button(.checkOut) { delegate?.checkOut(ref) }
+            }
+            Button(.rename) { delegate?.rename(ref) }
+            Button(.delete) { delegate?.delete(ref) }
           }
         } primaryAction: {
           if let ref = branchRef(from: $0) {
@@ -91,11 +101,21 @@ struct BranchList<Brancher: Branching,
         }
       FilterBar(text: $model.filter, leftContent: {
         SidebarActionButton {
-          Button("New branch...") {}
-          Button("Rename branch") {}
-            .disabled(selection.wrappedValue == nil)
-          Button("Delete branch") {}
-            .disabled(selection.wrappedValue == nil)
+          let branchRef = selection.flatMap { LocalBranchRefName.named($0) }
+
+          Button("New branch...") { delegate?.newBranch() }
+          Button("Rename branch") {
+            if let branchRef {
+              delegate?.rename(branchRef)
+            }
+          }
+            .disabled(branchRef == nil)
+          Button("Delete branch") {
+            if let branchRef {
+              delegate?.delete(branchRef)
+            }
+          }
+            .disabled(branchRef == nil)
         }
       })
     }
@@ -207,8 +227,8 @@ struct BranchListPreview: View
                referencer: referencer,
                accessorizer: brancher,
                selection: $selection,
-               expandedItems: $expandedItems,
-               delegate: PrintingBranchDelegate())
+               expandedItems: $expandedItems)
+      .environment(\.branchListDelegate, PrintingBranchDelegate())
       .listStyle(.sidebar)
       .frame(maxWidth: 250)
   }
@@ -226,6 +246,8 @@ struct BranchListPreview: View
 
 struct PrintingBranchDelegate: BranchListDelegate
 {
+  func newBranch()
+  { print("new branch") }
   func checkOut(_ branch: LocalBranchRefName)
   { print("check out \(branch.name)") }
   func merge(_ branch: LocalBranchRefName)

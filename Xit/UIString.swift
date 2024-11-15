@@ -37,7 +37,8 @@ public struct UIString: RawRepresentable, Sendable
   }
   
   static let empty = ›""
-  
+
+  // TODO: wrap each category in an enum
   static let openPrompt = ›"Open a directory that contains a Git repository"
   static let notARepository = ›"That folder does not contain a Git repository."
   
@@ -113,7 +114,15 @@ public struct UIString: RawRepresentable, Sendable
   static let tags = ›"Tags"
   static let stashes = ›"Stashes"
   static let submodules = ›"Submodules"
-  
+
+  // Item types
+  enum ItemType
+  {
+    static let branch = ›"branch"
+    static let remote = ›"remote"
+    static let tag = ›"tag"
+  }
+
   static let filterBranches = ›"Filter branches"
   static let filterRemotes = ›"Filter remotes"
 

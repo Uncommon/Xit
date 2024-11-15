@@ -169,16 +169,6 @@ extension XTRepository: CommitReferencing
     
     return GitOID(oidPtr: oid)
   }
-  
-  func deleteBranch(_ name: LocalBranchRefName) throws
-  {
-    return try writing {
-      guard let branch = localBranch(named: name)
-      else { throw RepoError.notFound }
-
-      try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))
-    }
-  }
 
   public func tagNames() throws -> [TagRefName]
   {

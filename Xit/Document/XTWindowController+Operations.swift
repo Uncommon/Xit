@@ -18,6 +18,7 @@ extension XTWindowController
            as? OperationType
   }
 
+  // TODO: factory usually references this controller, so pass it in
   @discardableResult
   func startOperation(factory: () -> OperationController)
       -> OperationController?
@@ -45,13 +46,23 @@ extension XTWindowController
     }
   }
 
-  func showErrorMessage(error: RepoError)
+  func showAlert(message: UIString, info: UIString)
   {
     guard let window = self.window
     else { return }
     let alert = NSAlert()
 
-    alert.messageString = error.message
+    alert.messageString = message
+    alert.informativeString = info
+    alert.beginSheetModal(for: window)
+  }
+
+  func showAlert(nsError: NSError)
+  {
+    guard let window = self.window
+    else { return }
+    let alert = NSAlert(error: nsError)
+
     alert.beginSheetModal(for: window)
   }
 

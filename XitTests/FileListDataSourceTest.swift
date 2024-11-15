@@ -26,6 +26,8 @@ class FakeRepoUIController: RepositoryUIController
   func showErrorMessage(error: RepoError) {}
   func updateForFocus() {}
   func postIndexNotification() {}
+  func showAlert(message: Xit.UIString, info: Xit.UIString) {}
+  func showAlert(nsError: NSError) {}
 }
 
 class FileListDataSourceTest: XTTest
