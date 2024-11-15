@@ -63,7 +63,7 @@ class ModifyingUITests: XCTestCase
     let newBranchName = "and-then"
 
     Sidebar.branchList.staticTexts[oldBranchName].rightClick()
-    XitApp.menuItems["Rename"].click()
+    Window.window.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
 
     XCTAssertTrue(Sidebar.branchList.staticTexts[newBranchName]
@@ -85,22 +85,22 @@ class ModifyingUITests: XCTestCase
     XCTAssert(Window.window.waitForExistence(timeout: 2))
     XCTContext.runActivity(named: "Cancel delete branch") {
       _ in
-      Sidebar.list.staticTexts[branchName].rightClick()
-      XitApp.menuItems[.BranchPopup.delete].click()
+      Sidebar.branchList.staticTexts[branchName].rightClick()
+      Window.window.menuItems[.BranchPopup.delete].click()
 
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
-      XCTAssertTrue(Sidebar.list.staticTexts[branchName].exists)
+      XCTAssertTrue(Sidebar.branchList.staticTexts[branchName].exists)
       XCTAssertTrue(env.git.branches().contains(branchName))
     }
 
     XCTContext.runActivity(named: "Actually delete branch") {
       _ in
-      Sidebar.list.staticTexts[branchName].rightClick()
-      XitApp.menuItems[.BranchPopup.delete].click()
+      Sidebar.branchList.staticTexts[branchName].rightClick()
+      Window.window.menuItems[.BranchPopup.delete].click()
 
       sheet.buttons["Delete"].click()
-      wait(for: [absence(of: Sidebar.list.staticTexts[branchName])],
+      wait(for: [absence(of: Sidebar.branchList.staticTexts[branchName])],
            timeout: 5.0)
       XCTAssertFalse(env.git.branches().contains(branchName))
     }
