@@ -18,6 +18,7 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
+// swiftlint:disable:next class_delegate_protocol
 @MainActor
 protocol BranchListDelegate
 {
@@ -87,9 +88,15 @@ struct BranchList<Brancher: Branching,
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {
               Button(.checkOut) { delegate?.checkOut(ref) }
+                .axid(.BranchPopup.checkOut)
             }
             Button(.rename) { delegate?.rename(ref) }
-            Button(.delete) { delegate?.delete(ref) }
+              .axid(.BranchPopup.rename)
+            Button(.merge) { delegate?.merge(ref) }
+              .axid(.BranchPopup.merge)
+            Divider()
+            Button(.delete, role: .destructive) { delegate?.delete(ref) }
+              .axid(.BranchPopup.delete)
           }
         } primaryAction: {
           if let ref = branchRef(from: $0) {
