@@ -18,8 +18,8 @@ extension BranchAccessorizing where Self == EmptyBranchAccessorizer
   static var empty: EmptyBranchAccessorizer { .init() }
 }
 
-// swiftlint:disable:next class_delegate_protocol
 @MainActor
+// swiftlint:disable:next class_delegate_protocol
 protocol BranchListDelegate
 {
   func newBranch()
@@ -83,7 +83,7 @@ struct BranchList<Brancher: Branching,
           }).accessibilityIdentifier(isCurrent ? .Sidebar.currentBranch : .empty)
         }
       }
-        .accessibilityIdentifier(.Sidebar.branchList)
+        .axid(.Sidebar.branchList)
         .contextMenu(forSelectionType: String.self) {
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {

@@ -139,6 +139,16 @@ enum Sidebar
   }
 }
 
+enum BranchList
+{
+  static var list: XCUIElement { Window.window.outlines[.Sidebar.branchList] }
+  
+  static func cell(named name: String) -> XCUIElement
+  {
+    list.cells.containing(.staticText, identifier: name).firstMatch
+  }
+}
+
 enum CommitHeader
 {
   static let header = XitApp.scrollViews["commitInfo"].firstMatch

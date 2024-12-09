@@ -62,7 +62,7 @@ class ModifyingUITests: XCTestCase
     let oldBranchName = "and-how"
     let newBranchName = "and-then"
 
-    Sidebar.branchList.staticTexts[oldBranchName].rightClick()
+    BranchList.cell(named: oldBranchName).rightClick()
     Window.window.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
 
