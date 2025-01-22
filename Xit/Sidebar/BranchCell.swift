@@ -35,6 +35,8 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
           else {
             if isCurrent {
               Image(systemName: "checkmark.circle").fontWeight(.black)
+                .accessibilityElement()
+                .axid(.Sidebar.currentBranchCheck)
             }
             else {
               Image("scm.branch")

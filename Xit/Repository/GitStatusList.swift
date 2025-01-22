@@ -9,7 +9,8 @@ final class GitStatusList: RandomAccessCollection
   public var count: Int
   { git_status_list_entrycount(statusList) }
   
-  init?(repository repo: XTRepository, show: StatusShow = .indexAndWorkdir,
+  init?(repository repo: XTRepository,
+        show: StatusShow = .indexAndWorkdir,
         options: StatusOptions)
   {
     var gitOptions = git_status_options.defaultOptions()

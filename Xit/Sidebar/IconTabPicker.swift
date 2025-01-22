@@ -31,6 +31,7 @@ struct IconTabPicker<Item>: View where Item: TabItem {
           .symbolVariant(isSelected ? .fill : .none)
           .foregroundColor(isSelected ? .accentColor : .primary)
           .help(item.toolTip.rawValue)
+          .accessibilityIdentifier(item.toolTip.rawValue)
       }
     }
   }

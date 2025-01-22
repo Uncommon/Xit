@@ -83,17 +83,28 @@ extension SidebarList
 
 enum Sidebar
 {
+  enum Tab {
+    static let local = Window.window.buttons["Local"]
+    static let remotes = Window.window.buttons["Remotes"]
+    static let tags = Window.window.buttons["Tags"]
+    static let stashes = Window.window.buttons["Stashes"]
+    static let submodules = Window.window.buttons["Submodules"]
+  }
+  
   enum Branches: SidebarList
   {
     static let list = Window.window.outlines[.Sidebar.branchList]
+    static let stagingCell = list.cells.element(boundBy: 0)
     static let currentBranchCell =
-        list.cells.containing(.any,
-                              identifier: .Sidebar.currentBranch).firstMatch
+        list.cells
+            .containing(.any, identifier: .Sidebar.currentBranch)
+            .firstMatch
+    static let filterField = Window.window.textFields[.Sidebar.filter]
   }
 
   enum Tags: SidebarList
   {
-    static let list = Window.window.outlines[.Sidebar.tagList]
+    static let list = Window.window.outlines[.Sidebar.tagsList]
   }
 
   static let list = Window.window.outlines[.Sidebar.list]
@@ -166,7 +177,8 @@ enum BranchList
   }
   static var currentBranchCell: XCUIElement
   {
-    return list.cells.containing(.staticText, identifier: "currentBranch").firstMatch
+    list.cells.containing(.image, identifier: .Sidebar.currentBranchCheck)
+      .firstMatch
   }
   
   static func cell(named name: String) -> XCUIElement

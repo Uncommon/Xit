@@ -151,6 +151,7 @@ extension AXID
     static let filter = AXID("sidebarFilter")
     static let list = AXID("sidebar")
     static let branchList = AXID("branchList")
+    static let currentBranchCheck = AXID("currentBranchCheck")
     static let stagingCell = AXID("stagingCell")
     static let remotesList = AXID("remotesList")
     static let tagsList = AXID("tagsList")

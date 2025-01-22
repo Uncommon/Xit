@@ -20,6 +20,7 @@ struct FilterField<LeftContent: View, RightContent: View>: View
       TextField("", text: $text, prompt: prompt)
         .textFieldStyle(.plain)
         .focused($isFocused)
+        .axid(.Sidebar.filter)
       rightContent()
         .environment(\.filterActive, !text.isEmpty)
     }

@@ -22,7 +22,8 @@ class TagListViewModel<Tagger: Tagging>: FilteringListViewModel
   func setTagHierarchy()
   {
     let tagList = (try? tagger.tags()) ?? []
-    var tags = PathTreeNode.makeHierarchy(from: tagList)
+    var tags = PathTreeNode.makeHierarchy(from: tagList,
+                                          prefix: RefPrefixes.tags)
 
     if !filter.isEmpty {
       tags = tags.filtered(with: filter)
