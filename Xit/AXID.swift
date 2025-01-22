@@ -40,6 +40,6 @@ extension View
   public func axid(_ id: AXID)
     -> ModifiedContent<Self, AccessibilityAttachmentModifier>
   {
-    accessibility(identifier: id.rawValue)
+    accessibilityIdentifier(id.rawValue)
   }
 }

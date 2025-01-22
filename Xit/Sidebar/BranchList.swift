@@ -59,7 +59,10 @@ struct BranchList<Brancher: Branching,
     VStack(spacing: 0) {
       List(selection: $selection) {
         HStack {
+          // stagingCell ID has to go here because putting it
+          // on the cell doesn't work.
           Label("Staging", systemImage: "arrow.up.square")
+            .axid(.Sidebar.stagingCell)
           Spacer()
           WorkspaceStatusBadge(unstagedCount: model.statusCounts.unstaged,
                                stagedCount: model.statusCounts.staged)
@@ -80,7 +83,7 @@ struct BranchList<Brancher: Branching,
               upstreamIndicator(for: item)
               accessorizer.accessoryView(for: item.refName)
             }
-          }).accessibilityIdentifier(isCurrent ? .Sidebar.currentBranch : .empty)
+          })
         }
       }
         .axid(.Sidebar.branchList)

@@ -159,6 +159,15 @@ enum Sidebar
 enum BranchList
 {
   static var list: XCUIElement { Window.window.outlines[.Sidebar.branchList] }
+  static var stagingCell: XCUIElement
+  {
+    list.cells.containing(.staticText,
+                          identifier: .Sidebar.stagingCell).firstMatch
+  }
+  static var currentBranchCell: XCUIElement
+  {
+    return list.cells.containing(.staticText, identifier: "currentBranch").firstMatch
+  }
   
   static func cell(named name: String) -> XCUIElement
   {

@@ -25,6 +25,8 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
                         ? AnyShapeStyle(.quaternary)
                         : AnyShapeStyle(.clear))
             .cornerRadius(4)
+            // Putting the ID on the cell doesn't work, so put it here.
+            .accessibilityIdentifier(isCurrent ? "currentBranch" : "branch")
         },
         icon: {
           if branch == nil {
