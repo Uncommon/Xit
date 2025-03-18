@@ -110,7 +110,7 @@ enum Sidebar
   static let list = Window.window.outlines[.Sidebar.list]
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
-  static let stagingCell = list.cells.element(boundBy: 1)
+  static let stagingCell = Branches.list.cells.element(boundBy: 0)
 
   static let branchPopup = XitApp.menus[.Menu.branch]
   static let remoteBranchPopup = XitApp.menus[.Menu.remoteBranch]
@@ -118,16 +118,16 @@ enum Sidebar
 
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
-    let expected = "\(workspace)▸\(staged)"
-    let statusButton = stagingCell.buttons[.Sidebar.workspaceStatus]
+    let expected = "\(workspace) ▸ \(staged)"
+    let statusButton = stagingCell.staticTexts[.Sidebar.workspaceStatus]
     
-    XCTAssertEqual(expected, statusButton.title)
+    XCTAssertEqual(expected, statusButton.stringValue)
   }
   
   static func assertBranches(_ branches: [String])
   {
     for (index, branch) in branches.enumerated() {
-      let cell = list.cells.element(boundBy: index + 3)
+      let cell = Branches.list.cells.element(boundBy: index + 2)
       let label = cell.staticTexts.firstMatch.value as? String ?? ""
       
       XCTAssertEqual(label, branch,

@@ -26,5 +26,6 @@ struct WorkspaceStatusBadge: View
   var body: some View
   {
     StatusBadge("\(unstagedCount) ▸ \(stagedCount)")
+      .axid(.Sidebar.workspaceStatus)
   }
 }

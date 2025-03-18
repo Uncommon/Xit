@@ -79,12 +79,14 @@ class BranchListViewModel<Brancher: Branching,
   func updateBranchList()
   {
     let currentBranch = brancher.currentBranch
-    let branchList = brancher.localBranches.map {
-      BranchListItem(refName: $0.referenceName,
-                     trackingRefName: $0.trackingBranch?.referenceName,
-                     isCurrent: $0.referenceName == currentBranch,
-                     graphStatus: branchStatus($0))
-    }
+    let branchList = brancher.localBranches
+      .sorted(byKeyPath: \.referenceName.fullPath)
+      .map {
+        BranchListItem(refName: $0.referenceName,
+                       trackingRefName: $0.trackingBranch?.referenceName,
+                       isCurrent: $0.referenceName == currentBranch,
+                       graphStatus: branchStatus($0))
+      }
     
     unfilteredList = PathTreeNode.makeHierarchy(from: branchList,
                                                 prefix: RefPrefixes.heads)
