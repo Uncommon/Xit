@@ -127,7 +127,7 @@ extension AXID
 
   enum Preferences
   {
-    static let window = AXID("Preferences")
+    static let window = AXID("prefsWindow")
 
     enum Controls
     {
