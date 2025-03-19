@@ -30,7 +30,7 @@ class BranchListViewModel<Brancher: Branching,
 {
   let brancher: Brancher
   let referencer: Referencer
-  let detector: any FileStatusDetection
+  let statusDetector: any FileStatusDetection
   let publisher: any RepositoryPublishing
 
   var unfilteredList: [PathTreeNode<BranchListItem>] = []
@@ -44,7 +44,7 @@ class BranchListViewModel<Brancher: Branching,
   {
     self.brancher = brancher
     self.referencer = referencer
-    self.detector = detector
+    self.statusDetector = detector
     self.publisher = publisher
     super.init()
     
@@ -68,12 +68,9 @@ class BranchListViewModel<Brancher: Branching,
   
   override func filterChanged(_ newFilter: String)
   {
-    if newFilter.isEmpty {
-      branches = unfilteredList
-    }
-    else {
-      branches = unfilteredList.filtered(with: newFilter)
-    }
+    branches = newFilter.isEmpty
+        ? unfilteredList
+        : unfilteredList.filtered(with: newFilter)
   }
   
   func updateBranchList()
@@ -107,8 +104,8 @@ class BranchListViewModel<Brancher: Branching,
   func updateCounts()
   {
     Task {
-      let counts = (detector.stagedChanges().count,
-                    detector.unstagedChanges().count)
+      let counts = (statusDetector.stagedChanges().count,
+                    statusDetector.unstagedChanges().count)
       
       await MainActor.run {
         statusCounts = counts

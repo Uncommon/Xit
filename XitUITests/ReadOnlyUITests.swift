@@ -111,16 +111,19 @@ class ReadOnlyUITests: XCTestCase
   
   func ensureTabBarVisible()
   {
-    let menuBar = XitApp.menuBars
-    let viewMenu = menuBar.menuBarItems["View"]
-    let menuItem = viewMenu.menuItems["Show Tab Bar"]
-    
-    viewMenu.click()
-    if (menuItem.exists) {
-      menuItem.click()
-    }
-    else {
-      XitApp.typeKey(.escape, modifierFlags: [])
+    XCTContext.runActivity(named: "Ensure tab bar visible") {
+      _ in
+      let menuBar = XitApp.menuBars
+      let viewMenu = menuBar.menuBarItems["View"]
+      let menuItem = viewMenu.menuItems["Show Tab Bar"]
+      
+      viewMenu.click()
+      if (menuItem.exists) {
+        menuItem.click()
+      }
+      else {
+        XitApp.typeKey(.escape, modifierFlags: [])
+      }
     }
   }
   
