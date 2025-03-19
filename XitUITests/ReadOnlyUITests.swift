@@ -71,8 +71,8 @@ class ReadOnlyUITests: XCTestCase
   /// Commit header and file list are correct
   func testCommitContent()
   {
-    XCTWaiter(delegate: self).wait(for: [presence(of: CommitFileList.list.outlineRows.firstMatch)],
-                                   timeout: 5)
+    XCTAssert(CommitFileList.list.outlineRows.firstMatch.waitForExistence(timeout: 5),
+              "Commit files not found")
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     let sha = "a4bca6b67a5483169963572ee3da563da33712f7"

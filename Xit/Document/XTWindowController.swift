@@ -111,6 +111,10 @@ final class XTWindowController: NSWindowController,
     guard let repo = repoDocument?.repository
     else { return }
     
+    if let headOID = repo.headOID,
+       let headCommit = repo.commit(forOID: headOID) {
+      selection = CommitSelection(repository: repo, commit: headCommit)
+    }
     repoController = GitRepositoryController(repository: repo)
     sinks.append(contentsOf: [
 //      repoController.refsPublisher.sinkOnMainQueue {
