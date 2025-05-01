@@ -21,6 +21,13 @@ struct FilterField<LeftContent: View, RightContent: View>: View
         .textFieldStyle(.plain)
         .focused($isFocused)
         .axid(.Sidebar.filter)
+      if !text.isEmpty {
+        Button {
+          text = ""
+        } label: {
+          Image(systemName: "xmark.circle.fill")
+        }.accessibilityIdentifier("cancelFilter")
+      }
       rightContent()
         .environment(\.filterActive, !text.isEmpty)
     }
