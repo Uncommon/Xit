@@ -46,22 +46,22 @@ class ReadOnlyUITests: XCTestCase
     let newBranchCell = Sidebar.Branches.cell(named: "new")
     
     XCTContext.runActivity(named: "Filter with 'a'") { _ in
-      Sidebar.filter.click()
-      Sidebar.filter.typeText("a")
+      Sidebar.Branches.filterField.click()
+      Sidebar.Branches.filterField.typeText("a")
       wait(for: [absence(of: newBranchCell)], timeout: 5.0)
       
       Sidebar.assertBranches(aBranches)
     }
     
     XCTContext.runActivity(named: "Filter with 'and'") { _ in
-      Sidebar.filter.typeText("nd")
+      Sidebar.Branches.filterField.typeText("nd")
       wait(for: [absence(of: masterBranchCell)], timeout: 5.0)
 
       Sidebar.assertBranches(andBranches)
     }
     
     XCTContext.runActivity(named: "Clear filter") { _ in
-      Sidebar.filter.buttons["cancel"].click()
+      Sidebar.Branches.cancelButton.click()
       wait(for: [presence(of: newBranchCell)], timeout: 8.0)
 
       Sidebar.assertBranches(Self.env.repo.defaultBranches)

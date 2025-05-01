@@ -75,6 +75,8 @@ protocol SidebarList
 
 extension SidebarList
 {
+  static var cancelButton: XCUIElement { Window.window.buttons["cancelFilter"] }
+  
   static func cell(named name: String) -> XCUIElement
   {
     return list.cells.containing(.staticText, identifier: name).firstMatch
