@@ -15,11 +15,6 @@ extension XTWindowController
   func updateNavButtons()
   {
     updateNavControl(titleBarController?.navButtons)
-
-    if let item = touchBar?.item(forIdentifier:
-                                 NSTouchBarItem.Identifier.navigation) {
-      updateNavControl(item.view as? NSSegmentedControl)
-    }
   }
 
   func updateNavControl(_ control: NSSegmentedControl?)

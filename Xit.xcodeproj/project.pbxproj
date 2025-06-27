@@ -225,7 +225,6 @@
 		C957B87C1D2DBBC00040F858 /* AccountsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C957B87B1D2DBBC00040F858 /* AccountsManager.swift */; };
 		C959A7231F6C6974004277CD /* RepositoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959A7221F6C6974004277CD /* RepositoryProtocols.swift */; };
 		C959A7271F6C8440004277CD /* GitBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959A7261F6C8440004277CD /* GitBlob.swift */; };
-		C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */; };
 		C959CDE91F859D3D00C1E282 /* BuildStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDE81F859D3D00C1E282 /* BuildStatusController.swift */; };
 		C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */; };
 		C95BD4031F8FD611000A2E2D /* GitEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95BD4021F8FD611000A2E2D /* GitEnums.swift */; };
@@ -630,7 +629,6 @@
 		C957B87B1D2DBBC00040F858 /* AccountsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountsManager.swift; sourceTree = "<group>"; };
 		C959A7221F6C6974004277CD /* RepositoryProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryProtocols.swift; sourceTree = "<group>"; };
 		C959A7261F6C8440004277CD /* GitBlob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitBlob.swift; sourceTree = "<group>"; };
-		C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XTWindowController+TouchBar.swift"; sourceTree = "<group>"; };
 		C959CDE81F859D3D00C1E282 /* BuildStatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildStatusController.swift; sourceTree = "<group>"; };
 		C959CDEA1F859DB800C1E282 /* SidebarController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SidebarController+Actions.swift"; sourceTree = "<group>"; };
 		C95BD4021F8FD611000A2E2D /* GitEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitEnums.swift; sourceTree = "<group>"; };
@@ -1221,7 +1219,6 @@
 				C9BF41171EA11AAC00028C84 /* XTWindowController+Actions.swift */,
 				C90DA47824212B7400FFBC26 /* XTWindowController+Operations.swift */,
 				C90DA48A24212F0300FFBC26 /* XTWindowController+TitleBar.swift */,
-				C959CDD61F859BFE00C1E282 /* XTWindowController+TouchBar.swift */,
 				C923D66B1D906FAA00C6B90B /* TitleBarController.swift */,
 				C9063D1B24169DAF00574A93 /* RepositoryUIAccessor.swift */,
 				898A381727136881002639CC /* RepoDocument.swift */,
@@ -1622,7 +1619,6 @@
 				C926804E1D074EC500E422FA /* RepositorySelection.swift in Sources */,
 				C9F78B141D0896AF008490EA /* SidebarItem.swift in Sources */,
 				C91E9A011D527A1300E128AC /* HistoryTableController.swift in Sources */,
-				C959CDD71F859BFE00C1E282 /* XTWindowController+TouchBar.swift in Sources */,
 				C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */,
 				C957B84B1D2D53040040F858 /* SheetController.swift in Sources */,
 				89D942DD2CBAB8B10026C5E8 /* LowerCaseString.swift in Sources */,

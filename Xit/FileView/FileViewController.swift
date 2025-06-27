@@ -124,9 +124,6 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   }
   /// The file list (eg Staged or Workspace) that last had user focus
   weak var activeFileList: NSOutlineView!
-  {
-    didSet { repoUIController?.updateForFocus() }
-  }
   var activeFileListController: FileListController
   { activeFileList.delegate as! FileListController }
   var selectedChange: FileChange?

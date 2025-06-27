@@ -14,7 +14,6 @@ protocol RepositoryUIController: AnyObject
 
   func select(oid: GitOID)
   func reselect()
-  func updateForFocus()
   func showAlert(message: UIString, info: UIString)
   func showAlert(nsError: NSError)
 }
@@ -252,13 +251,6 @@ final class XTWindowController: NSWindowController,
   func reselect()
   {
     reselectSubject.send()
-  }
-  
-  /// Update for when a new object has been focused or selected
-  func updateForFocus()
-  {
-    touchBar = makeTouchBar()
-    validateTouchBar()
   }
 
   nonisolated func updateMiniwindowTitle()
