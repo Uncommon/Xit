@@ -17,21 +17,28 @@ struct IconTabPicker<Item>: View where Item: TabItem {
   @Binding var selection: Item
 
   var body: some View {
-    HStack {
+    HStack(spacing: 4) {
       ForEach(items) {
         (item) in
         let isSelected = item == selection
-        Button(action: { selection = item },
-               label: {
-          item.icon
-            .padding(.horizontal, 6)
-            .contentShape(Rectangle()) // make padding hittable
-        })
-          .buttonStyle(.plain)
-          .symbolVariant(isSelected ? .fill : .none)
-          .foregroundColor(isSelected ? .accentColor : .primary)
-          .help(item.toolTip.rawValue)
-          .accessibilityIdentifier(item.toolTip.rawValue)
+        // Use TupleView so that the buttons and dividers are
+        // all subviews of the HStack.
+        TupleView((
+          Button(action: { selection = item },
+                 label: {
+            item.icon
+              .padding(.horizontal, 6)
+              .contentShape(Rectangle()) // make padding hittable
+          })
+            .buttonStyle(.plain)
+            .symbolVariant(isSelected ? .fill : .none)
+            .foregroundColor(isSelected ? .accentColor : .primary)
+            .help(item.toolTip.rawValue)
+            .accessibilityIdentifier(item.toolTip.rawValue),
+          item.id != items.last?.id
+            ? AnyView(Divider().frame(height: 16))
+            : AnyView(EmptyView())
+        ))
       }
     }
   }
