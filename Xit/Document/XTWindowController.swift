@@ -58,6 +58,7 @@ final class XTWindowController: NSWindowController,
   var sinks: [AnyCancellable] = []
   var repository: any FullRepository
   { (repoDocument?.repository as (any FullRepository)?)! }
+  let workspaceCountModel: WorkspaceStatusCountModel = .init()
 
   var defaults: UserDefaults = .xit
 
@@ -115,15 +116,13 @@ final class XTWindowController: NSWindowController,
       selection = CommitSelection(repository: repo, commit: headCommit)
     }
     repoController = GitRepositoryController(repository: repo)
+    workspaceCountModel.subscribe(to: repoController, detector: repo)
+    
     sinks.append(contentsOf: [
 //      repoController.refsPublisher.sinkOnMainQueue {
 //        [weak self] in
 //        self?.updateBranchList()
 //      },
-      repoController.workspacePublisher.sinkOnMainQueue {
-        [weak self] _ in
-        self?.updateTabStatus()
-      },
       repo.currentBranchPublisher.sink {
         [weak self] in
         self?.titleBarController?.selectedBranch = $0?.name
@@ -136,11 +135,16 @@ final class XTWindowController: NSWindowController,
           self.updateWindowStyle(window)
         }
       },
+      workspaceCountModel.$counts.sinkOnMainQueue {
+        [weak self] in
+        self?.updateTabStatus(staged: $0.staged, unstaged: $0.unstaged)
+      }
     ])
     //sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
-    updateTabStatus()
+    updateTabStatus(staged: workspaceCountModel.counts.staged,
+                    unstaged: workspaceCountModel.counts.unstaged)
     updateWindowStyle(window)
 
     let tabbedSidebarController =
@@ -274,28 +278,24 @@ final class XTWindowController: NSWindowController,
       window.tab.title = newTitle
     }
   }
-  
-  private func updateTabStatus()
+
+  fileprivate func updateTabStatus(staged: Int, unstaged: Int)
   {
-//    guard let tab = window?.tab
-//    else { return }
-//    
-//    guard defaults.statusInTabs,
-//          let stagingItem = sidebarController.model.rootItem(.workspace)
-//                                             .children.first,
-//          let selection = stagingItem.selection as? StagedUnstagedSelection
-//    else {
-//      tab.accessoryView = nil
-//      return
-//    }
-//    
-//    let tabButton = tab.accessoryView as? WorkspaceStatusIndicator ??
-//                    WorkspaceStatusIndicator()
-//    let (stagedCount, unstagedCount) = selection.counts()
-//
-//    tabButton.setStatus(unstaged: unstagedCount, staged: stagedCount)
-//    tabButton.setAccessibilityIdentifier("tabStatus")
-//    tab.accessoryView = tabButton
+    guard let tab = window?.tab
+    else { return }
+    
+    guard defaults.statusInTabs
+    else {
+      tab.accessoryView = nil
+      return
+    }
+    
+    let tabButton = tab.accessoryView as? WorkspaceStatusIndicator ??
+                    WorkspaceStatusIndicator()
+
+    tabButton.setStatus(unstaged: unstaged, staged: staged)
+    tabButton.setAccessibilityIdentifier("tabStatus")
+    tab.accessoryView = tabButton
   }
 
   public func startRenameBranch(_ branchName: LocalBranchRefName)
@@ -356,7 +356,11 @@ extension XTWindowController: NSWindowDelegate
     })
     kvObservers.append(defaults.observe(\.statusInTabs) {
       [weak self] (_, _) in
-      MainActor.assumeIsolated { self?.updateTabStatus() }
+      MainActor.assumeIsolated {
+        guard let self else { return }
+        self.updateTabStatus(staged: self.workspaceCountModel.counts.staged,
+                             unstaged: self.workspaceCountModel.counts.unstaged)
+      }
     })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,
@@ -452,3 +456,4 @@ extension XTWindowController: NSMenuDelegate
     }
   }
 }
+
