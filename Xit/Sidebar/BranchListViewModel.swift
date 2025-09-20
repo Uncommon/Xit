@@ -35,34 +35,32 @@ class BranchListViewModel<Brancher: Branching,
 
   var unfilteredList: [PathTreeNode<BranchListItem>] = []
   @Published var branches: [PathTreeNode<BranchListItem>] = []
-  @Published var statusCounts: (staged: Int, unstaged: Int) = (0, 0)
+  @Published var workspaceCountModel: WorkspaceStatusCountModel
 
   init(brancher: Brancher,
        referencer: Referencer,
        detector: any FileStatusDetection,
-       publisher: any RepositoryPublishing)
+       publisher: any RepositoryPublishing,
+       workspaceCountModel: WorkspaceStatusCountModel)
   {
     self.brancher = brancher
     self.referencer = referencer
     self.statusDetector = detector
     self.publisher = publisher
+    self.workspaceCountModel = workspaceCountModel
     super.init()
     
     updateBranchList()
-    updateCounts()
     sinks.append(contentsOf: [
       publisher.refsPublisher.sinkOnMainQueue {
         [weak self] in
         self?.updateBranchList()
       },
-      publisher.indexPublisher.sinkOnMainQueue {
-        [weak self] in
-        self?.updateCounts()
-      },
-      publisher.workspacePublisher.sinkOnMainQueue {
+      // Child model changes must be explicitly forwarded
+      workspaceCountModel.objectWillChange.sinkOnMainQueue {
         [weak self] _ in
-        self?.updateCounts()
-      },
+        self?.objectWillChange.send()
+      }
     ])
   }
   
@@ -99,17 +97,5 @@ class BranchListViewModel<Brancher: Branching,
     else { return .zero }
     
     return status
-  }
-  
-  func updateCounts()
-  {
-    Task {
-      let counts = (statusDetector.stagedChanges().count,
-                    statusDetector.unstagedChanges().count)
-      
-      await MainActor.run {
-        statusCounts = counts
-      }
-    }
   }
 }

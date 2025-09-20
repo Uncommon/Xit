@@ -111,6 +111,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   let submobuleManager: SubManager
   let tagger: Tagger
   
+  let workspaceCountModel: WorkspaceStatusCountModel
+  
   @State var model: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
                                      Tagger, SubManager>
   
@@ -145,6 +147,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
        stasher: Stasher,
        submoduleManager: SubManager,
        tagger: Tagger,
+       workspaceCountModel: WorkspaceStatusCountModel,
        selection: Binding<(any RepositorySelection)?>)
   {
     self.brancher = brancher
@@ -155,12 +158,14 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     self.stasher = stasher
     self.submobuleManager = submoduleManager
     self.tagger = tagger
+    self.workspaceCountModel = workspaceCountModel
     self._repoSelection = selection
     self.model = .init(
         brachModel: .init(brancher: brancher,
                           referencer: referencer,
                           detector: detector,
-                          publisher: publisher),
+                          publisher: publisher,
+                          workspaceCountModel: workspaceCountModel),
         remoteModel: .init(manager: remoteManager, brancher: brancher),
         tagModel: .init(tagger: tagger, publisher: publisher),
         stashModel: .init(stasher: stasher, publisher: publisher),
@@ -281,6 +286,7 @@ private class NFSD: EmptyFileStatusDetection {}
   TabbedSidebar(brancher: brancher, detector: NFSD(), remoteManager: manager,
                 referencer: referencer, publisher: publisher,
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
+                workspaceCountModel: .init(),
                 selection: .constant(nil))
 }
 #endif

@@ -149,6 +149,7 @@ final class XTWindowController: NSWindowController,
 
     let tabbedSidebarController =
         TabbedSidebarController(repo: repo,
+                                workspaceCountModel: workspaceCountModel,
                                 controller: self)
     let tabbedSidebarItem =
           NSSplitViewItem(sidebarWithViewController: tabbedSidebarController)

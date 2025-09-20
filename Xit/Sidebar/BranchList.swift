@@ -64,8 +64,9 @@ struct BranchList<Brancher: Branching,
           Label("Staging", systemImage: "arrow.up.square")
             .axid(.Sidebar.stagingCell)
           Spacer()
-          WorkspaceStatusBadge(unstagedCount: model.statusCounts.unstaged,
-                               stagedCount: model.statusCounts.staged)
+          WorkspaceStatusBadge(
+              unstagedCount: model.workspaceCountModel.counts.unstaged,
+              stagedCount: model.workspaceCountModel.counts.staged)
         }.tag(stagingSelectionTag).listRowSeparator(.hidden)
         // TODO: Reduce the divider height
         // This could be done with .environment(\.defaultMinListRowHeight, x)
@@ -234,7 +235,8 @@ struct BranchListPreview: View
     BranchList(model: .init(brancher: brancher,
                             referencer: referencer,
                             detector: NullFileStatusDetection(),
-                            publisher: brancher),
+                            publisher: brancher,
+                            workspaceCountModel: .init()),
                brancher: brancher,
                referencer: referencer,
                accessorizer: brancher,

@@ -12,6 +12,7 @@ class TabbedSidebarController: NSHostingController<AnyView>
   }
 
   init(repo: some FullRepository,
+       workspaceCountModel: WorkspaceStatusCountModel,
        controller: XTWindowController)
   {
     self.controller = controller
@@ -24,6 +25,7 @@ class TabbedSidebarController: NSHostingController<AnyView>
                              stasher: repo,
                              submoduleManager: repo,
                              tagger: repo,
+                             workspaceCountModel: workspaceCountModel,
                              selection: controller.selectionBinding)
       .environment(\.branchListDelegate, BranchDelegate(controller: controller))
 
