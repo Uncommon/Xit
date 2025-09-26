@@ -60,15 +60,16 @@ struct RemoteList<Manager: RemoteManagement,
           model.contentUnavailableView("No Remotes", systemImage: "network")
         }
       }
+      // TODO: context menu
       FilterBar(text: $model.filter,
                 prompt: model.searchScope.text,
                 leftContent: {
         SidebarActionButton {
-          Button("New remote...") {}
-          Button("Rename remote") {}
+          Button("New remote...", systemImage: "plus") {}
+          Button("Rename remote", systemImage: "pencil") {}
           // TODO: enabled specifically if a remote is selected
             .disabled(selection == nil)
-          Button("Delete remote") {}
+          Button("Delete remote", systemImage: "trash") {}
             .disabled(selection == nil)
         }
       }, fieldRightContent: {

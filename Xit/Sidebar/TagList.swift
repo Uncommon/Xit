@@ -33,7 +33,7 @@ struct TagList<Tagger: Tagging>: View
       }
         .contextMenu(forSelectionType: String.self) {
           if $0.first != nil {
-            Button(.delete, role: .destructive) { }
+            Button(.delete, systemImage: "trash", role: .destructive) { }
           }
         }
         .overlay {

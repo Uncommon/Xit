@@ -170,10 +170,14 @@ extension NSMenuItem
 
   @MainActor
   convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
                    keyEquivalent: String = "",
                    _ block: @escaping ActionBlock)
   {
     self.init(titleString.rawValue, keyEquivalent: keyEquivalent, block)
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   convenience init(_ titleString: UIString, action: Selector? = nil)
@@ -181,10 +185,15 @@ extension NSMenuItem
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
   }
 
-  convenience init(_ titleString: UIString, target: AnyObject, action: Selector)
+  convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
+                   target: AnyObject, action: Selector)
   {
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
     self.target = target
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   func with(identifier: NSUserInterfaceItemIdentifier) -> NSMenuItem

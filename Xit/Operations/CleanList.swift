@@ -75,6 +75,8 @@ struct CleanList: NSViewRepresentable
     @MainActor
     func setMenu(for tableView: NSTableView) {
       let menu = NSMenu {
+        // Could put a Finder icon on this item, but it doesn't seem helpful
+        // when there's only one item in the menu.
         NSMenuItem(.showInFinder) { _ in
           // User may have right-clicked on a row outside the selection
           let indexes = tableView.selectedRowIndexes

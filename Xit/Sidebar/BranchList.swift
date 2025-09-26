@@ -91,15 +91,15 @@ struct BranchList<Brancher: Branching,
         .contextMenu(forSelectionType: String.self) {
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {
-              Button(.checkOut) { delegate?.checkOut(ref) }
+              Button(.checkOut, systemImage: "arrow.down.to.line") { delegate?.checkOut(ref) }
                 .axid(.BranchPopup.checkOut)
             }
-            Button(.rename) { delegate?.rename(ref) }
+            Button(.rename, systemImage: "pencil") { delegate?.rename(ref) }
               .axid(.BranchPopup.rename)
-            Button(.merge) { delegate?.merge(ref) }
+            Button(.merge, systemImage: "arrow.trianglehead.merge") { delegate?.merge(ref) }
               .axid(.BranchPopup.merge)
             Divider()
-            Button(.delete, role: .destructive) { delegate?.delete(ref) }
+            Button(.delete, systemImage: "trash", role: .destructive) { delegate?.delete(ref) }
               .axid(.BranchPopup.delete)
           }
         } primaryAction: {

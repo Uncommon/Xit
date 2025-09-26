@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -25,7 +26,7 @@
                             <menuItem isSeparatorItem="YES" id="236">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Preferences…" keyEquivalent="," id="129">
+                            <menuItem title="Settings…" keyEquivalent="," id="129">
                                 <connections>
                                     <action selector="showPreferences:" target="530" id="SNW-DA-g3Y"/>
                                 </connections>
@@ -74,7 +75,7 @@
                                     <action selector="newDocument:" target="-1" id="371"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Clone..." id="bF5-qO-S8s">
+                            <menuItem title="Clone..." image="plus.square.on.square" catalog="system" id="bF5-qO-S8s">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cloneRepository:" target="-1" id="ZI2-rs-7fz"/>
@@ -342,41 +343,41 @@
                 <menuItem title="Repository" id="534">
                     <menu key="submenu" title="Repository" id="535">
                         <items>
-                            <menuItem title="Go Back" keyEquivalent="" id="4G7-RH-hvq">
+                            <menuItem title="Go Back" image="chevron.backward" catalog="system" keyEquivalent="" id="4G7-RH-hvq">
                                 <connections>
                                     <action selector="goBack:" target="-1" id="v7h-eY-HFH"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Go Forward" keyEquivalent="" id="9AS-eV-WTU">
+                            <menuItem title="Go Forward" image="chevron.forward" catalog="system" keyEquivalent="" id="9AS-eV-WTU">
                                 <connections>
                                     <action selector="goForward:" target="-1" id="inp-Cu-VqB"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="qVq-0D-82l"/>
-                            <menuItem title="Refresh" keyEquivalent="r" id="615">
+                            <menuItem title="Refresh" secondaryImage="arrow.counterclockwise" catalog="system" keyEquivalent="r" id="615">
                                 <connections>
                                     <action selector="refresh:" target="-1" id="yIh-B6-s8M"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="fMJ-BA-jcw"/>
-                            <menuItem title="New Tag..." keyEquivalent="t" id="548">
+                            <menuItem title="New Tag..." secondaryImage="tag" catalog="system" keyEquivalent="t" id="548">
                                 <connections>
                                     <action selector="newTag:" target="-1" id="616"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Branch..." keyEquivalent="b" id="542">
+                            <menuItem title="New Branch..." image="arrow.trianglehead.branch" catalog="system" keyEquivalent="b" id="542">
                                 <connections>
                                     <action selector="newBranch:" target="-1" id="617"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Z40-kt-df8"/>
-                            <menuItem title="Add Remote..." keyEquivalent="r" id="613">
+                            <menuItem title="Add Remote..." image="network" catalog="system" keyEquivalent="r" id="613">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="newRemote:" target="-1" id="618"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Remote Settings" id="XgQ-yf-L09">
+                            <menuItem title="Remote Settings" secondaryImage="gearshape" catalog="system" id="XgQ-yf-L09">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Remote Settings" id="Od6-Cb-gjd">
                                     <items>
@@ -390,37 +391,37 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="608"/>
-                            <menuItem title="Commit" id="g4O-PA-w4j">
+                            <menuItem title="Commit" image="plus.circle" catalog="system" id="g4O-PA-w4j">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
                             </menuItem>
-                            <menuItem title="Stash..." id="wvv-OB-wja">
+                            <menuItem title="Stash..." secondaryImage="tray.and.arrow.down" catalog="system" id="wvv-OB-wja">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="stash:" target="-1" id="Xyb-Rg-trG"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Clean..." id="W4I-UU-4ym">
+                            <menuItem title="Clean..." image="trash" catalog="system" id="W4I-UU-4ym">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="clean:" target="-1" id="lPR-6w-Tep"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="614"/>
-                            <menuItem title="Check Out Branch" id="612">
+                            <menuItem title="Check Out Branch" image="arrow.down.to.line" catalog="system" id="612">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="checkOutBranch:" target="-1" id="619"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Create Tracking Branch..." id="lSx-pd-51Q">
+                            <menuItem title="Create Tracking Branch..." image="arrow.up.forward.circle" catalog="system" id="lSx-pd-51Q">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="createTrackingBranch:" target="-1" id="BPT-vE-9ls"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Merge" id="MNc-Se-8h7">
+                            <menuItem title="Merge" image="arrow.trianglehead.merge" catalog="system" id="MNc-Se-8h7">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="mergeBranch:" target="-1" id="4Hs-dZ-gmB"/>
@@ -432,20 +433,20 @@ DQ
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
-                            <menuItem title="Show Sidebar" id="LeS-23-fp1">
+                            <menuItem title="Show Sidebar" image="rectangle.leftthird.inset.filled" catalog="system" id="LeS-23-fp1">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showHideSidebar:" target="-1" id="a3N-YJ-Rba"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="gUR-ax-6Z6"/>
-                            <menuItem title="Vertical Layout" id="uO6-Mj-4Y9">
+                            <menuItem title="Vertical Layout" image="rectangle.split.1x2" catalog="system" id="uO6-Mj-4Y9">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="verticalLayout:" target="-1" id="3ub-uj-BaF"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Horizontal Layout" id="hJ1-6P-NR8">
+                            <menuItem title="Horizontal Layout" image="rectangle.split.2x1" catalog="system" id="hJ1-6P-NR8">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="horizontalLayout:" target="-1" id="poR-4f-dLo"/>
@@ -513,4 +514,23 @@ DQ
             </connections>
         </customObject>
     </objects>
+    <resources>
+        <image name="arrow.counterclockwise" catalog="system" width="14" height="16"/>
+        <image name="arrow.down.to.line" catalog="system" width="13" height="16"/>
+        <image name="arrow.trianglehead.branch" catalog="system" width="15" height="14"/>
+        <image name="arrow.trianglehead.merge" catalog="system" width="11" height="15"/>
+        <image name="arrow.up.forward.circle" catalog="system" width="15" height="15"/>
+        <image name="chevron.backward" catalog="system" width="10" height="14"/>
+        <image name="chevron.forward" catalog="system" width="10" height="14"/>
+        <image name="gearshape" catalog="system" width="16" height="16"/>
+        <image name="network" catalog="system" width="15" height="15"/>
+        <image name="plus.circle" catalog="system" width="15" height="15"/>
+        <image name="plus.square.on.square" catalog="system" width="17" height="16"/>
+        <image name="rectangle.leftthird.inset.filled" catalog="system" width="18" height="14"/>
+        <image name="rectangle.split.1x2" catalog="system" width="18" height="14"/>
+        <image name="rectangle.split.2x1" catalog="system" width="18" height="14"/>
+        <image name="tag" catalog="system" width="17" height="17"/>
+        <image name="trash" catalog="system" width="15" height="17"/>
+        <image name="tray.and.arrow.down" catalog="system" width="18" height="17"/>
+    </resources>
 </document>

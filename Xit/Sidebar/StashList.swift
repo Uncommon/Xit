@@ -74,9 +74,9 @@ struct StashList<Stasher: Stashing>: View
         .contextMenu(forSelectionType: GitOID.self) {
           if let stash = $0.first,
              let index = model.stasher.findStashIndex(stash) {
-            Button(.pop) { confirm(.pop(index)) }
-            Button(.apply) { confirm(.apply(index)) }
-            Button(.drop) { confirm(.drop(index)) }
+            Button(.pop, systemImage: "arrow.up.square.fill") { confirm(.pop(index)) }
+            Button(.apply, systemImage: "arrow.up.square") { confirm(.apply(index)) }
+            Button(.drop, systemImage: "trash") { confirm(.drop(index)) }
           }
         }
         .confirmationDialog(alertAction?.confirmText.rawValue ?? "",
@@ -94,11 +94,11 @@ struct StashList<Stasher: Stashing>: View
         }
       FilterBar(text: $model.filter) {
         SidebarActionButton {
-          Button("Stash current changes") {}
+          Button("Stash current changes", systemImage: "tray.and.arrow.down") {}
           Divider()
-          Button("Pop top stash") {}
-          Button("Apply top stash") {}
-          Button("Drop top stash") {}
+          Button("Pop top stash", systemImage: "arrow.up.square.fill") {}
+          Button("Apply top stash", systemImage: "arrow.up.square") {}
+          Button("Drop top stash", systemImage: "trash") {}
         }
       }
     }
