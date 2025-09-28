@@ -104,6 +104,7 @@
 		89BA11EB28C4E2C000A7999A /* UIString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5334C2187608300B2432C /* UIString.swift */; };
 		89C2A7762E7CCFAA00765D84 /* WorkspaceStatusCountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2A7752E7CCFA400765D84 /* WorkspaceStatusCountModel.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
+		89C2A7782E88763600765D84 /* CommandDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2A7772E88763000765D84 /* CommandDisplay.swift */; };
 		89C927751D36A2180074F71A /* GitSubmodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927741D36A2180074F71A /* GitSubmodule.swift */; };
 		89C927781D36A5890074F71A /* GitTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927771D36A5890074F71A /* GitTag.swift */; };
 		89C927881D43B0460074F71A /* PullOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* PullOpController.swift */; };
@@ -499,6 +500,7 @@
 		89BA11E828C4E26900A7999A /* HistorySearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchType.swift; sourceTree = "<group>"; };
 		89C2A7752E7CCFA400765D84 /* WorkspaceStatusCountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceStatusCountModel.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		89C2A7772E88763000765D84 /* CommandDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandDisplay.swift; sourceTree = "<group>"; };
 		89C927741D36A2180074F71A /* GitSubmodule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitSubmodule.swift; sourceTree = "<group>"; };
 		89C927771D36A5890074F71A /* GitTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitTag.swift; sourceTree = "<group>"; };
 		89C927871D43B0460074F71A /* PullOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PullOpController.swift; sourceTree = "<group>"; };
@@ -840,6 +842,7 @@
 				89880ED020D02F9B007042F8 /* ClickableTextField.swift */,
 				897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */,
 				C9BBBBF726D7F13700469007 /* CombineExtensions.swift */,
+				89C2A7772E88763000765D84 /* CommandDisplay.swift */,
 				891260E7285D395900053528 /* ConfigValueWrappers.swift */,
 				C947367D1DF08C03000E3A05 /* ContextMenuOutlineView.swift */,
 				C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */,
@@ -1844,6 +1847,7 @@
 				C9DEA49C1E4A900300DF4069 /* OID.swift in Sources */,
 				C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */,
 				C9E594C12C914C2600C518C4 /* FilterBar.swift in Sources */,
+				89C2A7782E88763600765D84 /* CommandDisplay.swift in Sources */,
 				C95BF66A1FCF5E370020C51D /* StagingSelection.swift in Sources */,
 				C959CDEB1F859DB800C1E282 /* SidebarController+Actions.swift in Sources */,
 				891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */,

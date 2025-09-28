@@ -91,15 +91,15 @@ struct BranchList<Brancher: Branching,
         .contextMenu(forSelectionType: String.self) {
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {
-              Button(.checkOut, systemImage: "arrow.down.to.line") { delegate?.checkOut(ref) }
+              Button(command: .checkOut) { delegate?.checkOut(ref) }
                 .axid(.BranchPopup.checkOut)
             }
-            Button(.rename, systemImage: "pencil") { delegate?.rename(ref) }
+            Button(command: .rename) { delegate?.rename(ref) }
               .axid(.BranchPopup.rename)
-            Button(.merge, systemImage: "arrow.trianglehead.merge") { delegate?.merge(ref) }
+            Button(command: .merge) { delegate?.merge(ref) }
               .axid(.BranchPopup.merge)
             Divider()
-            Button(.delete, systemImage: "trash", role: .destructive) { delegate?.delete(ref) }
+            Button(command: .delete, role: .destructive) { delegate?.delete(ref) }
               .axid(.BranchPopup.delete)
           }
         } primaryAction: {
@@ -116,14 +116,16 @@ struct BranchList<Brancher: Branching,
         SidebarActionButton {
           let branchRef = selection.flatMap { LocalBranchRefName.named($0) }
 
-          Button("New branch...") { delegate?.newBranch() }
-          Button("Rename branch") {
+          Button("New branch...", systemImage: "plus") {
+            delegate?.newBranch()
+          }
+          Button("Rename branch", systemImage: "pencil") {
             if let branchRef {
               delegate?.rename(branchRef)
             }
           }
             .disabled(branchRef == nil)
-          Button("Delete branch") {
+          Button("Delete branch", systemImage: "trash") {
             if let branchRef {
               delegate?.delete(branchRef)
             }
