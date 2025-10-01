@@ -53,23 +53,23 @@ struct SidebarFilterSet
     
     var result: [SideBarGroupItem] = []
     
-    for (index, root) in roots.enumerated() {
-      switch SidebarGroupIndex(rawValue: index) {
-        case .workspace, .stashes, .submodules:
-          result.append(root)
-        case .branches, .tags:
-          result.append(filter(root: root) as! SideBarGroupItem)
-        case .remotes:
-          let newRemotes = SideBarGroupItem(titleString: .remotes)
-        
-          for remote in root.children {
-            newRemotes.children.append(filter(root: remote))
-          }
-          result.append(newRemotes)
-        default:
-          continue
-      }
-    }
+    //for (index, root) in roots.enumerated() {
+    //  switch SidebarGroupIndex(rawValue: index) {
+    //    case .workspace, .stashes, .submodules:
+    //      result.append(root)
+    //    case .branches, .tags:
+    //      result.append(filter(root: root) as! SideBarGroupItem)
+    //    case .remotes:
+    //      let newRemotes = SideBarGroupItem(titleString: .remotes)
+    //
+    //      for remote in root.children {
+    //        newRemotes.children.append(filter(root: remote))
+    //      }
+    //      result.append(newRemotes)
+    //    default:
+    //      continue
+    //  }
+    //}
     return result
   }
   

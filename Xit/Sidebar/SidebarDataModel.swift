@@ -36,24 +36,13 @@ final class SidebarDataModel: @unchecked Sendable
     roots = makeRoots()
   }
   
-  func rootItem(_ index: SidebarGroupIndex) -> SideBarGroupItem
-  {
-    return roots[index.rawValue]
-  }
-  
   func item(forBranchName branch: String) -> LocalBranchSidebarItem?
   {
-    let branches = roots[SidebarGroupIndex.branches.rawValue]
-    let result = branches.children.first { $0.title == branch }
-    
-    return result as? LocalBranchSidebarItem
-  }
-  
-  func item(named name: String, inGroup group: SidebarGroupIndex) -> SidebarItem?
-  {
-    let group = roots[group.rawValue]
-    
-    return group.child(matching: name)
+    return nil
+    //let branches = roots[SidebarGroupIndex.branches.rawValue]
+    //let result = branches.children.first { $0.title == branch }
+    //
+    //return result as? LocalBranchSidebarItem
   }
   
   /// Returns the name of the remote for either a remote branch or a local
@@ -139,68 +128,6 @@ final class SidebarDataModel: @unchecked Sendable
 
   func loadRoots(_ repo: some Repository) -> [SideBarGroupItem]
   {
-    let newRoots = makeRoots()
-    let branchesGroup = newRoots[SidebarGroupIndex.branches.rawValue]
-    let localBranches = repo.localBranches.sorted
-    { $0.referenceName <~ $1.referenceName }
-
-    for branch in localBranches {
-      guard let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
-      else { continue }
-      
-      let name = branch.referenceName.name
-      let selection = CommitSelection(repository: repo, commit: commit)
-      let branchItem = LocalBranchSidebarItem(title: name, selection: selection)
-      let parent = self.parent(for: name, groupItem: branchesGroup)
-      
-      parent.children.append(branchItem)
-    }
-    
-    let remoteItems = repo.remoteNames().map {
-          RemoteSidebarItem(title: $0, repository: repo) }
-    let remoteBranches = repo.remoteBranches.sorted
-    { $0.referenceName <~ $1.referenceName }
-
-    for branch in remoteBranches {
-      guard let remote = remoteItems.first(where: { $0.title ==
-                                                    branch.remoteName }),
-            let remoteName = branch.remoteName,
-            let oid = branch.oid,
-            let commit = repo.commit(forOID: oid)
-      else { continue }
-      let name = branch.referenceName.localName
-      let selection = CommitSelection(repository: repo, commit: commit)
-      let remoteParent = parent(for: name, groupItem: remote)
-      
-      remoteParent.children.append(RemoteBranchSidebarItem(title: name,
-                                                           remote: remoteName,
-                                                           selection: selection))
-    }
-    
-    Signpost.interval(.loadTags) {
-      guard let tags = try? repo.tags() as [any Tag]
-      else { return }
-      let sortedTags = tags.sorted(by: { $0.name <~ $1.name })
-      let tagsGroup = newRoots[SidebarGroupIndex.tags.rawValue]
-      
-      for tag in sortedTags {
-        let tagItem = TagSidebarItem(tag: tag)
-        let tagParent = parent(for: tag.name.name, groupItem: tagsGroup)
-        
-        tagParent.children.append(tagItem)
-      }
-    }
-    
-    let stashItems = makeStashItems()
-    let submoduleItems = repo.submodules().map {
-          SubmoduleSidebarItem(submodule: $0) }
-    
-    newRoots[SidebarGroupIndex.remotes.rawValue].children = remoteItems
-    newRoots[SidebarGroupIndex.stashes.rawValue].children = stashItems
-    newRoots[SidebarGroupIndex.submodules.rawValue].children = submoduleItems
-    
-    repo.rebuildRefsIndex()
-    return newRoots
+    return []
   }
 }

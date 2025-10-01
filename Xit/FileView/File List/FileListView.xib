@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -95,7 +96,7 @@
                                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-la-hAJ">
                                                         <rect key="frame" x="23" y="1" width="290" height="16"/>
                                                         <subviews>
-                                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sE8-ty-QUn">
+                                                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sE8-ty-QUn">
                                                                 <rect key="frame" x="-2" y="0.0" width="271" height="16"/>
                                                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="gEl-cS-7XU">
                                                                     <font key="font" metaFont="system"/>
@@ -149,7 +150,7 @@
                                                 <rect key="frame" x="1" y="1" width="0.0" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1UQ-8K-gnt">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1UQ-8K-gnt">
                                                         <rect key="frame" x="0.0" y="0.0" width="4" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="klt-WP-ufl">
@@ -187,14 +188,14 @@
                     <rect key="frame" x="0.0" y="220" width="404" height="21"/>
                     <subviews>
                         <imageView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7CW-AS-mzV">
-                            <rect key="frame" x="8" y="-0.5" width="16" height="23"/>
+                            <rect key="frame" x="8" y="0.0" width="16" height="23"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="95e-GZ-yJJ"/>
                                 <constraint firstAttribute="width" constant="16" id="FYM-cA-6ub"/>
                             </constraints>
                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="doc" catalog="system" id="A3f-xT-8bW"/>
                         </imageView>
-                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
+                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H5h-Tj-wed">
                             <rect key="frame" x="30" y="3" width="32" height="16"/>
                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Files" id="bAt-yr-gVd">
                                 <font key="font" metaFont="system"/>
@@ -203,13 +204,13 @@
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
-                            <rect key="frame" x="304" y="3" width="25" height="15"/>
+                            <rect key="frame" x="308" y="3" width="25" height="15"/>
                             <subviews>
                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
                                     <rect key="frame" x="-5" y="0.0" width="30" height="15"/>
                                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" altersStateOfSelectedItem="NO" id="HcG-5P-T5p">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="message"/>
                                         <menu key="menu" id="8bv-cO-Cqt">
                                             <items>
                                                 <menuItem image="NSActionTemplate" hidden="YES" id="cjU-tH-Zw9">
@@ -295,7 +296,7 @@
                             </customSpacing>
                         </stackView>
                         <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eB6-ub-8f2">
-                            <rect key="frame" x="335" y="-2" width="71" height="24"/>
+                            <rect key="frame" x="341" y="-3" width="63" height="24"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="8Tl-dI-Xev">
                                 <font key="font" metaFont="system"/>
                                 <segments>

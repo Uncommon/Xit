@@ -102,6 +102,13 @@ enum Sidebar
             .containing(.any, identifier: .Sidebar.currentBranch)
             .firstMatch
     static let filterField = Window.window.textFields[.Sidebar.filter]
+    
+    static func branchCell(_ branch: String) -> XCUIElement
+    {
+      Sidebar.Branches.list.cells
+        .containing(.staticText, identifier: branch)
+        .firstMatch
+    }
   }
 
   enum Tags: SidebarList
@@ -156,15 +163,15 @@ enum Sidebar
   
   static func workspaceStatusIndicator(branch: String) -> XCUIElement
   {
-    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
+    let cell = Sidebar.Branches.branchCell(branch)
     
     return cell.buttons[.Sidebar.workspaceStatus]
   }
   
   static func trackingStatusIndicator(branch: String) -> XCUIElement
   {
-    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
-    
+    let cell = Sidebar.Branches.branchCell(branch)
+
     return cell.buttons[.Sidebar.trackingStatus]
   }
 }

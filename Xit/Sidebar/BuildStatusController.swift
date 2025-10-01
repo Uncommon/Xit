@@ -155,10 +155,10 @@ extension BuildStatusController: BuildStatusClient
     DispatchQueue.main.async {
       [self] in
       Signpost.interval(.buildStatusUpdate(buildType)) {
-        updateBranches(model.rootItem(.branches).children)
-        for remoteItem in model.rootItem(.remotes).children {
-          updateBranches(remoteItem.children)
-        }
+        //updateBranches(model.rootItem(.branches).children)
+        //for remoteItem in model.rootItem(.remotes).children {
+        //  updateBranches(remoteItem.children)
+        //}
       }
     }
   }

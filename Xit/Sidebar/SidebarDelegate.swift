@@ -10,7 +10,7 @@ final class SidebarDelegate: NSObject
     static let data = ¶"DataCell"
   }
   
-  @IBOutlet weak var controller: SidebarController?
+  //@IBOutlet weak var controller: SidebarController?
   @IBOutlet weak var outline: NSOutlineView!
   weak var model: SidebarDataModel?
   weak var buildStatusController: BuildStatusController?
@@ -67,10 +67,10 @@ final class SidebarDelegate: NSObject
     let groupItem: SideBarGroupItem
     
     switch branchItem {
-      case is LocalBranchSidebarItem:
-        groupItem = model.rootItem(.branches)
-      case is RemoteBranchSidebarItem:
-        groupItem = model.rootItem(.remotes)
+      //case is LocalBranchSidebarItem:
+      //  groupItem = model.rootItem(.branches)
+      //case is RemoteBranchSidebarItem:
+      //  groupItem = model.rootItem(.remotes)
       default:
         return nil
     }
@@ -108,8 +108,8 @@ final class SidebarDelegate: NSObject
          let tracked = localBranch.trackingBranchName {
         cell.statusButton.toolTip = tracked.name
       }
-      cell.statusButton.target = controller
-      cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
+      //cell.statusButton.target = controller
+      //cell.statusButton.action = #selector(SidebarController.showItemStatus(_:))
       cell.statusButton.isEnabled = true
       cell.missingImage.isHidden = true
     }
@@ -136,9 +136,9 @@ final class SidebarDelegate: NSObject
         case .missing(let tracking):
           dataView.statusButton.image = .xtCloud
           dataView.statusButton.toolTip = tracking + " (missing)"
-          dataView.statusButton.target = controller
-          dataView.statusButton.action =
-              #selector(SidebarController.missingTrackingBranch(_:))
+          //dataView.statusButton.target = controller
+          //dataView.statusButton.action =
+          //    #selector(SidebarController.missingTrackingBranch(_:))
           dataView.missingImage.isHidden = false
           dataView.statusButton.isEnabled = true
           (dataView.statusButton.cell as? NSButtonCell)?
@@ -229,17 +229,6 @@ extension SidebarDelegate: NSOutlineViewDelegate
   }
 
   public func outlineView(_ outlineView: NSOutlineView,
-                          shouldShowOutlineCellForItem item: Any) -> Bool
-  {
-    // Don't hide the workspace group
-    if (item as? SideBarGroupItem) === model?.rootItem(.workspace) {
-      return false
-    }
-    
-    return true
-  }
-  
-  public func outlineView(_ outlineView: NSOutlineView,
                           shouldSelectItem item: Any) -> Bool
   {
     return (item as? SidebarItem)?.isSelectable ?? false
@@ -277,9 +266,9 @@ extension SidebarDelegate: NSOutlineViewDelegate
         dataView.prDelegate = pullRequestManager
         dataView.item = sidebarItem
         if sidebarItem.isEditable {
-          textField.target = controller
-          textField.action =
-            #selector(SidebarController.sidebarItemRenamed(_:))
+          //textField.target = controller
+          //textField.action =
+          //  #selector(SidebarController.sidebarItemRenamed(_:))
         }
         else {
           textField.target = nil
@@ -302,30 +291,6 @@ extension SidebarDelegate: NSOutlineViewDelegate
         return nil
     }
   }
-  
-  public func outlineView(_ outlineView: NSOutlineView,
-                          rowViewForItem item: Any) -> NSTableRowView?
-  {
-    switch item {
-      case let branchItem as LocalBranchSidebarItem where branchItem.isCurrent:
-        return SidebarCheckedRowView()
-
-      case let remoteBranchItem as RemoteBranchSidebarItem:
-        guard let repository = model?.repository,
-              let branchName = repository.currentBranch,
-              let currentBranch = repository.localBranch(named: branchName),
-              currentBranch.trackingBranchName?.name ==
-                  remoteBranchItem.remoteName +/ remoteBranchItem.title
-        else { return nil }
-        let rowView = SidebarCheckedRowView(image: .xtCurrentRemoteBranch,
-                                            toolTip: .trackingToolTip)
-        
-        return rowView
-
-      default:
-        return nil
-    }
-  }
 }
 
 extension SidebarDelegate: BuildStatusDisplay
@@ -333,23 +298,5 @@ extension SidebarDelegate: BuildStatusDisplay
   func updateStatusImage(item: SidebarItem)
   {
     updateStatusImage(item: item, cell: nil)
-  }
-}
-
-extension SidebarDelegate: ReselectingOutlineDelegate
-{
-  func outlineViewClickedSelectedRow(_ outline: NSOutlineView)
-  {
-    guard let selectedIndex = outline.selectedRowIndexes.first,
-          let newSelectedItem = outline.item(atRow: selectedIndex)
-                                as? SidebarItem
-    else { return }
-    
-    if let oldSelection = repoUIController?.selection,
-       let newSelection = newSelectedItem.selection,
-       oldSelection.target == newSelection.target {
-      repoUIController?.reselect()
-    }
-    controller?.selectedItem = newSelectedItem
   }
 }

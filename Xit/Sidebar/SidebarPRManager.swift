@@ -39,19 +39,20 @@ final class SidebarPRManager
   
   func remoteItem(for pullRequest: any PullRequest) -> RemoteBranchSidebarItem?
   {
-    guard let sourceURL = pullRequest.sourceRepo,
-          let remote = model.rootItem(.remotes).children.first(where: {
-      ($0 as? RemoteSidebarItem)?.remote?.url == sourceURL
-    })
-    else { return nil }
-    let sourceBranch = pullRequest.sourceBranch
-                                  .droppingPrefix(RefPrefixes.heads)
-    
-    return remote.findChild {
-      let name = ($0 as? RemoteBranchSidebarItem)?
-          .branchObject()?.referenceName.localName
-      return name == sourceBranch
-    } as? RemoteBranchSidebarItem
+    return nil
+    //guard let sourceURL = pullRequest.sourceRepo,
+    //      let remote = model.rootItem(.remotes).children.first(where: {
+    //  ($0 as? RemoteSidebarItem)?.remote?.url == sourceURL
+    //})
+    //else { return nil }
+    //let sourceBranch = pullRequest.sourceBranch
+    //                              .droppingPrefix(RefPrefixes.heads)
+    //
+    //return remote.findChild {
+    //  let name = ($0 as? RemoteBranchSidebarItem)?
+    //      .branchObject()?.referenceName.localName
+    //  return name == sourceBranch
+    //} as? RemoteBranchSidebarItem
   }
   
   func pullRequest(for item: SidebarItem?) -> (any PullRequest)?

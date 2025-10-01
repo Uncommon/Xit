@@ -48,7 +48,6 @@ final class XTWindowController: NSWindowController,
                                 RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
-  @IBOutlet var sidebarController: SidebarController!
   @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
@@ -119,10 +118,6 @@ final class XTWindowController: NSWindowController,
     workspaceCountModel.subscribe(to: repoController, detector: repo)
     
     sinks.append(contentsOf: [
-//      repoController.refsPublisher.sinkOnMainQueue {
-//        [weak self] in
-//        self?.updateBranchList()
-//      },
       repo.currentBranchPublisher.sink {
         [weak self] in
         self?.titleBarController?.selectedBranch = $0?.name
@@ -140,7 +135,6 @@ final class XTWindowController: NSWindowController,
         self?.updateTabStatus(staged: $0.staged, unstaged: $0.unstaged)
       }
     ])
-    //sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
     updateTabStatus(staged: workspaceCountModel.counts.staged,
@@ -337,8 +331,6 @@ extension XTWindowController: NSWindowDelegate
     window.delegate = self
     splitViewController = contentViewController as? NSSplitViewController
     titleBarController.splitView = splitViewController.splitView
-    //sidebarController = splitViewController.splitViewItems[0].viewController
-    //    as? SidebarController
 
     historySplitController = splitViewController.splitViewItems[1].viewController
                              as? HistorySplitController
