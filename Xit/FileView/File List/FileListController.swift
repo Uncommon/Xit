@@ -87,6 +87,13 @@ class FileListController: NSViewController, RepositoryWindowViewController
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func awakeFromNib()
+  {
+    if #available(macOS 26.0, *) {
+      viewSwitch.prefersCompactControlSizeMetrics = true
+    }
+  }
+  
   override func loadView()
   {
     super.loadView()

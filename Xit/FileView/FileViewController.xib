@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="22690"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="24127"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,6 +18,7 @@
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="Aqt-Qq-ti3" id="1dY-oq-X5F"/>
                 <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
+                <outlet property="previewSelector" destination="zOv-gm-Q8M" id="Cme-sc-nta"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="textController" destination="58" id="xo6-ln-nOf"/>
                 <outlet property="view" destination="68" id="75"/>
@@ -95,7 +97,7 @@
                                     </constraints>
                                 </button>
                                 <segmentedControl identifier="previewSegments" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="192" y="188" width="157" height="23"/>
+                                    <rect key="frame" x="199" y="186" width="143" height="24"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -235,7 +237,7 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <popUpButtonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="left" lineBreakMode="truncatingTail" imageScaling="proportionallyDown" inset="2" pullsDown="YES" altersStateOfSelectedItem="NO" id="q3g-By-2Hk">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="menu"/>
+                                        <font key="font" metaFont="message"/>
                                         <menu key="menu" id="7Di-Wa-20v">
                                             <items>
                                                 <menuItem image="NSActionTemplate" hidden="YES" id="3vS-Np-NuM">
