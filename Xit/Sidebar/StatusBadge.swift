@@ -3,6 +3,7 @@ import SwiftUI
 struct StatusBadge: View
 {
   let text: String
+  let axid: AXID?
 
   var body: some View
   {
@@ -11,11 +12,13 @@ struct StatusBadge: View
       .background(Color(nsColor: .controlColor))
       .clipShape(.capsule)
       .font(.system(size: 10))
+      .axid(axid ?? .init(rawValue: ""))
   }
   
-  init(_ text: String)
+  init(_ text: String, axid: AXID? = nil)
   {
     self.text = text
+    self.axid = axid
   }
 }
 
@@ -25,7 +28,7 @@ struct WorkspaceStatusBadge: View
 
   var body: some View
   {
-    StatusBadge("\(unstagedCount) ▸ \(stagedCount)")
-      .axid(.Sidebar.workspaceStatus)
+    StatusBadge("\(unstagedCount) ▸ \(stagedCount)",
+                axid: .Sidebar.workspaceStatus)
   }
 }

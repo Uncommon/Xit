@@ -148,7 +148,7 @@ struct BranchList<Brancher: Branching,
       guard let status = referencer.graphBetween(
                 localBranch: branch.refName,
                 upstreamBranch: remoteBranch),
-            status.ahead > 0 && status.behind > 0
+            status.ahead > 0 || status.behind > 0
       else {
         return AnyView(Image(systemName: "network"))
       }
@@ -160,7 +160,8 @@ struct BranchList<Brancher: Branching,
       if status.behind > 0 {
         numbers.append("↓\(status.behind)")
       }
-      return AnyView(StatusBadge(numbers.joined(separator: " ")))
+      return AnyView(StatusBadge(numbers.joined(separator: " "),
+                                 axid: .Sidebar.trackingStatus))
     }
     else {
       return AnyView(EmptyView())

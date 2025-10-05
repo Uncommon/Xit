@@ -61,7 +61,7 @@ class PushTests: UnicodeRepoUITests
   let newFileName = "newfile.txt"
 
   var statusIndicator: XCUIElement
-  { Sidebar.workspaceStatusIndicator(branch: "master") }
+  { Sidebar.trackingStatusIndicator(branch: "master") }
   
   override func setUp()
   {
@@ -83,7 +83,11 @@ class PushTests: UnicodeRepoUITests
     
     env.open()
     
-    XCTAssertTrue(statusIndicator.exists && statusIndicator.title == "↑1")
+    let cell = Sidebar.Branches.branchCell("master")
+    
+    XCTAssertTrue(cell.exists)
+    XCTAssertTrue(statusIndicator.exists, "status indicator not found")
+    XCTAssertEqual(statusIndicator.value as? String, "↑1", "unexpected status")
   }
   
   func testPushDefault()

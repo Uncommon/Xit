@@ -165,14 +165,14 @@ enum Sidebar
   {
     let cell = Sidebar.Branches.branchCell(branch)
     
-    return cell.buttons[.Sidebar.workspaceStatus]
+    return cell.staticTexts[.Sidebar.workspaceStatus]
   }
   
   static func trackingStatusIndicator(branch: String) -> XCUIElement
   {
     let cell = Sidebar.Branches.branchCell(branch)
 
-    return cell.buttons[.Sidebar.trackingStatus]
+    return cell.staticTexts[.Sidebar.trackingStatus]
   }
 }
 
