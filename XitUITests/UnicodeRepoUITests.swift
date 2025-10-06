@@ -41,7 +41,7 @@ class FetchTests: UnicodeRepoUITests
     
     env.open()
     
-    let statusIndicator = Sidebar.workspaceStatusIndicator(branch: "master")
+    let statusIndicator = Sidebar.trackingStatusIndicator(branch: "master")
     
     // The remote hasn't been fetched since the above commit, so this repo
     // doesn't know yet that it's behind.
@@ -52,7 +52,7 @@ class FetchTests: UnicodeRepoUITests
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
     
     XCTAssertTrue(statusIndicator.exists)
-    XCTAssertEqual(statusIndicator.title, "↓1")
+    XCTAssertEqual(statusIndicator.value as? String, "↓1")
   }
 }
 
