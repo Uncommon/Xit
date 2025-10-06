@@ -25,16 +25,16 @@ class BranchTest: XTTest
     
     try repository.fetch(remote: remote, options: options)
 
-    let localBranch = try XCTUnwrap(repository.localBranch(named: .named("master")!))
-    let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "master",
+    let localBranch = try XCTUnwrap(repository.localBranch(named: .named("main")!))
+    let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "main",
                                                              remote: "origin"))
     
-    XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/master")
-    XCTAssertEqual(localBranch.referenceName.name, "master")
-    XCTAssertEqual(localBranch.referenceName.localName, "master")
+    XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/main")
+    XCTAssertEqual(localBranch.referenceName.name, "main")
+    XCTAssertEqual(localBranch.referenceName.localName, "main")
 
-    XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/master")
-    XCTAssertEqual(remoteBranch.referenceName.name, "origin/master")
-    XCTAssertEqual(remoteBranch.referenceName.localName, "master")
+    XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/main")
+    XCTAssertEqual(remoteBranch.referenceName.name, "origin/main")
+    XCTAssertEqual(remoteBranch.referenceName.localName, "main")
   }
 }

@@ -452,7 +452,7 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockBranches()
   {
-    let masterBranch: LocalBranchRefName = "master"
+    let masterBranch: LocalBranchRefName = "main"
     let testBranch1: LocalBranchRefName = "testBranch1"
     let testBranch2: LocalBranchRefName = "testBranch2"
 
@@ -505,7 +505,7 @@ class XTRepositoryTest: XTTest
 
   func testHeadRef()
   {
-    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/master")
+    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/main")
     XCTAssertNotNil(repository.headSHA)
   }
   
@@ -829,8 +829,8 @@ class XTRepositoryTest: XTTest
   func testTrackingBranch() throws
   {
     let remoteName = "origin"
-    let masterBranchName = "master"
-    let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remote: remoteName, branch: masterBranchName))
+    let mainBranchName = "main"
+    let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remote: remoteName, branch: mainBranchName))
 
     makeRemoteRepo()
     try execute(in: remoteRepository) {
@@ -846,14 +846,14 @@ class XTRepositoryTest: XTTest
     
     repository.config.invalidate()
     
-    let masterBranch = try XCTUnwrap(repository.localBranch(named: .named(masterBranchName)!))
+    let masterBranch = try XCTUnwrap(repository.localBranch(named: .named(mainBranchName)!))
 
     XCTAssertEqual(masterBranch.trackingBranchName?.fullPath, remoteBranchName.fullPath)
     
     let localBranch = try XCTUnwrap(repository.localTrackingBranch(
       forBranch: remoteBranchName))
     
-    XCTAssertEqual(localBranch.referenceName.name, "master")
+    XCTAssertEqual(localBranch.referenceName.name, mainBranchName)
   }
 }
 
