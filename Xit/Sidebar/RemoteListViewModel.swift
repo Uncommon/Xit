@@ -38,11 +38,13 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
       }
     }
     
-    unfilteredRemotes = branchesByRemote.map {
-      .init(name: $0.key,
-            branches: PathTreeNode<RemoteBranchRefName>.makeHierarchy(
-              from: $0.value, prefix: "refs/remotes/\($0.key)/"))
-    }
+    unfilteredRemotes = branchesByRemote
+      .map {
+        .init(name: $0.key,
+              branches: PathTreeNode<RemoteBranchRefName>.makeHierarchy(
+                from: $0.value, prefix: "refs/remotes/\($0.key)/"))
+      }
+      .sorted(byKeyPath: \.name)
     filterChanged(filter)
   }
   
