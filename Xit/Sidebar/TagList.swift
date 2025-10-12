@@ -1,6 +1,17 @@
 import SwiftUI
 import Combine
 
+@MainActor
+// swiftlint:disable:next class_delegate_protocol
+protocol TagListDelegate
+{
+  func delete(tag: TagRefName)
+}
+
+extension EnvironmentValues
+{
+  @Entry var tagListDelegate: (any TagListDelegate)? = nil
+}
 
 struct TagList<Tagger: Tagging>: View
 {
@@ -8,6 +19,8 @@ struct TagList<Tagger: Tagging>: View
 
   @Binding var selection: String?
   @Binding var expandedItems: Set<String>
+
+  @Environment(\.tagListDelegate) var delegate: TagListDelegate?
 
   var body: some View
   {
@@ -31,9 +44,14 @@ struct TagList<Tagger: Tagging>: View
           }.selectionDisabled(item == nil)
         }
       }
+        .axid(.Sidebar.tagsList)
         .contextMenu(forSelectionType: String.self) {
-          if $0.first != nil {
-            Button(.delete, systemImage: "trash", role: .destructive) { }
+          if let selection = $0.first,
+             let tagRef = TagRefName(rawValue: selection) {
+            Button(.delete, systemImage: "trash", role: .destructive) {
+              delegate?.delete(tag: tagRef)
+            }
+              .axid(.TagPopup.delete)
           }
         }
         .overlay {

@@ -110,6 +110,9 @@ class ModifyingUITests: XCTestCase
   {
     let tagName = "someTag"
     let sheet = XitApp.sheets.firstMatch
+    // Menu item identifier isn't getting set, unlike in the branch list
+    let deleteItem = XitApp.windows.menuItems["Delete"]
+    let tagCell = Sidebar.Tags.cell(named: tagName)
 
     // Add a tag because the test repo doesn't have any
     env.git.run(args: ["tag", tagName])
@@ -119,24 +122,23 @@ class ModifyingUITests: XCTestCase
 
     XCTContext.runActivity(named: "Cancel delete tag") {
       _ in
-      Sidebar.Tags.list.staticTexts[tagName].rightClick()
-      XitApp.menuItems[.TagPopup.delete].click()
+      tagCell.rightClick()
+      deleteItem.click()
 
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
-      XCTAssertTrue(Sidebar.list.staticTexts[tagName].exists)
+      XCTAssertTrue(tagCell.exists)
       XCTAssertTrue(env.git.tags().contains(tagName))
     }
 
     XCTContext.runActivity(named: "Actually delete tag") {
       _ in
-      Sidebar.Tags.list.staticTexts[tagName].rightClick()
-      XitApp.menuItems[.TagPopup.delete].click()
+      tagCell.rightClick()
+      deleteItem.click()
 
       sheet.buttons["Delete"].click()
       XCTAssertFalse(env.git.tags().contains(tagName))
-      wait(for: [absence(of: Sidebar.list.staticTexts[tagName])],
-           timeout: 5.0)
+      wait(for: [absence(of: tagCell)], timeout: 5.0)
     }
   }
 

@@ -10,6 +10,11 @@ class TabbedSidebarController: NSHostingController<AnyView>
   {
     weak var controller: XTWindowController?
   }
+  
+  struct TagDelegate: RepoCommandHandler
+  {
+    weak var controller: XTWindowController?
+  }
 
   init(repo: some FullRepository,
        workspaceCountModel: WorkspaceStatusCountModel,
@@ -28,6 +33,7 @@ class TabbedSidebarController: NSHostingController<AnyView>
                              workspaceCountModel: workspaceCountModel,
                              selection: controller.selectionBinding)
       .environment(\.branchListDelegate, BranchDelegate(controller: controller))
+      .environment(\.tagListDelegate, TagDelegate(controller: controller))
 
     // Use AnyView because of the environment modifier
     super.init(rootView: AnyView(view))
@@ -121,3 +127,23 @@ extension TabbedSidebarController.BranchDelegate: BranchListDelegate
   }
 }
 
+extension TabbedSidebarController.TagDelegate: TagListDelegate
+{
+  func delete(tag: TagRefName)
+  {
+    guard let controller,
+          let window = controller.window
+    else { return }
+
+    Task {
+      guard await NSAlert.confirmDelete(kind: .ItemType.tag,
+                                        name: tag.name,
+                                        window: window)
+      else { return }
+
+      executeAndReport {
+        try controller.repository.deleteTag(name: tag)
+      }
+    }
+  }
+}
