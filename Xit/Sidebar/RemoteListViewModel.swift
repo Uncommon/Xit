@@ -18,11 +18,14 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   var unfilteredRemotes: [RemoteItem] = []
   @Published var remotes: [RemoteItem] = []
   @Published var searchScope: RemoteSearchScope = .branches
+  @Published var expandedRemotes: Set<String>
   
   init(manager: Manager, brancher: Brancher)
   {
     self.manager = manager
     self.brancher = brancher
+    // Expand all remotes by default
+    self.expandedRemotes = .init(manager.remotes().compactMap { $0.name })
     super.init()
     
     updateList()

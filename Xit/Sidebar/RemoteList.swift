@@ -94,7 +94,7 @@ struct RemoteList<Manager: RemoteManagement,
   
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
-    return $expandedItems.binding(for: RefPrefixes.remotes + remoteName)
+    return $model.expandedRemotes.binding(for: remoteName)
   }
 }
 
