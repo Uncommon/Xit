@@ -23,6 +23,18 @@ enum RemoteSearchScope: CaseIterable, Identifiable
   }
 }
 
+@MainActor
+protocol RemoteListDelegate
+{
+  func createTrackingBranch(for branch: RemoteBranchRefName)
+}
+
+extension EnvironmentValues
+{
+  @Entry var remoteListDelegate: (any RemoteListDelegate)? = nil
+}
+
+
 struct RemoteList<Manager: RemoteManagement,
                   Brancher: Branching,
                   Accessorizer: BranchAccessorizing>: View
@@ -34,6 +46,8 @@ struct RemoteList<Manager: RemoteManagement,
   let accessorizer: Accessorizer
   @Binding var selection: String?
   @Binding var expandedItems: Set<String>
+  
+  @Environment(\.remoteListDelegate) var delegate
 
   var body: some View
   {
@@ -55,11 +69,21 @@ struct RemoteList<Manager: RemoteManagement,
             Label(remote.name, systemImage: "network")
           }.listRowSeparator(.hidden)
         }
-      }.overlay {
-        if model.remotes.isEmpty {
-          model.contentUnavailableView("No Remotes", systemImage: "network")
-        }
       }
+        .axid(.Sidebar.remotesList)
+        .contextMenu(forSelectionType: String.self) {
+          selection in
+          if let branchRef = selection.first.flatMap({RemoteBranchRefName(rawValue: $0)}) {
+            Button(.createTrackingBranch, systemImage: "plus.circle") {
+              delegate?.createTrackingBranch(for: branchRef)
+            }.axid(.RemoteBranchPopup.createTracking)
+          }
+        }
+        .overlay {
+          if model.remotes.isEmpty {
+            model.contentUnavailableView("No Remotes", systemImage: "network")
+          }
+        }
       // TODO: context menu
       FilterBar(text: $model.filter,
                 prompt: model.searchScope.text,

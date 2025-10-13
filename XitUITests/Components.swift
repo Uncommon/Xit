@@ -110,6 +110,11 @@ enum Sidebar
         .firstMatch
     }
   }
+  
+  enum Remotes: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.remotesList]
+  }
 
   enum Tags: SidebarList
   {

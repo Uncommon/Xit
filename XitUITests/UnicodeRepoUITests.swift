@@ -196,15 +196,17 @@ class RemoteBranchTests: UnicodeRepoUITests
   {
     XCTContext.runActivity(named: "open Create Tracking Branch sheet") {
       _ in
-      Sidebar.Branches.cell(named: newBranchName).rightClick()
-      Sidebar.remoteBranchPopup
-             .menuItems[.RemoteBranchPopup.createTracking].tap()
+      Sidebar.Remotes.cell(named: newBranchName)
+        .staticTexts.firstMatch // Right click on the cell itself seems to miss
+        .rightClick()
+      XitApp.windows.menuItems[UIString.createTrackingBranch.rawValue].tap()
     }
   }
   
   func testCreateTrackingBranch()
   {
     env.open()
+    Sidebar.Tab.remotes.click()
     openCreateTrackingSheet()
 
     XCTContext.runActivity(named: "check initial setup") { _ in
@@ -254,6 +256,7 @@ class RemoteBranchTests: UnicodeRepoUITests
       let currentBranch = env.git.currentBranch()
       
       XCTAssertEqual(currentBranch, newBranchName)
+      Sidebar.Tab.local.tap()
       Sidebar.assertCurrentBranch(newBranchName)
     }
   }

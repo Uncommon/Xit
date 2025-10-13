@@ -11,6 +11,11 @@ class TabbedSidebarController: NSHostingController<AnyView>
     weak var controller: XTWindowController?
   }
   
+  struct RemoteDelegate: RepoCommandHandler
+  {
+    weak var controller: XTWindowController?
+  }
+  
   struct TagDelegate: RepoCommandHandler
   {
     weak var controller: XTWindowController?
@@ -33,6 +38,7 @@ class TabbedSidebarController: NSHostingController<AnyView>
                              workspaceCountModel: workspaceCountModel,
                              selection: controller.selectionBinding)
       .environment(\.branchListDelegate, BranchDelegate(controller: controller))
+      .environment(\.remoteListDelegate, RemoteDelegate(controller: controller))
       .environment(\.tagListDelegate, TagDelegate(controller: controller))
 
     // Use AnyView because of the environment modifier
@@ -95,7 +101,6 @@ extension TabbedSidebarController.BranchDelegate: BranchListDelegate
     else { return }
 
     executeAndReport {
-      // TODO: change merge(branch:) to take ref name
       try controller?.repository.merge(branch: branch)
     }
   }
@@ -123,6 +128,20 @@ extension TabbedSidebarController.BranchDelegate: BranchListDelegate
       executeAndReport {
         try controller.repository.deleteBranch(branch)
       }
+    }
+  }
+}
+
+extension TabbedSidebarController.RemoteDelegate: RemoteListDelegate
+{
+  func createTrackingBranch(for branch: RemoteBranchRefName)
+  {
+    guard let controller
+    else { return }
+    
+    controller.startOperation {
+      CheckOutRemoteOpController(windowController: controller,
+                                 branch: branch)
     }
   }
 }
