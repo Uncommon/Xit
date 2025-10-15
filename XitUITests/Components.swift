@@ -159,7 +159,7 @@ enum Sidebar
       XCTFail("could not construct predicate")
       return
     }
-    let item = Sidebar.list.staticTexts.matching(predicate)
+    let item = Sidebar.Branches.list.staticTexts.matching(predicate)
     
     XCTAssert(item.element.waitForExistence(timeout: 2),
               "current branch did not match",

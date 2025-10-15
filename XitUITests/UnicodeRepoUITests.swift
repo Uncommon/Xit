@@ -220,7 +220,7 @@ class RemoteBranchTests: UnicodeRepoUITests
 
     XCTContext.runActivity(named: "test cancel") { _ in
       CreateTrackingSheet.cancelButton.tap()
-      XCTAssert(!CreateTrackingSheet.window.exists, "sheet did not open")
+      XCTAssert(!CreateTrackingSheet.window.exists, "sheet did not close")
     }
 
     openCreateTrackingSheet()
@@ -255,7 +255,8 @@ class RemoteBranchTests: UnicodeRepoUITests
     XCTContext.runActivity(named: "verify branch is checked out") { _ in
       let currentBranch = env.git.currentBranch()
       
-      XCTAssertEqual(currentBranch, newBranchName)
+      XCTAssertEqual(currentBranch, newBranchName,
+                     "new tracking branch doesn't match")
       Sidebar.Tab.local.tap()
       Sidebar.assertCurrentBranch(newBranchName)
     }
