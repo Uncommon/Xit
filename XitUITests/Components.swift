@@ -375,6 +375,11 @@ enum CleanSheet
                                file: StaticString = #filePath,
                                line: UInt = #line)
   {
+    // It can take a moment for the main sheet to be found after another sheet,
+    // like the delete confirmation, is closed.
+    XCTAssert(window.waitForExistence(timeout: 2.0),
+              "Clean sheet not open",
+              file: file, line: line)
     let cellTitles = window.cells.staticTexts.allElementsBoundByIndex
                            .map { $0.stringValue }
 
