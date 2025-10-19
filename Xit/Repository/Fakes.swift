@@ -120,6 +120,9 @@ class FakeLocalBranch: LocalBranch
     self.name = RefPrefixes.heads +/ name
     self.oid = oid
   }
+
+  func setTrackingBranch(_ branch: (any ReferenceName)?) throws
+  { trackingBranchName = branch }
 }
 
 class FakeRemoteBranch: RemoteBranch

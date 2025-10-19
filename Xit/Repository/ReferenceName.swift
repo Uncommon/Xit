@@ -7,9 +7,16 @@ public protocol ReferenceKind
   static var prefix: String { get }
 }
 
-public struct LocalBranchReference: ReferenceKind
+public protocol BranchReferenceKind: ReferenceKind
+{
+  /// The portion of the full path to drop to create the tracking branch name
+  static var dropTrackingPrefix: String { get }
+}
+
+public struct LocalBranchReference: BranchReferenceKind
 {
   public static var prefix: String { RefPrefixes.heads }
+  public static var dropTrackingPrefix: String { "" }
 }
 
 public struct RemoteReference: ReferenceKind
@@ -17,9 +24,10 @@ public struct RemoteReference: ReferenceKind
   public static var prefix: String { RefPrefixes.remotes }
 }
 
-public struct RemoteBranchReference: ReferenceKind
+public struct RemoteBranchReference: BranchReferenceKind
 {
   public static var prefix: String { RefPrefixes.remotes }
+  public static var dropTrackingPrefix: String { RefPrefixes.remotes }
 }
 
 public struct TagReference: ReferenceKind
@@ -143,6 +151,12 @@ public struct PrefixedRefName<Kind>: ReferenceName, Hashable
 
     return .init(rawValue: Kind.prefix +/ name)
   }
+}
+
+extension PrefixedRefName where Kind: BranchReferenceKind
+{
+  /// The path to use as a remote tracking branch
+  var trackingPath: String { fullPath.droppingPrefix(Kind.dropTrackingPrefix) }
 }
 
 extension PrefixedRefName where Kind == RemoteBranchReference

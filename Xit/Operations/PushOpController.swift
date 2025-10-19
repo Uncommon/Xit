@@ -144,10 +144,17 @@ final class PushOpController: PasswordOpController
         // This is now on the repo queue
         if let remoteName = remote.name {
           DispatchQueue.main.async {
-            if sheetController.setTrackingBranch {
-              currentBranch.trackingBranchName = RemoteBranchRefName(
-                  remote: remoteName,
-                  branch: currentBranch.referenceName.localName)
+            if sheetController.setTrackingBranch,
+               let ref = RemoteBranchRefName(
+                 remote: remoteName,
+                 branch: currentBranch.referenceName.localName) {
+
+              do {
+                try currentBranch.setTrackingBranch(ref)
+              }
+              catch let error {
+                self.showFailureError(error.localizedDescription)
+              }
             }
           }
         }

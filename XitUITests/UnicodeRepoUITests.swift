@@ -135,36 +135,41 @@ class PushNewTests: UnicodeRepoUITests
 
     XCTAssertFalse(indicator.exists)
     
-    Window.pushButton.press(forDuration: 0.25)
-    Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
-    
-    let trackingButton = PushNewSheet.setTrackingCheck
-    
-    wait(for: [presence(of: trackingButton)], timeout: 2.0)
-    
-    let buttonValue: Int = try testConvert(trackingButton.value)
-    
-    // Should be checked by default
-    XCTAssertTrue(buttonValue != 0)
-    if !tracking {
-      trackingButton.click()
+    try XCTContext.runActivity(named: "Push branch") { _ in
+      Window.pushButton.press(forDuration: 0.25)
+      Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
+      
+      let trackingButton = PushNewSheet.setTrackingCheck
+      
+      wait(for: [presence(of: trackingButton)], timeout: 2.0)
+      
+      let buttonValue: Int = try testConvert(trackingButton.value)
+      
+      // Should be checked by default
+      XCTAssertTrue(buttonValue != 0)
+      if !tracking {
+        trackingButton.click()
+      }
+      
+      PushNewSheet.pushButton.click()
+      wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
     }
-    
-    PushNewSheet.pushButton.click()
-    wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
 
-    // check in git whether the tracking branch is set
-    let result = env.git.run(args: ["branch", "-lvv", branchName])
-    let trackingFound = result.contains("[\(remoteName)/\(branchName)]")
-    
-    XCTAssertEqual(tracking, trackingFound, "tracking branch not set correctly")
-    
-    if tracking {
-      // Cloud icon should appear in the sidebar
-      wait(for: [presence(of: indicator)], timeout: 2.0)
+    XCTContext.runActivity(named: "Check repo for tracking branch") { _ in
+      let result = env.git.run(args: ["branch", "-lvv", branchName])
+      let trackingFound = result.contains("[\(remoteName)/\(branchName)]")
+      
+      XCTAssertEqual(tracking, trackingFound, "tracking branch not set correctly")
     }
-    else {
-      XCTAssertFalse(indicator.exists)
+    
+    XCTContext.runActivity(named: "Check for indicator") { _ in
+      if tracking {
+        XCTAssert(indicator.waitForExistence(timeout: 2.0),
+                  "tracking icon did not appear")
+      }
+      else {
+        XCTAssertFalse(indicator.exists)
+      }
     }
   }
   
