@@ -32,7 +32,7 @@ public struct RemoteBranchReference: BranchReferenceKind
 
 public struct TagReference: ReferenceKind
 {
-  public static var prefix: String { RefPrefixes.tags}
+  public static var prefix: String { RefPrefixes.tags }
 }
 
 /// A type that wraps a full reference name for a specific kind of reference:

@@ -177,7 +177,7 @@ enum Sidebar
   {
     let cell = Sidebar.Branches.branchCell(branch)
 
-    return cell.staticTexts[.Sidebar.trackingStatus]
+    return cell.images[.Sidebar.trackingStatus]
   }
 }
 

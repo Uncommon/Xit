@@ -150,7 +150,8 @@ struct BranchList<Brancher: Branching,
                 upstreamBranch: remoteBranch),
             status.ahead > 0 || status.behind > 0
       else {
-        return AnyView(Image(systemName: "network"))
+        return AnyView(Image(systemName: "network")
+          .axid(.Sidebar.trackingStatus))
       }
       var numbers = [String]()
       
