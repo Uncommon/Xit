@@ -203,17 +203,8 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   
   public func setTrackingBranch(_ branch: (any ReferenceName)?) throws
   {
-    let trackingPath: String?
-    
-    switch branch {
-      case let branchRef as RemoteBranchRefName:
-        trackingPath = branchRef.trackingPath
-      default:
-        trackingPath = branch?.fullPath
-    }
-    
     try RepoError.throwIfGitError(git_branch_set_upstream(branchRef,
-                                                          trackingPath))
+                                                          branch?.name))
     (config as? GitConfig)?.loadSnapshot()
   }
 }
