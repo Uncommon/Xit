@@ -366,12 +366,13 @@ extension BitbucketServerAPI: PullRequestService
         return []
       }
 
-      let result = requests.values.map { PullRequest(request: $0,
-                                                     service: self) }
+      let result = requests.values.map {
+        PullRequest(request: $0, service: self)
+      }
 
       #if DEBUG
       for request in result {
-        serviceLogger.debug("\(request.status): \(request.sourceBranch)")
+        serviceLogger.debug("\(request.status.rawValue): \(request.sourceBranch)")
       }
       #endif
       return result
