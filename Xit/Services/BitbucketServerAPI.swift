@@ -283,14 +283,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
   
   required init?(account: Account, password: String)
   {
-    guard var fullBaseURL = URLComponents(url: account.location,
-                                          resolvingAgainstBaseURL: false)
-    else { return nil }
-    
-    fullBaseURL.path = BitbucketServerAPI.rootPath
-    
-    guard let location = fullBaseURL.url
-    else { return nil }
+    let location = account.location.appending(path: BitbucketServerAPI.rootPath)
     var account = account
     
     account.location = location
