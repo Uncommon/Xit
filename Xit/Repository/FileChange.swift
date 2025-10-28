@@ -44,3 +44,14 @@ extension FileChange: CustomStringConvertible
   public var description: String
   { "\(path) [\(status.description)]" }
 }
+
+extension FileChange: Hashable
+{
+  public func hash(into hasher: inout Hasher)
+  {
+    hasher.combine(path)
+    hasher.combine(status)
+    hasher.combine(oldPath)
+    hasher.combine(oid ?? .zero())
+  }
+}
