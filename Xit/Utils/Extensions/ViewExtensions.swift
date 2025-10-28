@@ -76,7 +76,7 @@ extension NSControl
   }
 }
 
-extension NSButton: NSValidatedUserInterfaceItem {}
+extension NSButton: @retroactive NSValidatedUserInterfaceItem {}
 
 extension NSTextField
 {

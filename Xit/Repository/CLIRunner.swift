@@ -1,7 +1,6 @@
 import Foundation
 import os
 
-nonisolated(unsafe)
 let cliLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
                        category: "cli")
 

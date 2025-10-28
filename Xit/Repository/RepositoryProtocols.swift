@@ -201,7 +201,7 @@ public protocol FileContents: AnyObject
   func fileURL(_ file: String) -> URL
 }
 
-extension URL: Fakable
+extension URL: @retroactive Fakable
 {
   public static func fakeDefault() -> Self { .init(filePath: "/") }
 }
