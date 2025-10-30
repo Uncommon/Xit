@@ -390,7 +390,8 @@ extension BitbucketServerAPI: PullRequestService
     
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
-  
+
+  @MainActor
   func update(request: PullRequest,
               approved: Bool,
               status: BitbucketServer.ReviewerStatus) async throws
