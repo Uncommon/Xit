@@ -153,6 +153,7 @@ struct AccountsPrefsPane: View
                             id: info.id)
 
       try accountsManager.add(account, password: info.password)
+      accountsManager.saveAccounts()
     }
     catch let error as PasswordError {
       self.passwordError = error
