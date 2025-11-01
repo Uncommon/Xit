@@ -55,7 +55,7 @@ class ModifyingUITests: XCTestCase
 
   }
   
-  func testRenameBranch()
+  func testRenameBranch() throws
   {
     env.open()
     
@@ -69,13 +69,13 @@ class ModifyingUITests: XCTestCase
     XCTAssertTrue(Sidebar.list.staticTexts[newBranchName]
         .waitForExistence(timeout: 1.0))
 
-    let branches = env.git.branches()
-    
+    let branches = try env.git.branches()
+
     XCTAssertFalse(branches.contains(oldBranchName))
     XCTAssertTrue(branches.contains(newBranchName))
   }
 
-  func testDeleteBranch()
+  func testDeleteBranch() throws
   {
     env.open()
 
@@ -83,7 +83,7 @@ class ModifyingUITests: XCTestCase
     let sheet = XitApp.sheets.firstMatch
 
     XCTAssert(Window.window.waitForExistence(timeout: 2))
-    XCTContext.runActivity(named: "Cancel delete branch") {
+    try XCTContext.runActivity(named: "Cancel delete branch") {
       _ in
       Sidebar.list.staticTexts[branchName].rightClick()
       XitApp.menuItems[.BranchPopup.delete].click()
@@ -91,10 +91,10 @@ class ModifyingUITests: XCTestCase
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
       XCTAssertTrue(Sidebar.list.staticTexts[branchName].exists)
-      XCTAssertTrue(env.git.branches().contains(branchName))
+      XCTAssertTrue(try env.git.branches().contains(branchName))
     }
 
-    XCTContext.runActivity(named: "Actually delete branch") {
+    try XCTContext.runActivity(named: "Actually delete branch") {
       _ in
       Sidebar.list.staticTexts[branchName].rightClick()
       XitApp.menuItems[.BranchPopup.delete].click()
@@ -102,20 +102,20 @@ class ModifyingUITests: XCTestCase
       sheet.buttons["Delete"].click()
       wait(for: [absence(of: Sidebar.list.staticTexts[branchName])],
            timeout: 5.0)
-      XCTAssertFalse(env.git.branches().contains(branchName))
+      XCTAssertFalse(try env.git.branches().contains(branchName))
     }
   }
 
-  func testDeleteTag()
+  func testDeleteTag() throws
   {
     let tagName = "someTag"
     let sheet = XitApp.sheets.firstMatch
 
     // Add a tag because the test repo doesn't have any
-    env.git.run(args: ["tag", tagName])
+    try env.git.run(args: ["tag", tagName])
     env.open()
 
-    XCTContext.runActivity(named: "Cancel delete tag") {
+    try XCTContext.runActivity(named: "Cancel delete tag") {
       _ in
       Sidebar.list.staticTexts[tagName].rightClick()
       XitApp.menuItems[.TagPopup.delete].click()
@@ -123,22 +123,22 @@ class ModifyingUITests: XCTestCase
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
       XCTAssertTrue(Sidebar.list.staticTexts[tagName].exists)
-      XCTAssertTrue(env.git.tags().contains(tagName))
+      XCTAssertTrue(try env.git.tags().contains(tagName))
     }
 
-    XCTContext.runActivity(named: "Actually delete tag") {
+    try XCTContext.runActivity(named: "Actually delete tag") {
       _ in
       Sidebar.list.staticTexts[tagName].rightClick()
       XitApp.menuItems[.TagPopup.delete].click()
 
       sheet.buttons["Delete"].click()
-      XCTAssertFalse(env.git.tags().contains(tagName))
+      XCTAssertFalse(try env.git.tags().contains(tagName))
       wait(for: [absence(of: Sidebar.list.staticTexts[tagName])],
            timeout: 5.0)
     }
   }
 
-  func testSwitchBranch()
+  func testSwitchBranch() throws
   {
     env.open()
 
@@ -147,14 +147,14 @@ class ModifyingUITests: XCTestCase
 
     XCTAssertEqual(branchText.stringValue, "master")
 
-    env.git.checkOut(branch: featureBranch)
+    try env.git.checkOut(branch: featureBranch)
 
     wait(for: [expectation(for: .init(format: "value == %@", featureBranch),
                           evaluatedWith: branchText)],
          timeout: 5)
   }
   
-  func testTitleBarBranchSwitch()
+  func testTitleBarBranchSwitch() throws
   {
     env.open()
     
@@ -166,17 +166,17 @@ class ModifyingUITests: XCTestCase
                            evaluatedWith: Window.branchPopup)],
          timeout: 2)
     
-    let currentBranch = env.git.currentBranch()
-    
+    let currentBranch = try env.git.currentBranch()
+
     XCTAssertEqual(currentBranch, otherBranch)
   }
   
-  func testFilterBranchFolder()
+  func testFilterBranchFolder() throws
   {
     let folderName = "folder"
     let subBranchName = "and-why"
     
-    env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
+    try env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
     env.open()
     
     let newBranchCell = Sidebar.cell(named: "new")
@@ -203,13 +203,13 @@ class ModifyingUITests: XCTestCase
     XCTAssertFalse(subBranchCell.exists)
   }
   
-  func reset(modeButton: XCUIElement)
+  func reset(modeButton: XCUIElement) throws
   {
-    XCTContext.runActivity(named: "Resetting") { _ in
+    try XCTContext.runActivity(named: "Resetting") { _ in
       env.write("some stuff", to: "README1.txt")
       env.write("other stuff", to: "REAME_")
-      env.git.run(args: ["add", "REAME_"])
-      
+      try env.git.run(args: ["add", "REAME_"])
+
       HistoryList.row(2).rightClick()
       HistoryList.ContextMenu.resetItem.click()
       XCTAssertTrue(ResetSheet.window.waitForExistence(timeout: 0.5))
@@ -218,11 +218,11 @@ class ModifyingUITests: XCTestCase
     }
   }
   
-  func testResetSoft()
+  func testResetSoft() throws
   {
     env.open()
     
-    reset(modeButton: ResetSheet.softButton)
+    try reset(modeButton: ResetSheet.softButton)
     Sidebar.stagingCell.click()
 
     // Temporary workaround
@@ -238,11 +238,11 @@ class ModifyingUITests: XCTestCase
     WorkspaceFileList.assertFiles(["README1.txt", "UntrackedImage.png"])
   }
   
-  func testResetMixed()
+  func testResetMixed() throws
   {
     env.open()
     
-    reset(modeButton: ResetSheet.mixedButton)
+    try reset(modeButton: ResetSheet.mixedButton)
     Sidebar.stagingCell.click()
 
     // Temporary workaround
@@ -254,11 +254,11 @@ class ModifyingUITests: XCTestCase
                                    "jquery-1.8.1.min.js"])
   }
   
-  func testResetHard()
+  func testResetHard() throws
   {
     env.open()
     
-    reset(modeButton: ResetSheet.hardButton)
+    try reset(modeButton: ResetSheet.hardButton)
     Sidebar.stagingCell.click()
     
     // Temporary workaround
@@ -269,13 +269,13 @@ class ModifyingUITests: XCTestCase
     WorkspaceFileList.assertFiles(["UntrackedImage.png"])
   }
   
-  func modifyAndStage(file: String, text: String)
+  func modifyAndStage(file: String, text: String) throws
   {
     env.write(text, to: file)
-    env.git.run(args: ["add", file])
+    try env.git.run(args: ["add", file])
   }
   
-  func testFilterComments()
+  func testFilterComments() throws
   {
     let enteredText = """
           First line
@@ -287,7 +287,7 @@ class ModifyingUITests: XCTestCase
           Second line
           """
     
-    modifyAndStage(file: "README1.txt", text: "some stuff")
+    try modifyAndStage(file: "README1.txt", text: "some stuff")
 
     env.open()
     
@@ -302,7 +302,7 @@ class ModifyingUITests: XCTestCase
     XCTAssertEqual(CommitHeader.messageField.stringValue, expectedText)
   }
   
-  func testDontFilterComments()
+  func testDontFilterComments() throws
   {
     let enteredText = """
           First line
@@ -310,7 +310,7 @@ class ModifyingUITests: XCTestCase
           Second line
           """
 
-    modifyAndStage(file: "README1.txt", text: "some stuff")
+    try modifyAndStage(file: "README1.txt", text: "some stuff")
 
     env.open()
     

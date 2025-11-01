@@ -13,36 +13,36 @@ class GitCLI
   }
   
   @discardableResult
-  func run(args: [String]) -> String
+  func run(args: [String]) throws -> String
   {
-    let data = try! runner.run(args: args)
+    let data = try runner.run(args: args)
     
     return String(data: data, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines)
   }
   
-  func currentBranch() -> String
+  func currentBranch() throws -> String
   {
-    run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
+    try run(args: ["rev-parse", "--abbrev-ref", "HEAD"])
   }
   
   /// Current branch will be prefixed by "* "
-  func branches() -> [String]
+  func branches() throws -> [String]
   {
-    run(args: ["branch"]).components(separatedBy: .whitespacesAndNewlines)
+    try run(args: ["branch"]).components(separatedBy: .whitespacesAndNewlines)
   }
 
-  func tags() -> [String]
+  func tags() throws -> [String]
   {
-    run(args: ["tag", "-l"]).components(separatedBy: .whitespacesAndNewlines)
+    try run(args: ["tag", "-l"]).components(separatedBy: .whitespacesAndNewlines)
   }
 
-  func checkOut(branch: String)
+  func checkOut(branch: String) throws
   {
-    run(args: ["checkout", branch])
+    try run(args: ["checkout", branch])
   }
   
-  func checkOut(newBranch: String)
+  func checkOut(newBranch: String) throws
   {
-    run(args: ["checkout", "-b", newBranch])
+    try run(args: ["checkout", "-b", newBranch])
   }
 }

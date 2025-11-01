@@ -42,7 +42,7 @@ class TestRepoEnvironment
   
   /// Extracts the test repo again, to another location, and sets it as
   /// a remote of the main repository.
-  func makeRemoteCopy(named remoteName: String) -> Bool
+  func makeRemoteCopy(named remoteName: String) throws -> Bool
   {
     let remoteParent = tempDir.url.path + ".origin"
     
@@ -58,7 +58,11 @@ class TestRepoEnvironment
       return false
     }
     
-    git.run(args: ["remote", "add", "-f", remoteName, remotePath])
+    guard let _ = try? git.run(args: ["remote", "add", "-f", remoteName, remotePath])
+    else {
+      XCTFail("add remote failed")
+      return false
+    }
     remoteGit = GitCLI(repoURL: remoteURL)
     
     return true
@@ -88,8 +92,14 @@ class TestRepoEnvironment
     let cloneRunner = GitCLI(repoURL: URL(fileURLWithPath: remoteParent,
                                           isDirectory: true))
 
-    cloneRunner.run(args: ["clone", "--bare", git.runner.workingDir])
-    git.run(args: ["remote", "add", "-f", remoteName, remotePath])
+    do {
+      try cloneRunner.run(args: ["clone", "--bare", git.runner.workingDir])
+      try git.run(args: ["remote", "add", "-f", remoteName, remotePath])
+    }
+    catch {
+      XCTFail("Clone failed")
+      return false
+    }
     remoteGit = GitCLI(repoURL: remoteURL)
 
     return true
