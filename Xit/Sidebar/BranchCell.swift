@@ -19,11 +19,6 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
                         font: .systemFontSized(weight: isCurrent ? .bold
                                                                  : .regular))
             .padding(.horizontal, 4)
-            // tried hiding this background when the row is selected,
-            // but there is a delay so it doesn't look good.
-            .background(isCurrent
-                        ? AnyShapeStyle(.quaternary)
-                        : AnyShapeStyle(.clear))
             .cornerRadius(4)
             // Putting the ID on the cell doesn't work, so put it here.
             .accessibilityIdentifier(isCurrent ? "currentBranch" : "branch")
@@ -33,14 +28,15 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
             Image(systemName: "folder.fill")
           }
           else {
-            if isCurrent {
-              Image(systemName: "checkmark.circle").fontWeight(.black)
-                .accessibilityElement()
-                .axid(.Sidebar.currentBranchCheck)
-            }
-            else {
-              Image("scm.branch")
-            }
+            Image("scm.branch")
+              .background(
+                isCurrent
+                  ? AnyView(Image(systemName: "checkmark")
+                    .offset(x: -18, y: 0))
+                  : AnyView(EmptyView())
+              )
+              .accessibilityElement()
+              .axid(isCurrent ? .Sidebar.currentBranchCheck : .empty)
           }
         }
       )
@@ -61,3 +57,4 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
     self.trailingContent = trailingContent
   }
 }
+
