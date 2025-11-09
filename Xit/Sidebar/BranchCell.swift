@@ -35,6 +35,7 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
                     .offset(x: -18, y: 0))
                   : AnyView(EmptyView())
               )
+              .fontWeight(isCurrent ? .bold : .regular)
               .accessibilityElement()
               .axid(isCurrent ? .Sidebar.currentBranchCheck : .empty)
           }
