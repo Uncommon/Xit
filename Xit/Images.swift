@@ -30,7 +30,7 @@ extension NSImage
   static var xtCloud: NSImage { .init(systemSymbolName: "cloud")! }
   static var xtCurrentBranch: NSImage { .init(named: NSImage.menuOnStateTemplateName)! }
   static var xtCurrentRemoteBranch: NSImage { .init(systemSymbolName: "checkmark.circle")! }
-  static var xtFile: NSImage { .init(systemSymbolName: "doc")! }
+  static var xtFile: NSImage { .init(systemSymbolName: "document")! }
   static var xtFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtRefresh: NSImage { .init(named: NSImage.refreshTemplateName)! }
   static var xtRemote: NSImage { .init(systemSymbolName: "cloud")! }
