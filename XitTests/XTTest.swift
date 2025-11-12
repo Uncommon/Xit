@@ -129,7 +129,8 @@ class XTTest: XCTestCase
                      line: UInt = #line, sourceFile: StaticString = #file)
   {
     do {
-      let content = try String(contentsOfFile: repoPath +/ file)
+      let content = try String(contentsOfFile: repoPath +/ file,
+                               encoding: .utf8)
 
       XCTAssertEqual(content, text, file: sourceFile, line: line)
     }

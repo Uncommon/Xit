@@ -30,7 +30,7 @@ class WebViewController: NSViewController
                                         subdirectory: "html")
     else { return "" }
     
-    return (try? String(contentsOf: htmlURL)) ?? ""
+    return (try? String(contentsOf: htmlURL, encoding: .utf8)) ?? ""
   }
   
   override func awakeFromNib()

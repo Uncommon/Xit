@@ -97,7 +97,7 @@ final class CommitEntryController: NSViewController,
     guard let templatePath = config.commitTemplate()
     else { return nil }
     
-    return try? String(contentsOfFile: templatePath)
+    return try? String(contentsOfFile: templatePath, encoding: .utf8)
   }
   
   func resetMessage()

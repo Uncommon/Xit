@@ -34,7 +34,7 @@ class StringRepository: CommitStorage
 }
 
 
-extension Xit.CommitConnection: CustomDebugStringConvertible
+extension Xit.CommitConnection: @retroactive CustomDebugStringConvertible
 {
   public var debugDescription: String
   { return "\(childOID.debugDescription)-\(parentOID.debugDescription) \(colorIndex)" }

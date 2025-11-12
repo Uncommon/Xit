@@ -140,8 +140,9 @@ class XTRepositoryMergeTest: XTTest
       Merge(branch: "c2")
     }
 
-    let contents = try XCTUnwrap(String(contentsOf: repository.fileURL(fileName)))
-    
+    let contents = try XCTUnwrap(String(contentsOf: repository.fileURL(fileName),
+                                        encoding: .utf8))
+
     XCTAssertEqual(contents, result15)
     assertWorkspaceContent(staged: [], unstaged: [])
   }
