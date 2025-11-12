@@ -34,7 +34,7 @@ extension NSImage
   static var xtFolder: NSImage { .init(systemSymbolName: "folder")! }
   static var xtRefresh: NSImage { .init(named: NSImage.refreshTemplateName)! }
   static var xtRemote: NSImage { .init(systemSymbolName: "cloud")! }
-  static var xtStageAll: NSImage { .init(named: .xtStageAllTemplate)! }
+  static var xtStageAll: NSImage { .init(systemSymbolName: "chevron.up.2")! }
   static var xtStageButton: NSImage { .init(systemSymbolName: "circle")! }
   static var xtStageButtonHover: NSImage { .init(systemSymbolName: "chevron.up.circle")! }
   static var xtStageButtonPressed: NSImage { .init(systemSymbolName: "chevron.up.circle.fill")! }
@@ -45,7 +45,7 @@ extension NSImage
   static var xtTagLight: NSImage { .init(systemSymbolName: "tag")! }
   static var xtTag: NSImage { .init(systemSymbolName: "tag.fill")! }
   static var xtUndo: NSImage { .init(systemSymbolName: "arrow.uturn.backward.circle")! }
-  static var xtUnstageAll: NSImage { .init(named: .xtUnstageAllTemplate)! }
+  static var xtUnstageAll: NSImage { .init(systemSymbolName: "chevron.down.2")! }
   static var xtUnstageButtonHover: NSImage { .init(systemSymbolName: "chevron.down.circle")! }
   static var xtUnstageButtonPressed: NSImage { .init(systemSymbolName: "chevron.down.circle.fill")! }
 }
