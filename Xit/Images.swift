@@ -6,10 +6,6 @@ import AppKit
 extension NSImage.Name
 {
   static let xtBitBucketTemplate = "bitbucketTemplate"
-  static let xtBuildFailed = "buildFailed"
-  static let xtBuildInProgress = "buildInProgress"
-  static let xtBuildSucceeded = "buildSucceeded"
-  static let xtNoBuilds = "noBuilds"
   static let xtGitHub = "github"
   static let xtGitLab = "gitlab"
   static let xtStageAllTemplate = "stageAllTemplate"

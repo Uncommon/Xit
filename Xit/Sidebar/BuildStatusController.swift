@@ -23,17 +23,27 @@ final class BuildStatusController: NSObject
     var imageName: NSImage.Name
     {
       switch self {
-        case .unknown:
-          return .xtNoBuilds
-        case .success:
-          return .xtBuildSucceeded
-        case .running:
-          return .xtBuildInProgress
-        case .failure:
-          return .xtBuildFailed
+        case .unknown: "circle"
+        case .success: "checkmark.circle.fill"
+        case .running: "clock.fill"
+        case .failure: "xmark.circle.fill"
       }
     }
-    
+
+    var tint: NSColor
+    {
+      switch self {
+        case .unknown: .labelColor
+        case .success: .systemGreen
+        case .running: .systemBlue
+        case .failure: .systemRed
+      }
+    }
+
+    var image: NSImage {
+      .init(systemSymbolName: imageName)!
+    }
+
     init(build: TeamCityAPI.Build)
     {
       switch build {
@@ -118,7 +128,9 @@ final class BuildStatusController: NSObject
     popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
   }
 
-  func statusImage(for item: SidebarItem) -> NSImage?
+  // NSImage doesn't seem to have a good way to apply tint color, so the caller
+  // will apply it on the image view or button.
+  func statusImage(for item: SidebarItem) -> (NSImage, NSColor)?
   {
     guard let branchItem = item as? BranchSidebarItem,
           let refString = (branchItem as? RefSidebarItem)?.refName,
@@ -143,7 +155,7 @@ final class BuildStatusController: NSObject
       }
     }
     
-    return NSImage(named: overallState.imageName)
+    return (overallState.image, overallState.tint)
   }
 }
 
