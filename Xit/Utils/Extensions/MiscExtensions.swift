@@ -92,6 +92,12 @@ extension XMLElement
   }
 }
 
+extension ProcessInfo
+{
+  static var runningForPreviews: Bool
+  { processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
+}
+
 extension Publisher
 {
   /// For each published element, `object`'s `keyPath` is set to `nil`, and then

@@ -114,7 +114,8 @@ struct SendableKeychain: @unchecked Sendable
 
 final class KeychainStorage: PasswordStorage
 {
-  static let shared: PasswordStorage = KeychainStorage()
+  static let shared: PasswordStorage =
+      ProcessInfo.runningForPreviews ? NoOpKeychain() : KeychainStorage()
 
   let sendableKeychain: SendableKeychain?
   var keychain: SecKeychain? { sendableKeychain?.keychain }
