@@ -74,7 +74,7 @@
                                     <action selector="newDocument:" target="-1" id="371"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Clone..." image="plus.square.on.square" catalog="system" id="bF5-qO-S8s">
+                            <menuItem title="Clone..." secondaryImage="plus.square.on.square" catalog="system" id="bF5-qO-S8s">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="cloneRepository:" target="-1" id="ZI2-rs-7fz"/>
@@ -342,12 +342,12 @@
                 <menuItem title="Repository" id="534">
                     <menu key="submenu" title="Repository" id="535">
                         <items>
-                            <menuItem title="Go Back" image="chevron.backward" catalog="system" keyEquivalent="" id="4G7-RH-hvq">
+                            <menuItem title="Go Back" secondaryImage="chevron.backward" catalog="system" keyEquivalent="" id="4G7-RH-hvq">
                                 <connections>
                                     <action selector="goBack:" target="-1" id="v7h-eY-HFH"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Go Forward" image="chevron.forward" catalog="system" keyEquivalent="" id="9AS-eV-WTU">
+                            <menuItem title="Go Forward" secondaryImage="chevron.forward" catalog="system" keyEquivalent="" id="9AS-eV-WTU">
                                 <connections>
                                     <action selector="goForward:" target="-1" id="inp-Cu-VqB"/>
                                 </connections>
@@ -364,13 +364,13 @@
                                     <action selector="newTag:" target="-1" id="616"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="New Branch..." image="arrow.trianglehead.branch" catalog="system" keyEquivalent="b" id="542">
+                            <menuItem title="New Branch..." secondaryImage="arrow.trianglehead.branch" catalog="system" keyEquivalent="b" id="542">
                                 <connections>
                                     <action selector="newBranch:" target="-1" id="617"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="Z40-kt-df8"/>
-                            <menuItem title="Add Remote..." image="network" catalog="system" keyEquivalent="r" id="613">
+                            <menuItem title="Add Remote..." secondaryImage="network" catalog="system" keyEquivalent="r" id="613">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="newRemote:" target="-1" id="618"/>
@@ -390,7 +390,7 @@
                                 </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="608"/>
-                            <menuItem title="Commit" image="plus.circle" catalog="system" id="g4O-PA-w4j">
+                            <menuItem title="Commit" secondaryImage="plus.circle" catalog="system" id="g4O-PA-w4j">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
@@ -401,7 +401,7 @@ DQ
                                     <action selector="stash:" target="-1" id="Xyb-Rg-trG"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Clean..." image="trash" catalog="system" id="W4I-UU-4ym">
+                            <menuItem title="Clean..." secondaryImage="trash" catalog="system" id="W4I-UU-4ym">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="clean:" target="-1" id="lPR-6w-Tep"/>
@@ -420,7 +420,7 @@ DQ
                                     <action selector="createTrackingBranch:" target="-1" id="BPT-vE-9ls"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Merge" image="arrow.trianglehead.merge" catalog="system" id="MNc-Se-8h7">
+                            <menuItem title="Merge" secondaryImage="arrow.trianglehead.merge" catalog="system" id="MNc-Se-8h7">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="mergeBranch:" target="-1" id="4Hs-dZ-gmB"/>
@@ -432,20 +432,20 @@ DQ
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
-                            <menuItem title="Show Sidebar" image="inset.filled.leftthird.rectangle" catalog="system" id="LeS-23-fp1">
+                            <menuItem title="Show Sidebar" secondaryImage="inset.filled.leftthird.rectangle" catalog="system" id="LeS-23-fp1">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showHideSidebar:" target="-1" id="a3N-YJ-Rba"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="gUR-ax-6Z6"/>
-                            <menuItem title="Vertical Layout" image="rectangle.split.1x2" catalog="system" id="uO6-Mj-4Y9">
+                            <menuItem title="Vertical Layout" secondaryImage="rectangle.split.1x2" catalog="system" id="uO6-Mj-4Y9">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="verticalLayout:" target="-1" id="3ub-uj-BaF"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Horizontal Layout" image="rectangle.split.2x1" catalog="system" id="hJ1-6P-NR8">
+                            <menuItem title="Horizontal Layout" secondaryImage="rectangle.split.2x1" catalog="system" id="hJ1-6P-NR8">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="horizontalLayout:" target="-1" id="poR-4f-dLo"/>
