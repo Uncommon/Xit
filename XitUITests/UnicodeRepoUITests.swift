@@ -7,7 +7,7 @@ class UnicodeRepoUITests: XCTestCase
 
   let remoteName = "twin"
 
-  override func setUp()
+  override func setUpWithError() throws
   {
     guard let env = TestRepoEnvironment(.unicode, testName: name)
     else {
@@ -26,17 +26,17 @@ class FetchTests: UnicodeRepoUITests
   {
     let newFileName = "newfile.txt"
     
-    XCTAssert(env.makeRemoteCopy(named: remoteName))
+    XCTAssert(try env.makeRemoteCopy(named: remoteName))
     // Track the remote branch
-    env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
-    
+    try env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
+
     // Add a commit so the remote is ahead
     env.writeRemote("some content", to: newFileName)
-    env.remoteGit.run(args: ["add", newFileName])
+    try env.remoteGit.run(args: ["add", newFileName])
     // Use -c because for some reason it doesn't pick up the global config
-    env.remoteGit.run(args: ["-c", "user.name=Me",
-                             "-c", "user.email=me@example.com",
-                             "commit", "-m", "message",
+    try env.remoteGit.run(args: ["-c", "user.name=Me",
+                                 "-c", "user.email=me@example.com",
+                                 "commit", "-m", "message",
     ])
     
     env.open()
@@ -63,20 +63,20 @@ class PushTests: UnicodeRepoUITests
   var statusIndicator: XCUIElement
   { Sidebar.trackingStatusIndicator(branch: "master") }
   
-  override func setUp()
+  override func setUpWithError() throws
   {
-    super.setUp()
-    
+    try super.setUpWithError()
+
     continueAfterFailure = false
     XCTAssert(env.makeBareRemote(named: remoteName))
     // Track the remote branch
-    env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
-    
+    try env.git.run(args: ["branch", "-u", "\(remoteName)/master"])
+
     // Add a commit so the local branch is ahead
     env.write("some content", to: newFileName)
-    env.git.run(args: ["add", newFileName])
+    try env.git.run(args: ["add", newFileName])
     // Use -c because for some reason it doesn't pick up the global config
-    env.git.run(args: ["-c", "user.name=Me",
+    try env.git.run(args: ["-c", "user.name=Me",
                        "-c", "user.email=me@example.com",
                        "commit", "-m", "message",
     ])
@@ -118,13 +118,13 @@ class PushNewTests: UnicodeRepoUITests
 {
   let branchName = "newBranch"
   
-  override func setUp()
+  override func setUpWithError() throws
   {
-    super.setUp()
+    try super.setUpWithError()
     
     XCTAssert(env.makeBareRemote(named: remoteName))
     
-    env.git.checkOut(newBranch: branchName)
+    try env.git.checkOut(newBranch: branchName)
   }
   
   func pushNewBranch(tracking: Bool) throws
@@ -155,10 +155,10 @@ class PushNewTests: UnicodeRepoUITests
       wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
     }
 
-    XCTContext.runActivity(named: "Check repo for tracking branch") { _ in
-      let result = env.git.run(args: ["branch", "-lvv", branchName])
+    try XCTContext.runActivity(named: "Check repo for tracking branch") { _ in
+      let result = try env.git.run(args: ["branch", "-lvv", branchName])
       let trackingFound = result.contains("[\(remoteName)/\(branchName)]")
-      
+
       XCTAssertEqual(tracking, trackingFound, "tracking branch not set correctly")
     }
     
@@ -188,13 +188,13 @@ class RemoteBranchTests: UnicodeRepoUITests
 {
   let newBranchName = "newBranch"
   
-  override func setUp()
+  override func setUpWithError() throws
   {
-    super.setUp()
-    
-    XCTAssert(env.makeRemoteCopy(named: remoteName))
-    env.remoteGit.checkOut(newBranch: newBranchName)
-    env.git.run(args: ["fetch", remoteName])
+    try super.setUpWithError()
+
+    XCTAssert(try env.makeRemoteCopy(named: remoteName))
+    try env.remoteGit.checkOut(newBranch: newBranchName)
+    try env.git.run(args: ["fetch", remoteName])
   }
   
   func openCreateTrackingSheet()
@@ -208,7 +208,7 @@ class RemoteBranchTests: UnicodeRepoUITests
     }
   }
   
-  func testCreateTrackingBranch()
+  func testCreateTrackingBranch() throws
   {
     env.open()
     Sidebar.Tab.remotes.click()
@@ -257,9 +257,9 @@ class RemoteBranchTests: UnicodeRepoUITests
                      "sheet stayed open")
     }
     
-    XCTContext.runActivity(named: "verify branch is checked out") { _ in
-      let currentBranch = env.git.currentBranch()
-      
+    try XCTContext.runActivity(named: "verify branch is checked out") { _ in
+      let currentBranch = try env.git.currentBranch()
+
       XCTAssertEqual(currentBranch, newBranchName,
                      "new tracking branch doesn't match")
       Sidebar.Tab.local.tap()

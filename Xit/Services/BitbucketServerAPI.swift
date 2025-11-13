@@ -283,14 +283,7 @@ final class BitbucketServerAPI: BasicAuthService, ServiceAPI
   
   required init?(account: Account, password: String)
   {
-    guard var fullBaseURL = URLComponents(url: account.location,
-                                          resolvingAgainstBaseURL: false)
-    else { return nil }
-    
-    fullBaseURL.path = BitbucketServerAPI.rootPath
-    
-    guard let location = fullBaseURL.url
-    else { return nil }
+    let location = account.location.appending(path: BitbucketServerAPI.rootPath)
     var account = account
     
     account.location = location
@@ -373,12 +366,13 @@ extension BitbucketServerAPI: PullRequestService
         return []
       }
 
-      let result = requests.values.map { PullRequest(request: $0,
-                                                     service: self) }
+      let result = requests.values.map {
+        PullRequest(request: $0, service: self)
+      }
 
       #if DEBUG
       for request in result {
-        serviceLogger.debug("\(request.status): \(request.sourceBranch)")
+        serviceLogger.debug("\(request.status.rawValue): \(request.sourceBranch)")
       }
       #endif
       return result
@@ -396,7 +390,8 @@ extension BitbucketServerAPI: PullRequestService
     
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
-  
+
+  @MainActor
   func update(request: PullRequest,
               approved: Bool,
               status: BitbucketServer.ReviewerStatus) async throws

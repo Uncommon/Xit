@@ -83,6 +83,7 @@ extension Siesta.Resource
 
 extension Siesta.Request
 {
+  @MainActor
   func complete() async throws
   {
     try await withCheckedThrowingContinuation {

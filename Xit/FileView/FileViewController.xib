@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="24127"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="23727"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -97,7 +96,7 @@
                                     </constraints>
                                 </button>
                                 <segmentedControl identifier="previewSegments" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-gm-Q8M">
-                                    <rect key="frame" x="199" y="186" width="143" height="24"/>
+                                    <rect key="frame" x="192" y="188" width="157" height="23"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="selectOne" id="fhE-uz-5iG">
                                         <font key="font" metaFont="system"/>
                                         <segments>
@@ -107,7 +106,7 @@
                                             <segment toolTip="Blame view" image="person.fill.questionmark" catalog="system" imageScaling="none" width="37" tag="1">
                                                 <nil key="label"/>
                                             </segment>
-                                            <segment toolTip="Text view" image="doc.plaintext" catalog="system" width="37">
+                                            <segment toolTip="Text view" image="text.page" catalog="system" width="37">
                                                 <nil key="label"/>
                                             </segment>
                                             <segment toolTip="QuickLook preview" image="NSQuickLookTemplate">
@@ -399,8 +398,8 @@
     <resources>
         <image name="NSActionTemplate" width="20" height="20"/>
         <image name="NSQuickLookTemplate" width="26" height="17"/>
-        <image name="doc.plaintext" catalog="system" width="14" height="16"/>
         <image name="person.fill.questionmark" catalog="system" width="17" height="14"/>
         <image name="plus.forwardslash.minus" catalog="system" width="16" height="14"/>
+        <image name="text.page" catalog="system" width="14" height="16"/>
     </resources>
 </document>

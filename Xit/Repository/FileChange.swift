@@ -31,19 +31,6 @@ extension FileChange: Equatable
   }
 }
 
-extension FileChange: Hashable
-{
-  public func hash(into hasher: inout Hasher)
-  {
-    if let oid {
-      hasher.combine(oid)
-    }
-    hasher.combine(path)
-    hasher.combine(oldPath)
-    hasher.combine(status)
-  }
-}
-
 extension FileChange: Comparable
 {
   public static func < (lhs: FileChange, rhs: FileChange) -> Bool
@@ -56,4 +43,15 @@ extension FileChange: CustomStringConvertible
 {
   public var description: String
   { "\(path) [\(status.description)]" }
+}
+
+extension FileChange: Hashable
+{
+  public func hash(into hasher: inout Hasher)
+  {
+    hasher.combine(path)
+    hasher.combine(status)
+    hasher.combine(oldPath)
+    hasher.combine(oid ?? .zero())
+  }
 }

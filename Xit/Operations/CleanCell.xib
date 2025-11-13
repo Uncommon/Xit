@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -16,14 +16,14 @@
                     <rect key="frame" x="0.0" y="1" width="130" height="16"/>
                     <subviews>
                         <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nmx-tg-VxZ">
-                            <rect key="frame" x="0.0" y="-3.5" width="16" height="23"/>
+                            <rect key="frame" x="0.0" y="-3" width="16" height="23"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="TKX-3a-58D"/>
                                 <constraint firstAttribute="width" constant="16" id="sgG-Bb-Ng2"/>
                             </constraints>
-                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="doc" catalog="system" id="eFr-Vx-kGc"/>
+                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="document" catalog="system" id="eFr-Vx-kGc"/>
                         </imageView>
-                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RyT-dV-28h">
+                        <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RyT-dV-28h">
                             <rect key="frame" x="22" y="0.0" width="110" height="16"/>
                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="U4v-O7-z67">
                                 <font key="font" metaFont="system"/>
@@ -55,6 +55,6 @@
         </tableCellView>
     </objects>
     <resources>
-        <image name="doc" catalog="system" width="14" height="16"/>
+        <image name="document" catalog="system" width="14" height="16"/>
     </resources>
 </document>

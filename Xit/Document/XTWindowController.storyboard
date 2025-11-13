@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,7 +20,7 @@
                                 <toolbarItem implicitItemIdentifier="22A022DE-8725-401D-8643-56B32D05A6D8" explicitItemIdentifier="xit.nav" label="Navigation" paletteLabel="Navigation" visibilityPriority="1" sizingBehavior="auto" navigational="YES" id="AIh-IS-Ifn">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="nQU-i2-YYo">
-                                        <rect key="frame" x="0.0" y="14" width="65" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="75" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="Dbh-z0-eg3">
                                             <font key="font" metaFont="system"/>
@@ -38,7 +37,7 @@
                                 <toolbarItem implicitItemIdentifier="937E3C05-73FC-476A-9185-2B0916201849" explicitItemIdentifier="xit.remote" label="Remote Operations" paletteLabel="Remote Operations" sizingBehavior="auto" id="HjO-mu-IiC">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="tJj-QJ-vNA">
-                                        <rect key="frame" x="5" y="14" width="98" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="112" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="kkS-1W-s9h">
                                             <font key="font" metaFont="system"/>
@@ -59,14 +58,14 @@
                                 <toolbarItem implicitItemIdentifier="82AFBB3C-699E-41C0-BCAC-9AAA96D61D40" explicitItemIdentifier="xit.view" label="View" paletteLabel="View" visibilityPriority="1" sizingBehavior="auto" id="EmV-8X-pjB">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="zEr-s8-lmY">
-                                        <rect key="frame" x="0.0" y="14" width="98" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="114" height="26"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectAny" id="m64-hM-ec1">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment toolTip="Sidebar" image="rectangle.leftthird.inset.filled" catalog="system" width="32" selected="YES"/>
-                                                <segment toolTip="History" image="rectangle.topthird.inset.filled" catalog="system" width="32" selected="YES" tag="1"/>
-                                                <segment toolTip="Details" image="rectangle.bottomthird.inset.filled" catalog="system" width="32" selected="YES">
+                                                <segment toolTip="Sidebar" image="inset.filled.leftthird.rectangle" catalog="system" width="32" selected="YES"/>
+                                                <segment toolTip="History" image="inset.filled.topthird.rectangle" catalog="system" width="32" selected="YES" tag="1"/>
+                                                <segment toolTip="Details" image="inset.filled.bottomthird.rectangle" catalog="system" width="32" selected="YES">
                                                     <nil key="label"/>
                                                 </segment>
                                             </segments>
@@ -93,7 +92,7 @@
                                 <toolbarItem implicitItemIdentifier="4798E31C-C1B2-4D7F-AE28-6D09132E2284" explicitItemIdentifier="xit.stash" label="Stash" paletteLabel="Stash" sizingBehavior="auto" id="BqU-7i-BMT">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="4bM-EU-W6d">
-                                        <rect key="frame" x="3" y="14" width="32" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="pPh-La-Jyh">
                                             <font key="font" metaFont="system"/>
@@ -119,7 +118,7 @@
                                 <toolbarItem implicitItemIdentifier="57B6D0DE-D2B5-44C1-938C-77D30E8DA6A3" explicitItemIdentifier="xit.branches" label="Branches" paletteLabel="Branches" image="scm.branch" title="main" sizingBehavior="auto" id="9Jc-2J-e8T">
                                     <nil key="toolTip"/>
                                     <popUpButton key="view" verticalHuggingPriority="750" id="Fas-Ux-hUh">
-                                        <rect key="frame" x="0.0" y="14" width="88" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="77" height="25"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="scm.branch" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -142,7 +141,7 @@
                                 <toolbarItem implicitItemIdentifier="290444F5-1543-4AF2-B8AE-51333F9B09BC" explicitItemIdentifier="xit.clean" label="Clean" paletteLabel="Clean" sizingBehavior="auto" id="SEm-mB-BJY">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="4Bj-H4-LRj">
-                                        <rect key="frame" x="3" y="14" width="32" height="24"/>
+                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="WPj-TE-tri">
                                             <font key="font" metaFont="system"/>
@@ -245,11 +244,11 @@
     <resources>
         <image name="NSGoRightTemplate" width="12" height="17"/>
         <image name="NSLeftFacingTriangleTemplate" width="12" height="17"/>
+        <image name="inset.filled.bottomthird.rectangle" catalog="system" width="18" height="14"/>
+        <image name="inset.filled.leftthird.rectangle" catalog="system" width="18" height="14"/>
+        <image name="inset.filled.topthird.rectangle" catalog="system" width="18" height="14"/>
         <image name="magnifyingglass" catalog="system" width="16" height="15"/>
-        <image name="rectangle.bottomthird.inset.filled" catalog="system" width="18" height="14"/>
-        <image name="rectangle.leftthird.inset.filled" catalog="system" width="18" height="14"/>
-        <image name="rectangle.topthird.inset.filled" catalog="system" width="18" height="14"/>
-        <image name="scm.branch" width="12" height="14"/>
+        <image name="scm.branch" width="9" height="11"/>
         <image name="square.and.arrow.down" catalog="system" width="15" height="17"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.up.fill" catalog="system" width="15" height="17"/>

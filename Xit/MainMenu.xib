@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24127" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24127"/>
     </dependencies>
     <objects>
@@ -433,7 +432,7 @@ DQ
                 <menuItem title="View" id="295">
                     <menu key="submenu" title="View" id="296">
                         <items>
-                            <menuItem title="Show Sidebar" image="rectangle.leftthird.inset.filled" catalog="system" id="LeS-23-fp1">
+                            <menuItem title="Show Sidebar" image="inset.filled.leftthird.rectangle" catalog="system" id="LeS-23-fp1">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showHideSidebar:" target="-1" id="a3N-YJ-Rba"/>
@@ -518,15 +517,15 @@ DQ
         <image name="arrow.counterclockwise" catalog="system" width="14" height="16"/>
         <image name="arrow.down.to.line" catalog="system" width="13" height="16"/>
         <image name="arrow.trianglehead.branch" catalog="system" width="15" height="14"/>
-        <image name="arrow.trianglehead.merge" catalog="system" width="11" height="15"/>
+        <image name="arrow.trianglehead.merge" catalog="system" width="11" height="13"/>
         <image name="arrow.up.forward.circle" catalog="system" width="15" height="15"/>
         <image name="chevron.backward" catalog="system" width="10" height="14"/>
         <image name="chevron.forward" catalog="system" width="10" height="14"/>
         <image name="gearshape" catalog="system" width="16" height="16"/>
+        <image name="inset.filled.leftthird.rectangle" catalog="system" width="18" height="14"/>
         <image name="network" catalog="system" width="15" height="15"/>
         <image name="plus.circle" catalog="system" width="15" height="15"/>
         <image name="plus.square.on.square" catalog="system" width="17" height="16"/>
-        <image name="rectangle.leftthird.inset.filled" catalog="system" width="18" height="14"/>
         <image name="rectangle.split.1x2" catalog="system" width="18" height="14"/>
         <image name="rectangle.split.2x1" catalog="system" width="18" height="14"/>
         <image name="tag" catalog="system" width="17" height="17"/>

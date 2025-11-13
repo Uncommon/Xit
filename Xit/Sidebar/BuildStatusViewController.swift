@@ -187,10 +187,13 @@ extension BuildStatusViewController: NSTableViewDelegate
     else {
       cell.progressBar.isHidden = true
     }
-    cell.statusImage.image = NSImage(named:
-        build.status == .succeeded ? NSImage.Name.xtBuildSucceeded
-                                   : NSImage.Name.xtBuildFailed)
-    
+
+    let state: BuildStatusController.DisplayState = build.status == .succeeded
+        ? .success : .failure
+
+    cell.statusImage.image = state.image
+    cell.statusImage.contentTintColor = state.tint
+
     return cell
   }
 }
