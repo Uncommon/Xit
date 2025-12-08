@@ -16,7 +16,7 @@ extension OIDObject // Equatable
   { a.id == b.id }
 }
 
-protocol EmptyOIDObject: OIDObject {}
+public protocol EmptyOIDObject: OIDObject {}
 extension EmptyOIDObject
 {
   var id: GitOID { .zero() }
