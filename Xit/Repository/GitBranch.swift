@@ -1,4 +1,4 @@
-import Cocoa
+import Foundation
 import FakedMacro
 
 @Faked(skip: ["localRefName", "remoteName"], createNull: false)
