@@ -248,7 +248,7 @@ extension XTRepository: WritingManagement
 }
 
 extension XTRepository
-{  
+{
   func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
                                                          behind: Int)?
   {

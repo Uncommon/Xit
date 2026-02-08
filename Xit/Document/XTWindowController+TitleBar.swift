@@ -40,7 +40,7 @@ extension XTWindowController
       viewController?.progressHidden = !$0
     })
     viewController.selectedBranch = repository.currentBranch?.name
-    if let controller = repository.controller {
+    if let controller = self.repoController {
       viewController.observe(controller: controller)
     }
     updateBranchList()

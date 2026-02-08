@@ -13,7 +13,6 @@ public typealias FullRepository =
 @Faked
 public protocol BasicRepository
 {
-  var controller: (any RepositoryController)? { get }
 }
 
 public typealias ProgressValue = (current: Float, total: Float)
@@ -39,6 +38,13 @@ public protocol RepositoryPublishing
   // changes to be detected automatically.
   func indexChanged()
   func refsChanged()
+}
+
+public protocol RepositoryCaching: AnyObject
+{
+  var cache: RepositoryCache { get set }
+  
+  func invalidateIndex()
 }
 
 @Faked

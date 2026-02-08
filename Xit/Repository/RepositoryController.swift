@@ -1,14 +1,10 @@
 import Foundation
 import Combine
 
-public protocol RepositoryController: AnyObject, RepositoryPublishing
+public protocol RepositoryController: RepositoryCaching, RepositoryPublishing, AnyObject
 {
   var repository: any BasicRepository { get }
   var queue: TaskQueue { get }
-
-  var cache: RepositoryCache { get set }
-
-  func invalidateIndex()
 }
 
 public struct RepositoryCache
