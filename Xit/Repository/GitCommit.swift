@@ -1,4 +1,4 @@
-import Cocoa
+import Foundation
 import FakedMacro
 
 // It's hard to do EmptyTree because of how entries works

@@ -1,4 +1,11 @@
-import Cocoa
+import Foundation
+
+public enum WhitespaceSetting: String, CaseIterable
+{
+  case showAll
+  case ignoreEOL
+  case ignoreAll
+}
 
 /// An object that can generate file patches, and re-generate them with
 /// different options.
@@ -28,7 +35,7 @@ public final class PatchMaker
   
   static let defaultContextLines: UInt = 3
   var contextLines: UInt = PatchMaker.defaultContextLines
-  var whitespace = UserDefaults.xit.whitespace
+  var whitespace: WhitespaceSetting = .showAll
   var usePatience = false
   var minimal = false
   

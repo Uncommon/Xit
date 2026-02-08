@@ -1,5 +1,4 @@
 import Foundation
-import Cocoa
 
 /// Used by RepositorySelection classes for efficiently loading
 /// new trees over old ones
