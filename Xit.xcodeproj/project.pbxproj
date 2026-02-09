@@ -743,6 +743,10 @@
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8991F1D32F3AAB470022646F /* XitGit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = XitGit; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		C3FA46F913D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -880,6 +884,7 @@
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
 				C954C169237C6E56000D5339 /* git */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
+				8991F1D32F3AAB470022646F /* XitGit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C91727B423689F500023DC57 /* XitUITests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
