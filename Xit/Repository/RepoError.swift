@@ -1,7 +1,7 @@
 import Foundation
 
 /// Sendable replacement for `git_error`
-public struct GitError: Sendable
+public struct GitError: Sendable, Equatable
 {
   let message: String
   let `class`: Int32
@@ -11,9 +11,17 @@ public struct GitError: Sendable
     self.message = error.message.map { String(cString: $0) } ?? ""
     self.class = error.klass
   }
+  
+  public static var last: GitError?
+  {
+    guard let error = git_error_last()
+    else { return nil }
+    
+    return GitError(error.pointee)
+  }
 }
 
-public enum RepoError: Swift.Error
+public enum RepoError: Swift.Error, Equatable
 {
   case alreadyWriting
   case authenticationFailed
@@ -32,6 +40,9 @@ public enum RepoError: Swift.Error
   case patchMismatch
   case unexpected
   case workspaceDirty
+  
+  public static let genericGitError = Self.gitError(GIT_ERROR.rawValue)
+  public static let bareRepo = Self.gitError(GIT_EBAREREPO.rawValue)
   
   static func gitError(_ code: Int32) -> Self
   { .gitError(code, Optional<GitError>.none) } // nil is ambiguous
@@ -120,11 +131,11 @@ public enum RepoError: Swift.Error
     }
   }
   
-  func isGitError(_ code: git_error_code) -> Bool
+  public func isGitError(_ code: Int32) -> Bool
   {
     switch self {
       case .gitError(let myCode, _):
-        return myCode == code.rawValue
+        return myCode == code
       default:
         return false
     }

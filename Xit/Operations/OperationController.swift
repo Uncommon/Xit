@@ -98,10 +98,8 @@ class OperationController
             case let nsError as NSError where self.shoudReport(error: nsError):
               var message = error.localizedDescription
 
-              if let gitError = git_error_last() {
-                let errorString = String(cString: gitError.pointee.message)
-
-                message.append(" \(errorString)")
+              if let gitError = GitError.last {
+                message.append(" \(gitError.message)")
               }
               self.showFailureError(message)
 

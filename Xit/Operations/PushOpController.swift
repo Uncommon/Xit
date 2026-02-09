@@ -162,7 +162,7 @@ final class PushOpController: PasswordOpController
   
   override func repoErrorMessage(for error: RepoError) -> UIString
   {
-    if error.isGitError(GIT_EBAREREPO) {
+    if error == .bareRepo {
       return .pushToBare
     }
     else {
