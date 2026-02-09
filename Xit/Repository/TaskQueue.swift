@@ -1,6 +1,8 @@
 import Foundation
 import Combine
 
+/// Uses a `DispatchQueue` to run tasks off the main thread, and tracks whether
+/// it is busy.
 public final class TaskQueue: @unchecked Sendable
 {
   public enum Error: Swift.Error
