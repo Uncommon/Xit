@@ -43,32 +43,20 @@ The contents of `Xit/Repository/` are the primary candidates.
 - `CLIRunner.swift`
 - `FileChange.swift`, `FileChangeNode.swift`
 - `TreeLoader.swift`, `PatchMaker.swift`
+- `TaskQueue.swift` (Verified AppKit-free)
+- `FileEventStream.swift` (From Utils, needed by watchers)
+- `MutexProtected.swift` (From Utils, needed by controller)
+- `CombineExtensions.swift` (From Utils, needed by controller)
 
 **Excluded / Needs Review:**
-- `RepositoryController.swift`: **STAY**. This is the AppKit controller managing the repo.
-- `RepositoryWatcher.swift`, `WorkspaceWatcher.swift`: **Check**. If they depend on `FSEvents` or AppKit, they might need refactoring or stay in an intermediate layer or a separate package target.
-- `ConfigWatcher.swift`: **Check** dependencies.
+- `RepositoryWatcher.swift`, `WorkspaceWatcher.swift`, `ConfigWatcher.swift`: **MOVE**. Verified they use `FileEventStream` (Foundation/CoreServices) and strict AppKit dependencies are absent.
+- `RepositoryController.swift`: **MOVE**. Verified it primarily coordinates logic and uses `Foundation`/`Combine`. It does *not* bind strictly to AppKit (imports `Foundation`, `Combine`).
 
 ### 3.2. Critical Dependency Breaks
 
 **A. `XTRepository` -> `RepositoryController`**
-Currently, `XTRepository` imports `Xit` classes or holds a reference to `controller`.
-```swift
-// Current
-public weak var controller: RepositoryController? = nil
-// references controller.cache.stagedChanges
-```
-**Fix:** Introduce a `RepositoryCaching` protocol.
-```swift
-public protocol RepositoryCaching: AnyObject {
-    var stagedChanges: [FileChange]? { get set }
-    var branches: [String: GitBranch] { get set }
-    // ...
-}
-class XTRepository {
-    weak var cacheDelegate: RepositoryCaching?
-}
-```
+*Resolved by moving both.*
+Since `RepositoryController` and `TaskQueue` are moving to `XitGit`, `XTRepository` can maintain its reference to `controller`.
 
 **B. `import Cocoa`**
 Many files in `Xit/Repository` import `Cocoa` just for `Foundation` types or unused reasons.
@@ -94,12 +82,8 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
 3.  [x] **Audit C-API:** Ensure no *other* parts of the app (UI, ViewModels) are calling `git_` C functions directly. If they are, move that logic into `XTRepository` or helpers.
     *   *Status:* Verified. Direct `git_` usage is confined to `Xit/Repository`.
 
-**Refinement Task (Before Phase 3):**
-4.  [ ] **Sever `RepositoryController` Dependency:** Change `XTRepository` to depend solely on `RepositoryCaching` or an abstract delegate, avoiding the `RepositoryController` type symbol (which pulls in `TaskQueue`).
-
-
 ### Phase 2: Create Swift Package
-1.  Run `swift package init --type library --name XitGit` in the root (or manually create folder structure).
+1.  Run `swift package init`
 2.  Setup `Package.swift`:
     - Define `Clibgit2` target.
     - Define `XitGit` target depending on `Clibgit2`.
