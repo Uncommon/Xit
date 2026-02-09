@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -809,7 +809,6 @@
 				C9BBBC0A26D7FD7500469007 /* PublisherGroup.swift */,
 				C957B84A1D2D53040040F858 /* SheetController.swift */,
 				C9864465207E9CAC0088209B /* StringIdentifiers.swift */,
-				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 				C93FFCBC1F13D3B200FDDD78 /* ValidatedSegment.swift */,
 				89009E5128820CB2004A684B /* Testing.swift */,
 				C9F43FCC29AFC30100F325BF /* MutexProtected.swift */,
@@ -1147,6 +1146,7 @@
 				89DAE19C2680D7E3005AEA8F /* RemoteProgressPublisher.swift */,
 				89CAF5812852A9E2000D2014 /* StringFakes.swift */,
 				C9E602F92C1BB02C00326726 /* FileChangeNode.swift */,
+				C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
