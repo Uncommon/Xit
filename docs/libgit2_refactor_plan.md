@@ -87,9 +87,16 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
 ### Phase 1: In-Place Decoupling (Risk Reduction)
 *Goal: Clean up the code *before* moving it.*
 
-1.  **Refactor Cache:** Define `RepositoryCaching` protocol in `RepositoryProtocols.swift`. Make `RepositoryController` conform to it. Update `XTRepository` to use `weak var cacheDelegate: RepositoryCaching?` instead of the concrete controller.
-2.  **Remove AppKit:** Scan `Xit/Repository/*.swift` for `import Cocoa` and replace with `import Foundation`. Fix any build errors (e.g. `NSColor` usage).
-3.  **Audit C-API:** Ensure no *other* parts of the app (UI, ViewModels) are calling `git_` C functions directly. If they are, move that logic into `XTRepository` or helpers.
+1.  [x] **Refactor Cache:** Define `RepositoryCaching` protocol in `RepositoryProtocols.swift`. Make `RepositoryController` conform to it. Update `XTRepository` to use `weak var cacheDelegate: RepositoryCaching?` instead of the concrete controller.
+    *   *Note:* `XTRepository` currently uses a shim `controller` property. This property's type must be changed (abstracted) to remove the dependency on `RepositoryController` protocol (which depends on `TaskQueue`).
+2.  [x] **Remove AppKit:** Scan `Xit/Repository/*.swift` for `import Cocoa` and replace with `import Foundation`. Fix any build errors (e.g. `NSColor` usage).
+    *   *Status:* Verified. No `import Cocoa` remaining in `Xit/Repository`.
+3.  [x] **Audit C-API:** Ensure no *other* parts of the app (UI, ViewModels) are calling `git_` C functions directly. If they are, move that logic into `XTRepository` or helpers.
+    *   *Status:* Verified. Direct `git_` usage is confined to `Xit/Repository`.
+
+**Refinement Task (Before Phase 3):**
+4.  [ ] **Sever `RepositoryController` Dependency:** Change `XTRepository` to depend solely on `RepositoryCaching` or an abstract delegate, avoiding the `RepositoryController` type symbol (which pulls in `TaskQueue`).
+
 
 ### Phase 2: Create Swift Package
 1.  Run `swift package init --type library --name XitGit` in the root (or manually create folder structure).
