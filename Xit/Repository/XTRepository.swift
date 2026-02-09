@@ -56,7 +56,13 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     
     return String(cString: path)
   }
-  
+
+  /// Call at startup for global initialization. (Initializes libgit2)
+  public static func initialize()
+  {
+    git_libgit2_init()
+  }
+
   static func gitPath() -> String?
   {
     let paths = ["/usr/bin/git", "/usr/local/git/bin/git"]

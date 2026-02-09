@@ -121,7 +121,7 @@ extension AppDelegate: NSApplicationDelegate
 {
   func applicationWillFinishLaunching(_ note: Notification)
   {
-    git_libgit2_init()
+    XTRepository.initialize()
 
     // The first NSDocumentController instance becomes the shared one.
     _ = XTDocumentController()
