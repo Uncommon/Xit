@@ -746,6 +746,11 @@
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		C9CB8F652F3BA71500BF812C /* Authentication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Authentication; sourceTree = "<group>"; };
+		C9CB8F6D2F3BA72000BF812C /* Networking */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Networking; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		C3FA46F913D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1236,6 +1241,8 @@
 		C9790D0A20EED5430024D3EA /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C9CB8F652F3BA71500BF812C /* Authentication */,
+				C9CB8F6D2F3BA72000BF812C /* Networking */,
 				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 				C9F533322183C7B100B2432C /* BasicAuthService.swift */,
 				C900463B21120F3200706029 /* BitbucketServerAPI.swift */,
@@ -1342,6 +1349,10 @@
 			);
 			dependencies = (
 				C9CDB91B270D4FB0007C2E77 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C9CB8F652F3BA71500BF812C /* Authentication */,
+				C9CB8F6D2F3BA72000BF812C /* Networking */,
 			);
 			name = Xit;
 			packageProductDependencies = (
