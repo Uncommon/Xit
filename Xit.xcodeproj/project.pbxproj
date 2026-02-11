@@ -73,6 +73,7 @@
 		898F75862A51D8C700C157D7 /* OperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75852A51D8C700C157D7 /* OperationTests.swift */; };
 		898F75882A53428D00C157D7 /* ReferenceName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75872A53428D00C157D7 /* ReferenceName.swift */; };
 		898F758A2A55CDCA00C157D7 /* ReferenceNameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75892A55CDCA00C157D7 /* ReferenceNameTests.swift */; };
+		8991F1E12F3CBBA60022646F /* XitGit in Frameworks */ = {isa = PBXBuildFile; productRef = 8991F1E02F3CBBA60022646F /* XitGit */; };
 		8992E23F26BF45F500DD5357 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8992E23E26BF45F500DD5357 /* MiscExtensions.swift */; };
 		899DB1921CE109C700760270 /* WorkspaceTreeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB18D1CE0EA3A00760270 /* WorkspaceTreeBuilder.swift */; };
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
@@ -743,10 +744,6 @@
 		DDDDAF2018162258009F8BA1 /* XTQueueUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XTQueueUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8991F1D32F3AAB470022646F /* XitGit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = XitGit; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		C3FA46F913D0F8E200AC4F9B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -763,6 +760,7 @@
 				C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */,
 				89F24B842C498878007D632E /* FakedMacro in Frameworks */,
 				C9CDB924270D54F9007C2E77 /* libssh2.a in Frameworks */,
+				8991F1E12F3CBBA60022646F /* XitGit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -884,7 +882,6 @@
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
 				C954C169237C6E56000D5339 /* git */,
 				C3FA470613D0F8E200AC4F9B /* Xit */,
-				8991F1D32F3AAB470022646F /* XitGit */,
 				C3FA472413D0F8E300AC4F9B /* XitTests */,
 				C91727B423689F500023DC57 /* XitUITests */,
 				C3FA46FF13D0F8E200AC4F9B /* Frameworks */,
@@ -1346,6 +1343,7 @@
 			packageProductDependencies = (
 				C931A0E0275AE340007F441C /* Siesta */,
 				89F24B832C498878007D632E /* FakedMacro */,
+				8991F1E02F3CBBA60022646F /* XitGit */,
 			);
 			productName = Xit;
 			productReference = C3FA46FC13D0F8E200AC4F9B /* Xit.app */;
@@ -1431,6 +1429,7 @@
 			packageReferences = (
 				C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */,
 				89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */,
+				8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */,
 			);
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
 			projectDirPath = "";
@@ -2546,6 +2545,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = XitGit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -2566,6 +2572,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8991F1E02F3CBBA60022646F /* XitGit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XitGit;
+		};
 		89F24B832C498878007D632E /* FakedMacro */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */;
