@@ -83,12 +83,16 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     *   *Status:* Verified. Direct `git_` usage is confined to `Xit/Repository`.
 
 ### Phase 2: Create Swift Package
-1.  Run `swift package init`
-2.  Setup `Package.swift`:
-    - Define `Clibgit2` target.
-    - Define `XitGit` target depending on `Clibgit2`.
-3.  Add `module.modulemap` to `Sources/Clibgit2`.
-4.  Add the package to the Xcode Workspace (drag folder in or "Add Local Package").
+1.  [x] Run `swift package init`
+    *   *Status:* Created `XitGit` directory and initialized package.
+2.  [x] Setup `Package.swift`:
+    *   *Status:* Configured `Clibgit2` as a standard C target (not system library).
+    *   **Crucial Step:** Used `.unsafeFlags` to point to `../libgit2/include` in both `cSettings` (for Clibgit2) and `swiftSettings` (for XitGit). This allows referencing headers in-place without duplication.
+3.  [x] Prepare `Clibgit2` Wrapper:
+    *   *Status:* Created `XitGit/Sources/Clibgit2/include/Clibgit2.h` as an umbrella header that simply `#include <git2.h>`.
+    *   *Status:* Added `dummy.c` to satisfy the build system.
+4.  [ ] Add the package to the Xcode Workspace (drag folder in or "Add Local Package").
+    *   *Action Required:* User must manually add the `XitGit` folder to the Xcode workspace/project.
 
 ### Phase 3: Migration (The Move)
 *Move files in batches to manage compiler errors.*
