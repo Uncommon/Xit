@@ -14,15 +14,24 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Clibgit2"
+            name: "Clibgit2",
+            cSettings: [
+                .unsafeFlags(["-I../libgit2/include"]) 
+            ]
         ),
         .target(
             name: "XitGit",
-            dependencies: ["Clibgit2"]
+            dependencies: ["Clibgit2"],
+            swiftSettings: [
+                 .unsafeFlags(["-Xcc", "-I../libgit2/include"])
+            ]
         ),
         .testTarget(
             name: "XitGitTests",
-            dependencies: ["XitGit"]
-        ),
+            dependencies: ["XitGit"],
+            swiftSettings: [
+                 .unsafeFlags(["-Xcc", "-I../libgit2/include"])
+            ]
+        )
     ]
 )
