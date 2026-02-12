@@ -12,15 +12,21 @@ final class URLSessionNetworkService: NetworkService
   private let decoder: JSONDecoder
   private let configuration: NetworkConfiguration
 
+  /// Authentication provider for signing requests
+  let authProvider: AuthenticationProvider?
+
   /// Creates a new URLSession-based network service.
   /// - Parameters:
   ///   - session: The URLSession to use (defaults to .shared)
   ///   - configuration: Network configuration options
+  ///   - authProvider: Authentication provider to sign requests (optional)
   init(session: URLSession = .shared,
-       configuration: NetworkConfiguration = .default)
+       configuration: NetworkConfiguration = .default,
+       authProvider: AuthenticationProvider? = nil)
   {
     self.session = session
     self.configuration = configuration
+    self.authProvider = authProvider
     self.decoder = configuration.decoder
   }
 
@@ -50,7 +56,11 @@ final class URLSessionNetworkService: NetworkService
       }
     }
 
-    // Set timeout
+    // Apply authentication
+    if let provider = authProvider {
+      try await provider.configure(request: &urlRequest)
+    }
+
     urlRequest.timeoutInterval = configuration.timeoutInterval
 
     networkLogger.debug("Request: \(urlRequest.httpMethod ?? "GET") \(urlRequest.url?.absoluteString ?? "unknown")")

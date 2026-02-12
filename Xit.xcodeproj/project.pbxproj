@@ -751,6 +751,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C9A381EA2F3E8B4A006BF65C /* HTTP */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = HTTP; sourceTree = "<group>"; };
 		C9CB8F652F3BA71500BF812C /* Authentication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Authentication; sourceTree = "<group>"; };
 		C9CB8F6D2F3BA72000BF812C /* Networking */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Networking; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -1248,6 +1249,7 @@
 			isa = PBXGroup;
 			children = (
 				C9CB8F652F3BA71500BF812C /* Authentication */,
+				C9A381EA2F3E8B4A006BF65C /* HTTP */,
 				C9CB8F6D2F3BA72000BF812C /* Networking */,
 				C9FD8FD8216C048400FCCE01 /* AccountType.swift */,
 				C9F533322183C7B100B2432C /* BasicAuthService.swift */,
@@ -1357,6 +1359,7 @@
 				C9CDB91B270D4FB0007C2E77 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				C9A381EA2F3E8B4A006BF65C /* HTTP */,
 				C9CB8F652F3BA71500BF812C /* Authentication */,
 				C9CB8F6D2F3BA72000BF812C /* Networking */,
 			);

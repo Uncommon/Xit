@@ -19,6 +19,9 @@ class IdentifiableService: Service, Identifiable
 /// Manages and provides access to all service API instances.
 final class Services
 {
+  /// Feature flag for migrating to new networking stack
+  static var useNewNetworking = false
+
   /// Status of server operations such as authentication.
   enum Status
   {
