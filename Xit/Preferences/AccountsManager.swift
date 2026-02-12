@@ -155,7 +155,7 @@ extension AccountsManager
   public static var xit: AccountsManager
   {
 #if DEBUG
-    return Testing.defaults == .standard ? .manager : .testing
+    return AppTesting.defaults == .standard ? .manager : .testing
 #else
     return manager
 #endif
