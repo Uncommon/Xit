@@ -2,22 +2,22 @@ import Testing
 @testable import Xit
 
 /// Tests for the core networking layer components.
-@Suite("Network Service Tests")
+@Suite
 struct NetworkServiceTests
 {
   // MARK: - Endpoint Tests
-  
-  @Test("Endpoint URL construction")
+
+  @Test
   func endpointURLConstruction()
   {
     let baseURL = URL(string: "https://api.example.com")!
     let endpoint = Endpoint(baseURL: baseURL, path: "/users/123", method: .get)
-    
+
     let url = endpoint.url()
     #expect(url?.absoluteString == "https://api.example.com/users/123")
   }
-  
-  @Test("Endpoint with query items")
+
+  @Test
   func endpointWithQueryItems()
   {
     let baseURL = URL(string: "https://api.example.com")!
@@ -26,53 +26,62 @@ struct NetworkServiceTests
                               URLQueryItem(name: "q", value: "swift"),
                               URLQueryItem(name: "limit", value: "10")
                             ])
-    
+
     let url = endpoint.url()
     #expect(url?.absoluteString.contains("q=swift") ?? false)
     #expect(url?.absoluteString.contains("limit=10") ?? false)
   }
-  
-  @Test("Endpoint URLRequest creation")
+
+  @Test
   func endpointURLRequest() throws
   {
     let baseURL = URL(string: "https://api.example.com")!
     let endpoint = Endpoint(baseURL: baseURL, path: "/data", method: .post,
                             headers: ["X-Custom": "Value"],
                             body: "test".data(using: .utf8))
-    
+
     let request = try endpoint.urlRequest()
     #expect(request.httpMethod == "POST")
     #expect(request.value(forHTTPHeaderField: "X-Custom") == "Value")
     #expect(request.httpBody == "test".data(using: .utf8))
   }
-  
+
   // MARK: - URLSessionNetworkService Tests
-  
-  @Test("Successful network request")
+
+  @Test
   func successfulRequest() async throws
   {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let service = URLSessionNetworkService(session: mockSession)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
+
     let responseData = "test response".data(using: .utf8)!
-    MockURLProtocol.requestHandler = { request in
-      let response = HTTPURLResponse(url: request.url!, statusCode: 200,
-                                     httpVersion: nil, headerFields: nil)!
-      return (response, responseData)
+
+    Task {
+      await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
+        let response = HTTPURLResponse(url: request.url!, statusCode: 200,
+                                       httpVersion: nil, headerFields: nil)!
+        return (response, responseData)
+      }
     }
-    
+
     let data = try await service.request(endpoint)
     #expect(data == responseData)
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
-  
-  @Test("Decodable request")
+
+  @Test
   func decodableRequest() async throws
   {
     struct TestResponse: Codable
@@ -80,52 +89,60 @@ struct NetworkServiceTests
       let message: String
       let count: Int
     }
-    
+
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let service = URLSessionNetworkService(session: mockSession)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
+
     let testObject = TestResponse(message: "Hello", count: 42)
     let responseData = try JSONEncoder().encode(testObject)
-    
-    MockURLProtocol.requestHandler = { request in
+
+    await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
       let response = HTTPURLResponse(url: request.url!, statusCode: 200,
                                      httpVersion: nil, headerFields: nil)!
       return (response, responseData)
     }
-    
+
     let result: TestResponse = try await service.request(endpoint)
     #expect(result.message == "Hello")
     #expect(result.count == 42)
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
-  
-  @Test("Unauthorized error handling")
+
+  @Test
   func unauthorizedError() async throws
   {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let service = URLSessionNetworkService(session: mockSession)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
-    MockURLProtocol.requestHandler = { request in
+
+    await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
       let response = HTTPURLResponse(url: request.url!, statusCode: 401,
                                      httpVersion: nil, headerFields: nil)!
       return (response, Data())
     }
-    
-    await #expect(throws: NetworkError.self) {
-      try await service.request(endpoint)
-    }
-    
+
     do {
       _ = try await service.request(endpoint)
       Issue.record("Expected unauthorized error")
@@ -138,27 +155,33 @@ struct NetworkServiceTests
         Issue.record("Expected unauthorized error, got \(error)")
       }
     }
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
-  
-  @Test("Server error handling")
+
+  @Test
   func serverError() async throws
   {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let service = URLSessionNetworkService(session: mockSession)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
-    MockURLProtocol.requestHandler = { request in
+
+    await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
       let response = HTTPURLResponse(url: request.url!, statusCode: 500,
                                      httpVersion: nil, headerFields: nil)!
       return (response, Data())
     }
-    
+
     do {
       _ = try await service.request(endpoint)
       Issue.record("Expected server error")
@@ -171,34 +194,40 @@ struct NetworkServiceTests
         Issue.record("Expected server error, got \(error)")
       }
     }
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
-  
-  @Test("Decoding error handling")
+
+  @Test
   func decodingError() async throws
   {
     struct TestResponse: Codable
     {
       let message: String
     }
-    
+
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let service = URLSessionNetworkService(session: mockSession)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
+
     let invalidJSON = "invalid json".data(using: .utf8)!
-    
-    MockURLProtocol.requestHandler = { request in
+
+    await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
       let response = HTTPURLResponse(url: request.url!, statusCode: 200,
                                      httpVersion: nil, headerFields: nil)!
       return (response, invalidJSON)
     }
-    
+
     do {
       let _: TestResponse = try await service.request(endpoint)
       Issue.record("Expected decoding error")
@@ -211,82 +240,123 @@ struct NetworkServiceTests
         Issue.record("Expected decoding error, got \(error)")
       }
     }
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
-  
-  @Test("Configuration headers")
+
+  @Test
   func configurationHeaders() async throws
   {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+
+    let sessionID = UUID().uuidString
+    var headers = config.httpAdditionalHeaders as? [String: String] ?? [:]
+    headers["X-MockURLProtocol-SessionID"] = sessionID
+    config.httpAdditionalHeaders = headers
+
     let mockSession = URLSession(configuration: config)
-    
+
     let netConfig = NetworkConfiguration(headers: ["X-API-Key": "secret123"])
     let service = URLSessionNetworkService(session: mockSession,
                                            configuration: netConfig)
     let endpoint = Endpoint(baseURL: URL(string: "https://api.example.com")!,
                             path: "/data")
-    
+
     var capturedRequest: URLRequest?
-    MockURLProtocol.requestHandler = { request in
+    await MockURLProtocol.handlerStore.setHandler(for: sessionID) { request in
       capturedRequest = request
       let response = HTTPURLResponse(url: request.url!, statusCode: 200,
                                      httpVersion: nil, headerFields: nil)!
       return (response, Data())
     }
-    
+
     _ = try await service.request(endpoint)
-    
+
     #expect(
       capturedRequest?.value(forHTTPHeaderField: "X-API-Key") == "secret123"
     )
-    
-    MockURLProtocol.reset()
+
+    await MockURLProtocol.handlerStore.removeHandler(for: sessionID)
   }
 }
 
 // MARK: - Mock URLProtocol
 
+/// Thread-safe storage for mock request handlers, isolated per session identifier.
+actor MockRequestHandlerStore
+{
+  private var handlers: [String: (URLRequest) throws -> (HTTPURLResponse, Data)] = [:]
+
+  func setHandler(for identifier: String,
+                  handler: @escaping (URLRequest) throws -> (HTTPURLResponse, Data))
+  {
+    handlers[identifier] = handler
+  }
+
+  func getHandler(for identifier: String) -> ((URLRequest) throws -> (HTTPURLResponse, Data))?
+  {
+    handlers[identifier]
+  }
+
+  func removeHandler(for identifier: String)
+  {
+    handlers.removeValue(forKey: identifier)
+  }
+}
+
 /// Mock URLProtocol for testing URLSession-based networking.
+/// Thread-safe and supports parallel test execution by using unique session identifiers
+/// stored in the URLSessionConfiguration.
 class MockURLProtocol: URLProtocol
 {
-  static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
-  
+  static let handlerStore = MockRequestHandlerStore()
+  private static let sessionIDHeader = "X-MockURLProtocol-SessionID"
+
   override class func canInit(with request: URLRequest) -> Bool
   {
-    true
+    // Only intercept requests that have our session ID header
+    request.value(forHTTPHeaderField: sessionIDHeader) != nil
   }
-  
+
   override class func canonicalRequest(for request: URLRequest) -> URLRequest
   {
     request
   }
-  
+
   override func startLoading()
   {
-    guard let handler = MockURLProtocol.requestHandler
+    guard let sessionID = request.value(forHTTPHeaderField: Self.sessionIDHeader)
     else {
-      fatalError("Handler is not set")
+      client?.urlProtocol(self, didFailWithError:
+                            URLError(.unknown, userInfo: [NSLocalizedDescriptionKey: "No session ID in request"]))
+      return
     }
-    
-    do {
-      let (response, data) = try handler(request)
-      client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-      client?.urlProtocol(self, didLoad: data)
-      client?.urlProtocolDidFinishLoading(self)
-    }
-    catch {
-      client?.urlProtocol(self, didFailWithError: error)
+
+    Task {
+      guard let client = self.client
+      else { return }
+      guard let handler = await MockURLProtocol.handlerStore.getHandler(for: sessionID)
+      else {
+        client.urlProtocol(self, didFailWithError:
+                                  URLError(.unknown, userInfo: [NSLocalizedDescriptionKey: "Handler not set for session \(sessionID)"]))
+        return
+      }
+
+      do {
+        let (response, data) = try handler(self.request)
+        client.urlProtocol(self, didReceive: response,
+                                 cacheStoragePolicy: .notAllowed)
+        client.urlProtocol(self, didLoad: data)
+        client.urlProtocolDidFinishLoading(self)
+      }
+      catch {
+        client.urlProtocol(self, didFailWithError: error)
+      }
     }
   }
-  
+
   override func stopLoading()
   {
-  }
-  
-  static func reset()
-  {
-    requestHandler = nil
   }
 }
