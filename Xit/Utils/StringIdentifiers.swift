@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 
 // The choice of these convenience operators is somewhat arbitrary, and is
 // restricted to symbols that are a) legal operators in Swift and

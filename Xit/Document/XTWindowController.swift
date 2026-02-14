@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import XitGit
 
 @MainActor
 protocol RepositoryUIController: AnyObject

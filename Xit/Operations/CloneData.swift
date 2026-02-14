@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import XitGit
 
 class CloneData: ObservableObject
 {

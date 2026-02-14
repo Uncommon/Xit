@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import XitGit
 
 /// Wraps a view and turns it into a host that can present a progress sheet.
 struct ProgressHost<Content>: View where Content: View

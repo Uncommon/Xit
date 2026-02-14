@@ -1,5 +1,6 @@
 import Cocoa
 import Foundation
+import XitGit
 
 protocol FileListModel: AnyObject
 {

@@ -1,4 +1,5 @@
 import Foundation
+import Cocoa
 
 /// Convenience protocol for accessing things through a `RepositoryUIController`
 @MainActor

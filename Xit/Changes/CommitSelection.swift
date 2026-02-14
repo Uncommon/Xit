@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import XitGit
 
 /// Changes for a selected commit in the history
 final class CommitSelection: RepositorySelection

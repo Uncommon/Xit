@@ -1,5 +1,5 @@
 import Cocoa
-
+import XitGit
 
 typealias FileChangesRepo =
     BasicRepository & Branching & CommitReferencing & FileDiffing &

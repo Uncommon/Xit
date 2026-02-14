@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import XitGit
 
 final class CleanPanelController: NSWindowController
 {

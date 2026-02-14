@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 
 /// Represents a segment of a segmented control that can be validated.
 class ValidatedSegment

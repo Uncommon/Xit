@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 
 
 enum AccountType: Int, CaseIterable, Sendable

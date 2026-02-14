@@ -1,4 +1,6 @@
 import Foundation
+import Cocoa
+import XitGit
 
 extension XTWindowController
 {
