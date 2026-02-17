@@ -21,7 +21,7 @@ final class Services
 {
   /// Feature flag for migrating to new networking stack
   static var useNewNetworking = false
-
+  
   /// Status of server operations such as authentication.
   enum Status
   {
@@ -34,21 +34,21 @@ final class Services
   
   typealias RepositoryService = IdentifiableService & AccountService
   
-
+  
   fileprivate static
   let shared = Services(passwordStorage: KeychainStorage.shared)
-
+  
   let passwordStorage: any PasswordStorage
-
+  
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
-
+  
   private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
     services.values.flatMap { $0.values }
   }
-
+  
   var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
   
   init(passwordStorage: any PasswordStorage)
