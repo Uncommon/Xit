@@ -251,10 +251,10 @@ final class BitbucketHTTPService: BaseHTTPService,
 
 **Goal:** Migrate one service completely while maintaining backward compatibility
 
-1. **Create Parallel Implementation**
-   - `BasicAuthService+URLSession.swift` - New implementation
-   - Keep existing Siesta code functional
-   - Add feature flag to switch between implementations
+1. **Create Parallel Implementation** ✅
+   - ✅ `BaseHTTPService.swift` - New URLSession-based base class
+   - ✅ Keep existing Siesta code functional
+   - ✅ Add feature flag `Services.useNewNetworking`
 
 2. **Migrate TeamCityAPI**
    - Create `TeamCityHTTPService.swift`
