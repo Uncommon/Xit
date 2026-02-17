@@ -1,6 +1,11 @@
 import Testing
 @testable import XitGit
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+@Suite("XitGit basic")
+struct XitGitBasicTests {
+    @Test("Sanity test builds and runs")
+    func sanity() async throws {
+        // This test intentionally does very little; it ensures the package links.
+        #expect(RepoError.genericGitError.isExpected)
+    }
 }

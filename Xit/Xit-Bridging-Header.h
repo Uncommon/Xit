@@ -3,7 +3,7 @@
 //
 
 #import "XTQueueUtils.h"
-#import "GitEnums.h"
+// #import "GitEnums.h"
 
 #import "NSAttributedString+XTExtensions.h"
 

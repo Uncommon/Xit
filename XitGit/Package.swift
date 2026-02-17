@@ -12,29 +12,24 @@ let package = Package(
             targets: ["XitGit"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/Uncommon/FakedMacro", branch: "main")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "Clibgit2",
+            exclude: ["libgit2"],
+            publicHeadersPath: "include",
             cSettings: [
-                .headerSearchPath("libgit2/include")
+                .headerSearchPath("include")
             ]
         ),
         .target(
             name: "XitGit",
-            dependencies: ["Clibgit2", "FakedMacro"],
-            swiftSettings: [
-                 .unsafeFlags(["-Xcc", "-I", "../../libgit2/include"])
-            ]
+            dependencies: ["Clibgit2"],
+            path: "Sources/XitGitCore"
         ),
         .testTarget(
             name: "XitGitTests",
-            dependencies: ["XitGit"],
-            swiftSettings: [
-                 .unsafeFlags(["-Xcc", "-I", "../../libgit2/include"])
-            ]
+            dependencies: ["XitGit"]
         )
     ]
 )
