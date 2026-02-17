@@ -2,11 +2,10 @@ import Foundation
 
 /// URLSession-based Bitbucket Server service (parallel to Siesta-backed BitbucketServerAPI).
 /// Provides async endpoints for pull request workflows.
-final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAPI
+final class BitbucketHTTPService: BaseHTTPService
 {
   static let rootPath = "/rest/api/1.0"
 
-  var type: AccountType { .bitbucketServer }
   var userID: String { user?.slug ?? account.user }
 
   private let decoder = JSONDecoder()
@@ -19,64 +18,13 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
         networkService: NetworkService? = nil)
   {
     var account = account
+    
     account.location = account.location.appending(path: Self.rootPath)
     super.init(account: account,
                password: password,
                passwordStorage: passwordStorage,
                authenticationPath: "users/\(account.user)",
                networkService: networkService)
-  }
-
-  // MARK: - RemoteService
-  func match(remote: any Remote) -> Bool
-  {
-    remote.url?.host == account.location.host
-  }
-
-  // MARK: - PullRequestService
-  func getPullRequests() async -> [any PullRequest]
-  {
-    let endpoint = Endpoint(baseURL: account.location,
-                            path: "dashboard/pull-requests",
-                            method: .get)
-    do {
-      let page: BitbucketServer.PagedPullRequest = try await networkService.request(endpoint)
-      return page.values.map { BitbucketPR(request: $0, service: self) as any PullRequest }
-    }
-    catch {
-      return []
-    }
-  }
-
-  func approve(request: any PullRequest) async throws
-  {
-    guard let pr = request as? BitbucketPR
-    else { throw BitbucketError.invalidPullRequest }
-    try await update(request: pr, approved: true, status: .approved)
-  }
-
-  func unapprove(request: any PullRequest) async throws
-  {
-    guard let pr = request as? BitbucketPR
-    else { throw BitbucketError.invalidPullRequest }
-    try await update(request: pr, approved: false, status: .unapproved)
-  }
-
-  func needsWork(request: any PullRequest) async throws
-  {
-    guard let pr = request as? BitbucketPR
-    else { throw BitbucketError.invalidPullRequest }
-    try await update(request: pr, approved: false, status: .needsWork)
-  }
-
-  func merge(request: any PullRequest) async throws
-  {
-    guard let pr = request as? BitbucketPR
-    else { throw BitbucketError.invalidPullRequest }
-    let endpoint = Endpoint(baseURL: account.location,
-                            path: pullRequestPath(pr) + "merge",
-                            method: .post)
-    _ = try await networkService.request(endpoint) as Data
   }
 
   // MARK: - Auth hook
@@ -96,6 +44,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     let projectKey = request.request.toRef.repository.project.key
     let repoSlug = request.request.toRef.repository.slug
     let requestID = request.request.id
+    
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
 
@@ -109,7 +58,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     let payload: [String: Any] = [
       "user": ["slug": userSlug],
       "approved": approved,
-      "status": status.rawValue
+      "status": status.rawValue,
     ]
     let body = try JSONSerialization.data(withJSONObject: payload, options: [])
     let endpoint = Endpoint(baseURL: account.location,
@@ -117,6 +66,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
                             method: .put,
                             headers: ["Content-Type": "application/json"],
                             body: body)
+    
     _ = try await networkService.request(endpoint) as Data
   }
 
@@ -144,6 +94,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     var sourceRepo: URL?
     {
       let protocols = ["https", "ssh"]
+      
       for proto in protocols {
         if let link = request.fromRef.repository.links?.clone?.first(where: { $0.name == proto }),
            let href = link.href {
@@ -159,10 +110,10 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     {
       get {
         switch request.state {
-          case .open: return .open
-          case .declined: return .inactive
-          case .merged: return .merged
-          default: return .other
+          case .open: .open
+          case .declined: .inactive
+          case .merged: .merged
+          default: .other
         }
       }
       set {
@@ -178,6 +129,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     {
       guard let href = request.links.`self`.first?.href
       else { return nil }
+
       return URL(string: href)
     }
     var availableActions: PullRequestActions
@@ -188,6 +140,7 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
         case .open:
           guard let userID = self.userID
           else { return [] }
+          
           if request.author.user.id == userID {
             return [.decline]
           }
@@ -205,12 +158,14 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
       guard let scheme = url.scheme
       else { return false }
       let link = request.fromRef.repository.links?.clone?.first { $0.href?.hasPrefix(scheme) ?? false }
+      
       return link?.href == url.absoluteString
     }
 
     func reviewerStatus(userID: String) -> PullRequestApproval
     {
       let reviewer = request.reviewers.first { $0.user.slug == userID }
+      
       return reviewer?.status.approval ?? .unreviewed
     }
 
@@ -218,8 +173,76 @@ final class BitbucketHTTPService: BaseHTTPService, PullRequestService, ServiceAP
     {
       guard let index = request.reviewers.firstIndex(where: { $0.user.slug == userID })
       else { return }
+      
       request.reviewers[index].approved = status == .approved
       request.reviewers[index].status = BitbucketServer.ReviewerStatus(approval: status)
     }
+  }
+}
+
+extension BitbucketHTTPService: ServiceAPI
+{
+  var type: AccountType { .bitbucketServer }
+}
+
+extension BitbucketHTTPService: RemoteService
+{
+  func match(remote: any Remote) -> Bool
+  {
+    remote.url?.host == account.location.host
+  }
+}
+
+extension BitbucketHTTPService: PullRequestService
+{
+  func getPullRequests() async -> [any PullRequest]
+  {
+    let endpoint = Endpoint(baseURL: account.location,
+                            path: "dashboard/pull-requests",
+                            method: .get)
+
+    do {
+      let page: BitbucketServer.PagedPullRequest = try await networkService.request(endpoint)
+      
+      return page.values.map { BitbucketPR(request: $0, service: self) as any PullRequest }
+    }
+    catch {
+      return []
+    }
+  }
+
+  func approve(request: any PullRequest) async throws
+  {
+    guard let pr = request as? BitbucketPR
+    else { throw BitbucketError.invalidPullRequest }
+    
+    try await update(request: pr, approved: true, status: .approved)
+  }
+
+  func unapprove(request: any PullRequest) async throws
+  {
+    guard let pr = request as? BitbucketPR
+    else { throw BitbucketError.invalidPullRequest }
+    
+    try await update(request: pr, approved: false, status: .unapproved)
+  }
+
+  func needsWork(request: any PullRequest) async throws
+  {
+    guard let pr = request as? BitbucketPR
+    else { throw BitbucketError.invalidPullRequest }
+    
+    try await update(request: pr, approved: false, status: .needsWork)
+  }
+
+  func merge(request: any PullRequest) async throws
+  {
+    guard let pr = request as? BitbucketPR
+    else { throw BitbucketError.invalidPullRequest }
+    let endpoint = Endpoint(baseURL: account.location,
+                            path: pullRequestPath(pr) + "merge",
+                            method: .post)
+    
+    _ = try await networkService.request(endpoint) as Data
   }
 }
