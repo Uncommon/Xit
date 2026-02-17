@@ -41,6 +41,7 @@ final class Services
   let passwordStorage: any PasswordStorage
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
+  private var teamCityHTTPServices: [String: TeamCityHTTPService] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
   private var services: [AccountType: [String: BasicAuthService]] = [:]
@@ -145,7 +146,12 @@ final class Services
   func initializeServices(with manager: AccountsManager)
   {
     for account in manager.accounts(ofType: .teamCity) {
-      _ = service(for: account)
+      if Services.useNewNetworking {
+        _ = teamCityHTTPService(for: account)
+      }
+      else {
+        _ = service(for: account)
+      }
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
       _ = service(for: account)
@@ -207,6 +213,45 @@ final class Services
   func teamCityAPI(for account: Account) -> TeamCityAPI?
   {
     service(for: account) as? TeamCityAPI
+  }
+  
+  /// Returns the URLSession-based TeamCity service for the given account
+  /// when the new networking stack is enabled.
+  func teamCityHTTPService(for account: Account) -> TeamCityHTTPService?
+  {
+    guard Services.useNewNetworking
+    else { return nil }
+    
+    let key = Services.accountKey(account)
+    
+    if let existing = teamCityHTTPServices[key] {
+      return existing
+    }
+    
+    guard let password = passwordStorage.find(url: account.location,
+                                              account: account.user)
+    else {
+      serviceLogger.info("No \(account.type.name) password for \(account.user)")
+      return nil
+    }
+    
+    let authProvider = BasicAuthProvider(username: account.user,
+                                         password: password)
+    let network = URLSessionNetworkService(
+      session: .init(configuration: .default),
+      configuration: .init(headers: [:]),
+      authProvider: authProvider)
+    
+    let service = TeamCityHTTPService(
+      account: account,
+      password: password,
+      passwordStorage: passwordStorage,
+      authenticationPath: TeamCityHTTPService.rootPath,
+      networkService: network)
+    
+    teamCityHTTPServices[key] = service
+    Task { await service.attemptAuthentication() }
+    return service
   }
   
   func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?

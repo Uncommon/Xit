@@ -256,11 +256,11 @@ final class BitbucketHTTPService: BaseHTTPService,
    - ✅ Keep existing Siesta code functional
    - ✅ Add feature flag `Services.useNewNetworking`
 
-2. **Migrate TeamCityAPI**
-   - Create `TeamCityHTTPService.swift`
-   - Implement all BuildStatusService methods
-   - Add comprehensive tests
-   - Test with real TeamCity instance
+2. **Migrate TeamCityAPI** ✅
+   - ✅ `TeamCityHTTPService.swift` - URLSession-based TeamCity service with parsing, caching, and metadata refresh
+   - ✅ VCS roots + build type mapping, branch display names
+   - ✅ Tests added (`TeamCityHTTPServiceTests.swift`) for parsing and metadata
+   - ⏳ Wire into Services via feature flag
 
 3. **Testing Strategy**
    - Unit tests for each endpoint
