@@ -36,9 +36,12 @@ struct TeamCityHTTPServiceTests
 
     let types = try await service.loadBuildTypes()
 
-    #expect(types.count == 2)
-    #expect(types.first?.id == "bt1")
-    #expect(types.first?.projectName == "Proj1")
+    try #require(types.count >= 1)
+    #expect(types[0].id == "bt1")
+    #expect(types[0].projectName == "Proj1")
+    try #require(types.count == 2)
+    #expect(types[1].id == "bt2")
+    #expect(types[1].projectName == "Proj2")
   }
 
   @Test
@@ -58,9 +61,12 @@ struct TeamCityHTTPServiceTests
 
     let builds = try await service.loadBuilds(buildTypeID: "bt1")
 
-    #expect(builds.count == 2)
-    #expect(builds.first?.id == 1)
-    #expect(builds.first?.status == .succeeded)
+    try #require(builds.count >= 1)
+    #expect(builds[0].id == 1)
+    #expect(builds[0].status == .succeeded)
+    try #require(builds.count == 2)
+    #expect(builds[1].id == 2)
+    #expect(builds[1].status == .failed)
   }
 
   @Test
