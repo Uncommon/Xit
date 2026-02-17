@@ -259,6 +259,7 @@
 		C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */; };
 		C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */; };
 		C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */; };
+		C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
@@ -644,6 +645,7 @@
 		C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDelegate.swift; sourceTree = "<group>"; };
 		C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarPRManager.swift; sourceTree = "<group>"; };
 		C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModel.swift; sourceTree = "<group>"; };
+		C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityHTTPServiceTests.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
@@ -1029,6 +1031,7 @@
 				C95356091D958E8D00AEEF49 /* StringExtensionsTest.swift */,
 				C3FA472513D0F8E300AC4F9B /* Supporting Files */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
+				C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */,
 				891052D72523F3D30095E299 /* TestErrors.swift */,
 				C9EB87301D05D35800C47D13 /* XitTests-Bridging-Header.h */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
@@ -1829,6 +1832,7 @@
 				C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */,
 				C991904E20AE32150080687F /* IndexTreeTest.swift in Sources */,
 				898F758A2A55CDCA00C157D7 /* ReferenceNameTests.swift in Sources */,
+				C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */,
 				C98EBC1F212CCC6D00EF739E /* PullRequestManagerTest.swift in Sources */,
 				C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */,
 				C9D896961FAB6CD300E431FE /* XTTest.swift in Sources */,
