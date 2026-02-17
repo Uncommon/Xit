@@ -2,7 +2,7 @@ import Foundation
 
 /// Core protocol for network service implementations.
 /// Provides methods for making HTTP requests with type-safe responses.
-protocol NetworkService: Sendable
+protocol NetworkService
 {
   /// Makes a network request and decodes the response to the specified type.
   /// - Parameter endpoint: The endpoint configuration for the request

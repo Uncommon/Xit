@@ -13,7 +13,7 @@ final class URLSessionNetworkService: NetworkService
   private let configuration: NetworkConfiguration
 
   /// Authentication provider for signing requests
-  let authProvider: AuthenticationProvider?
+  var authProvider: AuthenticationProvider?
 
   /// Creates a new URLSession-based network service.
   /// - Parameters:
