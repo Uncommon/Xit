@@ -3,10 +3,6 @@ import XitGit
 
 final class WorkspaceTreeBuilder
 {
-  // Path parsing is easier if the root name is not just "/". I'm not sure
-  // it matters what the root name is, but it's an unusual string just in case.
-  static let rootName = "#"
-  
   private var changes: [String: DeltaStatus]
   private var repo: (any FileStatusDetection)?
   
@@ -29,7 +25,7 @@ final class WorkspaceTreeBuilder
   func treeAtURL(_ baseURL: URL, rootPath: NSString) -> FileChangeNode
   {
     let myPath = baseURL.path.droppingPrefix(rootPath as String).nilIfEmpty ??
-                 WorkspaceTreeBuilder.rootName + "/"
+                 FileChangeNode.rootName + "/"
     let rootItem = FileChange(path: myPath)
     let node = FileChangeNode(value: rootItem)
     let enumerator = FileManager.default.enumerator(
@@ -45,8 +41,8 @@ final class WorkspaceTreeBuilder
       guard relativePath != "/.git",
             !(repo?.isIgnored(path: relativePath) ?? false)
       else { continue }
-      let path = WorkspaceTreeBuilder.rootName
-                                     .appending(pathComponent: relativePath)
+      let path = FileChangeNode.rootName
+                               .appending(pathComponent: relativePath)
 
       var childNode: FileChangeNode?
       var isDirectory: AnyObject?

@@ -2,21 +2,22 @@ import Foundation
 
 public struct FileChange: Sendable
 {
-  var oid: GitOID?
-  var path: String
-  var oldPath: String
-  var status: DeltaStatus
+  public var oid: GitOID?
+  public var path: String
+  public var oldPath: String
+  public var status: DeltaStatus
 
   /// Repository-relative path to use for git operations
-  var gitPath: String
-  { path.droppingPrefix("\(WorkspaceTreeBuilder.rootName)/") }
+  public var gitPath: String
+  { path.droppingPrefix("\(FileChangeNode.rootName)/") }
 
-  init(path: String, oldPath: String = "",
-       oid: GitOID? = nil, change: DeltaStatus = .unmodified)
+  public init(path: String, oldPath: String = "",
+              oid: GitOID? = nil, change: DeltaStatus = .unmodified)
   {
     self.path = path
     self.oldPath = oldPath
     self.status = change
+    self.oid = oid
   }
 }
 

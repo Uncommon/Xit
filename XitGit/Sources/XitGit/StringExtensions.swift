@@ -98,7 +98,7 @@ extension String
 {
   /// Returns the string with the given prefix removed, or returns the string
   /// unchanged if the prefix does not match.
-  func droppingPrefix(_ prefix: String) -> String
+  public func droppingPrefix(_ prefix: String) -> String
   {
     guard hasPrefix(prefix)
     else { return self }
@@ -108,7 +108,7 @@ extension String
   
   /// Returns the string with the given suffix removed, or returns the string
   /// unchanged if the suffix does not match.
-  func droppingSuffix(_ suffix: String) -> String
+  public func droppingSuffix(_ suffix: String) -> String
   {
     guard hasSuffix(suffix)
     else { return self }
@@ -117,7 +117,7 @@ extension String
   }
   
   /// Returns the string with the given prefix, adding it only if necessary.
-  func withPrefix(_ prefix: String) -> String
+  public func withPrefix(_ prefix: String) -> String
   {
     if hasPrefix(prefix) {
       return self
@@ -128,7 +128,7 @@ extension String
   }
   
   /// Returns the string with the given suffix, adding it only if necessary.
-  func withSuffix(_ suffix: String) -> String
+  public func withSuffix(_ suffix: String) -> String
   {
     if hasSuffix(suffix) {
       return self
@@ -142,34 +142,34 @@ extension String
 // MARK: Paths
 extension String
 {
-  func appending(pathComponent component: String) -> String
+  public func appending(pathComponent component: String) -> String
   {
     return (self as NSString).appendingPathComponent(component)
   }
   
-  var pathExtension: String
+  public var pathExtension: String
   { (self as NSString).pathExtension }
   
-  var deletingPathExtension: String
+  public var deletingPathExtension: String
   { (self as NSString).deletingPathExtension }
 
-  var pathComponents: [String]
+  public var pathComponents: [String]
   { (self as NSString).pathComponents }
   
   // TODO: this probably shouldn't be optional
-  var firstPathComponent: String?
+  public var firstPathComponent: String?
   { pathComponents.first }
   
-  var deletingFirstPathComponent: String
+  public var deletingFirstPathComponent: String
   { NSString.path(withComponents: Array(pathComponents.dropFirst(1))) }
   
-  var lastPathComponent: String
+  public var lastPathComponent: String
   { (self as NSString).lastPathComponent }
   
-  var deletingLastPathComponent: String
+  public var deletingLastPathComponent: String
   { (self as NSString).deletingLastPathComponent }
   
-  var expandingTildeInPath: String
+  public var expandingTildeInPath: String
   { (self as NSString).expandingTildeInPath }
 }
 
@@ -177,7 +177,7 @@ infix operator +/ : AdditionPrecedence
 
 extension String
 {
-  static func +/ (left: String, right: String) -> String
+  public static func +/ (left: String, right: String) -> String
   {
     let right = right.droppingPrefix("/")
     
@@ -193,7 +193,7 @@ extension String
 
 extension URL
 {
-  static func +/ (left: URL, right: String) -> URL
+  public static func +/ (left: URL, right: String) -> URL
   {
     return left.appendingPathComponent(right)
   }

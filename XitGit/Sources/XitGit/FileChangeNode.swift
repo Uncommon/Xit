@@ -2,12 +2,12 @@ import Foundation
 
 public class TreeNode<T>
 {
-  var value: T
-  var children: [TreeNode<T>] = []
+  public var value: T
+  public var children: [TreeNode<T>] = []
 
-  var isLeaf: Bool { children.isEmpty }
+  public var isLeaf: Bool { children.isEmpty }
 
-  init(value: T) {
+  public init(value: T) {
     self.value = value
   }
 }
@@ -50,14 +50,18 @@ public typealias FileChangeNode = TreeNode<FileChange>
 
 extension FileChangeNode
 {
-  static var rootPrefix: String { WorkspaceTreeBuilder.rootName + "/" }
+  // Path parsing is easier if the root name is not just "/". I'm not sure
+  // it matters what the root name is, but it's an unusual string just in case.
+  public static let rootName = "#"
+  
+  public static var rootPrefix: String { rootName + "/" }
 
-  convenience init()
+  public convenience init()
   {
     self.init(value: .init(path: ""))
   }
 
-  func fileChangeNode(path: String) -> FileChangeNode?
+  public func fileChangeNode(path: String) -> FileChangeNode?
   {
     return fileChangeNode(recursivePath: 
         path.withPrefix(FileChangeNode.rootPrefix))
@@ -76,7 +80,7 @@ extension FileChangeNode
   }
 
   @discardableResult
-  func insert(fileChange: FileChange) -> FileChangeNode
+  public func insert(fileChange: FileChange) -> FileChangeNode
   {
     let node = FileChangeNode(value: fileChange)
 
@@ -84,7 +88,7 @@ extension FileChangeNode
     return node
   }
 
-  func add(fileChange newChange: FileChange)
+  public func add(fileChange newChange: FileChange)
   {
     var newChange = newChange
 
