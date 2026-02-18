@@ -8,7 +8,7 @@ public enum RemoteConnectionDirection: Sendable
   case fetch
 }
 
-extension RemoteConnectionDirection
+public extension RemoteConnectionDirection
 {
   init(gitDirection: git_direction)
   {
@@ -55,7 +55,7 @@ public protocol Remote: AnyObject
                          action: (any ConnectedRemote) throws -> T) throws -> T
 }
 
-extension Remote
+public extension Remote
 {
   var url: URL? { urlString.flatMap { URL(string: $0) } }
   var pushURL: URL? { pushURLString.flatMap { URL(string: $0) } }
@@ -110,7 +110,7 @@ public final class GitRemote: Remote
   public var refSpecs: AnyCollection<GitRefSpec>
   { AnyCollection(RefSpecCollection(remote: self)) }
   
-  init?(name: String, repository: OpaquePointer)
+  public init?(name: String, repository: OpaquePointer)
   {
     guard let remote = try? OpaquePointer.from({
         git_remote_lookup(&$0, repository, name) })
@@ -119,7 +119,7 @@ public final class GitRemote: Remote
     self.remote = remote
   }
   
-  init?(url: URL)
+  public init?(url: URL)
   {
     guard let remote = try? OpaquePointer.from({
       git_remote_create_detached(&$0, url.absoluteString)
@@ -271,11 +271,11 @@ extension GitRemote
 
 public struct RemoteHead
 {
-  let local: Bool
-  let oid: GitOID
-  let localOID: GitOID
-  let name: String
-  let symrefTarget: String
+  public let local: Bool
+  public let oid: GitOID
+  public let localOID: GitOID
+  public let name: String
+  public let symrefTarget: String
   
   init(_ head: git_remote_head)
   {

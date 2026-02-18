@@ -14,7 +14,7 @@ public protocol DiffHunk
   func canApply(to lines: [String]) -> Bool
 }
 
-extension DiffHunk
+public extension DiffHunk
 {
   /// Applies just this hunk to the target text.
   /// - parameter text: The target text.
@@ -67,7 +67,7 @@ extension DiffHunk
   /// Returns true if the hunk can be applied to the given text.
   /// - parameter lines: The target text. This is an array of strings rather
   /// than the raw text to more efficiently query multiple hunks on one file.
-  public func canApply(to lines: [String]) -> Bool
+  func canApply(to lines: [String]) -> Bool
   {
     guard (oldLines == 0) || (oldStart - 1 + oldLines <= lines.count)
     else { return false }

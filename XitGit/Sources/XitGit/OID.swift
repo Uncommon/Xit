@@ -1,5 +1,6 @@
 import Foundation
 import Clibgit2
+import FakedMacro
 
 public protocol OIDObject: Hashable, Identifiable where ID == GitOID
 {
@@ -125,5 +126,13 @@ extension GitOID: Equatable
         memcmp(leftOID, rightOID, Self.oidSize) == 0
       }
     }
+  }
+}
+
+extension GitOID: Fakable
+{
+  public static func fakeDefault() -> Self
+  {
+    .zero()
   }
 }

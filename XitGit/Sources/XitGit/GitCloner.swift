@@ -3,6 +3,8 @@ import Clibgit2
 
 public final class GitCloner: Cloning
 {
+  public init() {}
+  
   @discardableResult
   public func clone(from source: URL, to destination: URL,
                     branch: String,

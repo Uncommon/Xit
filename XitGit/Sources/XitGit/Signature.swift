@@ -3,12 +3,19 @@ import Clibgit2
 
 public struct Signature: Equatable, Sendable
 {
-  let name: String?
-  let email: String?
-  let when: Date
+  public let name: String?
+  public let email: String?
+  public let when: Date
+  
+  public init(name: String?, email: String?, when: Date)
+  {
+    self.name = name
+    self.email = email
+    self.when = when
+  }
 }
 
-extension Signature
+public extension Signature
 {
   enum Default
   {
@@ -50,7 +57,7 @@ extension Signature
     self.when = Date()
   }
   
-  public func withGitSignature<T>(_ block: (git_signature) throws -> T)
+  func withGitSignature<T>(_ block: (git_signature) throws -> T)
     rethrows -> T
   {
     var utf8Name = (name ?? "").utf8CString
@@ -72,7 +79,7 @@ extension Signature
   }
 }
 
-extension Signature
+public extension Signature
 {
   func contains(_ string: String) -> Bool
   {

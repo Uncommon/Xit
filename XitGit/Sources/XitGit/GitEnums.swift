@@ -85,16 +85,16 @@ public struct DiffOptionFlags: OptionSet, Sendable
     public static let showBinary = DiffOptionFlags(rawValue: GIT_DIFF_SHOW_BINARY.rawValue)
 }
 
-public struct DiffStats: OptionSet, Sendable
+public struct DiffStatsFormat: OptionSet, Sendable
 {
     public let rawValue: UInt32
     public init(rawValue: UInt32) { self.rawValue = rawValue }
     
-    public static let none = DiffStats(rawValue: GIT_DIFF_STATS_NONE.rawValue)
-    public static let full = DiffStats(rawValue: GIT_DIFF_STATS_FULL.rawValue)
-    public static let short = DiffStats(rawValue: GIT_DIFF_STATS_SHORT.rawValue)
-    public static let number = DiffStats(rawValue: GIT_DIFF_STATS_NUMBER.rawValue)
-    public static let includeSummary = DiffStats(rawValue: GIT_DIFF_STATS_INCLUDE_SUMMARY.rawValue)
+    public static let none = DiffStatsFormat(rawValue: GIT_DIFF_STATS_NONE.rawValue)
+    public static let full = DiffStatsFormat(rawValue: GIT_DIFF_STATS_FULL.rawValue)
+    public static let short = DiffStatsFormat(rawValue: GIT_DIFF_STATS_SHORT.rawValue)
+    public static let number = DiffStatsFormat(rawValue: GIT_DIFF_STATS_NUMBER.rawValue)
+    public static let includeSummary = DiffStatsFormat(rawValue: GIT_DIFF_STATS_INCLUDE_SUMMARY.rawValue)
 }
 
 public enum ReferenceType: Int32, Sendable
@@ -260,6 +260,22 @@ extension DeltaStatus
       default:
         return true
     }
+  }
+}
+
+extension git_status_t
+{
+  func contains(_ other: git_status_t) -> Bool
+  {
+    (rawValue & other.rawValue) != 0
+  }
+}
+
+extension git_credential_t
+{
+  func contains(_ other: git_credential_t) -> Bool
+  {
+    (rawValue & other.rawValue) != 0
   }
 }
 

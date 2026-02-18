@@ -94,12 +94,12 @@ public struct PrefixedRefName<Kind>: ReferenceName
   public let name: String
   public var fullPath: String { Kind.prefix +/ name }
 
-  var isValid: Bool
+  public var isValid: Bool
   {
     Self.validate(name: rawValue)
   }
 
-  static func validate(name: String) -> Bool
+  public static func validate(name: String) -> Bool
   {
     GitReference.isValidName(name)
   }
@@ -132,7 +132,7 @@ public struct PrefixedRefName<Kind>: ReferenceName
   }
 }
 
-extension PrefixedRefName where Kind == RemoteBranchReference
+public extension PrefixedRefName where Kind == RemoteBranchReference
 {
   var remoteName: String
   { String(name.split(maxSplits: 1) { $0 == "/" }.first ?? "") }

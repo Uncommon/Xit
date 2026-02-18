@@ -1,5 +1,6 @@
 import Foundation
 import Cocoa
+import XitGit
 
 // Command handling extracted for testability
 @MainActor

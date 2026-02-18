@@ -11,7 +11,7 @@ public final class TaskQueue: @unchecked Sendable
     case queueShutDown
   }
 
-  let queue: DispatchQueue
+  public let queue: DispatchQueue
   private var queueCount: UInt = 0
   fileprivate(set) var isShutDown = false
   private let lock = NSRecursiveLock()
@@ -41,14 +41,14 @@ public final class TaskQueue: @unchecked Sendable
     }
   }
 
-  func executeTask(_ block: () -> Void)
+  public func executeTask(_ block: () -> Void)
   {
     increment()
     block()
     decrement()
   }
 
-  func executeOffMainThread(_ block: @escaping @Sendable () -> Void)
+  public func executeOffMainThread(_ block: @escaping @Sendable () -> Void)
   {
     if Thread.isMainThread {
       if !isShutDown {
@@ -64,7 +64,7 @@ public final class TaskQueue: @unchecked Sendable
   }
 
   /// Runs an asynchronous block as a queue task.
-  func executeAsync(_ block: @Sendable @escaping () async -> Void)
+  public func executeAsync(_ block: @Sendable @escaping () async -> Void)
   {
     if isShutDown {
       return
@@ -84,7 +84,7 @@ public final class TaskQueue: @unchecked Sendable
 
   /// Runs the block synchronously on the task queue when called from the main
   /// thread, or inline otherwise.
-  func syncOffMainThread<T>(_ block: () throws -> T) throws -> T
+  public func syncOffMainThread<T>(_ block: () throws -> T) throws -> T
   {
     if Thread.isMainThread {
       if isShutDown {
@@ -99,12 +99,12 @@ public final class TaskQueue: @unchecked Sendable
     }
   }
   
-  func wait()
+  public func wait()
   {
     WaitForQueue(queue)
   }
   
-  func shutDown()
+  public func shutDown()
   {
     isShutDown = true
   }

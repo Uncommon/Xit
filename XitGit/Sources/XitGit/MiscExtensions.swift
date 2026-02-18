@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import UniformTypeIdentifiers
 
-extension Data
+public extension Data
 {
   init?(immutableBytesNoCopy bytes: UnsafeRawPointer, count: Int,
         deallocator: Deallocator)
@@ -16,7 +16,7 @@ extension Data
   }
 }
 
-extension Data.Deallocator
+public extension Data.Deallocator
 {
   var cfAllocator: CFAllocator
   {
@@ -33,7 +33,7 @@ extension Data.Deallocator
   }
 }
 
-extension URL
+public extension URL
 {
   /// Returns a copy of the URL with its path replaced
   func withPath(_ path: String) -> URL
@@ -62,7 +62,7 @@ extension URL
   }
 }
 
-extension XMLElement
+public extension XMLElement
 {
   /// Returns the element's attributes as a dictionary.
   func attributesDict() -> [String: String]
@@ -92,7 +92,7 @@ extension XMLElement
   }
 }
 
-extension Publisher
+public extension Publisher
 {
   /// For each published element, `object`'s `keyPath` is set to `nil`, and then
   /// a `debounce` is applied on the main queue.
@@ -109,7 +109,7 @@ extension Publisher
   }
 }
 
-extension Sequence
+public extension Sequence
 {
   /// Returns the number of elements satisfying the predicate.
   func count(where predicate: (Element) -> Bool) -> Int
@@ -121,7 +121,7 @@ extension Sequence
   }
 }
 
-extension Sequence where Element: NSObject
+public extension Sequence where Element: NSObject
 {
   /// Returns true if the sequence contains an object where `isEqual`
   /// returns true.
@@ -131,7 +131,7 @@ extension Sequence where Element: NSObject
   }
 }
 
-extension Collection
+public extension Collection
 {
   /// Returns the index of each item satisfying the condition.
   func indices(where condition: (Element) -> Bool) -> IndexSet
@@ -145,7 +145,7 @@ extension Collection
   }
 }
 
-extension Array
+public extension Array
 {
   /// Assuming the array is sorted, returns the insertion index for the given
   /// item to be inserted in order.
@@ -228,7 +228,7 @@ extension Array
   }
 }
 
-extension Array where Element: Comparable
+public extension Array where Element: Comparable
 {
   mutating func insertSorted(_ newElement: Element)
   {
@@ -237,7 +237,7 @@ extension Array where Element: Comparable
   }
 }
 
-extension Sequence where Iterator.Element: Hashable
+public extension Sequence where Iterator.Element: Hashable
 {
   func unique() -> [Iterator.Element]
   {
@@ -247,7 +247,7 @@ extension Sequence where Iterator.Element: Hashable
   }
 }
 
-extension Sequence
+public extension Sequence
 {
   func sorted<T>(byKeyPath keyPath: KeyPath<Element, T>) -> [Element]
     where T: Comparable
@@ -256,7 +256,7 @@ extension Sequence
   }
 }
 
-extension NSMutableArray
+public extension NSMutableArray
 {
   func sort(keyPath key: String, ascending: Bool = true)
   {
@@ -264,7 +264,7 @@ extension NSMutableArray
   }
 }
 
-extension Thread
+public extension Thread
 {
   /// Performs the block immediately if this is the main thread, or
   /// synchronosly on the main thread otherwise.
@@ -275,7 +275,7 @@ extension Thread
   }
 }
 
-extension DecodingError
+public extension DecodingError
 {
   var context: Context
   {
@@ -294,7 +294,7 @@ extension DecodingError
   }
 }
 
-extension NSObject
+public extension NSObject
 {
   func withSync<T>(block: () throws -> T) rethrows -> T
   {
@@ -306,12 +306,12 @@ extension NSObject
   }
 }
 
-extension TimeInterval
+public extension TimeInterval
 {
   static let minutes: TimeInterval = 60
 }
 
-extension UTType
+public extension UTType
 {
   /// Returns the type for the given extension, or `.item` if none found.
   static func fromExtension(_ ext: String) -> UTType
@@ -323,7 +323,7 @@ extension UTType
 // Swift 3 took away ++, but it still can be useful.
 postfix operator ++
 
-extension Strideable where Stride == Int
+public extension Strideable where Stride == Int
 {
   static postfix func ++ (i: inout Self) -> Self
   {
@@ -335,7 +335,7 @@ extension Strideable where Stride == Int
 
 infix operator <~
 
-extension String
+public extension String
 {
   static func <~ (a: String, b: String) -> Bool
   {
@@ -343,7 +343,7 @@ extension String
   }
 }
 
-extension RawRepresentable where RawValue == String
+public extension RawRepresentable where RawValue == String
 {
   static func <~ (a: Self, b: Self) -> Bool
   {
@@ -351,7 +351,7 @@ extension RawRepresentable where RawValue == String
   }
 }
 
-extension Timer
+public extension Timer
 {
   static func mainScheduledTimer(
     withTimeInterval interval: TimeInterval,

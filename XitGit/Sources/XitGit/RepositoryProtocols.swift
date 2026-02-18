@@ -118,14 +118,14 @@ public protocol CommitReferencing: AnyObject
                     updatingReference refName: String) throws -> GitOID
 }
 
-extension CommitReferencing
+public extension CommitReferencing
 {
   var headReference: (any Reference)? { reference(named: "HEAD") }
   var headSHA: SHA? { headRefName.flatMap { self.sha(forRef: $0) } }
   var headOID: GitOID? { headRefName.flatMap { self.oid(forRef: $0) } }
 }
 
-extension CommitReferencing where Self: CommitStorage
+public extension CommitReferencing where Self: CommitStorage
 {
   var headCommit: Commit? { headOID.flatMap { commit(forOID: $0) } }
 }
@@ -154,7 +154,7 @@ extension DeltaStatus: Fakable
   public static func fakeDefault() -> Self { .unmodified }
 }
 
-extension FileStatusDetection
+public extension FileStatusDetection
 {
   // Because protocols can't have default parameter values
   func unstagedChanges() -> [FileChange]
@@ -227,9 +227,9 @@ public protocol FileStaging: AnyObject
   func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws
 }
 
-extension FileStaging
+public extension FileStaging
 {
-  public func stage(change: FileChange) throws
+  func stage(change: FileChange) throws
   {
     try stage(file: change.gitPath)
     if change.status == .renamed && !change.oldPath.isEmpty {
@@ -237,7 +237,7 @@ extension FileStaging
     }
   }
 
-  public func unstage(change: FileChange) throws
+  func unstage(change: FileChange) throws
   {
     try unstage(file: change.gitPath)
     if change.status == .renamed && !change.oldPath.isEmpty {
@@ -302,7 +302,7 @@ public protocol RemoteManagement: AnyObject
 
 extension RemoteManagement
 {
-  func remotes() -> [Remote]
+  public func remotes() -> [Remote]
   {
     return remoteNames().compactMap { remote(named: $0) }
   }
@@ -322,7 +322,7 @@ public protocol TransferProgress: Sendable
 
 extension TransferProgress
 {
-  var progress: Float { Float(receivedObjects) / Float(totalObjects) }
+  public var progress: Float { Float(receivedObjects) / Float(totalObjects) }
 }
 
 struct MockTransferProgress: TransferProgress
@@ -352,22 +352,42 @@ public struct RemoteCallbacks
   var uploadProgress: UploadProgressBlock? = nil
   /// Message from the server
   var sidebandMessage: SidebandMessageBlock? = nil
+  
+  public init(passwordBlock: PasswordBlock? = nil,
+              downloadProgress: DownloadProgressBlock? = nil,
+              uploadProgress: UploadProgressBlock? = nil,
+              sidebandMessage: SidebandMessageBlock? = nil)
+  {
+    self.passwordBlock = passwordBlock
+    self.downloadProgress = downloadProgress
+    self.uploadProgress = uploadProgress
+    self.sidebandMessage = sidebandMessage
+  }
 }
 
 public struct FetchOptions
 {
   /// True to also download tags
-  let downloadTags: Bool
+  public let downloadTags: Bool
   /// True to delete obsolete branch refs
-  let pruneBranches: Bool
+  public let pruneBranches: Bool
   
-  let callbacks: RemoteCallbacks
+  public let callbacks: RemoteCallbacks
+  
+  public init(downloadTags: Bool = false,
+              pruneBranches: Bool = false,
+              callbacks: RemoteCallbacks = RemoteCallbacks())
+  {
+    self.downloadTags = downloadTags
+    self.pruneBranches = pruneBranches
+    self.callbacks = callbacks
+  }
 }
 
 public struct PushTransferProgress: Sendable
 {
-  let current, total: UInt32
-  let bytes: size_t
+  public let current, total: UInt32
+  public let bytes: size_t
 }
 
 @Faked
@@ -402,7 +422,7 @@ public protocol Branching: AnyObject
   func reset(toCommit target: any Commit, mode: ResetMode) throws
 }
 
-extension Branching
+public extension Branching
 {
   /// Returns the branch itself if it is a local branch, or a branch tracking
   /// it if it is a remote branch.
@@ -446,7 +466,7 @@ public enum ResetMode: Sendable
   */
 }
 
-enum TrackingBranchStatus: Sendable
+public enum TrackingBranchStatus: Sendable
 {
   /// No tracking branch set
   case none
@@ -456,7 +476,7 @@ enum TrackingBranchStatus: Sendable
   case set(String)
 }
 
-extension Branching
+public extension Branching
 {
   func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
   {

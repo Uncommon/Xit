@@ -1,7 +1,7 @@
 import Foundation
 import Clibgit2
 
-extension XTRepository
+public extension XTRepository
 {
   /// Abstract base class for specific iterators
   public class BranchIterator

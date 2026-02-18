@@ -30,7 +30,7 @@ extension TagType: Fakable
 
 public final class GitTag: Tag
 {
-  weak var repository: XTRepository?
+  public weak var repository: XTRepository?
   private let ref: OpaquePointer
   private let tag: OpaquePointer?
   public let name: String

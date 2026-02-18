@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import XitGit
 
 /// Manages the main window sidebar.
 final class SidebarController: NSViewController, SidebarCommandHandler,

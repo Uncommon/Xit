@@ -20,11 +20,11 @@ public protocol Reference
   func setTarget(_ newOID: GitOID, logMessage: String)
 }
 
-final class GitReference: Reference
+final public class GitReference: Reference
 {
   private(set) var ref: OpaquePointer
   
-  static func isValidName(_ name: String) -> Bool
+  public static func isValidName(_ name: String) -> Bool
   {
     var valid: Int32 = 0
 

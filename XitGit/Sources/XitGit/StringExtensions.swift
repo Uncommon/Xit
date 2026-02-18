@@ -1,6 +1,6 @@
 import Foundation
 
-extension String
+public extension String
 {
   init?<D>(data: D, usedEncoding: inout String.Encoding) where D: DataProtocol
   {

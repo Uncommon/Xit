@@ -29,7 +29,7 @@ public protocol Commit: OIDObject, CustomStringConvertible
   func getTrailers() -> [(String, [String])]
 }
 
-extension Commit
+public extension Commit
 {
   var authorName: String? { authorSig?.name }
   var authorEmail: String? { authorSig?.email }

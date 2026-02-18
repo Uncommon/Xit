@@ -1,5 +1,6 @@
 import Foundation
 import Cocoa
+import XitGit
 
 /// Convenience protocol for accessing things through a `RepositoryUIController`
 @MainActor

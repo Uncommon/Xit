@@ -9,18 +9,18 @@ public protocol Blame
 
 public struct BlameHunk: Sendable
 {
-  struct LineInfo: Sendable
+  public struct LineInfo: Sendable
   {
-    let oid: GitOID // OIDs are zero for local changes
-    let start: Int
-    let signature: Signature
+    public let oid: GitOID // OIDs are zero for local changes
+    public let start: Int
+    public let signature: Signature
   }
   
-  fileprivate(set) var lineCount: Int
-  let boundary: Bool
+  public fileprivate(set) var lineCount: Int
+  public let boundary: Bool
   
-  let originalLine: LineInfo
-  let finalLine: LineInfo
+  public let originalLine: LineInfo
+  public let finalLine: LineInfo
   
   init(lineCount: Int, boundary: Bool,
        originalLine: LineInfo, finalLine: LineInfo)

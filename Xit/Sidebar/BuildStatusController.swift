@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Cocoa
+import XitGit
 
 @MainActor
 protocol BuildStatusDisplay: AnyObject

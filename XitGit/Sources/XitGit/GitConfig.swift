@@ -16,12 +16,12 @@ public protocol Config: AnyObject
 
 /// Only values returned/accepted by overloads of Config.subscript() should
 /// conform to this protocol.
-protocol ConfigValueType: Hashable, Sendable {}
+public protocol ConfigValueType: Hashable, Sendable {}
 extension Bool: ConfigValueType {}
 extension String: ConfigValueType {}
 extension Int: ConfigValueType {}
 
-extension Config
+public extension Config
 {
   func value<T>(for key: String) -> T? where T: ConfigValueType
   { value(type: T.self, for: key) as? T }
@@ -83,33 +83,35 @@ extension ConfigEntry
 }
 
 /// An in-memory `Config` that uses a dictionary.
-class DictionaryConfig: Config
+public class DictionaryConfig: Config
 {
-  struct Entry: ConfigEntry
+  public struct Entry: ConfigEntry
   {
-    let name: String
-    let stringValue: String
+    public let name: String
+    public let stringValue: String
   }
 
   var store: [String: Any] = [:]
 
-  subscript(index: String) -> Bool?
+  public subscript(index: String) -> Bool?
   { get { store[index] as? Bool } set { store[index] = newValue } }
-  subscript(index: String) -> String?
+  public subscript(index: String) -> String?
   { get { store[index] as? String } set { store[index] = newValue } }
-  subscript(index: String) -> Int?
+  public subscript(index: String) -> Int?
   { get { store[index] as? Int } set { store[index] = newValue } }
 
-  var entries: AnySequence<Entry>
+  public var entries: AnySequence<Entry>
   {
     .init(store.map { Entry(name: $0.key,
                             stringValue: $0.value as? String ?? "") })
   }
+  
+  public init() {}
 
-  func invalidate() {}
+  public func invalidate() {}
 }
 
-extension Config
+public extension Config
 {
   func urlString(remote: String) -> String?
   {
@@ -171,9 +173,9 @@ extension Config
   }
 }
 
-final class GitConfig: Config
+public final class GitConfig: Config
 {
-  typealias Entry = GitConfigEntry
+  public typealias Entry = GitConfigEntry
 
   let config: OpaquePointer
   var snapshot: OpaquePointer?
@@ -222,7 +224,7 @@ final class GitConfig: Config
     }
   }
   
-  static var `default`: GitConfig?
+  public static var `default`: GitConfig?
   {
     guard let config = try? OpaquePointer.from({
       git_config_open_default(&$0)
@@ -248,7 +250,7 @@ final class GitConfig: Config
     }
   }
   
-  subscript(index: String) -> Bool?
+  public subscript(index: String) -> Bool?
   {
     get
     {
@@ -271,7 +273,7 @@ final class GitConfig: Config
     }
   }
   
-  subscript(index: String) -> String?
+  public subscript(index: String) -> String?
   {
     get
     {
@@ -297,7 +299,7 @@ final class GitConfig: Config
     }
   }
   
-  subscript(index: String) -> Int?
+  public subscript(index: String) -> Int?
   {
     get
     {
@@ -333,14 +335,14 @@ final class GitConfig: Config
     self.snapshot = snapshot
   }
   
-  func invalidate()
+  public func invalidate()
   {
     loadSnapshot()
   }
   
   class EntryIterator: IteratorProtocol
   {
-    private var iterator: UnsafeMutablePointer<git_config_iterator>?
+    private var iterator: OpaquePointer?
     
     init(config: OpaquePointer)
     {
@@ -373,17 +375,17 @@ final class GitConfig: Config
     }
   }
   
-  var entries: AnySequence<Entry>
+  public var entries: AnySequence<Entry>
   { AnySequence<Entry> { EntryIterator(config: self.operativeConfig) } }
 }
 
-class GitConfigEntry: ConfigEntry
+public class GitConfigEntry: ConfigEntry
 {
   let entry: git_config_entry
   let owner: Bool
 
-  var name: String { String(cString: entry.name) }
-  var stringValue: String { String(cString: entry.value) }
+  public var name: String { String(cString: entry.name) }
+  public var stringValue: String { String(cString: entry.value) }
   
   init(entry: git_config_entry, owner: Bool = true)
   {

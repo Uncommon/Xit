@@ -1,7 +1,7 @@
 import Foundation
 import Clibgit2
 
-extension XTRepository
+public extension XTRepository
 {
   func push(remote: String) throws
   {

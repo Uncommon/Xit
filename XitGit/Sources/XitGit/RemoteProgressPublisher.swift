@@ -10,7 +10,7 @@ public enum RemoteProgressMessage
 
 public final class RemoteProgressPublisher
 {
-  let subject = PassthroughSubject<RemoteProgressMessage, RepoError>()
+  public let subject = PassthroughSubject<RemoteProgressMessage, RepoError>()
   private(set) var callbacks = RemoteCallbacks()
   var canceled: Bool = false
   
@@ -38,7 +38,7 @@ public final class RemoteProgressPublisher
         })
   }
   
-  func setPasswordBlock(_ block: RemoteCallbacks.PasswordBlock?)
+  public func setPasswordBlock(_ block: RemoteCallbacks.PasswordBlock?)
   {
     callbacks.passwordBlock = block
   }

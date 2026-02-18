@@ -143,7 +143,7 @@ extension XTRepository: CommitReferencing
     return headReference != nil
   }
   
-  func parentTree() -> String
+  public func parentTree() -> String
   {
     return hasHeadReference() ? "HEAD" : SHA.emptyTree.rawValue
   }
@@ -168,7 +168,7 @@ extension XTRepository: CommitReferencing
     return GitOID(oidPtr: oid)
   }
   
-  func deleteBranch(_ name: String) throws
+  public func deleteBranch(_ name: String) throws
   {
     return try writing {
       guard let refName = LocalBranchRefName(name),

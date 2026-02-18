@@ -1,5 +1,5 @@
 import Foundation
-
+import XitGit
 
 enum PreferenceKeys
 {

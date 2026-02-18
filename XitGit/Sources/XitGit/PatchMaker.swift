@@ -29,15 +29,15 @@ public final class PatchMaker
     case diff(PatchMaker)
   }
   
-  let fromSource: SourceType
-  let toSource: SourceType
-  let path: String
+  public let fromSource: SourceType
+  public let toSource: SourceType
+  public let path: String
   
   static let defaultContextLines: UInt = 3
-  var contextLines: UInt = PatchMaker.defaultContextLines
-  var whitespace: WhitespaceSetting = .showAll
-  var usePatience = false
-  var minimal = false
+  public var contextLines: UInt = PatchMaker.defaultContextLines
+  public var whitespace: WhitespaceSetting = .showAll
+  public var usePatience = false
+  public var minimal = false
   
   private var options: DiffOptions
   {
@@ -71,19 +71,19 @@ public final class PatchMaker
     self.path = path
   }
 
-  func makePatch() -> (any Patch)?
+  public func makePatch() -> (any Patch)?
   {
     switch (fromSource, toSource) {
       case let (.blob(fromBlob), .blob(toBlob)):
-        return GitPatch(oldBlob: fromBlob, newBlob: toBlob, options: options)
+        GitPatch(oldBlob: fromBlob, newBlob: toBlob, options: options)
       case let (.data(fromData), .data(toData)):
-        return GitPatch(oldData: fromData, newData: toData, options: options)
+        GitPatch(oldData: fromData, newData: toData, options: options)
       case let (.blob(fromBlob), .data(toData)):
-        return GitPatch(oldBlob: fromBlob, newData: toData, options: options)
+        GitPatch(oldBlob: fromBlob, newData: toData, options: options)
       case let (.data(fromData), .blob(toBlob)):
-        return GitPatch(oldData: fromData,
-                        newData: toBlob.makeData() ?? Data(),
-                        options: options)
+        GitPatch(oldData: fromData,
+                 newData: toBlob.makeData() ?? Data(),
+                 options: options)
     }
   }
 }

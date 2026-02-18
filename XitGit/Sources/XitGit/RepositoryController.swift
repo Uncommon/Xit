@@ -28,10 +28,10 @@ public struct RepositoryCache
 /// Manages tasks and data related to working with a repository, such as cached
 /// data and things not directly related to repository operations, such as
 /// the task queue and tracking file changes.
-final class GitRepositoryController: RepositoryController
+public final class GitRepositoryController: RepositoryController
 {
   let xtRepo: XTRepository
-  var repository: any BasicRepository { xtRepo }
+  public var repository: any BasicRepository { xtRepo }
 
   public let queue: TaskQueue
   let mutex = NSRecursiveLock()
@@ -53,7 +53,7 @@ final class GitRepositoryController: RepositoryController
     return "\(identifier).\(path)"
   }
 
-  init(repository: XTRepository)
+  public init(repository: XTRepository)
   {
     self.xtRepo = repository
     self.queue = TaskQueue(id: Self.taskQueueID(path: repository.repoURL.path))
@@ -80,47 +80,47 @@ final class GitRepositoryController: RepositoryController
 
 extension GitRepositoryController: RepositoryPublishing
 {
-  var configPublisher: AnyPublisher<Void, Never> {
+  public var configPublisher: AnyPublisher<Void, Never> {
     configWatcher.configPublisher
   }
 
-  var headPublisher: AnyPublisher<Void, Never> {
+  public var headPublisher: AnyPublisher<Void, Never> {
     repoWatcher!.publishers[.head]
   }
 
-  var indexPublisher: AnyPublisher<Void, Never> {
+  public var indexPublisher: AnyPublisher<Void, Never> {
     repoWatcher!.publishers[.index]
   }
 
-  var refLogPublisher: AnyPublisher<Void, Never> {
+  public var refLogPublisher: AnyPublisher<Void, Never> {
     repoWatcher!.publishers[.refLog]
   }
 
-  var refsPublisher: AnyPublisher<Void, Never> {
+  public var refsPublisher: AnyPublisher<Void, Never> {
     repoWatcher!.publishers[.refs]
   }
 
-  var stashPublisher: AnyPublisher<Void, Never> {
+  public var stashPublisher: AnyPublisher<Void, Never> {
     repoWatcher!.publishers[.stash]
   }
 
-  var workspacePublisher: AnyPublisher<[String], Never> {
+  public var workspacePublisher: AnyPublisher<[String], Never> {
     workspaceWatcher!.publisher
   }
   
-  var progressPublisher: AnyPublisher<(current: Float, total: Float), Never> {
+  public var progressPublisher: AnyPublisher<(current: Float, total: Float), Never> {
     progressSubject.eraseToAnyPublisher()
   }
 
-  func indexChanged() {
+  public func indexChanged() {
     repoWatcher!.publishers.send(.index)
   }
 
-  func refsChanged() {
+  public func refsChanged() {
     repoWatcher?.publishers.send(.refs)
   }
   
-  func post(progress: Float, total: Float) {
+  public func post(progress: Float, total: Float) {
     progressSubject.send((progress, total))
   }
 }
@@ -133,7 +133,7 @@ extension GitRepositoryController
     cache.branches[branch.name] = branch
   }
 
-  func invalidateIndex()
+  public func invalidateIndex()
   {
     cache.invalidateIndex()
   }

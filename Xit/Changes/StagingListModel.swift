@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import XitGit
 
 /// Base class to consodidate the selection reference for FileListModel
 class StagingListModel

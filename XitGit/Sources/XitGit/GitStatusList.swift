@@ -54,7 +54,7 @@ struct GitStatusEntry
   let entry: git_status_entry
   
   var status: StatusFlags
-  { StatusFlags(rawValue: Int32(entry.status.rawValue)) }
+  { StatusFlags(rawValue: entry.status.rawValue) }
   
   var headToIndex: DiffDelta? { entry.head_to_index?.pointee }
   var indexToWorkdir: DiffDelta? { entry.index_to_workdir?.pointee }

@@ -90,7 +90,7 @@ extension XTRepository: FileContents
     return blob
   }
   
-  func commitBlob(commit: GitCommit?, path: String) -> GitBlob?
+  public func commitBlob(commit: GitCommit?, path: String) -> GitBlob?
   {
     commit?.tree?.entry(path: path)?.object as? GitBlob
   }
@@ -225,7 +225,7 @@ extension XTRepository: FileDiffing
   }
 }
 
-extension XTRepository
+public extension XTRepository
 {
   /// Returns the diff for the referenced commit, compared to its first parent
   /// or to a specific parent.
@@ -369,7 +369,7 @@ extension XTRepository
       }
     }
   
-    subscript(position: Int) -> FileChange
+    public subscript(position: Int) -> FileChange
     {
       guard let statusList = self.statusList,
             let entry = git_status_byindex(statusList, position)?.pointee,
@@ -389,8 +389,8 @@ extension XTRepository
     public var endIndex: Int
     { statusList.map { git_status_list_entrycount($0) } ?? 0 }
     
-    func index(before i: Int) -> Int { return i - 1 }
-    func index(after i: Int) -> Int { return i + 1 }
+    public func index(before i: Int) -> Int { return i - 1 }
+    public func index(after i: Int) -> Int { return i + 1 }
     
     deinit
     {

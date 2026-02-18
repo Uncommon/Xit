@@ -7,7 +7,7 @@ public struct TreeLoader
   /// Map of paths to file status
   let changes: [String: DeltaStatus]
   
-  init(fileChanges: [FileChange])
+  public init(fileChanges: [FileChange])
   {
     var changes = [String: DeltaStatus]()
     

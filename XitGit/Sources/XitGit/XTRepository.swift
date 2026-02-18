@@ -3,8 +3,8 @@ import Combine
 import os
 import Clibgit2
 
-let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
-                        category: "repo")
+public let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
+                               category: "repo")
 
 /// Stores a repo reference for C callbacks
 struct CallbackPayload { let repo: XTRepository }
@@ -76,7 +76,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     gitPath().map { .init(toolPath: $0, workingDir: "~") }
   }
   
-  init(gitRepo: OpaquePointer) throws
+  public init(gitRepo: OpaquePointer) throws
   {
     guard let gitCmd = XTRepository.gitPath(),
           let workDirPath = git_repository_workdir(gitRepo),
@@ -92,7 +92,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
   }
   
   @objc(initWithURL:)
-  convenience init?(url: URL)
+  public convenience init?(url: URL)
   {
     guard url.isFileURL
     else { return nil }
@@ -109,7 +109,7 @@ public final class XTRepository: BasicRepository, RepoConfiguring
     }
   }
   
-  convenience init(emptyURL url: URL) throws
+  public convenience init(emptyURL url: URL) throws
   {
     let path = (url.path as NSString).fileSystemRepresentation
     let repo = try OpaquePointer.from({

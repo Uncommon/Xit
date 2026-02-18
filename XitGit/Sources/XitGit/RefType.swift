@@ -1,6 +1,6 @@
 import Foundation
 
-enum RefType
+public enum RefType
 {
   case branch
   case activeBranch
@@ -9,7 +9,7 @@ enum RefType
   case remote
   case unknown
 
-  init(refName: String, currentBranch: String)
+  public init(refName: String, currentBranch: String)
   {
     guard let (typeName, displayName) = refName.splitRefName()
     else {
@@ -29,7 +29,7 @@ enum RefType
     }
   }
   
-  var isBranch: Bool
+  public var isBranch: Bool
   {
     switch self {
       case .branch, .activeBranch, .remoteBranch:
@@ -37,39 +37,5 @@ enum RefType
       default:
         return false
     }
-  }
-  
-  var strokeColor: NSColor
-  {
-    switch self {
-      case .branch, .activeBranch:
-        return .refTokenStroke(.branch)
-      case .remoteBranch:
-        return .refTokenStroke(.remoteBranch)
-      case .tag:
-        return .refTokenStroke(.tag)
-      default:
-        return .refTokenStroke(.generic)
-    }
-  }
-  
-  var gradient: NSGradient
-  {
-    let type: NSColor.RefGradient
-    
-    switch self {
-      case .branch:
-        type = .branch
-      case .activeBranch:
-        type = .activeBranch
-      case .remoteBranch:
-        type = .remote
-      case .tag:
-        type = .tag
-      default:
-        type = .general
-    }
-    return NSGradient(starting: NSColor.refGradientStart(type),
-                      ending: NSColor.refGradientEnd(type)) ?? NSGradient()
   }
 }
