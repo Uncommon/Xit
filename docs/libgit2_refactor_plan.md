@@ -112,8 +112,8 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     - *Status:* `XitGit in Frameworks` and package product dependency are present in project settings.
 2.  [x] Link `Xit` app target against `libgit2-mac.a` (so symbols are present at runtime).
     - *Status:* `libgit2-mac.a in Frameworks` remains configured.
-3.  [ ] Remove `<git2.h>` from `Xit-Bridging-Header.h`.
-    - *Status:* Not done yet; `Xit/Xit-Bridging-Header.h` still imports `<git2.h>` and `<git2/sys/config.h>`.
+3.  [x] Remove `<git2.h>` from `Xit-Bridging-Header.h`.
+    - *Status:* Done; app bridging header now only imports app-local Objective-C headers.
 4.  [x] Add `import XitGit` to files in the main app that use the repo.
     - *Status:* In place for migrated codepaths (including app-side bridge and utility call sites currently relying on package extensions).
 5.  [ ] **Tests:** Move relevant tests to `XitGit/Tests/XitGitTests`.
