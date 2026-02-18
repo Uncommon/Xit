@@ -12,7 +12,9 @@ let package = Package(
             targets: ["XitGit"]
         ),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/Uncommon/FakedMacro", branch: "main")
+    ],
     targets: [
         .target(
             name: "Clibgit2",
@@ -24,8 +26,11 @@ let package = Package(
         ),
         .target(
             name: "XitGit",
-            dependencies: ["Clibgit2"],
-            path: "Sources/XitGitCore"
+            dependencies: [
+                "Clibgit2",
+                .product(name: "FakedMacro", package: "FakedMacro")
+            ],
+            path: "Sources/XitGit"
         ),
         .testTarget(
             name: "XitGitTests",
