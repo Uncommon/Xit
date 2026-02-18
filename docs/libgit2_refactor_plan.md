@@ -87,30 +87,44 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     *   *Status:* Created `XitGit` directory and initialized package.
 2.  [x] Setup `Package.swift`:
     *   *Status:* Configured `Clibgit2` as a standard C target (not system library).
-    *   **Crucial Step:** Used `.unsafeFlags` to point to `../libgit2/include` in both `cSettings` (for Clibgit2) and `swiftSettings` (for XitGit). This allows referencing headers in-place without duplication.
+    *   *Status:* Uses `cSettings: [.headerSearchPath("include")]` for `Clibgit2`; no package `unsafeFlags` are currently required.
 3.  [x] Prepare `Clibgit2` Wrapper:
     *   *Status:* Created `XitGit/Sources/Clibgit2/include/Clibgit2.h` as an umbrella header that simply `#include <git2.h>`.
-    *   *Status:* Added `dummy.c` to satisfy the build system.
-4.  [ ] Add the package to the Xcode Workspace (drag folder in or "Add Local Package").
-    *   *Action Required:* User must manually add the `XitGit` folder to the Xcode workspace/project.
+    *   *Status:* Added `dummy.c` to satisfy the build system, plus symlinks under `Sources/Clibgit2/include/` to the in-repo libgit2 headers.
+4.  [x] Add the package to the Xcode Workspace (drag folder in or "Add Local Package").
+    *   *Status:* Done (`XCLocalSwiftPackageReference "XitGit"` and product dependency are present in `Xit.xcodeproj`).
 
 ### Phase 3: Migration (The Move)
 *Move files in batches to manage compiler errors.*
 
-1.  **Batch 1 (Leafs):** `SHA.swift`, `OID.swift`, `RepoError.swift`, `GitEnums.swift`.
-    - Move files to `XitGit/Sources/XitGit/`.
-2.  **Batch 2 (Wrappers):** `GitObject` subclasses (`GitCommit`, `GitTree`, etc.).
-3.  **Batch 3 (Core):** `XTRepository` and protocols.
-    - Update imports to use `import Clibgit2` instead of relying on the bridging header.
+1.  [x] **Batch 1 (Leafs):** `SHA.swift`, `OID.swift`, `RepoError.swift`, `GitEnums.swift`.
+    - *Status:* Moved to `XitGit/Sources/XitGit/`.
+2.  [x] **Batch 2 (Wrappers):** `GitObject` subclasses (`GitCommit`, `GitTree`, etc.).
+    - *Status:* Moved; `Xit/Repository/` now only contains app-side bridge/extensions (`XitGitExtensions.swift`).
+3.  [x] **Batch 3 (Core):** `XTRepository` and protocols.
+    - *Status:* `XTRepository`, `XTRepository+*`, controller/watcher/protocol types moved into `XitGit`.
+    - *Status:* `XitGit` sources import `Clibgit2` directly.
+4.  [x] **Utility split cleanup:**
+    - *Status:* Utilities initially copied from `Xit/Utils` were reconciled so package-required helpers stay in `XitGit`, while app-only helpers were moved back to `Xit/Utils/Extensions/MiscExtensions.swift`.
 
 ### Phase 4: Re-integration
-1.  Link `Xit` app target against `XitGit` library product.
-2.  Link `Xit` app target against `libgit2-mac.a` (so symbols are present at runtime).
-3.  Remove `<git2.h>` from `Xit-Bridging-Header.h`.
-4.  Add `import XitGit` to files in the main app that use the repo.
-5.  **Tests:** Move relevant tests to `XitGit/Tests/XitGitTests`. Configure the test target to link `libgit2` (this requires passing linker flags in `Package.swift` or just running tests via the main app's test plan initially).
+1.  [x] Link `Xit` app target against `XitGit` library product.
+    - *Status:* `XitGit in Frameworks` and package product dependency are present in project settings.
+2.  [x] Link `Xit` app target against `libgit2-mac.a` (so symbols are present at runtime).
+    - *Status:* `libgit2-mac.a in Frameworks` remains configured.
+3.  [ ] Remove `<git2.h>` from `Xit-Bridging-Header.h`.
+    - *Status:* Not done yet; `Xit/Xit-Bridging-Header.h` still imports `<git2.h>` and `<git2/sys/config.h>`.
+4.  [x] Add `import XitGit` to files in the main app that use the repo.
+    - *Status:* In place for migrated codepaths (including app-side bridge and utility call sites currently relying on package extensions).
+5.  [ ] **Tests:** Move relevant tests to `XitGit/Tests/XitGitTests`.
+    - *Status:* Only a basic package sanity test exists today; migration of existing repo-focused tests is still pending.
 
 ## 5. Verification
-- **Build:** Both targets must build cleanly.
-- **Tests:** Run standard test suite.
-- **Runtime:** Verify standard app flows (Open Repo, Commit, History).
+- **Build:**
+  - `swift build` for `XitGit` succeeds.
+  - Full `Xit` app target build has not been re-verified in this environment because full Xcode is unavailable (`xcode-select` points to CommandLineTools).
+- **Tests:**
+  - `swift test` in `XitGit` currently fails due `no such module 'Testing'` in `XitGitTests.swift`.
+  - Main app test suites were not executed in this pass.
+- **Runtime:**
+  - Manual app-flow verification (Open Repo, Commit, History) still pending.
