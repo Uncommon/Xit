@@ -229,7 +229,7 @@ extension Array where Element == String
   }
 }
 
-extension git_strarray: RandomAccessCollection
+extension git_strarray: @retroactive RandomAccessCollection
 {
   public var startIndex: Int { 0 }
   public var endIndex: Int { count }

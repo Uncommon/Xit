@@ -4,7 +4,7 @@ import Clibgit2
 public extension XTRepository
 {
   /// Abstract base class for specific iterators
-  public class BranchIterator
+  class BranchIterator
   {
     let repo: XTRepository
     let iterator: OpaquePointer?
@@ -38,7 +38,7 @@ public extension XTRepository
   }
   
   /// Iterator for all local branches.
-  public class LocalBranchIterator: BranchIterator, IteratorProtocol
+  class LocalBranchIterator: BranchIterator, IteratorProtocol
   {
     init(repo: XTRepository)
     {
@@ -52,7 +52,7 @@ public extension XTRepository
   }
   
   /// Iterator for all remote branches.
-  public class RemoteBranchIterator: BranchIterator, IteratorProtocol
+  class RemoteBranchIterator: BranchIterator, IteratorProtocol
   {
     init(repo: XTRepository)
     {
@@ -66,7 +66,7 @@ public extension XTRepository
   }
   
   /// The indexable collection of stashes in the repository.
-  public class StashCollection: Collection
+  class StashCollection: Collection
   {
     public typealias Iterator = StashIterator
     
@@ -120,7 +120,7 @@ public extension XTRepository
     }
   }
   
-  public class StashIterator: IteratorProtocol
+  class StashIterator: IteratorProtocol
   {
     let stashes: StashCollection
     var index: Int
