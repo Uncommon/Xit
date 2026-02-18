@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import os
+import Clibgit2
 
 let repoLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
                         category: "repo")

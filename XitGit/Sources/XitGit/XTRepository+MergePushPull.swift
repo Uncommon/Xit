@@ -1,4 +1,5 @@
 import Foundation
+import Clibgit2
 
 extension XTRepository: RemoteManagement
 {

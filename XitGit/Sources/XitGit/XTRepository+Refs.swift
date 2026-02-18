@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Clibgit2
 
 extension ResetMode
 {

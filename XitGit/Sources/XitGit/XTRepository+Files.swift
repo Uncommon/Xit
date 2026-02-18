@@ -1,5 +1,6 @@
 import Foundation
 import UniformTypeIdentifiers
+import Clibgit2
 
 public enum FileContext
 {

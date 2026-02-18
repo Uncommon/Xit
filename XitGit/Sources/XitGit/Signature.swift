@@ -1,4 +1,5 @@
 import Foundation
+import Clibgit2
 
 public struct Signature: Equatable, Sendable
 {
