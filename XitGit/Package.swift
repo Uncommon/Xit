@@ -1,5 +1,17 @@
 // swift-tools-version: 5.9
 import PackageDescription
+import Foundation
+
+let fileManager = FileManager.default
+let ssh2LinkerSettings: [LinkerSetting]
+
+if fileManager.fileExists(atPath: "/opt/homebrew/lib/libssh2.dylib") {
+    ssh2LinkerSettings = [.unsafeFlags(["/opt/homebrew/lib/libssh2.dylib"])]
+} else if fileManager.fileExists(atPath: "/usr/local/lib/libssh2.dylib") {
+    ssh2LinkerSettings = [.unsafeFlags(["/usr/local/lib/libssh2.dylib"])]
+} else {
+    ssh2LinkerSettings = [.linkedLibrary("ssh2")]
+}
 
 let package = Package(
     name: "XitGit",
@@ -30,11 +42,19 @@ let package = Package(
                 "Clibgit2",
                 .product(name: "FakedMacro", package: "FakedMacro")
             ],
-            path: "Sources/XitGit"
+            path: "Sources/XitGit",
+            linkerSettings: [
+                .unsafeFlags(["-L", ".."]),
+                .linkedLibrary("git2-mac"),
+                .linkedLibrary("z"),
+                .linkedLibrary("iconv"),
+                .linkedFramework("Security"),
+                .linkedFramework("CoreFoundation")
+            ] + ssh2LinkerSettings
         ),
         .testTarget(
             name: "XitGitTests",
-            dependencies: ["XitGit"]
+            dependencies: ["XitGit", "Clibgit2"]
         )
     ]
 )
