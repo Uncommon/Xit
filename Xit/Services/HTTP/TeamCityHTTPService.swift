@@ -7,12 +7,12 @@ final class TeamCityHTTPService: BaseHTTPService
 {
   nonisolated static let rootPath = TeamCityAPI.rootPath // reuse existing constant
 
-  private var vcsRootMap: [String: URL] = [:]
-  private var vcsBranchSpecs: [String: BranchSpec] = [:]
-  private var buildTypeURLs: [String: [URL]] = [:]
-  private var buildTypesCache: [String: [String]] = [:]
-  private var vcsRootsCache: [String: [String]] = [:]
-  private var cachedBuildTypes: [BuildType] = []
+  private(set) var vcsRootMap: [String: URL] = [:]
+  private(set) var vcsBranchSpecs: [String: BranchSpec] = [:]
+  private(set) var buildTypeURLs: [String: [URL]] = [:]
+  private(set) var buildTypesCache: [String: [String]] = [:]
+  private(set) var vcsRootsCache: [String: [String]] = [:]
+  private(set) var cachedBuildTypes: [BuildType] = []
 
   /// Tracks build type loading status (mirrors legacy API)
   @Published var buildTypesStatus: Services.Status = .notStarted

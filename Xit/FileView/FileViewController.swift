@@ -419,16 +419,12 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
         self.previewPath.pathItems = [item]
       }
     }
-    controller.queue.executeOffMainThread {
+    Task { @MainActor in
       let selection = changes.map {
         FileSelection(repoSelection: repoSelection, path: $0.gitPath,
                       staging: stagingType)
       }
-      
-      Task {
-        @MainActor in
-        self.contentController.load(selection: selection)
-      }
+      contentController.load(selection: selection)
     }
 
     let fullPath = repo.repoURL.path.appending(
