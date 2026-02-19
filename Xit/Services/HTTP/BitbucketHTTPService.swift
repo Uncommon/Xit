@@ -5,12 +5,12 @@ import Foundation
 final class BitbucketHTTPService: BaseHTTPService
 {
   static let rootPath = "/rest/api/1.0"
-
+  
   var userID: String { user?.slug ?? account.user }
-
+  
   private let decoder = JSONDecoder()
   private(set) var user: BitbucketServer.User?
-
+  
   // MARK: - Init
   init?(account: Account,
         password: String,
@@ -26,7 +26,7 @@ final class BitbucketHTTPService: BaseHTTPService
                authenticationPath: "users/\(account.user)",
                networkService: networkService)
   }
-
+  
   // MARK: - Auth hook
   override func didAuthenticate(data: Data) async
   {
@@ -37,7 +37,7 @@ final class BitbucketHTTPService: BaseHTTPService
       authenticationStatus = .failed(error)
     }
   }
-
+  
   // MARK: - Helpers
   private func pullRequestPath(_ request: BitbucketPR) -> String
   {
@@ -47,7 +47,7 @@ final class BitbucketHTTPService: BaseHTTPService
     
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
-
+  
   private func update(request: BitbucketPR,
                       approved: Bool,
                       status: BitbucketServer.ReviewerStatus) async throws
@@ -69,27 +69,27 @@ final class BitbucketHTTPService: BaseHTTPService
     
     _ = try await networkService.request(endpoint) as Data
   }
-
+  
   // MARK: - Types
   enum BitbucketError: Error
   {
     case missingUser
     case invalidPullRequest
   }
-
+  
   struct BitbucketPR: Xit.PullRequest
   {
     var request: BitbucketServer.PullRequest
     let serviceID: UUID
     let userID: Int?
-
+    
     init(request: BitbucketServer.PullRequest, service: BitbucketHTTPService)
     {
       self.request = request
       self.serviceID = service.id
       self.userID = service.user?.id
     }
-
+    
     var sourceBranch: String { request.fromRef.id }
     var sourceRepo: URL?
     {
@@ -129,7 +129,7 @@ final class BitbucketHTTPService: BaseHTTPService
     {
       guard let href = request.links.`self`.first?.href
       else { return nil }
-
+      
       return URL(string: href)
     }
     var availableActions: PullRequestActions
@@ -152,7 +152,7 @@ final class BitbucketHTTPService: BaseHTTPService
           return []
       }
     }
-
+    
     func matchRemote(url: URL) -> Bool
     {
       guard let scheme = url.scheme
@@ -161,14 +161,14 @@ final class BitbucketHTTPService: BaseHTTPService
       
       return link?.href == url.absoluteString
     }
-
+    
     func reviewerStatus(userID: String) -> PullRequestApproval
     {
       let reviewer = request.reviewers.first { $0.user.slug == userID }
       
       return reviewer?.status.approval ?? .unreviewed
     }
-
+    
     mutating func setReviewerStatus(userID: String, status: PullRequestApproval)
     {
       guard let index = request.reviewers.firstIndex(where: { $0.user.slug == userID })
@@ -210,7 +210,7 @@ extension BitbucketHTTPService: PullRequestService
       return []
     }
   }
-
+  
   func approve(request: any PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
@@ -218,7 +218,7 @@ extension BitbucketHTTPService: PullRequestService
     
     try await update(request: pr, approved: true, status: .approved)
   }
-
+  
   func unapprove(request: any PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
@@ -226,7 +226,7 @@ extension BitbucketHTTPService: PullRequestService
     
     try await update(request: pr, approved: false, status: .unapproved)
   }
-
+  
   func needsWork(request: any PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
@@ -234,7 +234,7 @@ extension BitbucketHTTPService: PullRequestService
     
     try await update(request: pr, approved: false, status: .needsWork)
   }
-
+  
   func merge(request: any PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
