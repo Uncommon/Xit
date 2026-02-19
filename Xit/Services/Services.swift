@@ -19,9 +19,6 @@ class IdentifiableService: Service, Identifiable
 /// Manages and provides access to all service API instances.
 final class Services
 {
-  /// Feature flag for migrating to new networking stack
-  static var useNewNetworking = true
-  
   /// Status of server operations such as authentication.
   enum Status
   {
@@ -52,12 +49,7 @@ final class Services
   }
   
   private var pullRequestServices: [any PullRequestService]
-  {
-    if Services.useNewNetworking {
-      return Array(bitbucketHTTPServices.values.map { $0 as any PullRequestService })
-    }
-    return allServices.compactMap { $0 as? PullRequestService }
-  }
+  { bitbucketHTTPServices.values.map { $0 as any PullRequestService } }
   
   var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
   
@@ -156,17 +148,10 @@ final class Services
   {
     for account in manager.accounts(ofType: .teamCity) {
       _ = service(for: account)
-      if Services.useNewNetworking {
-        _ = teamCityHTTPService(for: account)
-      }
+      _ = teamCityHTTPService(for: account)
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
-      if Services.useNewNetworking {
-        _ = bitbucketHTTPService(for: account)
-      }
-      else {
-        _ = service(for: account)
-      }
+      _ = bitbucketHTTPService(for: account)
     }
   }
   
@@ -231,9 +216,6 @@ final class Services
   /// when the new networking stack is enabled.
   func teamCityHTTPService(for account: Account) -> TeamCityHTTPService?
   {
-    guard Services.useNewNetworking
-    else { return nil }
-    
     let key = Services.accountKey(account)
     
     if let existing = teamCityHTTPServices[key] {
@@ -273,9 +255,6 @@ final class Services
   
   func bitbucketHTTPService(for account: Account) -> BitbucketHTTPService?
   {
-    guard Services.useNewNetworking
-    else { return nil }
-    
     let key = Services.accountKey(account)
     
     if let existing = bitbucketHTTPServices[key] {
