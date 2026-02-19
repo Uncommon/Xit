@@ -262,11 +262,13 @@ final class BitbucketHTTPService: BaseHTTPService,
    - ✅ Tests added (`TeamCityHTTPServiceTests.swift`) for parsing and metadata
    - ✅ Wired into `Services` behind feature flag
 
-3. **Migrate BitbucketServerAPI (Next)**
-   - ⏳ Create `BitbucketHTTPService.swift` and port all PR/workflow endpoints
-   - ⏳ Replace Siesta-based Bitbucket usage to avoid running mixed service types longer than necessary
+3. **Migrate BitbucketServerAPI** ✅
+   - ✅ `BitbucketHTTPService.swift` in place for all PR/workflow endpoints
+   - ✅ HTTP Bitbucket path enabled by default (feature flag on; legacy Siesta path unused)
    - ⏳ Add Swift Testing coverage for PR list/detail, approvals, comments, merges, decline, and pagination
-   - ⏳ Update `Services` to select the HTTP implementation when the flag is on
+   - ✅ `Services` selects the HTTP implementation by default
+   - ✅ Removed Siesta dependency from PR service protocols
+   - **Note:** Bitbucket service migration is now simplified as the HTTP path is enabled by default, eliminating the need for A/B testing with Siesta.
 
 4. **Testing Strategy**
    - Unit tests for each endpoint
@@ -286,7 +288,7 @@ final class BitbucketHTTPService: BaseHTTPService,
 
 1. **Stabilize BitbucketHTTPService**
    - Harden error handling, pagination, and auth refresh if needed
-   - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state
+   - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state; TeamCity HTTP currently class-based without locks, Bitbucket HTTP enabled by default
    - Finalize pull request workflows and UI consumers on new service
 
 2. **Update Services Manager**
