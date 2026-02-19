@@ -153,4 +153,40 @@ struct TeamCityHTTPServiceTests
     #expect(urls?.first == URL(string: "https://example.com/repo.git"))
     #expect(await service.buildTypesForRemote("https://example.com/repo.git") == ["bt1"])
   }
+  
+  @Test
+  func loadBuildTypesThrowsOnInvalidXML() async
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    mock.setNextResponse(data: Data("not xml".utf8))
+    
+    do {
+      _ = try await service.loadBuildTypes()
+      Issue.record("Expected loadBuildTypes to throw for invalid XML")
+    }
+    catch {
+      // expected
+    }
+  }
+  
+  @Test
+  func refreshMetadataSetsFailedOnError() async
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    mock.setNextResponse(error: NetworkError.noData)
+    
+    await service.refreshMetadata()
+    
+    let status = await MainActor.run { service.buildTypesStatus }
+    switch status {
+      case .failed:
+        break
+      default:
+        Issue.record("Expected buildTypesStatus to be failed, got \(status)")
+    }
+  }
 }

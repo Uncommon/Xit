@@ -261,6 +261,7 @@
 		C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */; };
 		C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */; };
 		C9A382B12F47B77F006BF65C /* BitbucketHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382B02F47B77F006BF65C /* BitbucketHTTPServiceTests.swift */; };
+		C9A382C72F47C981006BF65C /* ServicesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382C62F47C981006BF65C /* ServicesManagerTests.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
@@ -648,6 +649,7 @@
 		C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModel.swift; sourceTree = "<group>"; };
 		C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityHTTPServiceTests.swift; sourceTree = "<group>"; };
 		C9A382B02F47B77F006BF65C /* BitbucketHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketHTTPServiceTests.swift; sourceTree = "<group>"; };
+		C9A382C62F47C981006BF65C /* ServicesManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesManagerTests.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
@@ -1026,6 +1028,7 @@
 				898F75892A55CDCA00C157D7 /* ReferenceNameTests.swift */,
 				C9F4331526274FE200911A06 /* RepoActionBuilder.swift */,
 				C924EFB4262F316500B13D31 /* RepoActions.swift */,
+				C9A382C62F47C981006BF65C /* ServicesManagerTests.swift */,
 				C9BF72B92CBF141000210BB1 /* SHATest.swift */,
 				C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */,
 				C9CB017E2329B1B6006D23B5 /* SidebarDataModelTest.swift */,
@@ -1835,6 +1838,7 @@
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */,
 				C991904E20AE32150080687F /* IndexTreeTest.swift in Sources */,
+				C9A382C72F47C981006BF65C /* ServicesManagerTests.swift in Sources */,
 				898F758A2A55CDCA00C157D7 /* ReferenceNameTests.swift in Sources */,
 				C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */,
 				C98EBC1F212CCC6D00EF739E /* PullRequestManagerTest.swift in Sources */,

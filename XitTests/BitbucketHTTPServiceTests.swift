@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import Xit
 
-@Suite("BitbucketHTTPService")
+@Suite
 struct BitbucketHTTPServiceTests
 {
   private func makeService(mock: MockNetworkService) -> BitbucketHTTPService
@@ -203,6 +203,7 @@ struct BitbucketHTTPServiceTests
       "values": [\n        \(values)\n      ]
     }
     """
+    
     return json.data(using: .utf8)!
   }
   
@@ -239,12 +240,14 @@ struct BitbucketHTTPServiceTests
   {
     let mock = MockNetworkService()
     let service = makeService(mock: mock)
+    
     await service.didAuthenticate(data: sampleUserJSON())
     mock.responseQueue = [.success(samplePullRequestsJSON())]
     // Responses for approve, unapprove, needsWork (empty bodies are fine)
     mock.enqueueResponse(data: Data())
     mock.enqueueResponse(data: Data())
     mock.enqueueResponse(data: Data())
+    
     let prs = await service.getPullRequests()
     let pr = try #require(prs.first as? BitbucketHTTPService.BitbucketPR)
     
@@ -307,5 +310,66 @@ struct BitbucketHTTPServiceTests
     #expect(mock.requests.first?.queryItems?.isEmpty ?? true)
     let secondStart = mock.requests.dropFirst().first?.queryItems?.first { $0.name == "start" }?.value
     #expect(secondStart == "1")
+  }
+  
+  @Test
+  func getPullRequestsReturnsEmptyOnError() async
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    await service.didAuthenticate(data: sampleUserJSON())
+    mock.setNextResponse(error: NetworkError.noData)
+    let prs = await service.getPullRequests()
+    
+    #expect(prs.isEmpty)
+  }
+  
+  @Test
+  func approveThrowsForInvalidPullRequest() async
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    await service.didAuthenticate(data: sampleUserJSON())
+    
+    let fake = FakePullRequest(serviceID: UUID(),
+                               availableActions: [],
+                               sourceBranch: "refs/heads/test",
+                               sourceRepo: nil,
+                               displayName: "fake",
+                               id: "0",
+                               authorName: nil,
+                               status: .open,
+                               webURL: nil)
+    
+    do {
+      try await service.approve(request: fake)
+      Issue.record("Expected approve to throw for non-BitbucketPR")
+    }
+    catch {
+      // expected
+    }
+  }
+  
+  @Test
+  func mergePropagatesRequestError() async throws
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    await service.didAuthenticate(data: sampleUserJSON())
+    mock.responseQueue = [.success(samplePullRequestsJSON())]
+    mock.setNextResponse(error: NetworkError.serverError(500))
+    
+    let prs = await service.getPullRequests()
+    let pr = try #require(prs.first)
+    
+    do {
+      try await service.merge(request: pr)
+      Issue.record("Expected merge to throw on network error")
+    }
+    catch {
+      // expected
+    }
   }
 }
