@@ -40,4 +40,5 @@ A SwiftLint settings file is included, and will be run every build if you have S
 * Wrap to about 80 characters, indenting wrapped code two levels.
 * Indentation level is two spaces.
 * Trailing whitespace on blank lines should match the indentation of surrounding lines.
+* Blank line between let/var/guard and other statements
 * Otherwise, normal Swift style rules apply.
