@@ -20,7 +20,7 @@ class IdentifiableService: Service, Identifiable
 final class Services
 {
   /// Feature flag for migrating to new networking stack
-  static var useNewNetworking = false
+  static var useNewNetworking = true
   
   /// Status of server operations such as authentication.
   enum Status
@@ -53,11 +53,10 @@ final class Services
   
   private var pullRequestServices: [any PullRequestService]
   {
-    var result: [any PullRequestService] = allServices.compactMap { $0 as? PullRequestService }
     if Services.useNewNetworking {
-      result.append(contentsOf: bitbucketHTTPServices.values.map { $0 as any PullRequestService })
+      return Array(bitbucketHTTPServices.values.map { $0 as any PullRequestService })
     }
-    return result
+    return allServices.compactMap { $0 as? PullRequestService }
   }
   
   var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
@@ -162,9 +161,11 @@ final class Services
       }
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
-      _ = service(for: account)
       if Services.useNewNetworking {
         _ = bitbucketHTTPService(for: account)
+      }
+      else {
+        _ = service(for: account)
       }
     }
   }
