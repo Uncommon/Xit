@@ -260,6 +260,7 @@
 		C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */; };
 		C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */; };
 		C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */; };
+		C9A382B12F47B77F006BF65C /* BitbucketHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382B02F47B77F006BF65C /* BitbucketHTTPServiceTests.swift */; };
 		C9A58EED1EE5DD4800E37A31 /* TaskQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
 		C9AA80361E2E7F370004D670 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA80351E2E7F370004D670 /* HistoryViewController.swift */; };
@@ -646,6 +647,7 @@
 		C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarPRManager.swift; sourceTree = "<group>"; };
 		C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModel.swift; sourceTree = "<group>"; };
 		C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityHTTPServiceTests.swift; sourceTree = "<group>"; };
+		C9A382B02F47B77F006BF65C /* BitbucketHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketHTTPServiceTests.swift; sourceTree = "<group>"; };
 		C9A58EEC1EE5DD4800E37A31 /* TaskQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskQueue.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
 		C9AA80351E2E7F370004D670 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
@@ -996,6 +998,7 @@
 		C3FA472413D0F8E300AC4F9B /* XitTests */ = {
 			isa = PBXGroup;
 			children = (
+				C9A382B02F47B77F006BF65C /* BitbucketHTTPServiceTests.swift */,
 				C98EBC022125D22D00EF739E /* BitbucketServerTests.swift */,
 				C9DEA4FE1E54AEC400DF4069 /* BlameTest.swift */,
 				C9E5E26B210917FD0069FBD8 /* BranchTest.swift */,
@@ -1823,6 +1826,7 @@
 				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
 				C9F4331626274FE200911A06 /* RepoActionBuilder.swift in Sources */,
 				89E4272A285D6E3D00A17651 /* ConfigTest.swift in Sources */,
+				C9A382B12F47B77F006BF65C /* BitbucketHTTPServiceTests.swift in Sources */,
 				C9DEA4FF1E54AEC400DF4069 /* BlameTest.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,
 				C9CB8FB92F3BBC5D00BF812C /* MockNetworkService.swift in Sources */,

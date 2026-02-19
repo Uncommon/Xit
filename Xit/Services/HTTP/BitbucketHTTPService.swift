@@ -197,18 +197,33 @@ extension BitbucketHTTPService: PullRequestService
 {
   func getPullRequests() async -> [any PullRequest]
   {
-    let endpoint = Endpoint(baseURL: account.location,
-                            path: "dashboard/pull-requests",
-                            method: .get)
-
-    do {
-      let page: BitbucketServer.PagedPullRequest = try await networkService.request(endpoint)
+    var results: [BitbucketPR] = []
+    var nextStart: Int?
+    
+    repeat {
+      let queryItems = nextStart.map { [URLQueryItem(name: "start", value: String($0))] }
+      let endpoint = Endpoint(baseURL: account.location,
+                              path: "dashboard/pull-requests",
+                              method: .get,
+                              queryItems: queryItems)
       
-      return page.values.map { BitbucketPR(request: $0, service: self) as any PullRequest }
-    }
-    catch {
-      return []
-    }
+      do {
+        let page: BitbucketServer.PagedPullRequest = try await networkService.request(endpoint)
+        results.append(contentsOf: page.values.map { BitbucketPR(request: $0, service: self) })
+        if page.isLastPage {
+          nextStart = nil
+        }
+        else {
+          let currentStart = page.start ?? nextStart ?? 0
+          nextStart = currentStart + page.values.count
+        }
+      }
+      catch {
+        return results
+      }
+    } while nextStart != nil
+    
+    return results.map { $0 as any PullRequest }
   }
   
   func approve(request: any PullRequest) async throws
