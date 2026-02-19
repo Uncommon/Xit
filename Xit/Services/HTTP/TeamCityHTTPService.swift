@@ -5,17 +5,17 @@ import Foundation
 final class TeamCityHTTPService: BaseHTTPService
 {
   nonisolated static let rootPath = TeamCityAPI.rootPath // reuse existing constant
-
+  
   private var vcsRootMap: [String: URL] = [:]
   private var vcsBranchSpecs: [String: BranchSpec] = [:]
   private var buildTypeURLs: [String: [URL]] = [:]
   private var buildTypesCache: [String: [String]] = [:]
   private var vcsRootsCache: [String: [String]] = [:]
   private var cachedBuildTypes: [BuildType] = []
-
+  
   /// Tracks build type loading status (mirrors legacy API)
   @MainActor @Published var buildTypesStatus: Services.Status = .notStarted
-
+  
   /// Fetch build types list (raw XML data for now).
   func fetchBuildTypes() async throws -> Data
   {
@@ -24,7 +24,7 @@ final class TeamCityHTTPService: BaseHTTPService
                             method: .get)
     return try await networkService.request(endpoint)
   }
-
+  
   /// Fetch builds for a specific build type and optional branch.
   func fetchBuilds(buildTypeID: String, branch: String? = nil) async throws -> Data
   {
@@ -33,13 +33,13 @@ final class TeamCityHTTPService: BaseHTTPService
       locator += ",branch:\(branch)"
     }
     let path = Self.rootPath + "/builds/?locator=" + locator
-
+    
     let endpoint = Endpoint(baseURL: account.location,
                             path: path,
                             method: .get)
     return try await networkService.request(endpoint)
   }
-
+  
   /// Fetch build status by href (raw XML data).
   func fetchBuild(href: String) async throws -> Data
   {
@@ -49,7 +49,7 @@ final class TeamCityHTTPService: BaseHTTPService
                             method: .get)
     return try await networkService.request(endpoint)
   }
-
+  
   enum ParseError: Error
   {
     case invalidXML
@@ -57,7 +57,7 @@ final class TeamCityHTTPService: BaseHTTPService
     case missingBuildTypes
     case missingBuilds
   }
-
+  
   /// Fetch build types and parse into models.
   func loadBuildTypes() async throws -> [BuildType]
   {
@@ -65,7 +65,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return try parseBuildTypes(from: data)
   }
-
+  
   /// Fetch builds and parse into models.
   func loadBuilds(buildTypeID: String, branch: String? = nil) async throws -> [TeamCityAPI.Build]
   {
@@ -73,7 +73,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return try parseBuilds(from: data)
   }
-
+  
   /// Fetch list of VCS roots (summary XML).
   func fetchVCSRoots() async throws -> Data
   {
@@ -83,7 +83,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return try await networkService.request(endpoint)
   }
-
+  
   /// Fetch a specific VCS root definition by ID.
   func fetchVCSRoot(id: String) async throws -> Data
   {
@@ -93,7 +93,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return try await networkService.request(endpoint)
   }
-
+  
   /// Load VCS roots and populate URL + branch spec caches.
   func loadVCSRoots() async throws
   {
@@ -101,7 +101,7 @@ final class TeamCityHTTPService: BaseHTTPService
     let xml = try XMLDocument(data: listData)
     guard let root = xml.rootElement()
     else { throw ParseError.missingRoot }
-
+    
     let rootIDs = root.childrenAttributes("id")
     
     try await withThrowingTaskGroup(of: Void.self) {
@@ -117,11 +117,11 @@ final class TeamCityHTTPService: BaseHTTPService
       try await group.waitForAll()
     }
   }
-
+  
   /// Returns a cached build type with a matching ID
   func buildType(id: String) async -> BuildType?
   { cachedBuildTypes.first { $0.id == id } }
-
+  
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURLString: String) async -> [String]
   {
@@ -132,11 +132,11 @@ final class TeamCityHTTPService: BaseHTTPService
     else { return [] }
     func matchHostPath(_ url: URL) -> Bool { remoteURL.host == url.host && remoteURL.path == url.path }
     let result = buildTypeURLs.keys.filter { buildTypeURLs[$0]?.contains(where: matchHostPath) ?? false }
-
+    
     buildTypesCache[remoteURLString] = result
     return result
   }
-
+  
   /// Returns the VCS root IDs that use the given build type.
   func vcsRootsForBuildType(_ buildType: String) async -> [String]
   {
@@ -144,11 +144,11 @@ final class TeamCityHTTPService: BaseHTTPService
     guard let urls = buildTypeURLs[buildType]
     else { return [] }
     let result = vcsRootMap.compactMap { (vcsRoot, rootURL) in urls.contains(rootURL) ? vcsRoot : nil }
-
+    
     vcsRootsCache[buildType] = result
     return result
   }
-
+  
   /// Use the branch specs to determine display name for the given build type
   func displayName(for branch: LocalBranchRefName, buildType: String) async -> String?
   {
@@ -157,7 +157,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return displayNames.reduce(nil) { shortest, name in (shortest?.count ?? Int.max) < name.count ? shortest : name }
   }
-
+  
   private func parseBuildTypes(from data: Data) throws -> [BuildType]
   {
     let xml = try XMLDocument(data: data)
@@ -177,7 +177,7 @@ final class TeamCityHTTPService: BaseHTTPService
       return BuildType(id: id, name: name, projectName: projectName)
     }
   }
-
+  
   private func parseBuilds(from data: Data) throws -> [TeamCityAPI.Build]
   {
     let xml = try XMLDocument(data: data)
@@ -190,7 +190,7 @@ final class TeamCityHTTPService: BaseHTTPService
     
     return buildElements.compactMap { TeamCityAPI.Build(element: $0) }
   }
-
+  
   private func parseVCSRoot(xml: XMLDocument, vcsRootID: String)
   {
     guard let properties = xml.rootElement()?.elements(forName: "properties").first,
@@ -227,10 +227,10 @@ final class TeamCityHTTPService: BaseHTTPService
     let endpoint = Endpoint(baseURL: account.location,
                             path: Self.rootPath + "/buildTypes/id:\(id)",
                             method: .get)
-
+    
     return try await networkService.request(endpoint)
   }
-
+  
   /// Full refresh of TeamCity metadata (VCS roots + build types + mappings).
   func refreshMetadata() async
   {
@@ -256,7 +256,7 @@ final class TeamCityHTTPService: BaseHTTPService
     buildTypesCache.removeAll()
     buildTypeURLs.removeAll()
     vcsRootsCache.removeAll()
-
+    
     try await withThrowingTaskGroup(of: Void.self) {
       group in
       for buildType in buildTypes {
@@ -274,13 +274,13 @@ final class TeamCityHTTPService: BaseHTTPService
     let xml = try XMLDocument(data: data)
     guard let buildType = xml.rootElement() ?? xml.children?.first as? XMLElement
     else { throw ParseError.missingRoot }
-
+    
     guard let buildTypeID = buildType.attribute(forName: "id")?.stringValue
     else { throw ParseError.missingBuildTypes }
-
+    
     let name = buildType.attribute(forName: "name")?.stringValue ?? ""
     let projectName = buildType.attribute(forName: "projectName")?.stringValue ?? ""
-
+    
     // Extract VCS root entries
     let rootEntries = buildType.elements(forName: "vcs-root-entries").first
     let vcsIDs = rootEntries?.childrenAttributes("id") ?? []

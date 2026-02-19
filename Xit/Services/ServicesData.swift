@@ -15,7 +15,7 @@ protocol PullRequest: Sendable // Identifiable
   var userApproval: PullRequestApproval { get }
   var webURL: URL? { get }
   var availableActions: PullRequestActions { get }
-
+  
   func matchRemote(url: URL) -> Bool
   func reviewerStatus(userID: String) -> PullRequestApproval
   mutating func setReviewerStatus(userID: String, status: PullRequestApproval)

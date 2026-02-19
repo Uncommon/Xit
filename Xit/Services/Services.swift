@@ -65,25 +65,25 @@ final class Services
   init(passwordStorage: any PasswordStorage)
   {
     self.passwordStorage = passwordStorage
-
+    
     let teamCityMaker: (Account) -> TeamCityAPI? = createService(for:)
     let bbsMaker: (Account) -> BitbucketServerAPI? = createService(for:)
-
+    
     serviceMakers[.teamCity] = teamCityMaker
     serviceMakers[.bitbucketServer] = bbsMaker
-
+    
 #if false // #available(macOS 13, *) {
     Task {
       let center = NotificationCenter.default
-
+      
       for note in await center.notifications(named: .authenticationStatusChanged) {
         guard let service = note.object as? BasicAuthService
         else { return }
-
+        
         if case .failed(let error) = service.authenticationStatus {
           let serviceName = service.account.type.displayName.rawValue
           let user = service.account.user
-
+          
           if await Self.shouldReauthenticate(
               service: serviceName,
               user: user,
@@ -102,11 +102,11 @@ final class Services
       (notification) in
       guard let service = notification.object as? BasicAuthService
       else { return }
-
+      
       if case .failed(let error) = service.authenticationStatus {
         let serviceName = service.account.type.displayName.rawValue
         let user = service.account.user
-
+        
         Task {
           if await Self.shouldReauthenticate(service: serviceName,
                                              user: user,
@@ -118,12 +118,12 @@ final class Services
     }
 #endif
   }
-
+  
   func pullRequestService(forID id: UUID) -> (any PullRequestService)?
   {
     allServices.first { $0.id == id } as? PullRequestService
   }
-
+  
   @MainActor
   static func shouldReauthenticate(service: String,
                                    user: String,
@@ -132,7 +132,7 @@ final class Services
     guard !(PrefsWindowController.shared.window?.isKeyWindow ?? false)
     else { return false }
     let alert = NSAlert()
-
+    
     alert.messageString = .authFailed(service: service, account: user)
     alert.informativeText = error ?? ""
     alert.addButton(withString: .ok)
@@ -186,7 +186,7 @@ final class Services
       service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
     }
   }
-
+  
   func service(for account: Account) -> BasicAuthService?
   {
     let key = Services.accountKey(account)
@@ -205,20 +205,20 @@ final class Services
     }
     return nil
   }
-
+  
   func buildStatusService(for remoteURL: String)
     -> (BuildStatusService, [String])?
   {
     for service in allServices.compactMap({ $0 as? BuildStatusService }) {
       let buildTypes = service.buildTypesForRemote(remoteURL)
-
+      
       if !buildTypes.isEmpty {
         return (service, buildTypes)
       }
     }
     return nil
   }
-
+  
   /// Returns the TeamCity service object for the given account, or nil if
   /// the password cannot be found.
   func teamCityAPI(for account: Account) -> TeamCityAPI?
@@ -316,10 +316,10 @@ final class Services
       serviceLogger.info("No \(account.type.name) password for \(account.user)")
       return nil
     }
-
+    
     guard let api = T(account: account, password: password)
     else { return nil }
-
+    
     api.attemptAuthentication()
     return api
   }
@@ -340,7 +340,7 @@ extension Services
     return shared
 #endif
   }
-
+  
 #if DEBUG
   static let testing: Services = {
     let result = Services(passwordStorage: MemoryPasswordStorage.shared)
