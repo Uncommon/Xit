@@ -94,8 +94,11 @@ struct TeamCityHTTPServiceTests
 
     try await service.loadVCSRoots()
 
-    #expect(service.vcsRootMap["root1"] == URL(string: "https://example.com/repo.git"))
-    #expect(service.vcsBranchSpecs["root1"]?.match(branch: "refs/heads/main") == "main")
+    let rootURL = service.vcsRootURLSnapshot(for: "root1")
+    let branchSpec = service.branchSpecSnapshot(for: "root1")
+
+    #expect(rootURL == URL(string: "https://example.com/repo.git"))
+    #expect(branchSpec?.match(branch: "refs/heads/main") == "main")
   }
 
   @Test
@@ -142,9 +145,12 @@ struct TeamCityHTTPServiceTests
 
     await service.refreshMetadata()
 
-    #expect(service.buildTypesStatus == .done)
-    #expect(service.cachedBuildTypes.count == 1)
-    #expect(service.buildTypeURLs["bt1"]?.first == URL(string: "https://example.com/repo.git"))
-    #expect(service.buildTypesForRemote("https://example.com/repo.git") == ["bt1"])
+    let cached = service.cachedBuildTypesSnapshot()
+    let urls = service.buildTypeURLsSnapshot(for: "bt1")
+
+    #expect(await MainActor.run { service.buildTypesStatus == .done })
+    #expect(cached.count == 1)
+    #expect(urls?.first == URL(string: "https://example.com/repo.git"))
+    #expect(await service.buildTypesForRemote("https://example.com/repo.git") == ["bt1"])
   }
 }
