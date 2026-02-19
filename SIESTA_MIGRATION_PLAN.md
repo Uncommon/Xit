@@ -561,6 +561,8 @@ enum TeamCityError: Error {
 
 **Progress:** Phase 1 completed February 12, 2026 - Ready for Phase 2
 
+**Coding Style Reminder:** Follow the guidelines in `CONTRIBUTING.md` (brace placement, indentation, line length, and whitespace) to avoid incidental formatting changes during migration work.
+
 ## Resources Required
 
 ### Development
