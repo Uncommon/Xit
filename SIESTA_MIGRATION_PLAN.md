@@ -249,7 +249,7 @@ final class BitbucketHTTPService: BaseHTTPService,
 
 ### Phase 2: Service Migration (Week 3-4)
 
-**Goal:** Migrate one service completely while maintaining backward compatibility
+**Goal:** Migrate services while minimizing time supporting both legacy and new stacks
 
 1. **Create Parallel Implementation** ✅
    - ✅ `BaseHTTPService.swift` - New URLSession-based base class
@@ -260,34 +260,38 @@ final class BitbucketHTTPService: BaseHTTPService,
    - ✅ `TeamCityHTTPService.swift` - URLSession-based TeamCity service with parsing, caching, and metadata refresh
    - ✅ VCS roots + build type mapping, branch display names
    - ✅ Tests added (`TeamCityHTTPServiceTests.swift`) for parsing and metadata
-   - ⏳ Wire into Services via feature flag
+   - ✅ Wired into `Services` behind feature flag
 
-3. **Testing Strategy**
+3. **Migrate BitbucketServerAPI (Next)**
+   - ⏳ Create `BitbucketHTTPService.swift` and port all PR/workflow endpoints
+   - ⏳ Replace Siesta-based Bitbucket usage to avoid running mixed service types longer than necessary
+   - ⏳ Add Swift Testing coverage for PR list/detail, approvals, comments, merges, decline, and pagination
+   - ⏳ Update `Services` to select the HTTP implementation when the flag is on
+
+4. **Testing Strategy**
    - Unit tests for each endpoint
    - Integration tests with mock server
    - Manual testing with real services
-   - A/B testing with feature flag
+   - A/B testing with feature flag (short overlap; switch Bitbucket promptly)
 
-4. **Success Criteria**
+5. **Success Criteria**
    - TeamCity integration works identically
+   - Bitbucket HTTP service functionally replaces Siesta-based Bitbucket with minimal dual-stack window
    - All tests pass
    - No regressions in UI
 
 ### Phase 3: Complete Service Migration (Week 5-6)
 
-**Goal:** Migrate remaining services
+**Goal:** Finish migration with both services on HTTP stack, then remove legacy code paths quickly
 
-1. **Migrate BitbucketServerAPI**
-   - Create `BitbucketHTTPService.swift`
-   - Implement all PullRequestService methods
-   - Port all Bitbucket-specific logic
-   - Comprehensive testing
+1. **Stabilize BitbucketHTTPService**
+   - Harden error handling, pagination, and auth refresh if needed
+   - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state
+   - Finalize pull request workflows and UI consumers on new service
 
 2. **Update Services Manager**
-   - Refactor `Services.swift` to use new architecture
-   - Remove Siesta Service inheritance
-   - Update service creation logic
-   - Maintain singleton pattern
+   - Refactor `Services.swift` to prefer HTTP services by default once Bitbucket is stable
+   - Remove Siesta dependencies from service creation paths
 
 3. **Update Extensions**
    - Remove `SiestaExtensions.swift`
@@ -295,13 +299,13 @@ final class BitbucketHTTPService: BaseHTTPService,
    - Update any dependent code
 
 4. **Success Criteria**
-   - All services migrated
-   - No Siesta imports in service layer
+   - Both TeamCity and Bitbucket use HTTP services in production flag-on path
    - All existing functionality preserved
+   - Siesta used only by legacy flag-off path pending final removal
 
 ### Phase 4: Remove Siesta (Week 7)
 
-**Goal:** Complete removal of Siesta dependency
+**Goal:** Complete removal of Siesta dependency after both services are stable on HTTP stack
 
 1. **Code Cleanup**
    - Remove all `import Siesta` statements
