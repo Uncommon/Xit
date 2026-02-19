@@ -36,9 +36,8 @@ A SwiftLint settings file is included, and will be run every build if you have S
 
 * Braces at the end of the line for control statements, and on their own line for functions, classes, etc.
 * `else` always starts a new line, whether for `guard` or `if`.
-* Use blank lines to separate groups of variable declarations (`let` or `var`), `guard` statements, and other statements.
-* Wrap to about 80 characters, indenting wrapped code two levels.
+* Use blank lines to separate groups of variable declarations (`let` or `var`) or `guard` statements from other statements.
+* Wrap to about 80 characters, indenting wrapped code by two levels.
 * Indentation level is two spaces.
 * Trailing whitespace on blank lines should match the indentation of surrounding lines.
-* Blank line between let/var/guard and other statements
 * Otherwise, normal Swift style rules apply.
