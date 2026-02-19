@@ -247,7 +247,7 @@ final class BitbucketHTTPService: BaseHTTPService,
 - Zero compilation errors or warnings
 - Full documentation in PHASE_1_COMPLETION.md and MOCKURLPROTOCOL_FIX.md
 
-### Phase 2: Service Migration (Week 3-4)
+### Phase 2: Service Migration (Week 3-4) ✅
 
 **Goal:** Migrate services while minimizing time supporting both legacy and new stacks
 
@@ -264,7 +264,7 @@ final class BitbucketHTTPService: BaseHTTPService,
 3. **Migrate BitbucketServerAPI** ✅
    - ✅ `BitbucketHTTPService.swift` in place for all PR/workflow endpoints
    - ✅ HTTP Bitbucket path enabled by default
-   - ✅ Add Swift Testing coverage for PR list/detail, approvals, merges, pagination (decline/comment out of scope for this migration)
+   - ✅ Swift Testing coverage for PR list/detail, approvals, merges, pagination (decline/comment out of scope for this migration)
    - ✅ `Services` selects the HTTP implementation by default
    - ✅ Removed Siesta dependency from PR service protocols
    - **Note:** Bitbucket service migration is now simplified as the HTTP path is enabled by default, eliminating the need for A/B testing with Siesta.
@@ -284,10 +284,10 @@ final class BitbucketHTTPService: BaseHTTPService,
 
 **Goal:** Finish migration with both services on HTTP stack, then remove legacy code paths quickly
 
-1. **Stabilize BitbucketHTTPService**
-   - Harden error handling, pagination, and auth refresh if needed
-   - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state; TeamCity HTTP currently class-based without locks, Bitbucket HTTP enabled by default
-   - Finalize pull request workflows and UI consumers on new service
+1. **Stabilize BitbucketHTTPService** (Next)
+    - Harden error handling, pagination, and auth refresh if needed
+    - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state; TeamCity HTTP currently class-based without locks, Bitbucket HTTP enabled by default
+    - Finalize pull request workflows and UI consumers on new service
 
 2. **Update Services Manager**
    - Refactor `Services.swift` to prefer HTTP services by default once Bitbucket is stable
@@ -554,7 +554,7 @@ enum TeamCityError: Error {
 | Phase | Duration | Start | End | Status | Deliverables |
 |-------|----------|-------|-----|--------|--------------|
 | Phase 1: Foundation | 2 weeks | Week 1 | Week 2 | ✅ **COMPLETE** | New networking layer, tests |
-| Phase 2: Service Migration | 2 weeks | Week 3 | Week 4 | 🔄 Next | TeamCity migrated |
+| Phase 2: Service Migration | 2 weeks | Week 3 | Week 4 | ✅ **COMPLETE** | TeamCity migrated, Bitbucket HTTP live |
 | Phase 3: Complete Migration | 2 weeks | Week 5 | Week 6 | ⏸️ Pending | All services migrated |
 | Phase 4: Remove Siesta | 1 week | Week 7 | Week 7 | ⏸️ Pending | Siesta removed, docs updated |
 | **Total** | **7 weeks** | | | **On Track** | **Complete migration** |
