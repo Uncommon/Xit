@@ -2,17 +2,17 @@ import Foundation
 
 /// URLSession-based TeamCity service (parallel to Siesta-backed TeamCityAPI).
 /// Provides async endpoints; not yet wired into UI or Services.
+@MainActor
 final class TeamCityHTTPService: BaseHTTPService
 {
-  static let rootPath = TeamCityAPI.rootPath // reuse existing constant
+  nonisolated static let rootPath = TeamCityAPI.rootPath // reuse existing constant
 
-  private let lock = NSLock()
-  private(set) var vcsRootMap: [String: URL] = [:]
-  private(set) var vcsBranchSpecs: [String: BranchSpec] = [:]
-  private(set) var buildTypeURLs: [String: [URL]] = [:]
+  private var vcsRootMap: [String: URL] = [:]
+  private var vcsBranchSpecs: [String: BranchSpec] = [:]
+  private var buildTypeURLs: [String: [URL]] = [:]
   private var buildTypesCache: [String: [String]] = [:]
   private var vcsRootsCache: [String: [String]] = [:]
-  private(set) var cachedBuildTypes: [BuildType] = []
+  private var cachedBuildTypes: [BuildType] = []
 
   /// Tracks build type loading status (mirrors legacy API)
   @Published var buildTypesStatus: Services.Status = .notStarted
@@ -106,7 +106,7 @@ final class TeamCityHTTPService: BaseHTTPService
         group.addTask {
           let data = try await self.fetchVCSRoot(id: rootID)
           let xml = try XMLDocument(data: data)
-          self.parseVCSRoot(xml: xml, vcsRootID: rootID)
+          await self.parseVCSRoot(xml: xml, vcsRootID: rootID)
         }
       }
       try await group.waitForAll()
@@ -116,15 +116,12 @@ final class TeamCityHTTPService: BaseHTTPService
   /// Returns a cached build type with a matching ID
   func buildType(id: String) -> BuildType?
   {
-    lock.lock(); defer { lock.unlock() }
-    return cachedBuildTypes.first { $0.id == id }
+    cachedBuildTypes.first { $0.id == id }
   }
 
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURLString: String) -> [String]
   {
-    lock.lock(); defer { lock.unlock() }
-
     if let cached = buildTypesCache[remoteURLString] {
       return cached
     }
@@ -148,8 +145,6 @@ final class TeamCityHTTPService: BaseHTTPService
   /// Returns the VCS root IDs that use the given build type.
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   {
-    lock.lock(); defer { lock.unlock() }
-
     if let cached = vcsRootsCache[buildType] {
       return cached
     }
@@ -235,9 +230,6 @@ final class TeamCityHTTPService: BaseHTTPService
       }
     }
 
-    lock.lock()
-    defer { lock.unlock() }
-
     if let url { vcsRootMap[vcsRootID] = url }
     if let branchSpec { vcsBranchSpecs[vcsRootID] = branchSpec }
   }
@@ -272,19 +264,17 @@ final class TeamCityHTTPService: BaseHTTPService
     let data = try await fetchBuildTypes()
     let buildTypes = try parseBuildTypes(from: data)
 
-    lock.lock()
     cachedBuildTypes = buildTypes
     buildTypesCache.removeAll()
     buildTypeURLs.removeAll()
     vcsRootsCache.removeAll()
-    lock.unlock()
 
     try await withThrowingTaskGroup(of: Void.self) {
       group in
       for buildType in buildTypes {
         group.addTask {
           let data = try await self.fetchBuildType(id: buildType.id)
-          try self.parseBuildTypeDetail(from: data)
+          try await self.parseBuildTypeDetail(from: data)
         }
       }
       try await group.waitForAll()
@@ -306,17 +296,12 @@ final class TeamCityHTTPService: BaseHTTPService
     // Extract VCS root entries
     let rootEntries = buildType.elements(forName: "vcs-root-entries").first
     let vcsIDs = rootEntries?.childrenAttributes("id") ?? []
-    let urls = vcsIDs.compactMap { id in
-      lock.lock(); defer { lock.unlock() }
-      return vcsRootMap[id]
-    }
+    let urls = vcsIDs.compactMap { vcsRootMap[$0] }
 
-    lock.lock()
     cachedBuildTypes.removeAll { $0.id == buildTypeID }
     cachedBuildTypes.append(BuildType(id: buildTypeID,
                                       name: name,
                                       projectName: projectName))
     buildTypeURLs[buildTypeID] = urls
-    lock.unlock()
   }
 }

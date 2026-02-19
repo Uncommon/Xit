@@ -97,7 +97,7 @@ final class BuildStatusController: NSObject
       }
     }
     refreshTimer = .mainScheduledTimer(withTimeInterval: refreshInterval,
-                                   repeats: true) {
+                                       repeats: true) {
       [weak self] _ in
       self?.buildStatusCache.refresh()
     }
@@ -203,8 +203,9 @@ extension BuildStatusController: NSPopoverDelegate
   }
 }
 
+@MainActor
 extension BuildStatusController: BuildStatusAccessor
 {
-  var servicesMgr: Services { Services.xit }
-  var remoteMgr: (any RemoteManagement)! { model.repository }
+  nonisolated var servicesMgr: Services { Services.xit }
+  nonisolated var remoteMgr: (any RemoteManagement)! { model.repository }
 }

@@ -42,12 +42,22 @@ final class Services
   
   private var teamCityServices: [String: TeamCityAPI] = [:]
   private var teamCityHTTPServices: [String: TeamCityHTTPService] = [:]
+  private var bitbucketHTTPServices: [String: BitbucketHTTPService] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
   private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
     services.values.flatMap { $0.values }
+  }
+  
+  private var pullRequestServices: [any PullRequestService]
+  {
+    var result: [any PullRequestService] = allServices.compactMap { $0 as? PullRequestService }
+    if Services.useNewNetworking {
+      result.append(contentsOf: bitbucketHTTPServices.values.map { $0 as any PullRequestService })
+    }
+    return result
   }
   
   var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
@@ -146,15 +156,16 @@ final class Services
   func initializeServices(with manager: AccountsManager)
   {
     for account in manager.accounts(ofType: .teamCity) {
+      _ = service(for: account)
       if Services.useNewNetworking {
         _ = teamCityHTTPService(for: account)
-      }
-      else {
-        _ = service(for: account)
       }
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
       _ = service(for: account)
+      if Services.useNewNetworking {
+        _ = bitbucketHTTPService(for: account)
+      }
     }
   }
   
@@ -258,7 +269,45 @@ final class Services
   {
     service(for: account) as? BitbucketServerAPI
   }
-
+  
+  func bitbucketHTTPService(for account: Account) -> BitbucketHTTPService?
+  {
+    guard Services.useNewNetworking
+    else { return nil }
+    
+    let key = Services.accountKey(account)
+    
+    if let existing = bitbucketHTTPServices[key] {
+      return existing
+    }
+    
+    guard let password = passwordStorage.find(url: account.location,
+                                              account: account.user)
+    else {
+      serviceLogger.info("No \(account.type.name) password for \(account.user)")
+      return nil
+    }
+    
+    let authProvider = BasicAuthProvider(username: account.user,
+                                         password: password)
+    let network = URLSessionNetworkService(
+      session: .init(configuration: .default),
+      configuration: .init(headers: [:]),
+      authProvider: authProvider)
+    
+    let service = BitbucketHTTPService(
+      account: account,
+      password: password,
+      passwordStorage: passwordStorage,
+      networkService: network)
+    
+    if let service {
+      bitbucketHTTPServices[key] = service
+      Task { await service.attemptAuthentication() }
+    }
+    return service
+  }
+  
   func createService<T>(for account: Account) -> T? where T: BasicAuthService
   {
     guard let password = passwordStorage.find(url: account.location,
@@ -277,9 +326,7 @@ final class Services
   
   func pullRequestService(for remote: any Remote) -> (any PullRequestService)?
   {
-    let prServices = allServices.compactMap { $0 as? PullRequestService }
-    
-    return prServices.first { $0.match(remote: remote) }
+    pullRequestServices.first { $0.match(remote: remote) }
   }
 }
 
