@@ -54,7 +54,10 @@ let package = Package(
         ),
         .testTarget(
             name: "XitGitTests",
-            dependencies: ["XitGit", "Clibgit2"]
+            dependencies: ["XitGit", "Clibgit2"],
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
