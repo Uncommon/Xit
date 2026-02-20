@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 @testable import Xit
+import XitGit
 
 class FakeRepoUIController: RepositoryUIController
 {

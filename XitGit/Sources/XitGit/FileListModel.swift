@@ -1,8 +1,6 @@
-import Cocoa
 import Foundation
-import XitGit
 
-protocol FileListModel: AnyObject
+public protocol FileListModel: AnyObject
 {
   var repository: any FileChangesRepo { get }
 
@@ -23,12 +21,12 @@ protocol FileListModel: AnyObject
   func fileURL(_ path: String) -> URL?
   /// Generate the blame data for the given file.
   /// - parameter path: Repository-relative file path.
-  func blame(for path: String) -> Blame?
+  func blame(for path: String) -> (any Blame)?
   // in lieu of Equatable for now
   func equals(_ other: any FileListModel) -> Bool
 }
 
-extension FileListModel
+public extension FileListModel
 {
   /// Sets folder change status to match children.
   func postProcess(fileTree tree: FileChangeNode)

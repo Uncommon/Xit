@@ -1,5 +1,4 @@
-import Cocoa
-import XitGit
+import Foundation
 
 final class WorkspaceTreeBuilder
 {

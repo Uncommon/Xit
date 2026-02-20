@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import XitGit
 
 /// Data source for the sidebar, showing branches, remotes, tags, stashes,
 /// and submodules.

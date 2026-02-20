@@ -1,5 +1,6 @@
 import XCTest
 @testable import Xit
+import XitGit
 
 extension Sequence where Self.Iterator.Element == String
 {

@@ -1,5 +1,6 @@
 import XCTest
 @testable import Xit
+import XitGit
 
 class StringChangesRepo: StringRepository, FileChangesRepo,
     EmptyBasicRepository, EmptyBranching, EmptyCommitReferencing,

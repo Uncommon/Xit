@@ -1,4 +1,5 @@
 import XCTest
+import XitGit
 @testable import Xit
 
 class XTStashTest: XTTest

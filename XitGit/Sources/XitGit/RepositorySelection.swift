@@ -1,17 +1,16 @@
-import Cocoa
-import XitGit
+import Foundation
 
-typealias FileChangesRepo =
+public typealias FileChangesRepo =
     BasicRepository & Branching & CommitReferencing & FileDiffing &
     FileContents & FileStaging & FileStatusDetection
 
-enum SelectionTarget: Equatable
+public enum SelectionTarget: Equatable
 {
   case oid(GitOID)
   case staging
   case none
 
-  var oid: GitOID?
+  public var oid: GitOID?
   {
     switch self {
       case .oid(let oid): oid
@@ -21,7 +20,7 @@ enum SelectionTarget: Equatable
 }
 
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
-protocol RepositorySelection: AnyObject
+public protocol RepositorySelection: AnyObject
 {
   var repository: any FileChangesRepo { get set }
   /// SHA for commit to be selected in the history list
@@ -34,14 +33,14 @@ protocol RepositorySelection: AnyObject
 }
 
 /// A selection that also has an unstaged file list
-protocol StagedUnstagedSelection: RepositorySelection
+public protocol StagedUnstagedSelection: RepositorySelection
 {
   /// The unstaged file list
   var unstagedFileList: any FileListModel { get }
   var amending: Bool { get }
 }
 
-extension StagedUnstagedSelection
+public extension StagedUnstagedSelection
 {
   func counts() -> (staged: Int, unstaged: Int)
   {
@@ -55,7 +54,7 @@ extension StagedUnstagedSelection
   }
 }
 
-extension RepositorySelection
+public extension RepositorySelection
 {
   func list(staged: Bool) -> any FileListModel
   {
@@ -75,7 +74,7 @@ extension RepositorySelection
   }
 }
 
-enum StagingType
+public enum StagingType
 {
   // No staging actions
   case none
@@ -85,12 +84,12 @@ enum StagingType
   case workspace
 }
 
-func == (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
+public func == (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
 {
   return a?.equals(b) ?? (b == nil)
 }
 
-func != (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
+public func != (a: (any RepositorySelection)?, b: (any RepositorySelection)?) -> Bool
 {
   return !(a == b)
 }

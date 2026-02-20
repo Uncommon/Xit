@@ -1,31 +1,30 @@
 import Foundation
-import AppKit
-import XitGit
 
 /// Changes for a selected stash, merging workspace, index, and untracked
-final class StashSelection: StagedUnstagedSelection
+public final class StashSelection: StagedUnstagedSelection
 {
-  unowned var repository: any FileChangesRepo
-  let stash: any Stash
-  var canCommit: Bool { false }
-  var target: SelectionTarget {
+  public unowned var repository: any FileChangesRepo
+  public let stash: any Stash
+  public var canCommit: Bool { false }
+  public var target: SelectionTarget {
     stash.mainCommit?.parentOIDs.first.map { .oid($0) } ?? .none
   }
-  var fileList: any FileListModel { stagedList }
-  var unstagedFileList: any FileListModel { unstagedList }
-  var amending: Bool { false }
+  public var fileList: any FileListModel { stagedList }
+  public var unstagedFileList: any FileListModel { unstagedList }
+  public var amending: Bool { false }
   
   // Initialization requires a reference to self
   private(set) var stagedList: StashStagedList! = nil
   private(set) var unstagedList: StashUnstagedList! = nil
   
-  convenience init(repository: any FileChangesRepo & Stashing, index: UInt)
+  public convenience init(repository: any FileChangesRepo & Stashing,
+                          index: UInt)
   {
     self.init(repository: repository,
               stash: repository.stash(index: index, message: nil))
   }
   
-  init(repository: any FileChangesRepo, stash: any Stash)
+  public init(repository: any FileChangesRepo, stash: any Stash)
   {
     self.repository = repository
     self.stash = stash

@@ -1,5 +1,6 @@
 import Foundation
 import Quartz
+import XitGit
 
 /// Controller for the QuickLook preview tab.
 final class PreviewController: NSViewController

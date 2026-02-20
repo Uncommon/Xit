@@ -1,15 +1,13 @@
 import Foundation
-import AppKit
-import XitGit
 
 /// Changes for a selected commit in the history
-final class CommitSelection: RepositorySelection
+public final class CommitSelection: RepositorySelection
 {
-  unowned var repository: any FileChangesRepo
-  let commit: any Commit
-  var target: SelectionTarget { .oid(commit.id) }
-  var canCommit: Bool { false }
-  var fileList: any FileListModel { commitFileList }
+  public unowned var repository: any FileChangesRepo
+  public let commit: any Commit
+  public var target: SelectionTarget { .oid(commit.id) }
+  public var canCommit: Bool { false }
+  public var fileList: any FileListModel { commitFileList }
   
   // Initialization requires a reference to self
   private(set) var commitFileList: CommitFileList!
@@ -17,7 +15,7 @@ final class CommitSelection: RepositorySelection
   /// SHA of the parent commit to use for diffs
   var diffParent: GitOID?
 
-  init(repository: any FileChangesRepo, commit: any Commit)
+  public init(repository: any FileChangesRepo, commit: any Commit)
   {
     self.repository = repository
     self.commit = commit
@@ -47,7 +45,7 @@ final class CommitFileList: FileListModel
     self.diffParent = diffParent
   }
 
-  func equals(_ other: FileListModel) -> Bool
+  func equals(_ other: any FileListModel) -> Bool
   {
     guard let other = other as? CommitFileList
     else { return false }

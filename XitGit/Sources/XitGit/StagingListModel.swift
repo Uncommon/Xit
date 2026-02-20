@@ -1,44 +1,42 @@
 import Foundation
-import AppKit
-import XitGit
 
 /// Base class to consodidate the selection reference for FileListModel
-class StagingListModel
+public class StagingListModel
 {
-  unowned let repository: any FileChangesRepo
+  public unowned let repository: any FileChangesRepo
 
-  init(repository: any FileChangesRepo)
+  public init(repository: any FileChangesRepo)
   {
     self.repository = repository
   }
 }
 
 /// File list for staged files (the index)
-class IndexFileList: StagingListModel, FileListModel
+public class IndexFileList: StagingListModel, FileListModel
 {
-  var changes: [FileChange]
+  public var changes: [FileChange]
   {
     Signpost.interval(.loadIndex) {
       repository.stagedChanges()
     }
   }
 
-  func equals(_ other: FileListModel) -> Bool
+  public func equals(_ other: any FileListModel) -> Bool
   {
     other is IndexFileList
   }
   
-  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
+  public func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     return repository.stagedDiff(file: path)
   }
   
-  func dataForFile(_ path: String) -> Data?
+  public func dataForFile(_ path: String) -> Data?
   {
     return repository.contentsOfStagedFile(path: path)
   }
   
-  func blame(for path: String) -> (any Blame)?
+  public func blame(for path: String) -> (any Blame)?
   {
     guard let data = repository.contentsOfStagedFile(path: path)
     else { return nil }
@@ -46,7 +44,7 @@ class IndexFileList: StagingListModel, FileListModel
     return repository.blame(for: path, data: data, to: nil)
   }
   
-  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
+  public func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     return treeRoot(changes: repository.stagedChanges(), oldTree: oldTree)
   }
@@ -71,66 +69,66 @@ class IndexFileList: StagingListModel, FileListModel
     return root
   }
   
-  func fileURL(_ path: String) -> URL? { return nil }
+  public func fileURL(_ path: String) -> URL? { return nil }
 }
 
 /// Index file list with Amend turned on
-final class AmendingIndexFileList: IndexFileList
+public final class AmendingIndexFileList: IndexFileList
 {
-  override var changes: [FileChange]
+  public override var changes: [FileChange]
   { repository.amendingStagedChanges() }
   
-  override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
+  public override func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     repository.amendingStagedDiff(file: path)
   }
   
-  override func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
+  public override func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     treeRoot(changes: repository.amendingStagedChanges(), oldTree: oldTree)
   }
 }
 
 /// File list for unstaged files (the workspace)
-final class WorkspaceFileList: StagingListModel, FileListModel
+public final class WorkspaceFileList: StagingListModel, FileListModel
 {
-  var showingIgnored = false
+  public var showingIgnored = false
   
-  var changes: [FileChange]
+  public var changes: [FileChange]
   {
     Signpost.interval(.loadWorkspace) {
       repository.unstagedChanges(showIgnored: showingIgnored)
     }
   }
 
-  func equals(_ other: FileListModel) -> Bool
+  public func equals(_ other: any FileListModel) -> Bool
   {
     other is WorkspaceFileList
   }
   
-  func diffForFile(_ path: String) -> PatchMaker.PatchResult?
+  public func diffForFile(_ path: String) -> PatchMaker.PatchResult?
   {
     repository.unstagedDiff(file: path)
   }
   
-  func dataForFile(_ path: String) -> Data?
+  public func dataForFile(_ path: String) -> Data?
   {
     let url = repository.fileURL(path)
     
     return try? Data(contentsOf: url)
   }
   
-  func blame(for path: String) -> (any Blame)?
+  public func blame(for path: String) -> (any Blame)?
   {
     repository.blame(for: path, from: nil, to: nil)
   }
   
-  func fileURL(_ path: String) -> URL?
+  public func fileURL(_ path: String) -> URL?
   {
     repository.fileURL(path)
   }
   
-  func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
+  public func treeRoot(oldTree: FileChangeNode?) -> FileChangeNode
   {
     let builder = WorkspaceTreeBuilder(fileChanges: repository.unstagedChanges(),
                                        repo: showingIgnored ? nil : repository)

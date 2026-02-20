@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Siesta
 @testable import Xit
+import XitGit
 
 extension FakeCommit
 {
