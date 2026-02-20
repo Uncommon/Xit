@@ -1,7 +1,8 @@
 import XCTest
+import XitGit
 @testable import Xit
 
-class BlameTest: XTTest
+class CommitBlameTest: XTTest
 {
   let elements1 = ["Antimony",
                    "Arsenic",
@@ -64,39 +65,4 @@ class BlameTest: XTTest
     XCTAssertEqual(commitBlame.hunks[2].finalLine.oid, headOID)
   }
   
-  func testStagingBlame() throws
-  {
-    var elements4 = elements3
-    
-    elements4[0].append("!!")
-    try execute(in: repository) {
-      Write(elements4.joined(separator: "\n"), to: .blame)
-      Stage(.blame)
-    }
-
-    var elements5 = elements4
-    
-    elements5[7].append("##")
-    try execute(in: repository) {
-      Write(elements5.joined(separator: "\n"), to: .blame)
-    }
-
-    let stagingModel = StagingSelection(repository: repository, amending: false)
-    let unstagedBlame = try XCTUnwrap(stagingModel.unstagedFileList.blame(for: TestFileName.blame.rawValue),
-                                      "can't get unstaged blame")
-    let unstagedStarts = [1, 2, 3, 5, 6, 8]
-    
-    XCTAssertEqual(unstagedBlame.hunks.count, 6)
-    XCTAssertEqual(unstagedBlame.hunks.map { $0.finalLine.start }, unstagedStarts)
-    XCTAssertTrue(unstagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
-    XCTAssertTrue(unstagedBlame.hunks.last?.finalLine.oid.isZero ?? false)
-    
-    let stagedBlame = try XCTUnwrap(stagingModel.fileList.blame(for: TestFileName.blame.rawValue),
-                                    "can't get staged blame")
-    let stagedStarts = [1, 2, 3, 5, 6]
-    
-    XCTAssertEqual(stagedBlame.hunks.count, 5)
-    XCTAssertEqual(stagedBlame.hunks.map { $0.finalLine.start }, stagedStarts)
-    XCTAssertTrue(stagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
-  }
 }

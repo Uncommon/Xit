@@ -32,9 +32,7 @@ class BlameTest: XTTest
   override func setUpWithError() throws
   {
     try super.setUpWithError()
-    
-    XTRepository.initialize()
-    
+
     blamePath = repository.repoURL.path.appending(pathComponent: TestFileName.blame.rawValue)
     try execute(in: repository) {
       CommitFiles("first") {
@@ -47,22 +45,6 @@ class BlameTest: XTTest
         Write(elements3.joined(separator: "\n"), to: .blame)
       }
     }
-  }
-  
-  func testCommitBlame() throws
-  {
-    let headSHA = try XCTUnwrap(repository.headSHA)
-    let headOID = try XCTUnwrap(GitOID(sha: headSHA))
-    let commitBlame = try XCTUnwrap(repository.blame(for: TestFileName.blame.rawValue,
-                                                     from: headOID,
-                                                     to: nil))
-    let lineStarts = [1, 3, 5, 6]
-    let lineCounts = [2, 2, 1, 3]
-    
-    XCTAssertEqual(commitBlame.hunks.count, 4)
-    XCTAssertEqual(commitBlame.hunks.map { $0.finalLine.start }, lineStarts)
-    XCTAssertEqual(commitBlame.hunks.map { $0.lineCount }, lineCounts)
-    XCTAssertEqual(commitBlame.hunks[2].finalLine.oid, headOID)
   }
   
   func testStagingBlame() throws
