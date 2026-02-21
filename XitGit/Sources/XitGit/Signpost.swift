@@ -1,14 +1,14 @@
 import Foundation
 import os
 
-enum Signpost
+public enum Signpost
 {
   static let logger = OSLog(subsystem: "com.uncommonplace.xit",
                             category: .pointsOfInterest)
   static let debugLogger = Logger(subsystem: "com.uncommonplace.xit",
                                   category: "signpost")
 
-  enum Event
+  public enum Event
   {
     case windowControllerLoad
     case postIndexChanged
@@ -24,7 +24,7 @@ enum Signpost
     }
   }
 
-  enum Interval
+  public enum Interval
   {
     case historyWalking
     case processBatches
@@ -64,13 +64,13 @@ enum Signpost
     }
   }
 
-  static func event(_ code: Event)
+  public static func event(_ code: Event)
   {
     os_signpost(.event, log: Signpost.logger, name: code.name)
     Signpost.debugLogger.debug("\(code.name)")
   }
 
-  static func intervalStart(_ code: Interval, id: OSSignpostID = .exclusive)
+  public static func intervalStart(_ code: Interval, id: OSSignpostID = .exclusive)
   {
     switch code {
       case .generateConnections(let batchStart),
@@ -85,25 +85,25 @@ enum Signpost
     }
   }
 
-  static func intervalEnd(_ code: Interval, id: OSSignpostID = .exclusive)
+  public static func intervalEnd(_ code: Interval, id: OSSignpostID = .exclusive)
   {
     os_signpost(.end, log: Signpost.logger, name: code.name, signpostID: id)
   }
 
-  static func intervalStart(_ code: Interval, object: AnyObject)
+  public static func intervalStart(_ code: Interval, object: AnyObject)
   {
     intervalStart(code, id: OSSignpostID(log: Signpost.logger, object: object))
     Signpost.debugLogger.debug("» \(code.name)")
   }
 
-  static func intervalEnd(_ code: Interval, object: AnyObject)
+  public static func intervalEnd(_ code: Interval, object: AnyObject)
   {
     intervalEnd(code, id: OSSignpostID(log: Signpost.logger, object: object))
     Signpost.debugLogger.debug("« \(code.name)")
   }
 
-  static func interval<T>(_ code: Interval,
-                          call: () throws -> T) rethrows -> T
+  public static func interval<T>(_ code: Interval,
+                                 call: () throws -> T) rethrows -> T
   {
     let id = OSSignpostID(log: Signpost.logger)
     
@@ -114,8 +114,8 @@ enum Signpost
     return try call()
   }
 
-  static func interval<T>(_ code: Interval,
-                          call: () async throws -> T) async rethrows -> T
+  public static func interval<T>(_ code: Interval,
+                                 call: () async throws -> T) async rethrows -> T
   {
     let id = OSSignpostID(log: Signpost.logger)
 
