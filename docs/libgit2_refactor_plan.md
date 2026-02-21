@@ -122,10 +122,23 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     - *Status:* Added migration of selection/list-model tests to package (`CommitRootTest`, `FileListModelTest`, `IndexTreeTest`, `XTFileChangesModelTest`) and moved selection-focused cases into existing package suites (`BlameTest.testCommitBlame`, merge-selection checks in `XTRepositoryMergeTest`, stash-selection binary diff in `XTStashTest`).
     - *Status:* Remaining tests in `XitTests` are app integration and UI/data-source focused.
 
+### Phase 5: Duplicate Elimination
+1.  [x] **Define ownership boundaries for app vs package code.**
+    - *Status:* Rule established: `XitGit` owns git/core logic and non-UI utilities; `Xit` owns AppKit/UI presentation and app-only adapters.
+2.  [x] **Eliminate exact production duplicates.**
+    - *Status:* Consolidated `Signpost` into `XitGit` and removed the duplicate app copy.
+3.  [x] **Normalize utility overlap and split `MiscExtensions` buckets.**
+    - *Status:* Split utility code into focused extension files in both modules; moved shared C-string interop helper (`withArrayOfCStrings`) into `XitGit`.
+4.  [ ] **Converge duplicated test-support helpers.**
+    - Scope: Consolidate `RepoActions`, `RepoActionBuilder`, `TestErrors`, and `XTTest` support so only target-specific wrappers remain in each test target.
+5.  [ ] **Verification and close-out.**
+    - Scope: Ensure no exact duplicate production files remain between app/package and re-run package + app builds.
+
 ## 5. Verification
 - **Build:**
   - `swift build` for `XitGit` succeeds.
-  - Full `Xit` app target build has not been re-verified in this environment because full Xcode is unavailable (`xcode-select` points to CommandLineTools).
+  - `xcodebuild -scheme Xit -configuration Debug -destination 'platform=macOS,arch=arm64' build` succeeds.
+  - `xcodebuild -scheme XitUITests -configuration Debug -destination 'platform=macOS,arch=arm64' build-for-testing` succeeds.
 - **Tests:**
   - `swift test` in `XitGit` is currently blocked in this environment (`no such module 'XCTest'` with current CLI toolchain).
   - Package tests execute in the full Xcode environment; CLI verification remains limited by the toolchain issue above.
