@@ -73,7 +73,10 @@ class TestRepoEnvironment
   {
     let remoteParent = tempDir.url.path + ".origin"
     
-    remotePath = remoteParent +/ repo.rawValue + ".git"
+    remotePath = URL(fileURLWithPath: remoteParent, isDirectory: true)
+      .appendingPathComponent(repo.rawValue)
+      .appendingPathExtension("git")
+      .path
     do {
       if FileManager.default.fileExists(atPath: remotePath) {
         try FileManager.default.removeItem(atPath: remotePath)
@@ -93,7 +96,7 @@ class TestRepoEnvironment
                                           isDirectory: true))
 
     do {
-      try cloneRunner.run(args: ["clone", "--bare", git.runner.workingDir])
+      try cloneRunner.run(args: ["clone", "--bare", repoURL.path])
       try git.run(args: ["remote", "add", "-f", remoteName, remotePath])
     }
     catch {

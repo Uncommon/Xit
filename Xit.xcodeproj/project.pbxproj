@@ -99,6 +99,7 @@
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
 		89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F62856946D009ECF7D /* SheetDialog.swift */; };
+		89F411F82856AA11009ECF7D /* XitGit in Frameworks */ = {isa = PBXBuildFile; productRef = 89E1BBBE2F49242E00B95087 /* XitGit */; };
 		89F76A3D2F5E8A1000A1B2C3 /* MiscExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F76A3C2F5E8A1000A1B2C3 /* MiscExtensions.swift */; };
 		89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FC6EC626FD009A00839D45 /* CocoaExtensions.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
@@ -600,6 +601,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89F411F82856AA11009ECF7D /* XitGit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1108,6 +1110,9 @@
 				C91727B923689F500023DC57 /* PBXTargetDependency */,
 			);
 			name = XitUITests;
+			packageProductDependencies = (
+				89E1BBBE2F49242E00B95087 /* XitGit */,
+			);
 			productName = XitUITests;
 			productReference = C91727B323689F500023DC57 /* XitUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";

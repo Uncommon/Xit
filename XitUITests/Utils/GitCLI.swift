@@ -1,5 +1,4 @@
 import Foundation
-import Clibgit2
 import XitGit
 
 class GitCLI
@@ -8,9 +7,7 @@ class GitCLI
   
   init(repoURL: URL)
   {
-    let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!
-                 .url(forAuxiliaryExecutable: "git")!
-    
+    let gitURL = Bundle(identifier: "com.uncommonplace.XitUITests")!.url(forAuxiliaryExecutable: "git")!
     self.runner = CLIRunner(toolPath: gitURL.path, workingDir: repoURL.path)
   }
   

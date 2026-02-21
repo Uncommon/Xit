@@ -3,6 +3,10 @@ import PackageDescription
 import Foundation
 
 let fileManager = FileManager.default
+let projectRoot = URL(fileURLWithPath: #filePath)
+    .deletingLastPathComponent()
+    .deletingLastPathComponent()
+    .path
 let ssh2LinkerSettings: [LinkerSetting]
 
 if fileManager.fileExists(atPath: "/opt/homebrew/lib/libssh2.dylib") {
@@ -44,7 +48,7 @@ let package = Package(
             ],
             path: "Sources/XitGit",
             linkerSettings: [
-                .unsafeFlags(["-L", ".."]),
+                .unsafeFlags(["-L", projectRoot]),
                 .linkedLibrary("git2-mac"),
                 .linkedLibrary("z"),
                 .linkedLibrary("iconv"),

@@ -9,15 +9,21 @@ let XTErrorOutputKey = "output"
 let XTErrorArgsKey = "args"
 
 /// Manages running a command line tool
-struct CLIRunner
+public struct CLIRunner
 {
   let toolPath: String
   let workingDir: String
+
+  public init(toolPath: String, workingDir: String)
+  {
+    self.toolPath = toolPath
+    self.workingDir = workingDir
+  }
   
   /// Executes the command line tool with the given command and input data
   /// - Parameter inputData: String data for input, such as file contents
   /// - Parameter args: Command arguments to be passed
-  func run(inputString: String, args: [String]) throws -> Data
+  public func run(inputString: String, args: [String]) throws -> Data
   {
     return try run(inputData: inputString.data(using: .utf8), args: args)
   }
@@ -25,7 +31,7 @@ struct CLIRunner
   /// Executes the command line tool with the given command and input data
   /// - Parameter inputData: Data for input, such as file contents
   /// - Parameter args: Command arguments to be passed
-  func run(inputData: Data? = nil, args: [String]) throws -> Data
+  public func run(inputData: Data? = nil, args: [String]) throws -> Data
   {
     cliLogger.debug("""
         command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))
