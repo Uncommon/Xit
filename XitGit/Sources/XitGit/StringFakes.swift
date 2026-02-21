@@ -1,19 +1,32 @@
 import Foundation
 
 /// String-based commit for testing and placeholders
-struct StringCommit: Commit
+public struct StringCommit: Commit
 {
   typealias ObjectIdentifier = GitOID
 
-  var parentOIDs: [GitOID]
-  var message: String?
-  var authorSig: Signature?
-  var committerSig: Signature?
-  var isSigned: Bool = false
-  var id: GitOID
-  var tree: StringTree? = nil
+  public var parentOIDs: [GitOID]
+  public var message: String?
+  public var authorSig: Signature?
+  public var committerSig: Signature?
+  public var isSigned: Bool = false
+  public var id: GitOID
+  public var tree: StringTree? = nil
 
-  func getTrailers() -> [(String, [String])] { [] }
+  public func getTrailers() -> [(String, [String])] { [] }
+  
+  public init(parentOIDs: [GitOID], message: String? = nil,
+              authorSig: Signature? = nil, committerSig: Signature? = nil,
+              isSigned: Bool, id: GitOID, tree: StringTree? = nil)
+  {
+    self.parentOIDs = parentOIDs
+    self.message = message
+    self.authorSig = authorSig
+    self.committerSig = committerSig
+    self.isSigned = isSigned
+    self.id = id
+    self.tree = tree
+  }
 }
 
 public struct FakeCommit: Commit // same as NullTree

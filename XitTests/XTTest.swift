@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import Xit
+@testable import XitGit
 
 class XTTest: XCTestCase
 {
@@ -13,6 +13,12 @@ class XTTest: XCTestCase
   var file1Path: String
   { return repoPath.appending(pathComponent: TestFileName.file1.rawValue) }
   
+  override class func setUp()
+  {
+    super.setUp()
+    XTRepository.initialize()
+  }
+
   static func createRepo(atPath repoPath: String) -> XTRepository?
   {
     NSLog("[createRepo] repoName=\(repoPath)")
@@ -46,7 +52,7 @@ class XTTest: XCTestCase
       repo = try .init(emptyURL: repoURL)
     }
     catch let error {
-      XCTFail("could not create repository at '\(repoPath)' - \(error.localizedDescription)")
+      XCTFail("could not create repository at '\(repoPath)' - \(error)")
       return nil
     }
     guard fileManager.fileExists(atPath: repoPath.appending(pathComponent: ".git"))
@@ -61,10 +67,15 @@ class XTTest: XCTestCase
   override func setUpWithError() throws
   {
     try super.setUpWithError()
+    
+    let testName = name.replacingOccurrences(of: "\\W", with: "-",
+                                             options: .regularExpression)
+                       .filter { $0.isLetter || $0.isNumber || $0 == "_" }
 
-    repoPath = NSString.path(withComponents: ["private",
-                                              NSTemporaryDirectory(),
-                                              "testRepo"])
+    repoPath = FileManager.default.temporaryDirectory
+                  .appendingPathComponent("testRepo", isDirectory: true)
+                  .appendingPathComponent(testName, isDirectory: true)
+                  .path
     repository = try XCTUnwrap(XTTest.createRepo(atPath: repoPath))
     repoController = GitRepositoryController(repository: repository)
     try addInitialRepoContent()
@@ -99,8 +110,10 @@ class XTTest: XCTestCase
   
   func waitForRepoQueue()
   {
+    if let repository {
       wait(for: repository)
     }
+  }
   
   func wait(for repository: XTRepository)
   {
@@ -187,36 +200,5 @@ extension RepositoryController
   {
     queue.wait()
     WaitForQueue(DispatchQueue.main)
-  }
-}
-
-extension DeltaStatus: CustomStringConvertible
-{
-  public var description: String
-  {
-    switch self {
-      case .unmodified:
-        return "unmodified"
-      case .added:
-        return "added"
-      case .deleted:
-        return "deleted"
-      case .modified:
-        return "modified"
-      case .renamed:
-        return "renamed"
-      case .copied:
-        return "copied"
-      case .ignored:
-        return "ignored"
-      case .untracked:
-        return "untracked"
-      case .typeChange:
-        return "typeChange"
-      case .conflict:
-        return "conflict"
-      case .mixed:
-        return "mixed"
-    }
   }
 }

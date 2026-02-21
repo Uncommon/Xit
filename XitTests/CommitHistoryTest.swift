@@ -1,6 +1,6 @@
 import XCTest
 @testable import Xit
-
+import XitGit
 
 class StringRepository: CommitStorage
 {

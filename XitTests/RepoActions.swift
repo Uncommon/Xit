@@ -1,5 +1,5 @@
 import Foundation
-@testable import Xit
+@testable import XitGit
 
 enum TestFileName: String
 {
@@ -158,9 +158,9 @@ struct MakeTiffFile: StageableAction
   func execute(in repository: any FullRepository) throws
   {
     let tiffURL = repository.fileURL(file)
-
-    try NSImage(named: NSImage.actionTemplateName)?.tiffRepresentation?
-                                                   .write(to: tiffURL)
+    // Write invalid UTF-8 bytes to force binary classification in tests.
+    let bytes: [UInt8] = [0x4D, 0x4D, 0x00, 0x2A, 0x00, 0xFF, 0x00, 0x80]
+    try Data(bytes).write(to: tiffURL)
   }
 }
 
