@@ -86,4 +86,22 @@ class BlameTest: XTTest
     XCTAssertEqual(stagedBlame.hunks.map { $0.finalLine.start }, stagedStarts)
     XCTAssertTrue(stagedBlame.hunks.first?.finalLine.oid.isZero ?? false)
   }
+
+  func testCommitBlame() throws
+  {
+    let headSHA = try XCTUnwrap(repository.headSHA)
+    let headCommit = try XCTUnwrap(GitCommit(sha: headSHA,
+                                             repository: repository.gitRepo))
+    let headOID = try XCTUnwrap(GitOID(sha: headSHA))
+    let commitModel = CommitSelection(repository: repository,
+                                      commit: headCommit)
+    let commitBlame = try XCTUnwrap(commitModel.fileList.blame(for: TestFileName.blame.rawValue))
+    let lineStarts = [1, 3, 5, 6]
+    let lineCounts = [2, 2, 1, 3]
+    
+    XCTAssertEqual(commitBlame.hunks.count, 4)
+    XCTAssertEqual(commitBlame.hunks.map { $0.finalLine.start }, lineStarts)
+    XCTAssertEqual(commitBlame.hunks.map { $0.lineCount }, lineCounts)
+    XCTAssertEqual(commitBlame.hunks[2].finalLine.oid, headOID)
+  }
 }

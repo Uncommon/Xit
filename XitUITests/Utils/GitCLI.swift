@@ -1,4 +1,6 @@
 import Foundation
+import Clibgit2
+import XitGit
 
 class GitCLI
 {
