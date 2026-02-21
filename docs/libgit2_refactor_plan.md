@@ -116,15 +116,19 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     - *Status:* Done; app bridging header now only imports app-local Objective-C headers.
 4.  [x] Add `import XitGit` to files in the main app that use the repo.
     - *Status:* In place for migrated codepaths (including app-side bridge and utility call sites currently relying on package extensions).
-5.  [ ] **Tests:** Move relevant tests to `XitGit/Tests/XitGitTests`.
-    - *Status:* Only a basic package sanity test exists today; migration of existing repo-focused tests is still pending.
+5.  [x] **Tests:** Move relevant tests to `XitGit/Tests/XitGitTests`.
+    - *Status:* Migrated package-focused leaf tests (`SHATest`, `ReferenceNameTests`, `StringExtensionsTest`, `CacheTest`, `ConfigTest`, `LibGit2Test`) plus a package sanity test.
+    - *Status:* Migrated repository integration tests and shared harness support (`XTTest`, `RepoActions`, `RepoActionBuilder`, `TestErrors`, `BranchTest`, `GitSwiftTests`, `PatchTest`, `XTRepositoryHunkTest`, `XTRepositoryMergeTest`, `XTRepositoryTest`, `XTStashTest`, `XTTagTest`, `BlameTest.testStagingBlame`) into `XitGit/Tests/XitGitTests`.
+    - *Status:* Added migration of selection/list-model tests to package (`CommitRootTest`, `FileListModelTest`, `IndexTreeTest`, `XTFileChangesModelTest`) and moved selection-focused cases into existing package suites (`BlameTest.testCommitBlame`, merge-selection checks in `XTRepositoryMergeTest`, stash-selection binary diff in `XTStashTest`).
+    - *Status:* Remaining tests in `XitTests` are app integration and UI/data-source focused.
 
 ## 5. Verification
 - **Build:**
   - `swift build` for `XitGit` succeeds.
   - Full `Xit` app target build has not been re-verified in this environment because full Xcode is unavailable (`xcode-select` points to CommandLineTools).
 - **Tests:**
-  - `swift test` in `XitGit` currently fails due `no such module 'Testing'` in `XitGitTests.swift`.
+  - `swift test` in `XitGit` is currently blocked in this environment (`no such module 'XCTest'` with current CLI toolchain).
+  - Package tests execute in the full Xcode environment; CLI verification remains limited by the toolchain issue above.
   - Main app test suites were not executed in this pass.
 - **Runtime:**
   - Manual app-flow verification (Open Repo, Commit, History) still pending.
