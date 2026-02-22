@@ -1,5 +1,4 @@
 import Foundation
-@testable import XitGit
 
 enum TestFileName: String
 {
@@ -88,7 +87,7 @@ struct CopyFile: StageableAction
   func execute(in repository: any FullRepository) throws
   {
     guard let sourceURL = sourceURL ?? source.map({ repository.fileURL($0) })
-    else { throw UnreachableError() }
+    else { throw RepoError.unexpected }
     let destURL = repository.fileURL(file)
 
     try FileManager.default.copyItem(at: sourceURL, to: destURL)
@@ -364,7 +363,7 @@ struct CreateBranch: RepoAction
   func execute(in repository: any FullRepository) throws
   {
     guard let currentBranch = repository.currentBranch
-    else { throw UnreachableError() }
+    else { throw RepoError.unexpected }
 
     _ = try repository.createBranch(named: branch,
                                     target: currentBranch.fullPath)

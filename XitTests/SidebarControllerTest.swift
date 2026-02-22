@@ -1,6 +1,6 @@
 import XCTest
 @testable import Xit
-import XitGit
+@testable import XitGit
 
 
 class TestingSidebarHandler : SidebarCommandHandler

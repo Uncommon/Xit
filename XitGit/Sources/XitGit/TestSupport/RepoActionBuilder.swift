@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 /// A repository action unit used in test setup.
 protocol RepoAction
