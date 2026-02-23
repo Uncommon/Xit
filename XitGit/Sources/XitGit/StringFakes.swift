@@ -3,7 +3,7 @@ import Foundation
 /// String-based commit for testing and placeholders
 public struct StringCommit: Commit
 {
-  typealias ObjectIdentifier = GitOID
+  public typealias ID = GitOID
 
   public var parentOIDs: [GitOID]
   public var message: String?
@@ -17,7 +17,7 @@ public struct StringCommit: Commit
   
   public init(parentOIDs: [GitOID], message: String? = nil,
               authorSig: Signature? = nil, committerSig: Signature? = nil,
-              isSigned: Bool, id: GitOID, tree: StringTree? = nil)
+              isSigned: Bool = false, id: GitOID, tree: StringTree? = nil)
   {
     self.parentOIDs = parentOIDs
     self.message = message
@@ -88,7 +88,7 @@ public struct FakeTree: Tree
 
   public struct Entry: TreeEntry
   {
-    public typealias ObjectIdentifier = GitOID
+    public typealias ID = GitOID
 
     public var id: GitOID { .zero() }
     public var type: GitObjectType { .invalid }

@@ -49,7 +49,7 @@ struct FakeRefSpec: RefSpec
   let destination: String
   let stringValue: String
   let force: Bool
-  let direction: Xit.RemoteConnectionDirection
+  let direction: RemoteConnectionDirection
 
   func sourceMatches(refName: String) -> Bool { false }
   func destinationMatches(refName: String) -> Bool { false }
@@ -209,7 +209,7 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
   func isTextFile(_ path: String, context: FileContext) -> Bool { false }
   func fileBlob(ref: any ReferenceName, path: String) -> Blob? { nil }
   func stagedBlob(file: String) -> Blob? { nil }
-  func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data? { nil }
+  func contentsOfFile(path: String, at commit: any XitGit.Commit) -> Data? { nil }
   func contentsOfStagedFile(path: String) -> Data? { nil }
   func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
   
