@@ -39,6 +39,13 @@ final class BitbucketHTTPService: BaseHTTPService
   }
   
   // MARK: - Helpers
+  private func handleRequestError(_ error: Error)
+  {
+    if case NetworkError.unauthorized = error {
+      authenticationStatus = .failed(error)
+    }
+  }
+  
   private func pullRequestPath(_ request: BitbucketPR) -> String
   {
     let projectKey = request.request.toRef.repository.project.key
@@ -219,6 +226,7 @@ extension BitbucketHTTPService: PullRequestService
         }
       }
       catch {
+        handleRequestError(error)
         return results
       }
     } while nextStart != nil
@@ -258,6 +266,12 @@ extension BitbucketHTTPService: PullRequestService
                             path: pullRequestPath(pr) + "merge",
                             method: .post)
     
-    _ = try await networkService.request(endpoint) as Data
+    do {
+      _ = try await networkService.request(endpoint) as Data
+    }
+    catch {
+      handleRequestError(error)
+      throw error
+    }
   }
 }
