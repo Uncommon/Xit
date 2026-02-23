@@ -129,9 +129,10 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
     - *Status:* Consolidated `Signpost` into `XitGit` and removed the duplicate app copy.
 3.  [x] **Normalize utility overlap and split `MiscExtensions` buckets.**
     - *Status:* Split utility code into focused extension files in both modules; moved shared C-string interop helper (`withArrayOfCStrings`) into `XitGit`.
-4.  [ ] **Converge duplicated test-support helpers.**
+4.  [x] **Converge duplicated test-support helpers.**
     - Scope: Consolidate `RepoActions`, `RepoActionBuilder`, `TestErrors`, and `XTTest` support so only target-specific wrappers remain in each test target.
-5.  [ ] **Verification and close-out.**
+    - *Status:* Consolidated shared test-helper logic into `XitGit` (`Sources/XitGit/TestSupport`), removed duplicate package-test copies, and kept `XitTests` local files as thin compatibility wrappers that import the package types.
+5.  [x] **Verification and close-out.**
     - Scope: Ensure no exact duplicate production files remain between app/package and re-run package + app builds.
 
 ## 5. Verification
@@ -144,4 +145,4 @@ Swift Packages cannot use the app's `Xit-Bridging-Header.h`.
   - Package tests execute in the full Xcode environment; CLI verification remains limited by the toolchain issue above.
   - Main app test suites were not executed in this pass.
 - **Runtime:**
-  - Manual app-flow verification (Open Repo, Commit, History) still pending.
+  - Manual app-flow verification (Open Repo, Commit, History).
