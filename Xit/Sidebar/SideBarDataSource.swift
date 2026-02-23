@@ -16,6 +16,13 @@ final class SideBarDataSource: NSObject
   @IBOutlet weak var outline: NSOutlineView!
 
   private var sinks: [AnyCancellable] = []
+  
+  private var activeRepoController: (any RepositoryController)?
+  {
+    viewController?.repoController
+        ?? repoController
+        ?? (repository as? XTRepository)?.controller
+  }
 
   weak var model: SidebarDataModel! = nil
   {
@@ -27,7 +34,8 @@ final class SideBarDataSource: NSObject
       stagingItem.selection = StagingSelection(repository: repo,
                                                amending: false)
       
-      if let repoController = viewController?.repoUIController?.repoController {
+      if let repoController = viewController?.repoUIController?.repoController
+                              ?? self.repoController {
         sinks.append(contentsOf: [
           repoController.headPublisher
             .sinkOnMainQueue {
@@ -77,23 +85,31 @@ final class SideBarDataSource: NSObject
   
   func reload()
   {
-    guard let queue = viewController.repoController?.queue
-    else { return }
-    
-    queue.executeAsync {
-      [weak self] in
-      // Keep self weak for the dispatch call
-      if let self = self {
-        await Signpost.interval(.sidebarReload) {
-          await self.model.reload()
-        }
-        await MainActor.run {
-          [weak self] in
-          guard self?.repository != nil
-          else { return }
-          self?.afterReload()
+    if let queue = activeRepoController?.queue {
+      queue.executeAsync {
+        [weak self] in
+        // Keep self weak for the dispatch call
+        if let self = self {
+          await Signpost.interval(.sidebarReload) {
+            await self.model.reload()
+          }
+          await MainActor.run {
+            [weak self] in
+            guard self?.repository != nil
+            else { return }
+            self?.afterReload()
+          }
         }
       }
+    }
+    else {
+      // Fallback for tests
+      Signpost.interval(.sidebarReload) {
+        model.reload()
+      }
+      guard repository != nil
+      else { return }
+      afterReload()
     }
   }
   
@@ -255,7 +271,10 @@ extension SideBarDataSource: RepositoryUIAccessor
 {
   var repoUIController: (any RepositoryUIController)?
   {
-    Thread.syncOnMain {
+    guard let outline
+    else { return nil }
+    
+    return Thread.syncOnMain {
       outline.window?.windowController as? RepositoryUIController
     }
   }

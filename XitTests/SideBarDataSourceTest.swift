@@ -45,6 +45,7 @@ class SidebarDataSourceTest: XTTest
     let rowCount = sbds.outlineView(outline, numberOfChildrenOfItem: nil)
     
     XCTAssertEqual(rowCount, 6)
+    if rowCount < 6 { return }
     
     let tagsGroup = groupItem(.tags)
     let tagCount = sbds.outlineView(outline, numberOfChildrenOfItem: tagsGroup)
