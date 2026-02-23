@@ -55,6 +55,17 @@ final class BitbucketHTTPService: BaseHTTPService
     return "projects/\(projectKey)/repos/\(repoSlug)/pull-requests/\(requestID)/"
   }
   
+  private func performRequest(_ endpoint: Endpoint) async throws
+  {
+    do {
+      _ = try await networkService.request(endpoint) as Data
+    }
+    catch {
+      handleRequestError(error)
+      throw error
+    }
+  }
+  
   private func update(request: BitbucketPR,
                       approved: Bool,
                       status: BitbucketServer.ReviewerStatus) async throws
@@ -74,7 +85,7 @@ final class BitbucketHTTPService: BaseHTTPService
                             headers: ["Content-Type": "application/json"],
                             body: body)
     
-    _ = try await networkService.request(endpoint) as Data
+    try await performRequest(endpoint)
   }
   
   // MARK: - Types
@@ -266,12 +277,6 @@ extension BitbucketHTTPService: PullRequestService
                             path: pullRequestPath(pr) + "merge",
                             method: .post)
     
-    do {
-      _ = try await networkService.request(endpoint) as Data
-    }
-    catch {
-      handleRequestError(error)
-      throw error
-    }
+    try await performRequest(endpoint)
   }
 }
