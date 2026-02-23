@@ -284,10 +284,11 @@ final class BitbucketHTTPService: BaseHTTPService,
 
 **Goal:** Finish migration with both services on HTTP stack, then remove legacy code paths quickly
 
-1. **Stabilize BitbucketHTTPService** (Next)
-    - Harden error handling, pagination, and auth refresh if needed
-    - Prefer Swift concurrency primitives (actors/structured tasks) over locks for shared state; TeamCity HTTP currently class-based without locks, Bitbucket HTTP enabled by default
-    - Finalize pull request workflows and UI consumers on new service
+1. **Stabilize BitbucketHTTPService** ✅
+    - Hardened error handling for non-2xx/unauthorized and propagation to auth status
+    - Pagination implemented and tested; auth failure handling verified
+    - Swift Testing suite passing (`BitbucketHTTPServiceTests`)
+    - Next: wire remaining UI consumers and monitor real-service runs
 
 2. **Update Services Manager**
    - Refactor `Services.swift` to prefer HTTP services by default once Bitbucket is stable
