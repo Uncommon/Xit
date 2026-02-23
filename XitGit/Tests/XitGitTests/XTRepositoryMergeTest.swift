@@ -205,7 +205,7 @@ class XTRepositoryMergeTest: XTTest
       Merge(branch: "c3")
     }
 
-    assertContent(content, file: .file2)
+    assertContent(content, file: TestFileName.file2)
   }
 
   func assertWorkspaceContent(staged: [String], unstaged: [String],

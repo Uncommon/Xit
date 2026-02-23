@@ -122,7 +122,7 @@ open class XTTest: XCTestCase
     repository.controller?.waitForQueue()
   }
 
-  public func addInitialRepoContent() throws
+  open func addInitialRepoContent() throws
   {
     let path = "file1.txt"
 
