@@ -1,6 +1,7 @@
 import Foundation
 import Cocoa
 import Combine
+import XitGit
 
 @MainActor
 final class SidebarPRManager

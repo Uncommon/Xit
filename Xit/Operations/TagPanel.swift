@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import XitGit
 
 struct TagPanel: DataModelView
 {

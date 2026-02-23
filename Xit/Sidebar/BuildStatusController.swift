@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Cocoa
+import XitGit
 
 @MainActor
 protocol BuildStatusDisplay: AnyObject
@@ -203,7 +204,7 @@ extension BuildStatusController: NSPopoverDelegate
   }
 }
 
-extension BuildStatusController: BuildStatusAccessor
+extension BuildStatusController: @MainActor BuildStatusAccessor
 {
   var servicesMgr: Services { Services.xit }
   var remoteMgr: (any RemoteManagement)! { model.repository }

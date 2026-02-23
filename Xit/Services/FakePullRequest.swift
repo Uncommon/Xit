@@ -1,5 +1,6 @@
 import Foundation
 import Siesta
+import XitGit
 
 /// Used for testing pull request status
 struct FakePullRequest: PullRequest

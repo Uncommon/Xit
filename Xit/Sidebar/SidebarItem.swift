@@ -1,4 +1,5 @@
 import Cocoa
+import XitGit
 
 /// Represents all items in the sidebar
 class SidebarItem: NSObject

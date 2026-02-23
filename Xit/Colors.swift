@@ -1,4 +1,5 @@
-import Foundation
+import Cocoa
+import XitGit
 
 extension NSColor
 {
@@ -77,5 +78,42 @@ extension NSColor
       case .general:
         return NSColor(named: "refGradientEnd")!
     }
+  }
+}
+
+extension RefType
+{
+  var strokeColor: NSColor
+  {
+    switch self {
+      case .branch, .activeBranch:
+        .refTokenStroke(.branch)
+      case .remoteBranch:
+        .refTokenStroke(.remoteBranch)
+      case .tag:
+        .refTokenStroke(.tag)
+      default:
+        .refTokenStroke(.generic)
+    }
+  }
+  
+  var gradient: NSGradient
+  {
+    let type: NSColor.RefGradient
+    
+    switch self {
+      case .branch:
+        type = .branch
+      case .activeBranch:
+        type = .activeBranch
+      case .remoteBranch:
+        type = .remote
+      case .tag:
+        type = .tag
+      default:
+        type = .general
+    }
+    return NSGradient(starting: NSColor.refGradientStart(type),
+                      ending: NSColor.refGradientEnd(type)) ?? NSGradient()
   }
 }

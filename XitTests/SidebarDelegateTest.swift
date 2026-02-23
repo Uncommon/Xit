@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 @testable import Xit
+@testable import XitGit
+import XitGitTestSupport
 
 class SidebarDelegateTest: XTTest
 {
@@ -57,7 +59,7 @@ class SidebarDelegateTest: XTTest
   
   func testBranches() throws
   {
-    let branchNames = ["b1", "master"]
+    let branchNames = ["b1", "main"]
     
     try execute(in: repository) {
       CreateBranch("b1")
@@ -83,7 +85,7 @@ class SidebarDelegateTest: XTTest
     let remoteName = "origin"
 
     try execute(in: repository) {
-      CheckOut(branch: "master")
+      CheckOut(branch: "main")
       CreateBranch("b1")
     }
     try repository.addRemote(named: remoteName,

@@ -71,9 +71,6 @@ extension NSColor
 
 extension NSError
 {
-  var gitError: git_error_code
-  { git_error_code(Int32(code)) }
-  
   convenience init(osStatus: OSStatus)
   {
     self.init(domain: NSOSStatusErrorDomain, code: Int(osStatus), userInfo: nil)

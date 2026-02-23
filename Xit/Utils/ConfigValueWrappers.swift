@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import XitGit
 
 
 /// Property wrapper that binds to a `Config` value.

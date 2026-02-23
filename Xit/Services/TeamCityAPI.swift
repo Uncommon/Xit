@@ -1,6 +1,7 @@
 import Foundation
 @preconcurrency import Siesta
 import Combine
+import XitGit
 
 protocol BuildStatusService: AnyObject
 {
