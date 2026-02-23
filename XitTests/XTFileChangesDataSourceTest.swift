@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import Xit
 @testable import XitGit
+import XitGitTestSupport
 
 class XTFileChangesDataSourceTest: XTTest
 {

@@ -1,30 +1,32 @@
 import Foundation
+import XitGit
+
+#if canImport(XCTest)
 import XCTest
-@testable import XitGit
 
-class XTTest: XCTestCase
+open class XTTest: XCTestCase
 {
-  var repoPath: String!
-  var remoteRepoPath: String!
+  public var repoPath: String!
+  public var remoteRepoPath: String!
 
-  var repoController: GitRepositoryController!
-  var repository, remoteRepository: XTRepository!
+  public var repoController: GitRepositoryController!
+  public var repository, remoteRepository: XTRepository!
 
-  var file1Path: String
-  { return repoPath.appending(pathComponent: TestFileName.file1.rawValue) }
-  
-  override class func setUp()
+  public var file1Path: String
+  { repoPath.appending(pathComponent: "file1.txt") }
+
+  open override class func setUp()
   {
     super.setUp()
     XTRepository.initialize()
   }
 
-  static func createRepo(atPath repoPath: String) -> XTRepository?
+  public static func createRepo(atPath repoPath: String) -> XTRepository?
   {
     NSLog("[createRepo] repoName=\(repoPath)")
-    
+
     let fileManager = FileManager.default
-    
+
     if fileManager.fileExists(atPath: repoPath) {
       do {
         try fileManager.removeItem(atPath: repoPath)
@@ -34,7 +36,7 @@ class XTTest: XCTestCase
         return nil
       }
     }
-    
+
     do {
       try fileManager.createDirectory(atPath: repoPath,
                                       withIntermediateDirectories: true,
@@ -44,7 +46,7 @@ class XTTest: XCTestCase
       XCTFail("Couldn't create repository: \(repoPath)")
       return nil
     }
-    
+
     let repoURL = URL(fileURLWithPath: repoPath)
     let repo: XTRepository
 
@@ -63,39 +65,39 @@ class XTTest: XCTestCase
 
     return repo
   }
-  
-  override func setUpWithError() throws
+
+  open override func setUpWithError() throws
   {
     try super.setUpWithError()
-    
+
     let testName = name.replacingOccurrences(of: "\\W", with: "-",
                                              options: .regularExpression)
-                       .filter { $0.isLetter || $0.isNumber || $0 == "_" }
+      .filter { $0.isLetter || $0.isNumber || $0 == "_" }
 
     repoPath = FileManager.default.temporaryDirectory
-                  .appendingPathComponent("testRepo", isDirectory: true)
-                  .appendingPathComponent(testName, isDirectory: true)
-                  .path
-    repository = try XCTUnwrap(XTTest.createRepo(atPath: repoPath))
+      .appendingPathComponent("testRepo", isDirectory: true)
+      .appendingPathComponent(testName, isDirectory: true)
+      .path
+    repository = try XCTUnwrap(Self.createRepo(atPath: repoPath))
     repoController = GitRepositoryController(repository: repository)
     try addInitialRepoContent()
   }
-  
-  override func tearDown()
+
+  open override func tearDown()
   {
     waitForRepoQueue()
-    
+
     XCTAssertNoThrow(try retryDelete(path: repoPath))
     if let remoteRepoPath = self.remoteRepoPath {
       XCTAssertNoThrow(try retryDelete(path: remoteRepoPath))
     }
     super.tearDown()
   }
-  
-  func retryDelete(path: String) throws
+
+  public func retryDelete(path: String) throws
   {
     var error: Error? = nil
-    
+
     for _ in 1...5 {
       do {
         try FileManager.default.removeItem(atPath: path)
@@ -107,39 +109,42 @@ class XTTest: XCTestCase
     }
     try error.map { throw $0 }
   }
-  
-  func waitForRepoQueue()
+
+  public func waitForRepoQueue()
   {
     if let repository {
       wait(for: repository)
     }
   }
-  
-  func wait(for repository: XTRepository)
+
+  public func wait(for repository: XTRepository)
   {
     repository.controller?.waitForQueue()
   }
-  
-  func addInitialRepoContent() throws
+
+  public func addInitialRepoContent() throws
   {
-    try execute(in: repository) {
-      CommitFiles {
-        Write("some text", to: .file1)
-      }
-    }
+    let path = "file1.txt"
+
+    try "some text".write(toFile: repository.fileURL(path).path,
+                          atomically: true, encoding: .utf8)
+    try repository.stage(file: path)
+    try repository.index?.save()
+    try repository.commit(message: "commit", amend: false)
   }
-  
-  func makeRemoteRepo()
+
+  public func makeRemoteRepo()
   {
     let parentPath = repoPath.deletingLastPathComponent
-    
+
     remoteRepoPath = parentPath.appending(pathComponent: "remotetestrepo")
-    remoteRepository = XTTest.createRepo(atPath: remoteRepoPath)
+    remoteRepository = Self.createRepo(atPath: remoteRepoPath)
     XCTAssertNotNil(remoteRepository)
   }
 
-  func assertContent(_ text: String, file: String,
-                     line: UInt = #line, sourceFile: StaticString = #file)
+  public func assertContent(_ text: String, file: String,
+                            line: UInt = #line,
+                            sourceFile: StaticString = #file)
   {
     do {
       let content = try String(contentsOfFile: repoPath +/ file,
@@ -151,16 +156,18 @@ class XTTest: XCTestCase
       XCTFail(error.localizedDescription, file: sourceFile, line: line)
     }
   }
-  
-  func assertContent(_ text: String, file: TestFileName,
-                      line: UInt = #line, sourceFile: StaticString = #file)
+
+  public func assertContent<T: RawRepresentable>(_ text: String, file: T,
+                                                 line: UInt = #line,
+                                                 sourceFile: StaticString = #file)
+    where T.RawValue == String
   {
     assertContent(text, file: file.rawValue, line: line, sourceFile: sourceFile)
   }
 
-  func assertStagedContent(_ text: String, file: String,
-                           line: UInt = #line, sourceFile: StaticString = #file)
-    throws
+  public func assertStagedContent(_ text: String, file: String,
+                                  line: UInt = #line,
+                                  sourceFile: StaticString = #file) throws
   {
     guard let blob = repository.stagedBlob(file: file)
     else {
@@ -174,31 +181,27 @@ class XTTest: XCTestCase
     XCTAssertEqual(content, text, file: sourceFile, line: line)
   }
 
-  func assertStagedContent(_ text: String, file: TestFileName,
-                           line: UInt = #line, sourceFile: StaticString = #file)
-    throws
+  public func assertStagedContent<T: RawRepresentable>(_ text: String, file: T,
+                                                       line: UInt = #line,
+                                                       sourceFile: StaticString = #file) throws
+    where T.RawValue == String
   {
     try assertStagedContent(text, file: file.rawValue,
                             line: line, sourceFile: sourceFile)
   }
 
-  func makeStash() throws
+  public func makeStash() throws
   {
-    try execute(in: repository) {
-      Write("stashy", to: .file1)
-      Write("new", to: .untracked)
-      Write("add", to: .added)
-      Stage(.added)
-      SaveStash()
-    }
+    try "stashy".write(toFile: repository.fileURL("file1.txt").path,
+                       atomically: true, encoding: .utf8)
+    try "new".write(toFile: repository.fileURL("untracked.txt").path,
+                    atomically: true, encoding: .utf8)
+    try "add".write(toFile: repository.fileURL("added.txt").path,
+                    atomically: true, encoding: .utf8)
+    try repository.stage(file: "added.txt")
+    try repository.index?.save()
+    try repository.saveStash(name: "", keepIndex: false,
+                             includeUntracked: true, includeIgnored: true)
   }
 }
-
-extension RepositoryController
-{
-  func waitForQueue()
-  {
-    queue.wait()
-    WaitForQueue(DispatchQueue.main)
-  }
-}
+#endif

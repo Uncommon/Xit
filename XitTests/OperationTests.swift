@@ -1,6 +1,7 @@
 import XCTest
 @testable import Xit
 @testable import XitGit
+import XitGitTestSupport
 
 final class OperationTests: XTTest
 {

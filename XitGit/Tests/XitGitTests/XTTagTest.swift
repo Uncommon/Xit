@@ -1,5 +1,6 @@
 import XCTest
 @testable import XitGit
+import XitGitTestSupport
 
 let message = "testing"
 let tagName = "testTag"

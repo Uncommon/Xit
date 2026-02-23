@@ -1,5 +1,6 @@
 import XCTest
 @testable import XitGit
+import XitGitTestSupport
 
 extension XitGit.PatchMaker.PatchResult
 {

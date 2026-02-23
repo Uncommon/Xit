@@ -27,6 +27,10 @@ let package = Package(
             name: "XitGit",
             targets: ["XitGit"]
         ),
+        .library(
+            name: "XitGitTestSupport",
+            targets: ["XitGitTestSupport"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Uncommon/FakedMacro", branch: "main")
@@ -56,9 +60,14 @@ let package = Package(
                 .linkedFramework("CoreFoundation")
             ] + ssh2LinkerSettings
         ),
+        .target(
+            name: "XitGitTestSupport",
+            dependencies: ["XitGit"],
+            path: "Sources/XitGitTestSupport"
+        ),
         .testTarget(
             name: "XitGitTests",
-            dependencies: ["XitGit", "Clibgit2"],
+            dependencies: ["XitGit", "XitGitTestSupport", "Clibgit2"],
             resources: [
                 .process("Resources")
             ]
