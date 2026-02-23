@@ -70,6 +70,6 @@ class TeamCityTest: XCTestCase
     
     let defaultSpec = BranchSpec.defaultSpec()
     
-    XCTAssertEqual(defaultSpec.match(branch: "refs/heads/master"), "master")
+    XCTAssertEqual(defaultSpec.match(branch: "refs/heads/main"), "main")
   }
 }

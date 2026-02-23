@@ -113,7 +113,7 @@ class SidebarDataSourceTest: XTTest
     let remoteName = "origin"
 
     try execute(in: repository) {
-      CheckOut(branch: "master")
+      CheckOut(branch: "main")
       CreateBranch("b1")
     }
     try repository.addRemote(named: remoteName,

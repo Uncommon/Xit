@@ -42,7 +42,7 @@ final class OperationTests: XTTest
     let operation = NewBranchOperation(repository: repository)
     let parameters = NewBranchOperation.Parameters(
           name: "branch",
-          startPoint: "master",
+          startPoint: "main",
           track: true,
           checkOut: true)
     
@@ -56,13 +56,13 @@ final class OperationTests: XTTest
     let operation = NewBranchOperation(repository: repository)
     let parameters = NewBranchOperation.Parameters(
           name: "branch",
-          startPoint: "master",
+          startPoint: "main",
           track: true,
           checkOut: false)
     
     try operation.perform(using: parameters)
 
-    XCTAssertEqual(repository.currentBranch?.name, "master")
+    XCTAssertEqual(repository.currentBranch?.name, "main")
     XCTAssertNotNil(repository.localBranch(named: .init("branch")!))
   }
 }
