@@ -67,7 +67,6 @@
 		898F75842A4E42DA00C157D7 /* RepositoryOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */; };
 		898F75862A51D8C700C157D7 /* OperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75852A51D8C700C157D7 /* OperationTests.swift */; };
 		8991F1E12F3CBBA60022646F /* XitGit in Frameworks */ = {isa = PBXBuildFile; productRef = 89E1BBBE2F49242E00B95087 /* XitGit */; };
-		89C1D0012F80010000ABCD01 /* XitGitTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 89C1D0022F80010000ABCD01 /* XitGitTestSupport */; };
 		899DB1A21CE5022400760270 /* CommitEntryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899DB1A01CE5022400760270 /* CommitEntryController.swift */; };
 		899DB1A31CE5022400760270 /* CommitEntryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 899DB1A11CE5022400760270 /* CommitEntryController.xib */; };
 		89AB21DA213DE5E300EF7507 /* StashOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB21D9213DE5E300EF7507 /* StashOperationController.swift */; };
@@ -81,6 +80,7 @@
 		89BA11E928C4E26900A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
 		89BA11EA28C4E28000A7999A /* HistorySearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BA11E828C4E26900A7999A /* HistorySearchType.swift */; };
 		89BA11EB28C4E2C000A7999A /* UIString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5334C2187608300B2432C /* UIString.swift */; };
+		89C1D0012F80010000ABCD01 /* XitGitTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 89C1D0022F80010000ABCD01 /* XitGitTestSupport */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
 		89C927881D43B0460074F71A /* PullOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* PullOpController.swift */; };
 		89CB61981E788A3900D69FE4 /* lorem.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61971E788A3900D69FE4 /* lorem.txt */; };
@@ -1054,7 +1054,7 @@
 				C3FA46F913D0F8E200AC4F9B /* Frameworks */,
 				C3FA46FA13D0F8E200AC4F9B /* Resources */,
 				C91F34751D3064E6005F9BDF /* CopyFiles */,
-				C9E881461E9570D400BFA7E5 /* ShellScript */,
+				C9E881461E9570D400BFA7E5 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1256,7 +1256,7 @@
 			shellPath = /bin/sh;
 			shellScript = "./build_libgit2.sh\n";
 		};
-		C9E881461E9570D400BFA7E5 /* ShellScript */ = {
+		C9E881461E9570D400BFA7E5 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -1264,6 +1264,7 @@
 			);
 			inputPaths = (
 			);
+			name = SwiftLint;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2208,15 +2209,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		89E1BBBE2F49242E00B95087 /* XitGit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */;
-			productName = XitGit;
-		};
 		89C1D0022F80010000ABCD01 /* XitGitTestSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */;
 			productName = XitGitTestSupport;
+		};
+		89E1BBBE2F49242E00B95087 /* XitGit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */;
+			productName = XitGit;
 		};
 		89F24B832C498878007D632E /* FakedMacro */ = {
 			isa = XCSwiftPackageProductDependency;
