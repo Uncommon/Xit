@@ -30,15 +30,4 @@ If you decide to start working on something, please add a note in the issue (fil
 
 ## Coding style
 
-Swift:
-
-A SwiftLint settings file is included, and will be run every build if you have SwiftLint installed.
-
-* Braces at the end of the line for control statements, and on their own line for functions, classes, etc.
-* `else` always starts a new line, whether for `guard` or `if`.
-* Wrap to about 80 characters, indenting wrapped code by two levels.
-* Indentation level is two spaces.
-* Avoid trailing whitespace, except on blank lines. Don't rewrap lines you didn't touch.
-* Trailing whitespace on blank lines should match the indentation of surrounding lines.
-* Leave a blank line after a contiguous group of `let`/`var`/`guard` statements before other code (e.g., control flow, function calls) to keep logical blocks separated.
-* Otherwise, normal Swift style rules apply.
+See `CODING_STYLE.md` for the Swift style guidelines used in this repository.

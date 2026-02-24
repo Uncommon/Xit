@@ -561,7 +561,7 @@ enum TeamCityError: Error {
 
 **Progress:** Phases 1-2 complete; Phase 3 stabilization underway. Unit tests passing; UI tests currently blocked by an auth prompt during runner initialization.
 
-**Coding Style Reminder:** Follow the guidelines in `CONTRIBUTING.md` (brace placement, indentation, line length, and whitespace) to avoid incidental formatting changes during migration work.
+**Coding Style Reminder:** Follow the guidelines in `CODING_STYLE.md` (brace placement, indentation, line length, whitespace) to avoid incidental formatting changes during migration work.
 
 ## Resources Required
 
