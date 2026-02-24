@@ -130,7 +130,7 @@ final class BuildStatusController: NSObject
 
   // NSImage doesn't seem to have a good way to apply tint color, so the caller
   // will apply it on the image view or button.
-  func statusImage(for item: SidebarItem) -> (NSImage, NSColor)?
+  func statusImage(for item: SidebarItem) async -> (NSImage, NSColor)?
   {
     guard let branchItem = item as? BranchSidebarItem,
           let refString = (branchItem as? RefSidebarItem)?.refName,
@@ -141,13 +141,13 @@ final class BuildStatusController: NSObject
     else { return nil }
 
     guard let remoteName = model.remoteName(forBranchItem: item),
-          let (api, buildTypes) = matchBuildStatusService(remoteName)
+          let (api, buildTypes) = await matchBuildStatusServiceAndTypes(remoteName)
     else { return nil }
     
     var overallState = DisplayState.unknown
     
     for buildType in buildTypes {
-      if let branchName = api.displayName(for: localBranch.referenceName,
+      if let branchName = await api.displayName(for: localBranch.referenceName,
                                           buildType: buildType),
          let status = buildStatusCache.statuses[buildType],
          let branchStatus = status[branchName] {

@@ -244,7 +244,10 @@ final class Services
       networkService: network)
     
     teamCityHTTPServices[key] = service
-    Task { await service.attemptAuthentication() }
+    Task {
+      await service.attemptAuthentication()
+      await service.refreshMetadata()
+    }
     return service
   }
   
@@ -307,6 +310,22 @@ final class Services
   func pullRequestService(for remote: any Remote) -> (any PullRequestService)?
   {
     pullRequestServices.first { $0.match(remote: remote) }
+  }
+  
+  func teamCityHTTPBuildStatus(for remoteURL: String) async -> (TeamCityHTTPService, [String])?
+  {
+    for service in teamCityHTTPServices.values {
+      let buildTypes = await service.buildTypesForRemote(remoteURL)
+      if !buildTypes.isEmpty {
+        return (service, buildTypes)
+      }
+    }
+    return nil
+  }
+  
+  func teamCityHTTPService(host: String) -> TeamCityHTTPService?
+  {
+    teamCityHTTPServices.values.first { $0.account.location.host == host }
   }
 }
 

@@ -367,28 +367,6 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   }
 }
 
-protocol BuildStatusAccessor: AnyObject
-{
-  var servicesMgr: Services { get }
-  var remoteMgr: (any RemoteManagement)! { get }
-}
-
-extension BuildStatusAccessor
-{
-  /// Returns the first TeamCity service that builds from the given repository,
-  /// and a list of its build types.
-  func matchBuildStatusService(_ remoteName: String)
-    -> (BuildStatusService, [String])?
-  {
-    guard let remoteMgr = self.remoteMgr,
-          let remote = remoteMgr.remote(named: remoteName),
-          let remoteURL = remote.urlString
-    else { return nil }
-    
-    return servicesMgr.buildStatusService(for: remoteURL)
-  }
-}
-
 extension TeamCityAPI: RemoteService
 {
   func match(remote: any Remote) -> Bool

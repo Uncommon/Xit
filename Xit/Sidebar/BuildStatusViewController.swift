@@ -3,16 +3,16 @@ import Cocoa
 final class BuildStatusViewController: NSViewController
 {
   typealias Repository = RemoteManagement & Branching
-
+  
   weak var repository: (any Repository)!
   let branch: any Branch
   let buildStatusCache: BuildStatusCache
-  var api: BuildStatusService?
+  var api: TeamCityHTTPService?
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var headingLabel: NSTextField!
   @IBOutlet weak var refreshButton: NSButton!
   @IBOutlet weak var refreshSpinner: NSProgressIndicator!
-
+  
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
   var builds: [TeamCityAPI.Build] = []
   
@@ -20,18 +20,18 @@ final class BuildStatusViewController: NSViewController
   {
     static let build = ¶"BuildCell"
   }
-
+  
   init(repository: any Repository, branch: any Branch, cache: BuildStatusCache)
   {
     self.repository = repository
     self.branch = branch
     self.buildStatusCache = cache
-
+    
     super.init(nibName: .buildStatusNib, bundle: nil)
     
     cache.add(client: self)
     if let remoteName = branch.remoteName,
-       let (api, _) = matchBuildStatusService(remoteName) {
+       let api = matchBuildStatusService(remoteName) {
       self.api = api
     }
     cache.add(client: self)
@@ -48,12 +48,12 @@ final class BuildStatusViewController: NSViewController
     super.viewDidLoad()
     headingLabel.uiStringValue = .buildStatus(branch.referenceName.localName)
   }
-
+  
   override func viewWillDisappear()
   {
     buildStatusCache.remove(client: self)
   }
-
+  
   func filterStatuses()
   {
     filteredStatuses.removeAll()
@@ -64,14 +64,14 @@ final class BuildStatusViewController: NSViewController
     else { return }
     
     let branchName = branch.localRefName.fullPath
-
+    
     for (buildType, branchStatuses) in buildStatusCache.statuses {
-      let roots = api.vcsRootsForBuildType(buildType)
+      let roots = api.cachedVCSRoots(for: buildType)
       guard !roots.isEmpty
       else { continue }
       
       let matchNames = roots.compactMap
-          { api.vcsBranchSpecs[$0]?.match(branch: branchName) }
+          { api.cachedBranchSpec(for: $0)?.match(branch: branchName) }
       guard let match = matchNames.reduce(nil, {
         (shortest, name) -> String? in
         (shortest.map { $0.count < name.count } ?? false) ? shortest : name
@@ -92,7 +92,7 @@ final class BuildStatusViewController: NSViewController
     }
     builds = Array(buildsByNumber.values)
   }
-
+  
   func setProgressVisible(_ visible: Bool)
   {
     if visible {
@@ -165,7 +165,7 @@ extension BuildStatusViewController: NSTableViewDelegate
     static let buildID = "buildID"
     static let status = "status"
   }
-
+  
   func tableView(_ tableView: NSTableView,
                  viewFor tableColumn: NSTableColumn?,
                  row: Int) -> NSView?
@@ -175,7 +175,7 @@ extension BuildStatusViewController: NSTableViewDelegate
                      as? BuildStatusCellView
     else { return nil }
     let build = builds[row]
-    let buildType = build.buildType.flatMap { api?.buildType(id: $0) }
+    let buildType = build.buildType.flatMap { id in api?.cachedBuildTypesSnapshot().first { $0.id == id } }
     
     cell.textField?.stringValue = buildType?.name ?? "-"
     cell.projectNameField.stringValue = buildType?.projectName ?? "-"
@@ -187,13 +187,13 @@ extension BuildStatusViewController: NSTableViewDelegate
     else {
       cell.progressBar.isHidden = true
     }
-
+    
     let state: BuildStatusController.DisplayState = build.status == .succeeded
         ? .success : .failure
-
+    
     cell.statusImage.image = state.image
     cell.statusImage.contentTintColor = state.tint
-
+    
     return cell
   }
 }

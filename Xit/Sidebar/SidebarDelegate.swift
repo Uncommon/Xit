@@ -97,13 +97,13 @@ final class SidebarDelegate: NSObject
     return nil
   }
   
-  func updateStatusImage(item: SidebarItem, cell: SidebarTableCellView?)
+  func updateStatusImage(item: SidebarItem, cell: SidebarTableCellView?) async
   {
     guard let branchItem = item as? BranchSidebarItem,
           let cell = cell ?? self.cell(forBranchItem: branchItem)
     else { return }
     
-    if let (image, tint) = buildStatusController?.statusImage(for: item) {
+    if let (image, tint) = await buildStatusController?.statusImage(for: item) {
       cell.statusButton.image = image
       cell.statusButton.contentTintColor = tint
       if let localBranchItem = item as? LocalBranchSidebarItem,
@@ -181,7 +181,9 @@ final class SidebarDelegate: NSObject
     cell.statusButton.image = nil
     cell.statusButton.action = nil
     
-    updateStatusImage(item: item, cell: cell)
+    Task {
+      await updateStatusImage(item: item, cell: cell)
+    }
     if item is LocalBranchSidebarItem {
       configureLocalBranchItem(sideBarItem: item, dataView: cell)
     }
@@ -333,7 +335,9 @@ extension SidebarDelegate: BuildStatusDisplay
 {
   func updateStatusImage(item: SidebarItem)
   {
-    updateStatusImage(item: item, cell: nil)
+    Task {
+      await updateStatusImage(item: item, cell: nil)
+    }
   }
 }
 

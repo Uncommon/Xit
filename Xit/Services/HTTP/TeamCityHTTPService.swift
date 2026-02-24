@@ -311,4 +311,10 @@ final class TeamCityHTTPService: BaseHTTPService
   
   func branchSpecSnapshot(for id: String) -> BranchSpec?
   { vcsBranchSpecs[id] }
+  
+  func cachedVCSRoots(for buildType: String) -> [String]
+  { vcsRootsCache[buildType] ?? [] }
+  
+  func cachedBranchSpec(for vcsRootID: String) -> BranchSpec?
+  { vcsBranchSpecs[vcsRootID] }
 }

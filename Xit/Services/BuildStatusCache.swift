@@ -1,5 +1,10 @@
 import Foundation
-@preconcurrency import Siesta
+
+protocol BuildStatusAccessor: AnyObject
+{
+  var servicesMgr: Services { get }
+  var remoteMgr: (any RemoteManagement)! { get }
+}
 
 protocol BuildStatusClient: AnyObject
 {
@@ -83,7 +88,7 @@ final class BuildStatusCache: BuildStatusAccessor
   @MainActor
   func refresh(remoteName: String, branch: LocalBranchRefName) async throws
   {
-    guard let (api, buildTypes) = matchBuildStatusService(remoteName)
+    guard let (api, buildTypes) = await matchBuildStatusServiceAndTypes(remoteName)
     else {
       throw RefreshError.noBuildTypes
     }
@@ -91,39 +96,57 @@ final class BuildStatusCache: BuildStatusAccessor
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for buildType in buildTypes {
-        guard let branchName = api.displayName(for: branch,
-                                               buildType: buildType)
+        let displayName = await api.displayName(for: branch,
+                                                buildType: buildType)
+        guard let branchName = displayName
         else { continue }
-        let statusResource = api.buildStatus(branchName, buildType: buildType)
-
-        statusResource.invalidate()
+        
         taskGroup.addTask {
-          let data = try await statusResource.data
-          guard let xml = data.content as? XMLDocument
-          else {
-            throw RefreshError.parseFailure
-          }
-          guard let firstBuildElement = xml.rootElement()?.children?.first
-                                        as? XMLElement,
-                let build = TeamCityAPI.Build(element: firstBuildElement)
-          else {
-            // failed to find matching branch; ignore and continue
-            return
-          }
-
+          let builds = try await api.loadBuilds(buildTypeID: buildType,
+                                                branch: branchName)
+          guard let build = builds.first
+          else { return }
+          
           await MainActor.run {
             var buildTypeStatuses = self.statuses[buildType] ?? BranchStatuses()
-
+            
             buildTypeStatuses[branchName] = build
             self.statuses[buildType] = buildTypeStatuses
-          }
-          for ref in self.clients {
-            ref.client?.buildStatusUpdated(branch: branchName,
-                                           buildType: buildType)
+            
+            for ref in self.clients {
+              ref.client?.buildStatusUpdated(branch: branchName,
+                                             buildType: buildType)
+            }
           }
         }
       }
       try await taskGroup.waitForAll()
     }
+  }
+}
+
+extension BuildStatusAccessor
+{
+  /// Returns the first TeamCity HTTP service that builds from the given
+  /// repository, and a list of its build types.
+  func matchBuildStatusServiceAndTypes(_ remoteName: String) async
+    -> (TeamCityHTTPService, [String])?
+  {
+    guard let remoteMgr = self.remoteMgr,
+          let remote = remoteMgr.remote(named: remoteName),
+          let remoteURL = remote.urlString
+    else { return nil }
+    
+    return await servicesMgr.teamCityHTTPBuildStatus(for: remoteURL)
+  }
+  
+  func matchBuildStatusService(_ remoteName: String) -> TeamCityHTTPService?
+  {
+    guard let remoteMgr = self.remoteMgr,
+          let remote = remoteMgr.remote(named: remoteName),
+          let host = remote.url?.host
+    else { return nil }
+    
+    return servicesMgr.teamCityHTTPService(host: host)
   }
 }
