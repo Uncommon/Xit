@@ -288,21 +288,20 @@ final class BitbucketHTTPService: BaseHTTPService,
     - Hardened error handling for non-2xx/unauthorized and propagation to auth status
     - Pagination implemented and tested; auth failure handling verified
     - Swift Testing suite passing (`BitbucketHTTPServiceTests`)
-    - Next: wire remaining UI consumers and monitor real-service runs
+    - UI integration live by default
 
-2. **Update Services Manager**
-   - Refactor `Services.swift` to prefer HTTP services by default once Bitbucket is stable
-   - Remove Siesta dependencies from service creation paths
+2. **Update Services Manager** ⏳
+   - TeamCity build status now fetched via HTTP service; build-status UI is wired through `BuildStatusDisplayService`
+   - Legacy Siesta TeamCity usage still present in codebase; removal pending
 
-3. **Update Extensions**
-   - Remove `SiestaExtensions.swift`
-   - Create Swift-native extensions if needed
-   - Update any dependent code
+3. **Update Extensions** ⏳
+   - `SiestaExtensions.swift` still present; to be removed when TeamCity moves fully off Siesta
+   - Dependent code to be updated after legacy removal
 
 4. **Success Criteria**
-   - Both TeamCity and Bitbucket use HTTP services in production flag-on path
+   - Both TeamCity and Bitbucket use HTTP services in production path
    - All existing functionality preserved
-   - Siesta used only by legacy flag-off path pending final removal
+   - Siesta only remains where legacy TeamCity paths still exist (to be removed in Phase 4)
 
 ### Phase 4: Remove Siesta (Week 7)
 
@@ -556,11 +555,11 @@ enum TeamCityError: Error {
 |-------|----------|-------|-----|--------|--------------|
 | Phase 1: Foundation | 2 weeks | Week 1 | Week 2 | ✅ **COMPLETE** | New networking layer, tests |
 | Phase 2: Service Migration | 2 weeks | Week 3 | Week 4 | ✅ **COMPLETE** | TeamCity migrated, Bitbucket HTTP live |
-| Phase 3: Complete Migration | 2 weeks | Week 5 | Week 6 | ⏸️ Pending | All services migrated |
+| Phase 3: Complete Migration | 2 weeks | Week 5 | Week 6 | ▶️ In Progress | Bitbucket stabilized; TeamCity build-status using HTTP; legacy Siesta pending removal |
 | Phase 4: Remove Siesta | 1 week | Week 7 | Week 7 | ⏸️ Pending | Siesta removed, docs updated |
 | **Total** | **7 weeks** | | | **On Track** | **Complete migration** |
 
-**Progress:** Phase 1 completed February 12, 2026 - Ready for Phase 2
+**Progress:** Phases 1-2 complete; Phase 3 stabilization underway. Unit tests passing; UI tests currently blocked by an auth prompt during runner initialization.
 
 **Coding Style Reminder:** Follow the guidelines in `CONTRIBUTING.md` (brace placement, indentation, line length, and whitespace) to avoid incidental formatting changes during migration work.
 
@@ -717,6 +716,10 @@ let service = URLSessionNetworkService(
 - Codable: https://developer.apple.com/documentation/swift/codable
 - Siesta Documentation: https://bustoutsolutions.github.io/siesta/
 - Testing with URLProtocol: https://developer.apple.com/documentation/foundation/urlprotocol
+
+### D. Instructions on Process
+
+- When running tests to verify recent work, only run the unit tests (XitTests target). The UI tests will be run manually later on.
 
 ---
 
