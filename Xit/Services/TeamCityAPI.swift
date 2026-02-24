@@ -8,10 +8,10 @@ protocol BuildStatusService: AnyObject
   /// Branch name is supplied as a plain string because it could be a display name
   @MainActor
   func buildStatus(_ branch: String, buildType: String) -> Resource
-
+  
   // TeamCity-specific stuff that should be abstrated somehow
   var vcsBranchSpecs: [String: BranchSpec] { get }
-
+  
   func vcsRootsForBuildType(_ buildType: String) -> [String]
   func buildType(id: String) -> BuildType?
   func buildTypesForRemote(_ remoteURLString: String) -> [String]
@@ -24,7 +24,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   {
     case vcsRoots, buildTypes, buildType
   }
-
+  
   enum Error: Swift.Error
   {
     case vcsRoots
@@ -34,13 +34,13 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     case rootEntries
     case missingID
   }
-
+  
   var type: AccountType { .teamCity }
   static let rootPath = "/httpAuth/app/rest"
-
+  
   @Published
   fileprivate(set) var buildTypesStatus = Services.Status.notStarted
-
+  
   /// Maps VCS root ID to repository URL.
   fileprivate(set) var vcsRootMap: [String: URL] = [:]
   /// Maps VCS root ID to branch specification.
@@ -52,7 +52,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   private var buildTypesCache: [String: [String]] = [:]
   /// Cached results for `vcsRootsForBuildType`
   private var vcsRootsCache: [String: [String]] = [:]
-
+  
   private let mutex = NSRecursiveLock()
   
   required init?(account: Account, password: String)
@@ -101,7 +101,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
                             processor: @escaping ([String: String]) -> Void)
   {
     let statusResource = buildStatus(branch.fullPath, buildType: buildType)
-
+    
     statusResource.useData(owner: self) {
       (data) in
       guard let xml = data.content as? XMLDocument,
@@ -126,17 +126,16 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     
     return displayNames.reduce(nil) {
       (shortest, name) -> String? in
-      (shortest.map { $0.count < name.count } ?? false)
-          ? shortest : name
+      (shortest.map { $0.count < name.count } ?? false) ? shortest : name
     }
   }
-
+  
   /// Use this instead of `Service.resource()` to ensure it runs on the main
   /// thread.
   @MainActor
   func pathResource(_ path: String) -> Resource
   { super.resource(path) }
-
+  
   @MainActor
   var vcsRoots: Resource
   { pathResource("vcs-roots") }
@@ -148,7 +147,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   @MainActor
   var buildTypes: Resource
   { pathResource("buildTypes") }
-
+  
   @MainActor
   /// A resource for the VCS root with the given ID.
   func vcsRoot(id: String) -> Resource
@@ -168,7 +167,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
           throw Error.vcsRoots
         }
         try await Signpost.interval(.teamCityProcess) {
-            try await self.parseVCSRoots(xml)
+          try await self.parseVCSRoots(xml)
         }
       }
       catch let error {
@@ -176,9 +175,9 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
       }
     }
   }
-
+  
   // MARK: TeamCity
-
+  
   // Calling this buildTypes(forRemote:) would conflict with the buildTypes var.
   /// Returns all the build types that use the given remote.
   func buildTypesForRemote(_ remoteURLString: String) -> [String]
@@ -186,7 +185,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     if let cached = buildTypesCache[remoteURLString] {
       return cached
     }
-
+    
     guard let remoteURL = URL(string: remoteURLString)
     else { return [] }
     func matchHostPath(_ url: URL) -> Bool
@@ -194,7 +193,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
       return remoteURL.host == url.host &&
              remoteURL.path == url.path
     }
-
+    
     let result = buildTypeURLs.keys.filter {
       (key) in
       buildTypeURLs[key].map {
@@ -202,11 +201,11 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
         urls.contains { matchHostPath($0) }
       } ?? false
     }
-
+    
     buildTypesCache[remoteURLString] = result
     return result
   }
-
+  
   
   /// Returns a cached build type with a matching ID
   func buildType(id: String) -> BuildType?
@@ -220,18 +219,18 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     if let cached = vcsRootsCache[buildType] {
       return cached
     }
-
+    
     guard let urls = buildTypeURLs[buildType]
     else { return [] }
     let result = vcsRootMap.compactMap {
       (vcsRoot, rootURL) in
       urls.contains(rootURL) ? vcsRoot : nil
     }
-
+    
     vcsRootsCache[buildType] = result
     return result
   }
-
+  
   /// Parses the list of VCS roots, collecting their repository URLs.
   /// Once all repo URLs have been logged, it moves on to reading build types.
   func parseVCSRoots(_ xml: XMLDocument) async throws
@@ -245,15 +244,15 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     vcsRootMap.removeAll()
     vcsRootsCache.removeAll()
     vcsBranchSpecs.removeAll()
-
+    
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for rootID in vcsIDs {
         let rootResource = await vcsRoot(id: rootID)
-
+        
         taskGroup.addTask {
           let data = try await rootResource.data
-
+          
           if let xmlData = data.content as? XMLDocument {
             self.parseVCSRoot(xml: xmlData, vcsRootID: rootID)
           }
@@ -269,7 +268,7 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
   func parseVCSRoot(xml: XMLDocument, vcsRootID: String)
   {
     guard let properties = xml.rootElement()?.elements(forName: "properties")
-                           .first,
+                              .first,
           let propertiesChildren = properties.children
     else { return }
     
@@ -278,14 +277,14 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
             let name = propertyElement.attribute(forName: "name")?.stringValue,
             let value = propertyElement.attribute(forName: "value")?.stringValue
       else { continue }
-
+      
       mutex.withLock {
         switch name {
           case "url":
             vcsRootMap[vcsRootID] = URL(string: value)
           case "teamcity:branchSpec":
             let specLines = value.components(separatedBy: .whitespacesAndNewlines)
-
+            
             if let branchSpec = BranchSpec(ruleStrings: specLines) {
               vcsBranchSpecs[vcsRootID] = branchSpec
             }
@@ -314,14 +313,14 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
       (taskGroup) in
       for href in hrefs {
         let relativePath = href.droppingPrefix(TeamCityAPI.rootPath)
-
+        
         taskGroup.addTask {
           let data = try await self.pathResource(relativePath).data
           guard let xml = data.content as? XMLDocument
           else {
             throw Error.parseFailure(.buildType)
           }
-
+          
           try self.parseBuildType(xml)
         }
       }
@@ -341,9 +340,9 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     else {
       throw Error.firstBuildType
     }
-
+    
     let name = buildType.attribute(forName: "name")?.stringValue ?? "❎"
-
+    
     guard let rootEntries = buildType.elements(forName: "vcs-root-entries").first
     else {
       throw Error.rootEntries
@@ -352,9 +351,9 @@ final class TeamCityAPI: BasicAuthService, ServiceAPI, BuildStatusService
     else {
       throw Error.missingID
     }
-
+    
     let projectName = buildType.attribute(forName: "projectName")?.stringValue
-
+    
     mutex.withLock {
       cachedBuildTypes.append(BuildType(id: buildTypeID,
                                         name: name,

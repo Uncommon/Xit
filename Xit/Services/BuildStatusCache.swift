@@ -10,7 +10,7 @@ final class BuildStatusCache: BuildStatusAccessor
 {
   // This typealias resolves ambiguity for the compiler
   typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
-
+  
   var servicesMgr: Services { Services.xit }
   weak var remoteMgr: (any RemoteManagement)!
   weak var branchLister: (any Branching)?
@@ -53,12 +53,12 @@ final class BuildStatusCache: BuildStatusAccessor
     statuses.removeAll()
     Task {
       let localBranches = getLocalBranches(branchLister)
-
+      
       await Signpost.interval(.refreshBuildStatus) {
         for local in localBranches {
           guard let remoteName = local.trackingBranch?.remoteName
           else { continue }
-
+          
           do {
             try await refresh(remoteName: remoteName,
                               branch: local.referenceName)
@@ -68,18 +68,18 @@ final class BuildStatusCache: BuildStatusAccessor
       }
     }
   }
-
+  
   func getLocalBranches(_ repository: some Branching) -> [any LocalBranch]
   {
     repository.localBranches.map { $0 }
   }
-
+  
   enum RefreshError: Error
   {
     case noBuildTypes
     case parseFailure
   }
-
+  
   @MainActor
   func refresh(remoteName: String, branch: LocalBranchRefName) async throws
   {
@@ -87,7 +87,7 @@ final class BuildStatusCache: BuildStatusAccessor
     else {
       throw RefreshError.noBuildTypes
     }
-  
+    
     try await withThrowingTaskGroup(of: Void.self) {
       (taskGroup) in
       for buildType in buildTypes {
