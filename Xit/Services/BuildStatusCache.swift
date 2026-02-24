@@ -1,5 +1,12 @@
 import Foundation
 
+protocol BuildStatusDisplayService
+{
+  func cachedVCSRoots(for buildType: String) -> [String]
+  func cachedBranchSpec(for vcsRootID: String) -> BranchSpec?
+  func cachedBuildTypesSnapshot() -> [BuildType]
+}
+
 protocol BuildStatusAccessor: AnyObject
 {
   var servicesMgr: Services { get }
@@ -140,7 +147,7 @@ extension BuildStatusAccessor
     return await servicesMgr.teamCityHTTPBuildStatus(for: remoteURL)
   }
   
-  func matchBuildStatusService(_ remoteName: String) -> TeamCityHTTPService?
+  func matchBuildStatusService(_ remoteName: String) -> (any BuildStatusDisplayService)?
   {
     guard let remoteMgr = self.remoteMgr,
           let remote = remoteMgr.remote(named: remoteName),

@@ -318,3 +318,5 @@ final class TeamCityHTTPService: BaseHTTPService
   func cachedBranchSpec(for vcsRootID: String) -> BranchSpec?
   { vcsBranchSpecs[vcsRootID] }
 }
+
+extension TeamCityHTTPService: BuildStatusDisplayService {}

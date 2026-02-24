@@ -7,7 +7,7 @@ final class BuildStatusViewController: NSViewController
   weak var repository: (any Repository)!
   let branch: any Branch
   let buildStatusCache: BuildStatusCache
-  var api: TeamCityHTTPService?
+  var api: (any BuildStatusDisplayService)?
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var headingLabel: NSTextField!
   @IBOutlet weak var refreshButton: NSButton!
