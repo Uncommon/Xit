@@ -4,6 +4,16 @@ import XCTest
 
 final class TaskQueueTest: XCTestCase
 {
+  private func runOnMainThread<T>(_ block: @escaping () throws -> T) throws -> T
+  {
+    if Thread.isMainThread {
+      return try block()
+    }
+    else {
+      return try DispatchQueue.main.sync(execute: block)
+    }
+  }
+
   func testTaskQueueBusyPublisherTransitionsTrueFalse()
   {
     let queue = TaskQueue(id: "TaskQueueTest.busyPublisher")
@@ -43,6 +53,24 @@ final class TaskQueueTest: XCTestCase
     XCTAssertNotNil(lastIdle)
     if let firstBusy, let lastIdle {
       XCTAssertGreaterThan(lastIdle, firstBusy)
+    }
+  }
+
+  func testTaskQueueSyncOffMainThreadThrowsAfterShutdown()
+  {
+    let queue = TaskQueue(id: "TaskQueueTest.syncOffMainThread")
+
+    queue.shutDown()
+
+    XCTAssertThrowsError(try runOnMainThread {
+      try queue.syncOffMainThread { 1 }
+    }) {
+      error in
+      guard case TaskQueue.Error.queueShutDown = error
+      else {
+        XCTFail("Unexpected error: \(error)")
+        return
+      }
     }
   }
 }
