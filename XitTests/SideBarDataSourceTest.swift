@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 @testable import Xit
+@testable import XitGit
+import XitGitTestSupport
 
 class SidebarDataSourceTest: XTTest
 {
@@ -43,6 +45,7 @@ class SidebarDataSourceTest: XTTest
     let rowCount = sbds.outlineView(outline, numberOfChildrenOfItem: nil)
     
     XCTAssertEqual(rowCount, 6)
+    if rowCount < 6 { return }
     
     let tagsGroup = groupItem(.tags)
     let tagCount = sbds.outlineView(outline, numberOfChildrenOfItem: tagsGroup)
@@ -111,7 +114,7 @@ class SidebarDataSourceTest: XTTest
     let remoteName = "origin"
 
     try execute(in: repository) {
-      CheckOut(branch: "master")
+      CheckOut(branch: "main")
       CreateBranch("b1")
     }
     try repository.addRemote(named: remoteName,

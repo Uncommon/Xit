@@ -1,5 +1,6 @@
 import Cocoa
 import SwiftUI
+import XitGit
 
 final class PrefsWindowController: NSWindowController
 {

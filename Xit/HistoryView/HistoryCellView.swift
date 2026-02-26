@@ -1,4 +1,5 @@
 import Cocoa
+import XitGit
 
 /// Cell view that draws the graph lines next to the text.
 final class HistoryCellView: NSTableCellView

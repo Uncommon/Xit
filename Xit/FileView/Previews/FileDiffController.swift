@@ -1,4 +1,5 @@
 import Cocoa
+import XitGit
 
 @MainActor
 protocol HunkStaging: AnyObject

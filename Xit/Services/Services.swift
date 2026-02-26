@@ -1,6 +1,7 @@
 import Cocoa
 import Siesta
 import os
+import XitGit
 
 let serviceLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
                            category: "services")

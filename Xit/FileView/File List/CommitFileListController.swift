@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 
 final class CommitFileListController: FileListController
 {

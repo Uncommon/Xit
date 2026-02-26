@@ -1,0 +1,89 @@
+import Foundation
+
+public enum WhitespaceSetting: String, CaseIterable
+{
+  case showAll
+  case ignoreEOL
+  case ignoreAll
+}
+
+/// An object that can generate file patches, and re-generate them with
+/// different options.
+public final class PatchMaker
+{
+  public enum SourceType
+  {
+    case blob(any Blob)
+    case data(Data)
+    
+    init(_ blob: (any Blob)?)
+    {
+      self = blob.map { .blob($0) } ?? .data(Data())
+    }
+  }
+  
+  public enum PatchResult
+  {
+    case noDifference
+    case binary
+    case diff(PatchMaker)
+  }
+  
+  public let fromSource: SourceType
+  public let toSource: SourceType
+  public let path: String
+  
+  static let defaultContextLines: UInt = 3
+  public var contextLines: UInt = PatchMaker.defaultContextLines
+  public var whitespace: WhitespaceSetting = .showAll
+  public var usePatience = false
+  public var minimal = false
+  
+  private var options: DiffOptions
+  {
+    var flags: DiffOptionFlags = []
+    
+    switch whitespace {
+      case .showAll:
+        break
+      case .ignoreEOL:
+        flags = .ignoreWhitespaceEOL
+      case .ignoreAll:
+        flags = .ignoreWhitespace
+    }
+    if usePatience {
+      flags.insert(.patience)
+    }
+    if minimal {
+      flags.insert(.minimal)
+    }
+    
+    var result = DiffOptions(flags: flags)
+    
+    result.contextLines = UInt32(contextLines)
+    return result
+  }
+
+  init(from: SourceType, to: SourceType, path: String)
+  {
+    self.fromSource = from
+    self.toSource = to
+    self.path = path
+  }
+
+  public func makePatch() -> (any Patch)?
+  {
+    switch (fromSource, toSource) {
+      case let (.blob(fromBlob), .blob(toBlob)):
+        GitPatch(oldBlob: fromBlob, newBlob: toBlob, options: options)
+      case let (.data(fromData), .data(toData)):
+        GitPatch(oldData: fromData, newData: toData, options: options)
+      case let (.blob(fromBlob), .data(toData)):
+        GitPatch(oldBlob: fromBlob, newData: toData, options: options)
+      case let (.data(fromData), .blob(toBlob)):
+        GitPatch(oldData: fromData,
+                 newData: toBlob.makeData() ?? Data(),
+                 options: options)
+    }
+  }
+}

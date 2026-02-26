@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import XitGit
 
 extension NSTouchBarItem.Identifier
 {
@@ -17,7 +18,7 @@ final class CommitEntryController: NSViewController,
   {
     didSet
     {
-      if let controller = repo?.controller as? RepositoryPublishing {
+      if let controller = (repo as? XTRepository)?.controller {
         Task {
           for await _ in controller.indexPublisher.values {
             updateStagedStatus()
@@ -129,14 +130,14 @@ final class CommitEntryController: NSViewController,
     }
     .store(in: &cancellables)
 
-    defaults.publisher(for: \.guideWidth).sinkOnMainQueue { 
+    defaults.publisher(for: \.guideWidth).sinkOnMainQueue {
       [weak self] in
-      guard let strongSelf = self 
+      guard let strongSelf = self
       else {
         return
       }
       
-      strongSelf.guideLeadingConstraint.constant = 
+      strongSelf.guideLeadingConstraint.constant =
         strongSelf.commitField.textContainerInset.width
         + (strongSelf.commitField.textContainer?.lineFragmentPadding ?? 0)
         + strongSelf.characterWidth * CGFloat($0)

@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "824B1C64-A345-424C-84FE-089A288E49D2",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "XitGitTests",
+        "name" : "XitGitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,5 +1,6 @@
 import Foundation
 @testable import Xit
+@testable import XitGit
 
 class FakeRepo: FileChangesRepo &
   EmptyCommitReferencing & EmptyFileDiffing & EmptyFileContents &

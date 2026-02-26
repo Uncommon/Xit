@@ -1,5 +1,7 @@
 import XCTest
 @testable import Xit
+@testable import XitGit
+import XitGitTestSupport
 
 
 class TestingSidebarHandler : SidebarCommandHandler
@@ -74,14 +76,14 @@ class SidebarHandlerTest: XTTest
   @MainActor
   func testDeleteCurrentBranch()
   {
-    XCTAssertFalse(checkDeleteBranch(named: "master"))
+    XCTAssertFalse(checkDeleteBranch(named: "main"))
   }
   
   @MainActor
   func testDeleteOtherBranch() throws
   {
     _ = try repository.createBranch(named: "other",
-                                    target: "refs/heads/master")
+                                    target: "refs/heads/main")
     XCTAssertTrue(checkDeleteBranch(named: "other"))
   }
 
@@ -103,7 +105,7 @@ class SidebarHandlerTest: XTTest
   
   func composeStashes(_ expectedStashes: [String]) -> [String]
   {
-    return expectedStashes.map { "On master: \($0)" }
+    return expectedStashes.map { "On main: \($0)" }
   }
   
   @MainActor
@@ -194,9 +196,9 @@ class SidebarHandlerTest: XTTest
       CreateBranch("branch")
     }
     handler.selectedItem = item(forBranch: "branch")
-    XCTAssertNotNil(try? repository.checkOut(branch: "master"))
+    XCTAssertNotNil(try? repository.checkOut(branch: "main"))
     XCTAssertTrue(handler.validate(sidebarCommand: menuItem))
-    XCTAssertEqual(menuItem.title, "Merge \"branch\" into \"master\"")
+    XCTAssertEqual(menuItem.title, "Merge \"branch\" into \"main\"")
   }
   
   @MainActor
@@ -207,7 +209,7 @@ class SidebarHandlerTest: XTTest
       action: #selector(SidebarController.mergeBranch(_:)),
       keyEquivalent: "")
     
-    handler.selectedItem = item(forBranch: "master")
+    handler.selectedItem = item(forBranch: "main")
     XCTAssertFalse(handler.validate(sidebarCommand: menuItem))
   }
 }

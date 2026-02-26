@@ -1,6 +1,6 @@
 import XCTest
 @testable import Xit
-
+@testable import XitGit
 
 class StringRepository: CommitStorage
 {
@@ -37,7 +37,7 @@ class StringRepository: CommitStorage
 extension Xit.CommitConnection: @retroactive CustomDebugStringConvertible
 {
   public var debugDescription: String
-  { return "\(childOID.debugDescription)-\(parentOID.debugDescription) \(colorIndex)" }
+  { return "\(childOID.description.prefix(6))-\(parentOID.description.prefix(6)) \(colorIndex)" }
 }
 
 
@@ -88,7 +88,7 @@ class CommitHistoryTest: XCTestCase
   /// Makes sure each commit precedes its parents.
   func check(_ history: TestCommitHistory, expectedLength: Int)
   {
-    print("\(history.entries.map({ $0.commit.id.debugDescription }))")
+    print("\(history.entries.map({ $0.commit.id.description.prefix(6) }))")
     XCTAssertEqual(history.entries.count, expectedLength)
     for (index, entry) in history.entries.enumerated() {
       for parentOID in entry.commit.parentOIDs {

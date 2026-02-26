@@ -20,3 +20,4 @@ DerivedData
 
 # User-specific xcconfig files
 Xcode-config/DEVELOPMENT_TEAM.xcconfig
+Package.resolved

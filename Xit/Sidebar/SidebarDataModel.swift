@@ -1,5 +1,6 @@
 import Foundation
 import Cocoa
+import XitGit
 
 /// Contains the items listed in the sidebar
 ///

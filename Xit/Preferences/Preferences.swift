@@ -1,5 +1,5 @@
 import Foundation
-
+import XitGit
 
 enum PreferenceKeys
 {
@@ -37,12 +37,8 @@ struct PreferenceKey<T>
 
 extension PreferenceKey: Sendable where T: Sendable {}
 
-enum WhitespaceSetting: String, CaseIterable
+extension WhitespaceSetting
 {
-  case showAll
-  case ignoreEOL
-  case ignoreAll
-
   var displayName: String
   {
     switch self {

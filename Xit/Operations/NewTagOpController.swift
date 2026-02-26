@@ -1,4 +1,5 @@
 import Cocoa
+import XitGit
 
 final class NewTagOpController: OperationController
 {

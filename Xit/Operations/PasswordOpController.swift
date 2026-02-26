@@ -1,5 +1,6 @@
 import Cocoa
 import Combine
+import XitGit
 
 /// An operation that may require a password.
 class PasswordOpController: SimpleOperationController

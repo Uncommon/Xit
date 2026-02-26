@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Cocoa
+import XitGit
 
 /// View controller for history view, with the history list on top and
 /// detail views below.

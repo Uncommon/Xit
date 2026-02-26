@@ -1,4 +1,4 @@
-import Foundation
+import Cocoa
 
 @MainActor
 protocol ReselectingOutlineDelegate: AnyObject
