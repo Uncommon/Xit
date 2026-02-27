@@ -1,4 +1,5 @@
 import Foundation
+import XitGit
 
 /// URLSession-based Bitbucket Server service (parallel to Siesta-backed BitbucketServerAPI).
 /// Provides async endpoints for pull request workflows.

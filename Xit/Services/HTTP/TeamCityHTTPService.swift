@@ -1,4 +1,5 @@
 import Foundation
+import XitGit
 
 /// URLSession-based TeamCity service (parallel to Siesta-backed TeamCityAPI).
 /// Provides async endpoints; not yet wired into UI or Services.
