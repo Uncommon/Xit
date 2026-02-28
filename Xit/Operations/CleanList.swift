@@ -164,6 +164,19 @@ extension CleanList.Coordinator: NSTableViewDelegate
 
     return fileURLForPath(path) as NSURL
   }
+
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 sourceOperationMaskForDraggingContext context: NSDraggingContext)
+    -> NSDragOperation
+  {
+    switch context {
+      case .withinApplication, .outsideApplication:
+        return [.copy, .move]
+      @unknown default:
+        return .copy
+    }
+  }
 }
 
 extension CleanList.Coordinator: NSTableViewDataSource
