@@ -13,7 +13,7 @@ Enable dragging files from the Clean panel to Finder/other apps by exporting sel
 - ✅ Drag registration for file URLs in `CleanList` setup.
 - ✅ Pasteboard writers emit file URLs using a resolver threaded from `CleanPanel`/`CleanPanelController`.
 - ✅ Add drag source masks (copy/move) and clicked-row vs. selection handling.
-- ⏳ Refresh Clean list after move operations via `draggingSession(_:endedAt:operation:)`.
+- ✅ Refresh Clean list after move operations via `draggingSession(_:endedAt:operation:)`.
 
 ## Proposed Implementation
 1) **Register drag types** (done): In `CleanList` table setup, register `NSPasteboard.PasteboardType.fileURL` (or UTType.fileURL) for drag-out.
@@ -22,7 +22,7 @@ Enable dragging files from the Clean panel to Finder/other apps by exporting sel
 4) **Drag source masks** (done): Implement `draggingSession(_:sourceOperationMaskFor:)` to allow `.copy` (and optionally `.move` if appropriate). Use table-provided drag images; ensure selection is preserved on drag start.
 5) **Handle clicked vs. selection** (done): If the drag begins on an unselected row, treat that row as the drag set; otherwise use the current selection.
 6) **Missing paths policy** (decided): Items are expected to exist on disk; no extra guards beyond resolver are needed.
-7) **Post-drag updates on move**: In `draggingSession(_:endedAt:operation:)`, if the operation includes `.move`, refresh/reload the Clean list (or re-query the repo) to remove moved items and reflect new state.
+7) **Post-drag updates on move** (done): In `draggingSession(_:endedAt:operation:)`, if the operation includes `.move`, refresh/reload the Clean list (or re-query the repo) to remove moved items and reflect new state.
 
 ## UI/UX Notes
 - Rely on NSTableView’s default drag image; optional `draggingSession(_:willBeginAt:)` if cursor/image tweaks are needed.
