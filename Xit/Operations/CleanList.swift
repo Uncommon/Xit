@@ -33,6 +33,8 @@ struct CleanList: NSViewRepresentable
     tableView.tableColumns[1].width = 24
     tableView.allowsMultipleSelection = true
     tableView.registerForDraggedTypes([.fileURL])
+    tableView.setDraggingSourceOperationMask([.copy, .move], forLocal: true)
+    tableView.setDraggingSourceOperationMask([.copy, .move], forLocal: false)
     tableView.delegate = context.coordinator
     tableView.dataSource = context.coordinator
     scrollView.documentView = tableView
