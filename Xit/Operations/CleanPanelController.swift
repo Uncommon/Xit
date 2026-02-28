@@ -21,7 +21,8 @@ final class CleanPanelController: NSWindowController
     
     super.init(window: window)
     
-    let panel = CleanPanel(delegate: self, model: model)
+    let panel = CleanPanel(delegate: self, model: model,
+                           fileURLForPath: { repository.fileURL($0) })
     let viewController = NSHostingController(rootView: panel)
     
     window.contentViewController = viewController

@@ -118,6 +118,7 @@ class CleanData: ObservableObject
 struct CleanPanel: View
 {
   weak var delegate: (any CleanPanelDelegate)?
+  let fileURLForPath: (String) -> URL
 
   struct CleanError: Error, Identifiable
   {
@@ -133,6 +134,14 @@ struct CleanPanel: View
   @State private var cleanSelectedAlertShown = false
   @State private var cleanAllAlertShown = false
   @State private var cleanError: CleanError?
+
+  init(delegate: (any CleanPanelDelegate)?, model: CleanData,
+       fileURLForPath: @escaping (String) -> URL = { URL(fileURLWithPath: $0) })
+  {
+    self.delegate = delegate
+    self.fileURLForPath = fileURLForPath
+    self._model = ObservedObject(wrappedValue: model)
+  }
 
   var body: some View
   {
@@ -168,7 +177,8 @@ struct CleanPanel: View
           .accessibilityIdentifier(.Clean.Controls.filterField)
       }
 
-      CleanList(data: model, selection: $selection, delegate: delegate)
+      CleanList(data: model, selection: $selection, delegate: delegate,
+                fileURLForPath: fileURLForPath)
         .frame(minWidth: 200, minHeight: 100)
 
       ZStack(alignment: .leading) {
