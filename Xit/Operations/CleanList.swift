@@ -177,6 +177,28 @@ extension CleanList.Coordinator: NSTableViewDelegate
         return .copy
     }
   }
+
+  @MainActor
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 willBeginAt screenPoint: NSPoint,
+                 forRowIndexes rowIndexes: IndexSet)
+  {
+    tableView.selectRowIndexes(rowIndexes, byExtendingSelection: false)
+  }
+
+  @MainActor
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 endedAt screenPoint: NSPoint,
+                 operation: NSDragOperation)
+  {
+    guard operation.contains(.move) else { return }
+
+    Task { @MainActor in
+      delegate?.refresh()
+    }
+  }
 }
 
 extension CleanList.Coordinator: NSTableViewDataSource
