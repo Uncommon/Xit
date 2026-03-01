@@ -179,6 +179,18 @@ Tasks:
 Exit criteria:
 - One reusable abstraction for glass surfaces exists and is used by at least one screen.
 
+### Phase 0 implementation status
+- Added shared non-sidebar liquid glass helpers:
+  - `Xit/Utils/Extensions/CocoaExtensions.swift`
+  - `Xit/Utils/Extensions/SwiftUIExtensions.swift`
+- Wired into non-sidebar screens:
+  - `Xit/Utils/SwiftUI/HostingTitlebarController.swift`
+  - `Xit/Operations/SheetDialog.swift`
+  - `Xit/Operations/ClonePanel.swift`
+- PR scope guard for this phase:
+  - Do not change `Xit/Sidebar/*`
+  - Do not change sidebar scene content in `Xit/Document/XTWindowController.storyboard`
+
 ### Phase 1: Window chrome + preview quick wins
 Files:
 - `XTWindowController.storyboard`, `XTWindowController.swift`, `TitleBarController.swift`
