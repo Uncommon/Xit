@@ -1,6 +1,26 @@
 import Foundation
 import Cocoa
 
+enum LiquidGlassTheme
+{
+  static let cornerRadius: CGFloat = 12
+  static let compactCornerRadius: CGFloat = 10
+  static let spacing: CGFloat = 12
+  static let containerSpacing: CGFloat = 16
+  static let fallbackFillAlpha: CGFloat = 0.88
+  static let fallbackStrokeAlpha: CGFloat = 0.20
+  static let contrastStrokeAlpha: CGFloat = 0.35
+}
+
+enum LiquidGlassAccessibility
+{
+  static var shouldReduceTransparency: Bool
+  { NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency }
+
+  static var shouldIncreaseContrast: Bool
+  { NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast }
+}
+
 extension NSObject
 {
   func changingValue(forKey key: String, block: () -> Void)
@@ -29,6 +49,23 @@ extension NSApplication
 
 extension NSColor
 {
+  static var xtLiquidGlassFallbackFill: NSColor
+  {
+    let alpha = LiquidGlassAccessibility.shouldIncreaseContrast
+        ? 1.0 : LiquidGlassTheme.fallbackFillAlpha
+    
+    return .windowBackgroundColor.withAlphaComponent(alpha)
+  }
+
+  static var xtLiquidGlassFallbackStroke: NSColor
+  {
+    let alpha = LiquidGlassAccessibility.shouldIncreaseContrast
+        ? LiquidGlassTheme.contrastStrokeAlpha
+        : LiquidGlassTheme.fallbackStrokeAlpha
+    
+    return .separatorColor.withAlphaComponent(alpha)
+  }
+
   var invertingBrightness: NSColor
   {
     NSColor(deviceHue: hueComponent,
@@ -103,6 +140,57 @@ extension NSImage
     }
     
     return try callback()
+  }
+}
+
+private let glassBackgroundIdentifier =
+    NSUserInterfaceItemIdentifier("xt.liquidGlassBackground")
+
+extension NSView
+{
+  /// Installs a single shared liquid-glass background view behind this view's
+  /// existing contents.
+  @discardableResult
+  func installLiquidGlassBackground(
+      cornerRadius: CGFloat = LiquidGlassTheme.cornerRadius,
+      material: NSVisualEffectView.Material = .headerView,
+      blendingMode: NSVisualEffectView.BlendingMode = .withinWindow)
+    -> NSVisualEffectView
+  {
+    if let existing = subviews.first(where: {
+      $0.identifier == glassBackgroundIdentifier
+    }) as? NSVisualEffectView {
+      return existing
+    }
+
+    let background = NSVisualEffectView()
+    
+    background.identifier = glassBackgroundIdentifier
+    background.translatesAutoresizingMaskIntoConstraints = false
+    background.blendingMode = blendingMode
+    background.state = .followsWindowActiveState
+    background.material = LiquidGlassAccessibility.shouldReduceTransparency
+        ? .windowBackground : material
+    background.wantsLayer = true
+    background.layer?.cornerRadius = cornerRadius
+    background.layer?.cornerCurve = .continuous
+    background.layer?.borderColor = NSColor.xtLiquidGlassFallbackStroke.cgColor
+    background.layer?.borderWidth =
+        LiquidGlassAccessibility.shouldIncreaseContrast ? 1.0 : 0.5
+    
+    if LiquidGlassAccessibility.shouldReduceTransparency ||
+       LiquidGlassAccessibility.shouldIncreaseContrast {
+      background.layer?.backgroundColor = NSColor.xtLiquidGlassFallbackFill.cgColor
+    }
+
+    addSubview(background, positioned: .below, relativeTo: nil)
+    NSLayoutConstraint.activate([
+      background.leadingAnchor.constraint(equalTo: leadingAnchor),
+      background.trailingAnchor.constraint(equalTo: trailingAnchor),
+      background.topAnchor.constraint(equalTo: topAnchor),
+      background.bottomAnchor.constraint(equalTo: bottomAnchor),
+    ])
+    return background
   }
 }
 

@@ -63,7 +63,7 @@ struct ClonePanel: View
         }.keyboardShortcut(.defaultAction)
          .disabled(!data.results.allSucceeded)
       }
-    }.padding(20)
+    }.liquidGlassSurface(padding: 20)
      .fixedSize(horizontal: false, vertical: true)
      .frame(minWidth: 500)
   }
