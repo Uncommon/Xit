@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -99,6 +99,7 @@
 		89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272D2861711700A17651 /* AccountsPrefsPane.swift */; };
 		89E427302862CF2E00A17651 /* EditAccountPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89EFEEE52F548634008D5CC3 /* LiquidGlassAdoption.md in Resources */ = {isa = PBXBuildFile; fileRef = 89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */; };
 		89F24B842C498878007D632E /* FakedMacro in Frameworks */ = {isa = PBXBuildFile; productRef = 89F24B832C498878007D632E /* FakedMacro */; };
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
@@ -386,6 +387,7 @@
 		89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewsPrefsPane.swift; sourceTree = "<group>"; };
 		89E4272D2861711700A17651 /* AccountsPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsPrefsPane.swift; sourceTree = "<group>"; };
 		89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountPanel.swift; sourceTree = "<group>"; };
+		89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LiquidGlassAdoption.md; sourceTree = "<group>"; };
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
@@ -702,6 +704,7 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */,
 				C9CDB99B270DDEDF007C2E77 /* src */,
 				C9CDB990270DDE0D007C2E77 /* git2 */,
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
@@ -1209,6 +1212,7 @@
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				C9C4ECB52970D0EC0023C239 /* CleanCell.xib in Resources */,
 				C94866C11D25861E000BDB0A /* PasswordPanelController.xib in Resources */,
+				89EFEEE52F548634008D5CC3 /* LiquidGlassAdoption.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
