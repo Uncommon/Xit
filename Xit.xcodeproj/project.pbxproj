@@ -354,7 +354,6 @@
 		89880EDA20D08674007042F8 /* RefTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefTokenView.swift; sourceTree = "<group>"; };
 		89880EEC20D17D1E007042F8 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		8988E9F32F4FB65700937EC8 /* PullRequestCacheTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullRequestCacheTest.swift; sourceTree = "<group>"; };
-		8988E9F52F4FFCDA00937EC8 /* issue-491-clean-panel-drag-plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "issue-491-clean-panel-drag-plan.md"; sourceTree = "<group>"; };
 		898A381727136881002639CC /* RepoDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoDocument.swift; sourceTree = "<group>"; };
 		898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryOperation.swift; sourceTree = "<group>"; };
 		898F75852A51D8C700C157D7 /* OperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTests.swift; sourceTree = "<group>"; };
@@ -703,7 +702,6 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
-				8988E9F52F4FFCDA00937EC8 /* issue-491-clean-panel-drag-plan.md */,
 				C9CDB99B270DDEDF007C2E77 /* src */,
 				C9CDB990270DDE0D007C2E77 /* git2 */,
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
