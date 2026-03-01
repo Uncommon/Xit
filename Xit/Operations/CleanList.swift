@@ -198,6 +198,7 @@ extension CleanList.Coordinator: NSTableViewDelegate
     guard operation.contains(.move) else { return }
 
     Task { @MainActor in
+      selection.removeAll()
       delegate?.refresh()
     }
   }

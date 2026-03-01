@@ -99,7 +99,7 @@ class CleanData: ObservableObject
   @Published var items: [CleanableItem] = []
   { didSet { refilter() } }
 
-  var filteredItems: [CleanableItem] = []
+  @Published private(set) var filteredItems: [CleanableItem] = []
 
   private func refilter()
   {
@@ -245,7 +245,7 @@ struct CleanPanel: View
         (newValue, _) in
         selection.formIntersection(newValue.map { $0.path })
       }
-  }
+   }
 
   func confirmCleanAlert(_ message: UIString,
                          onConfirm: @escaping @MainActor () -> Void)
