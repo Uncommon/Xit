@@ -84,6 +84,7 @@
 		89BA11EB28C4E2C000A7999A /* UIString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F5334C2187608300B2432C /* UIString.swift */; };
 		89C0A1B22F51B00100C0DE01 /* ClonePanelControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C0A1B12F51B00100C0DE01 /* ClonePanelControllerTest.swift */; };
 		89C1D0012F80010000ABCD01 /* XitGitTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 89C1D0022F80010000ABCD01 /* XitGitTestSupport */; };
+		89C5A1EF2F52B2F2008DDBFB /* CleanListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C5A1EE2F52B2F2008DDBFB /* CleanListTests.swift */; };
 		89C9276B1D368C020074F71A /* SideBarDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C9276A1D368C020074F71A /* SideBarDataSource.swift */; };
 		89C927881D43B0460074F71A /* PullOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C927871D43B0460074F71A /* PullOpController.swift */; };
 		89CB61981E788A3900D69FE4 /* lorem.txt in Resources */ = {isa = PBXBuildFile; fileRef = 89CB61971E788A3900D69FE4 /* lorem.txt */; };
@@ -369,6 +370,7 @@
 		89BA11E528BE432200A7999A /* HostingTitlebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTitlebarController.swift; sourceTree = "<group>"; };
 		89BA11E828C4E26900A7999A /* HistorySearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchType.swift; sourceTree = "<group>"; };
 		89C0A1B12F51B00100C0DE01 /* ClonePanelControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClonePanelControllerTest.swift; sourceTree = "<group>"; };
+		89C5A1EE2F52B2F2008DDBFB /* CleanListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanListTests.swift; sourceTree = "<group>"; };
 		89C9276A1D368C020074F71A /* SideBarDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SideBarDataSource.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		89C927871D43B0460074F71A /* PullOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PullOpController.swift; sourceTree = "<group>"; };
 		89CB61971E788A3900D69FE4 /* lorem.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lorem.txt; sourceTree = "<group>"; };
@@ -804,6 +806,7 @@
 				C9088CC622BA8BC500DB4A02 /* BuildStatusControllerTest.swift */,
 				DD98CFF2181ADFC5008B79C9 /* CFRunLoop+Extensions.c */,
 				DD98CFFF181AE297008B79C9 /* CFRunLoop+Extensions.h */,
+				89C5A1EE2F52B2F2008DDBFB /* CleanListTests.swift */,
 				89C0A1B12F51B00100C0DE01 /* ClonePanelControllerTest.swift */,
 				C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
@@ -1459,6 +1462,7 @@
 				C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */,
 				DD98CFF3181ADFC5008B79C9 /* CFRunLoop+Extensions.c in Sources */,
 				891052D82523F3D30095E299 /* TestErrors.swift in Sources */,
+				89C5A1EF2F52B2F2008DDBFB /* CleanListTests.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */,

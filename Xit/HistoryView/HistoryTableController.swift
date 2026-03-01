@@ -106,7 +106,7 @@ final class HistoryTableController: NSViewController,
   {
     let history = self.history
     let repository = self.repository
-    weak var tableView = view as? NSTableView
+    weak let tableView = view as? NSTableView
     
     history.reset()
 

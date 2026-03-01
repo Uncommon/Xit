@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="l6G-3P-2hY">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,7 +21,7 @@
                                 <toolbarItem implicitItemIdentifier="22A022DE-8725-401D-8643-56B32D05A6D8" explicitItemIdentifier="xit.nav" label="Navigation" paletteLabel="Navigation" visibilityPriority="1" sizingBehavior="auto" navigational="YES" id="AIh-IS-Ifn">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="nQU-i2-YYo">
-                                        <rect key="frame" x="0.0" y="14" width="75" height="23"/>
+                                        <rect key="frame" x="0.0" y="14" width="65" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="Dbh-z0-eg3">
                                             <font key="font" metaFont="system"/>
@@ -39,7 +38,7 @@
                                 <toolbarItem implicitItemIdentifier="937E3C05-73FC-476A-9185-2B0916201849" explicitItemIdentifier="xit.remote" label="Remote Operations" paletteLabel="Remote Operations" sizingBehavior="auto" id="HjO-mu-IiC">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="tJj-QJ-vNA">
-                                        <rect key="frame" x="0.0" y="14" width="112" height="23"/>
+                                        <rect key="frame" x="5" y="14" width="98" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="kkS-1W-s9h">
                                             <font key="font" metaFont="system"/>
@@ -60,7 +59,7 @@
                                 <toolbarItem implicitItemIdentifier="82AFBB3C-699E-41C0-BCAC-9AAA96D61D40" explicitItemIdentifier="xit.view" label="View" paletteLabel="View" visibilityPriority="1" sizingBehavior="auto" id="EmV-8X-pjB">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="zEr-s8-lmY">
-                                        <rect key="frame" x="0.0" y="14" width="112" height="23"/>
+                                        <rect key="frame" x="0.0" y="14" width="98" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectAny" id="m64-hM-ec1">
                                             <font key="font" metaFont="system"/>
@@ -94,7 +93,7 @@
                                 <toolbarItem implicitItemIdentifier="4798E31C-C1B2-4D7F-AE28-6D09132E2284" explicitItemIdentifier="xit.stash" label="Stash" paletteLabel="Stash" sizingBehavior="auto" id="BqU-7i-BMT">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="4bM-EU-W6d">
-                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
+                                        <rect key="frame" x="3" y="14" width="32" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="pPh-La-Jyh">
                                             <font key="font" metaFont="system"/>
@@ -111,7 +110,7 @@
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="oLO-yb-35r"/>
                                 <toolbarItem implicitItemIdentifier="08D5CE15-0F1D-4BCB-AE97-290258920447" explicitItemIdentifier="xit.spinner" label="" paletteLabel="Spinner" tag="-1" sizingBehavior="auto" id="AXd-Bz-cV9">
                                     <nil key="toolTip"/>
-                                    <progressIndicator key="view" maxValue="100" indeterminate="YES" controlSize="small" style="spinning" id="crc-3R-3u9">
+                                    <progressIndicator key="view" wantsLayer="YES" maxValue="100" indeterminate="YES" controlSize="small" style="spinning" id="crc-3R-3u9">
                                         <rect key="frame" x="16" y="14" width="16" height="16"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <accessibility identifier="progress"/>
@@ -120,7 +119,7 @@
                                 <toolbarItem implicitItemIdentifier="57B6D0DE-D2B5-44C1-938C-77D30E8DA6A3" explicitItemIdentifier="xit.branches" label="Branches" paletteLabel="Branches" image="scm.branch" title="main" sizingBehavior="auto" id="9Jc-2J-e8T">
                                     <nil key="toolTip"/>
                                     <popUpButton key="view" verticalHuggingPriority="750" id="Fas-Ux-hUh">
-                                        <rect key="frame" x="0.0" y="14" width="80" height="25"/>
+                                        <rect key="frame" x="0.0" y="14" width="91" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <popUpButtonCell key="cell" type="roundTextured" title="main" bezelStyle="texturedRounded" image="scm.branch" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="1dQ-rj-Pwc" id="Qdf-wK-6Ub">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -143,12 +142,12 @@
                                 <toolbarItem implicitItemIdentifier="290444F5-1543-4AF2-B8AE-51333F9B09BC" explicitItemIdentifier="xit.clean" label="Clean" paletteLabel="Clean" sizingBehavior="auto" id="SEm-mB-BJY">
                                     <nil key="toolTip"/>
                                     <segmentedControl key="view" verticalHuggingPriority="750" id="4Bj-H4-LRj">
-                                        <rect key="frame" x="0.0" y="14" width="38" height="23"/>
+                                        <rect key="frame" x="3" y="14" width="32" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="WPj-TE-tri">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment toolTip="Stash" image="trash.circle" catalog="system" width="32"/>
+                                                <segment toolTip="Stash" image="bubbles.and.sparkles" catalog="system" width="32"/>
                                             </segments>
                                         </segmentedCell>
                                         <accessibility identifier="xit.clean"/>
@@ -225,8 +224,8 @@
         <scene sceneID="Yce-1f-lrO">
             <objects>
                 <viewController title="Sidebar" id="pEv-JE-8no" userLabel="Sidebar Controller" customClass="SidebarController" customModule="Xit" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="WdE-eB-CPt">
-                        <rect key="frame" x="0.0" y="0.0" width="329" height="640"/>
+                    <view key="view" misplaced="YES" id="WdE-eB-CPt">
+                        <rect key="frame" x="0.0" y="0.0" width="329" height="654"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="3" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9x-1p-ZQB">
@@ -265,7 +264,7 @@
                                         <accessibility identifier="sidebarAdd"/>
                                     </popUpButton>
                                     <searchField wantsLayer="YES" focusRingType="none" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dpy-6g-Z4Y">
-                                        <rect key="frame" x="27" y="3" width="302" height="19"/>
+                                        <rect key="frame" x="27" y="2" width="302" height="20"/>
                                         <searchFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" id="l6c-rF-HsK">
                                             <font key="font" metaFont="label" size="11"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -313,13 +312,13 @@
                                 </customSpacing>
                             </stackView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3P-kt-fG5">
-                                <rect key="frame" x="0.0" y="23" width="330" height="618"/>
+                                <rect key="frame" x="0.0" y="23" width="330" height="632"/>
                                 <clipView key="contentView" drawsBackground="NO" id="CgF-So-1Oa">
-                                    <rect key="frame" x="1" y="1" width="328" height="616"/>
+                                    <rect key="frame" x="1" y="1" width="328" height="630"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="Miy-P7-Lu7" id="8QW-fq-72y" customClass="XTSideBarOutlineView">
-                                            <rect key="frame" x="0.0" y="0.0" width="328" height="616"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="328" height="630"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -355,22 +354,22 @@
                                                                 <outlet property="textField" destination="7ie-hM-WFj" id="uSl-85-NMK"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="DataCell" id="IdM-wt-WZf" customClass="SidebarTableCellView" customModule="Xit" customModuleProvider="target">
+                                                        <tableCellView identifier="DataCell" misplaced="YES" id="IdM-wt-WZf" customClass="SidebarTableCellView" customModule="Xit" customModuleProvider="target">
                                                             <rect key="frame" x="11" y="20" width="305" height="18"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="7" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CCK-Vq-Aha">
-                                                                    <rect key="frame" x="3" y="0.0" width="299" height="18"/>
+                                                                    <rect key="frame" x="3" y="0.0" width="299" height="32"/>
                                                                     <subviews>
                                                                         <imageView wantsLayer="YES" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="QQY-9C-K8R">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="15" height="20"/>
+                                                                            <rect key="frame" x="0.0" y="7" width="15" height="20"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="width" constant="15" id="N30-iL-d8A"/>
                                                                             </constraints>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="i1N-nc-K8e"/>
                                                                         </imageView>
                                                                         <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kFw-7i-MXo" customClass="ExpansionTextField" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="20" y="1" width="172" height="16"/>
+                                                                            <rect key="frame" x="20" y="8" width="175" height="16"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Y15-iV-oBw">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -378,14 +377,14 @@
                                                                             </textFieldCell>
                                                                         </textField>
                                                                         <button hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zLr-U9-RcJ">
-                                                                            <rect key="frame" x="0.0" y="6" width="15" height="15"/>
+                                                                            <rect key="frame" x="0.0" y="20" width="15" height="15"/>
                                                                             <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="info.circle" catalog="system" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="QXi-Ve-eld">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="system"/>
                                                                             </buttonCell>
                                                                         </button>
                                                                         <button horizontalHuggingPriority="260" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="OVa-tM-guC" customClass="WorkspaceStatusIndicator" customModule="Xit" customModuleProvider="target">
-                                                                            <rect key="frame" x="197" y="0.0" width="42" height="18"/>
+                                                                            <rect key="frame" x="200" y="0.0" width="39" height="32"/>
                                                                             <buttonCell key="cell" type="inline" title="10▸10" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="Wzv-az-NTA">
                                                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                 <font key="font" metaFont="smallSystemBold"/>
@@ -393,7 +392,7 @@
                                                                             <accessibility identifier="workspaceStatus"/>
                                                                         </button>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="WL1-iS-eJT">
-                                                                            <rect key="frame" x="246" y="1" width="26" height="16"/>
+                                                                            <rect key="frame" x="246" y="8" width="26" height="16"/>
                                                                             <subviews>
                                                                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="a4I-Sk-SMm">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="26" height="16"/>
@@ -451,7 +450,7 @@
                                                                             </constraints>
                                                                         </customView>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="pmL-2l-XbP">
-                                                                            <rect key="frame" x="279" y="1" width="20" height="16"/>
+                                                                            <rect key="frame" x="279" y="8" width="20" height="16"/>
                                                                             <subviews>
                                                                                 <button translatesAutoresizingMaskIntoConstraints="NO" id="OtB-2V-Vr6">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="20" height="16"/>
@@ -596,6 +595,7 @@
         <image name="NSAddTemplate" width="18" height="17"/>
         <image name="NSGoRightTemplate" width="12" height="17"/>
         <image name="NSLeftFacingTriangleTemplate" width="12" height="17"/>
+        <image name="bubbles.and.sparkles" catalog="system" width="17" height="15"/>
         <image name="buildSucceeded" width="14" height="14"/>
         <image name="checkmark.circle.fill" catalog="system" width="15" height="15"/>
         <image name="exclamationmark.triangle.fill" catalog="system" width="17" height="15"/>
@@ -609,7 +609,6 @@
         <image name="square.and.arrow.down" catalog="system" width="15" height="17"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.up.fill" catalog="system" width="15" height="17"/>
-        <image name="trash.circle" catalog="system" width="15" height="15"/>
         <image name="tray.fill" catalog="system" width="18" height="13"/>
     </resources>
 </document>

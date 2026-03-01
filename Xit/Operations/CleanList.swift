@@ -6,6 +6,7 @@ struct CleanList: NSViewRepresentable
   @ObservedObject var data: CleanData
   @Binding var selection: Set<String>
   weak var delegate: (any CleanPanelDelegate)?
+  let fileURLForPath: (String) -> URL
 
   enum ColumnID
   {
@@ -31,6 +32,9 @@ struct CleanList: NSViewRepresentable
     tableView.columnAutoresizingStyle = .firstColumnOnlyAutoresizingStyle
     tableView.tableColumns[1].width = 24
     tableView.allowsMultipleSelection = true
+    tableView.registerForDraggedTypes([.fileURL])
+    tableView.setDraggingSourceOperationMask([.copy, .move], forLocal: true)
+    tableView.setDraggingSourceOperationMask([.copy, .move], forLocal: false)
     tableView.delegate = context.coordinator
     tableView.dataSource = context.coordinator
     scrollView.documentView = tableView
@@ -41,7 +45,8 @@ struct CleanList: NSViewRepresentable
 
   func makeCoordinator() -> Coordinator
   {
-    Coordinator(data: data, selection: $selection, delegate: delegate)
+    Coordinator(data: data, selection: $selection, delegate: delegate,
+                fileURLForPath: fileURLForPath)
   }
 
   func updateNSView(_ nsView: NSScrollView, context: Context)
@@ -59,17 +64,20 @@ struct CleanList: NSViewRepresentable
     let data: CleanData
     @Binding var selection: Set<String>
     weak var delegate: (any CleanPanelDelegate)?
+    let fileURLForPath: (String) -> URL
 
     let ignoredImage = NSImage(systemSymbolName: "eye.slash")!
     let addImage = NSImage(systemSymbolName: "plus.circle")!
       .withSymbolConfiguration(.init(paletteColors: [.systemGreen]))!
 
     init(data: CleanData, selection: Binding<Set<String>>,
-         delegate: (any CleanPanelDelegate)?)
+         delegate: (any CleanPanelDelegate)? ,
+         fileURLForPath: @escaping (String) -> URL)
     {
       self.data = data
       self._selection = selection
       self.delegate = delegate
+      self.fileURLForPath = fileURLForPath
     }
     
     @MainActor
@@ -147,6 +155,51 @@ extension CleanList.Coordinator: NSTableViewDelegate
     // Make sure this happens outside a SwiftUI view update
     Task {
       selection = Set(rows.map { data.filteredItems[$0].path })
+    }
+  }
+
+  func tableView(_ tableView: NSTableView,
+                 pasteboardWriterForRow row: Int) -> NSPasteboardWriting?
+  {
+    guard row >= 0 && row < data.filteredItems.count else { return nil }
+    let path = data.filteredItems[row].path
+
+    return fileURLForPath(path) as NSURL
+  }
+
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 sourceOperationMaskForDraggingContext context: NSDraggingContext)
+    -> NSDragOperation
+  {
+    switch context {
+      case .withinApplication, .outsideApplication:
+        return [.copy, .move]
+      @unknown default:
+        return .copy
+    }
+  }
+
+  @MainActor
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 willBeginAt screenPoint: NSPoint,
+                 forRowIndexes rowIndexes: IndexSet)
+  {
+    tableView.selectRowIndexes(rowIndexes, byExtendingSelection: false)
+  }
+
+  @MainActor
+  func tableView(_ tableView: NSTableView,
+                 draggingSession session: NSDraggingSession,
+                 endedAt screenPoint: NSPoint,
+                 operation: NSDragOperation)
+  {
+    guard operation.contains(.move) else { return }
+
+    Task { @MainActor in
+      selection.removeAll()
+      delegate?.refresh()
     }
   }
 }
