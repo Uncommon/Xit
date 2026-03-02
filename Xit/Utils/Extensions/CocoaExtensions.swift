@@ -93,6 +93,17 @@ extension NSColor
     
     return "rgb(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)))"
   }
+
+  var cssRGBA: String
+  {
+    let converted = usingColorSpace(.deviceRGB)!
+    let red = converted.redComponent
+    let green = converted.greenComponent
+    let blue = converted.blueComponent
+    let alpha = converted.alphaComponent
+
+    return "rgba(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)), \(alpha))"
+  }
   
   func withHue(_ hue: CGFloat) -> NSColor
   {

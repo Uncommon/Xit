@@ -43,8 +43,9 @@ class WebViewController: NSViewController
     webView.configuration.preferences
            .setValue(true, forKey: "developerExtrasEnabled")
 #endif
-    
-    webView.setValue(false, forKey: "drawsBackground")
+
+    webView.underPageBackgroundColor = .clear
+    setWebViewDrawsBackground(false)
     cancellables.append(contentsOf: [
       defaults.publisher(for: \.fontName).sink
       { [weak self] (_) in self?.updateFont() },
@@ -56,6 +57,11 @@ class WebViewController: NSViewController
   override func viewDidAppear()
   {
     super.viewDidAppear()
+    webView.navigationDelegate = self
+    webView.configuration.userContentController
+           .removeScriptMessageHandler(forName: controllerHandlerName)
+    webView.configuration.userContentController
+           .add(userContentController, name: controllerHandlerName)
     if appearanceObserver == nil {
       appearanceObserver = webView.publisher(for: \.effectiveAppearance)
                                   .sinkOnMainQueue {
@@ -102,6 +108,13 @@ class WebViewController: NSViewController
         document.documentElement.style.setProperty('\(property)', '\(value)')
         """)
   }
+
+  func setWebViewDrawsBackground(_ draws: Bool)
+  {
+    // WKWebView still defaults to an opaque white page fill. Keep this
+    // explicit so the web previews can participate in liquid-glass layering.
+    webView.setValue(draws, forKey: "drawsBackground")
+  }
   
   func wrappingWidthAdjustment() -> Int
   {
@@ -111,6 +124,8 @@ class WebViewController: NSViewController
   func updateColors()
   {
     view.effectiveAppearance.performAsCurrentDrawingAppearance {
+      let reduceTransparency = LiquidGlassAccessibility.shouldReduceTransparency
+      let increaseContrast = LiquidGlassAccessibility.shouldIncreaseContrast
       let names = [
             "addBackground",
             "background",
@@ -135,7 +150,6 @@ class WebViewController: NSViewController
       let colorPairs: [(String, NSColor)] = [
         ("textColor", .textColor),
         ("textBackground", .textBackgroundColor),
-        ("underPageBackgroundColor", .underPageBackgroundColor),
       ]
 
       for pair in colorPairs {
@@ -145,6 +159,32 @@ class WebViewController: NSViewController
         if let color = NSColor(named: name) {
           setColor(name: name, color: color)
         }
+      }
+
+      if reduceTransparency {
+        let fallback = NSColor.xtLiquidGlassFallbackFill
+
+        setDocumentProperty("--underPageBackgroundColor", value: fallback.cssRGBA)
+        setDocumentProperty("--background", value: fallback.cssRGBA)
+      }
+      else {
+        // Keep the HTML surfaces translucent so the parent liquid glass
+        // container remains visible through the web content.
+        let surfaceAlpha = increaseContrast ? 0.9 : 0.55
+        let sideAlpha = increaseContrast ? 0.85 : 0.45
+        let headerAlpha = increaseContrast ? 0.9 : 0.5
+        let borderAlpha = increaseContrast ? 0.8 : 0.35
+
+        setDocumentProperty("--underPageBackgroundColor", value: "transparent")
+        setDocumentProperty("--background", value: "transparent")
+        setDocumentProperty("--textBackground", value:
+            NSColor.textBackgroundColor.withAlphaComponent(surfaceAlpha).cssRGBA)
+        setDocumentProperty("--leftBackground", value:
+            NSColor.windowBackgroundColor.withAlphaComponent(sideAlpha).cssRGBA)
+        setDocumentProperty("--heading", value:
+            NSColor.windowBackgroundColor.withAlphaComponent(headerAlpha).cssRGBA)
+        setDocumentProperty("--blameBorder", value:
+            NSColor.separatorColor.withAlphaComponent(borderAlpha).cssRGBA)
       }
     }
   }
@@ -243,7 +283,20 @@ extension WebViewController: WKNavigationDelegate
       if let scrollView = webView.enclosingScrollView {
         scrollView.hasHorizontalScroller = false
         scrollView.horizontalScrollElasticity = .none
-        scrollView.backgroundColor = NSColor(deviceWhite: 0.8, alpha: 1.0)
+        if LiquidGlassAccessibility.shouldReduceTransparency {
+          scrollView.drawsBackground = true
+          scrollView.backgroundColor = .xtLiquidGlassFallbackFill
+          scrollView.contentView.drawsBackground = true
+          setWebViewDrawsBackground(true)
+          webView.underPageBackgroundColor = .xtLiquidGlassFallbackFill
+        }
+        else {
+          scrollView.drawsBackground = false
+          scrollView.backgroundColor = .clear
+          scrollView.contentView.drawsBackground = false
+          setWebViewDrawsBackground(false)
+          webView.underPageBackgroundColor = .clear
+        }
       }
 
       tabWidth = savedTabWidth
