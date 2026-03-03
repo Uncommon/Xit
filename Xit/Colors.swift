@@ -116,4 +116,28 @@ extension RefType
     return NSGradient(starting: NSColor.refGradientStart(type),
                       ending: NSColor.refGradientEnd(type)) ?? NSGradient()
   }
+
+  var surfaceColor: NSColor
+  {
+    let gradientType: NSColor.RefGradient
+
+    switch self {
+      case .branch:
+        gradientType = .branch
+      case .activeBranch:
+        gradientType = .activeBranch
+      case .remoteBranch:
+        gradientType = .remote
+      case .tag:
+        gradientType = .tag
+      default:
+        gradientType = .general
+    }
+    let start = NSColor.refGradientStart(gradientType)
+    let end = NSColor.refGradientEnd(gradientType)
+    let mixed = start.blended(withFraction: 0.45, of: end) ?? start
+    let alpha = LiquidGlassAccessibility.shouldIncreaseContrast ? 0.92 : 0.72
+
+    return mixed.withAlphaComponent(alpha)
+  }
 }
