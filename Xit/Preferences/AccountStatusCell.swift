@@ -3,7 +3,7 @@ import SwiftUI
 struct AccountStatusCell: View
 {
   @ObservedObject var service: BasicAuthService
-
+  
   // Workaround for the fact that @ObservedObject can't handle optionals
   @ViewBuilder
   static func `for`(service: BasicAuthService?) -> some View
@@ -15,10 +15,10 @@ struct AccountStatusCell: View
       EmptyView()
     }
   }
-
+  
   var body: some View {
     let imageName = statusImage(for: service)
-
+    
     HStack {
       Spacer()
       if service.authenticationStatus == .inProgress {
@@ -30,12 +30,12 @@ struct AccountStatusCell: View
       Spacer()
     }
   }
-
+  
   func statusImage(forTeamCity api: TeamCityAPI?) -> NSImage.Name
   {
     guard let api = api
     else { return NSImage.statusUnavailableName }
-
+    
     switch api.authenticationStatus {
       case .unknown, .notStarted:
         return NSImage.statusNoneName
@@ -47,7 +47,7 @@ struct AccountStatusCell: View
       case .failed:
         return NSImage.statusUnavailableName
     }
-
+    
     switch api.buildTypesStatus {
       case .unknown, .notStarted, .inProgress:
         return NSImage.statusAvailableName
@@ -57,7 +57,7 @@ struct AccountStatusCell: View
         return NSImage.statusPartiallyAvailableName
     }
   }
-
+  
   func statusImage(for service: BasicAuthService) -> NSImage.Name
   {
     switch service.authenticationStatus {

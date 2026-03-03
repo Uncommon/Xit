@@ -4,7 +4,7 @@ struct ServiceLabel: View
 {
   let type: AccountType
   @Environment(\.lineSpacing) var lineSpacing: CGFloat
-
+  
   var body: some View
   {
     // Using `Label` doesn't work in menus
@@ -16,7 +16,7 @@ struct ServiceLabel: View
       Text(type.displayName)
     }
   }
-
+  
   init(_ type: AccountType)
   {
     self.type = type
@@ -29,15 +29,15 @@ struct AccountsPrefsPane: View
 {
   let services: Services
   @ObservedObject var accountsManager: AccountsManager
-
+  
   @State var selectedAccountID: UUID?
   @State var newAccountInfo: AccountInfo?
   @State var editAccountInfo: AccountInfo?
-
+  
   @State var showAlert: Bool = false
   @State var showDeleteConfirmation: Bool = false
   @State var passwordError: PasswordError?
-
+  
   var selectedAccount: Account?
   {
     selectedAccountID.flatMap {
@@ -45,7 +45,7 @@ struct AccountsPrefsPane: View
       accountsManager.accounts.first { $0.id == id }
     }
   }
-
+  
   func squareImage(_ systemName: String,
                    size: CGFloat = bottomBarHeight) -> some View
   {
@@ -53,7 +53,7 @@ struct AccountsPrefsPane: View
       .frame(width: size, height: size)
       .contentShape(Rectangle())
   }
-
+  
   var body: some View
   {
     VStack(spacing: -1) {
@@ -103,27 +103,27 @@ struct AccountsPrefsPane: View
       Button(.ok, action: { showAlert = false })
     }
   }
-
+  
   func newAccountSheet(_ info: AccountInfo) -> some View
   {
     var info = info
     let binding = Binding<AccountInfo>(get: { info }, set: { info = $0 })
-
+    
     return accountInfoSheet(for: binding, title: "Create",
                             action: { addAccount(from: info) },
                             cancel: { newAccountInfo = nil })
   }
-
+  
   func editAccountSheet(_ info: AccountInfo) -> some View
   {
     var info = info
     let binding = Binding<AccountInfo>(get: { info }, set: { info = $0 })
-
+    
     return accountInfoSheet(for: binding, title: "Save",
                             action: { modifyAccount(with: info) },
                             cancel: { editAccountInfo = nil })
   }
-
+  
   func accountInfoSheet(for binding: Binding<AccountInfo>,
                         title: String,
                         action: @escaping () -> Void,
@@ -138,12 +138,12 @@ struct AccountsPrefsPane: View
       ])
     }.padding()
   }
-
+  
   func addNewAccount()
   {
     newAccountInfo = AccountInfo() // trigger the sheet
   }
-
+  
   func addAccount(from info: AccountInfo)
   {
     do {
@@ -151,7 +151,7 @@ struct AccountsPrefsPane: View
                             user: info.userName,
                             location: .init(string: info.location)!,
                             id: info.id)
-
+      
       try accountsManager.add(account, password: info.password)
       accountsManager.saveAccounts()
       newAccountInfo = nil
@@ -162,16 +162,16 @@ struct AccountsPrefsPane: View
     }
     catch {}
   }
-
+  
   func modifyAccount(with info: AccountInfo)
   {
     editAccountInfo = nil
-
+    
     guard let account = accountsManager.accounts
                                        .first(where: { $0.id == info.id }),
           let url = URL(string: info.location)
     else { return }
-
+    
     do {
       try accountsManager.modify(oldAccount: account,
                                  newAccount: .init(type: info.serviceType,
@@ -187,27 +187,27 @@ struct AccountsPrefsPane: View
       assertionFailure("unexpected error")
     }
   }
-
+  
   func deleteAccount()
   {
     guard let account = selectedAccount
     else { return }
-
+    
     accountsManager.delete(account: account)
     accountsManager.saveAccounts()
-
+    
     // Offer to delete the item from the keychain?
   }
-
+  
   func editAccount()
   {
     guard let account = selectedAccount
     else { return }
     let password = accountsManager.passwordStorage.find(account: account) ?? ""
-
+    
     editAccountInfo = AccountInfo(with: account, password: password)
   }
-
+  
   func refreshAccount()
   {
     guard let account = selectedAccount
@@ -224,12 +224,12 @@ struct AccountsPrefsPane_Previews: PreviewProvider
     let defaults = UserDefaults.testing
     let manager = AccountsManager(defaults: defaults,
                                   passwordStorage: MemoryPasswordStorage.shared)
-
+    
     defaults.accounts = AppTesting.tempAccountsData
     manager.readAccounts()
     return manager
   }()
-
+  
   static var previews: some View
   {
     AccountsPrefsPane(services: .testing, accountsManager: manager)
