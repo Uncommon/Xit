@@ -30,7 +30,7 @@ final class BuildStatusController: NSObject
         case .failure: "xmark.circle.fill"
       }
     }
-
+    
     var tint: NSColor
     {
       switch self {
@@ -40,11 +40,11 @@ final class BuildStatusController: NSObject
         case .failure: .systemRed
       }
     }
-
+    
     var image: NSImage {
       .init(systemSymbolName: imageName)!
     }
-
+    
     init(build: TeamCityAPI.Build)
     {
       switch build {
@@ -80,7 +80,7 @@ final class BuildStatusController: NSObject
   var popover: NSPopover?
   weak var display: (any BuildStatusDisplay)?
   var refreshTimer: Timer! = nil
-
+  
   init(model: SidebarDataModel, display: any BuildStatusDisplay)
   {
     self.model = model
@@ -128,7 +128,7 @@ final class BuildStatusController: NSObject
     popover.delegate = self
     popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
   }
-
+  
   // NSImage doesn't seem to have a good way to apply tint color, so the caller
   // will apply it on the image view or button.
   func statusImage(for item: SidebarItem) async -> (NSImage, NSColor)?
@@ -140,7 +140,7 @@ final class BuildStatusController: NSObject
                             model.repository?
                                  .localTrackingBranch(forBranch: remoteName)
     else { return nil }
-
+    
     guard let remoteName = model.remoteName(forBranchItem: item),
           let (api, buildTypes) = await matchBuildStatusServiceAndTypes(remoteName)
     else { return nil }
