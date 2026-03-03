@@ -453,7 +453,7 @@ class XTRepositoryTest: XTTest
   
   func testWriteLockBranches()
   {
-    let masterBranch = "main"
+    let masterBranch = mainBranchName
     let testBranch1 = "testBranch1"
     let testBranch2 = "testBranch2"
     
@@ -506,7 +506,7 @@ class XTRepositoryTest: XTTest
   
   func testHeadRef()
   {
-    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/main")
+    XCTAssertEqual(repository.headRefName?.fullPath, "refs/heads/\(mainBranchName)")
     XCTAssertNotNil(repository.headSHA)
   }
   
@@ -831,7 +831,6 @@ class XTRepositoryTest: XTTest
   func testTrackingBranch() throws
   {
     let remoteName = "origin"
-    let mainBranchName = "main"
     let remoteBranchName = try XCTUnwrap(RemoteBranchRefName(remoteName +/ mainBranchName))
     
     makeRemoteRepo()

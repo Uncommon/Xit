@@ -18,6 +18,8 @@ public protocol Reference
   func resolve() -> Self?
   /// Changes the ref to point to a different object
   func setTarget(_ newOID: GitOID, logMessage: String)
+  /// Changes the ref to point to a different symbolic target
+  func setSymbolicTarget(_ target: any ReferenceName) throws
 }
 
 final public class GitReference: Reference
@@ -145,6 +147,20 @@ final public class GitReference: Reference
       git_reference_set_target(&$0, ref, &gitOID, logMessage)
     })
     else { return }
+    
+    ref = newRef
+  }
+  
+  public func setSymbolicTarget(_ target: any ReferenceName) throws
+  {
+    let logMessage = "set symbolic target"
+    let newRef = try OpaquePointer.from({ pointer in
+      target.fullPath.withCString { targetPtr in
+        logMessage.withCString { logPtr in
+          git_reference_symbolic_set_target(&pointer, ref, targetPtr, logPtr)
+        }
+      }
+    })
     
     ref = newRef
   }

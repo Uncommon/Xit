@@ -8,7 +8,9 @@ open class XTTest: XCTestCase
 {
   public var repoPath: String!
   public var remoteRepoPath: String!
-
+  
+  public let mainBranchName = "main"
+  
   public var repoController: GitRepositoryController!
   public var repository, remoteRepository: XTRepository!
   
@@ -79,6 +81,8 @@ open class XTTest: XCTestCase
       .appendingPathComponent(testName, isDirectory: true)
       .path
     repository = try XCTUnwrap(Self.createRepo(atPath: repoPath))
+    // On some systems, the default branch name can still be "master"
+    try repository.headReference?.setSymbolicTarget(LocalBranchRefName("main")!)
     repoController = GitRepositoryController(repository: repository)
     try addInitialRepoContent()
   }

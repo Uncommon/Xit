@@ -59,7 +59,7 @@ class SidebarDelegateTest: XTTest
   
   func testBranches() throws
   {
-    let branchNames = ["b1", "main"]
+    let branchNames = ["b1", mainBranchName]
     
     try execute(in: repository) {
       CreateBranch("b1")
@@ -85,7 +85,7 @@ class SidebarDelegateTest: XTTest
     let remoteName = "origin"
     
     try execute(in: repository) {
-      CheckOut(branch: "main")
+      CheckOut(branch: mainBranchName)
       CreateBranch("b1")
     }
     try repository.addRemote(named: remoteName,

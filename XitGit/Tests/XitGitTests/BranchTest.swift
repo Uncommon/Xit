@@ -25,17 +25,17 @@ class BranchTest: XTTest
                                                           uploadProgress: nil))
     
     try repository.fetch(remote: remote, options: options)
-
-    let localBranch = try XCTUnwrap(repository.localBranch(named: .init("main")!))
-    let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "main",
+    
+    let localBranch = try XCTUnwrap(repository.localBranch(named: .init(mainBranchName)!))
+    let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: mainBranchName,
                                                              remote: "origin"))
     
-    XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/main")
-    XCTAssertEqual(localBranch.referenceName.name, "main")
-    XCTAssertEqual(localBranch.referenceName.localName, "main")
-
-    XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/main")
-    XCTAssertEqual(remoteBranch.referenceName.name, "origin/main")
-    XCTAssertEqual(remoteBranch.referenceName.localName, "main")
+    XCTAssertEqual(localBranch.referenceName.fullPath, "refs/heads/\(mainBranchName)")
+    XCTAssertEqual(localBranch.referenceName.name, mainBranchName)
+    XCTAssertEqual(localBranch.referenceName.localName, mainBranchName)
+    
+    XCTAssertEqual(remoteBranch.referenceName.fullPath, "refs/remotes/origin/\(mainBranchName)")
+    XCTAssertEqual(remoteBranch.referenceName.name, "origin/\(mainBranchName)")
+    XCTAssertEqual(remoteBranch.referenceName.localName, mainBranchName)
   }
 }
