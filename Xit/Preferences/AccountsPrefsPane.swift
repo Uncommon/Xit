@@ -64,7 +64,12 @@ struct AccountsPrefsPane: View
         TableColumn("Location", value: \.location.absoluteString)
             .width(min: 40, ideal: 150)
         TableColumn("Status") {
-          AccountStatusCell.for(service: services.service(for: $0))
+          if $0.type == .teamCity {
+            TeamCityHTTPStatusCell.for(service: services.teamCityHTTPService(for: $0))
+          }
+          else {
+            AccountStatusCell.for(service: services.service(for: $0))
+          }
         }.width(47)
       }.tableStyle(.bordered)
       HStack {
@@ -212,8 +217,17 @@ struct AccountsPrefsPane: View
   {
     guard let account = selectedAccount
     else { return }
-
-    services.service(for: account)?.attemptAuthentication()
+    
+    if account.type == .teamCity,
+       let httpService = services.teamCityHTTPService(for: account) {
+      Task {
+        await httpService.attemptAuthentication()
+        await httpService.refreshMetadata()
+      }
+    }
+    else {
+      services.service(for: account)?.attemptAuthentication()
+    }
   }
 }
 

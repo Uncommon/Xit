@@ -91,7 +91,7 @@ final class BuildStatusController: NSObject
     super.init()
     
     buildStatusCache.add(client: self)
-    if let api: TeamCityAPI = Services.xit.allServices.firstOfType() {
+    if let api = Services.xit.teamCityHTTPServiceList.first {
       statusSink = api.$buildTypesStatus.sink {
         [weak self] _ in
         self?.buildStatusCache.refresh()

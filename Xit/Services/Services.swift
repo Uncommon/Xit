@@ -43,6 +43,9 @@ final class Services
   private var bitbucketHTTPServices: [String: BitbucketHTTPService] = [:]
   private var bitbucketServices: [String: BitbucketServerAPI] = [:]
   
+  var teamCityHTTPServiceList: [TeamCityHTTPService]
+  { Array(teamCityHTTPServices.values) }
+  
   private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
