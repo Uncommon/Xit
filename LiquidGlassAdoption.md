@@ -205,6 +205,19 @@ Tasks:
 Exit criteria:
 - Main window, toolbar, and preview pane read as one visual system.
 
+### Phase 1 implementation status
+- Completed:
+  - Web preview behavior and rendering fixes in `Xit/FileView/Previews/WebViewController.swift`:
+    - Removed hard-coded gray background behavior.
+    - Restored interactive web previews on macOS 26.
+    - Applied liquid-glass-aware transparency and accessibility fallback handling.
+- Attempted and reverted:
+  - Toolbar restyling and grouping updates in titlebar/window controllers.
+  - Preview header/footer material-bar replacement in `FileViewController.xib`.
+- Deferred to later:
+  - Main toolbar visual regrouping and control-style migration.
+  - Preview header/footer container redesign.
+
 ### Phase 2: History + file list harmonization
 Files:
 - `HistoryViewController.storyboard`, `HistoryCellView.swift`, `RefTokenView.swift`
@@ -216,6 +229,19 @@ Tasks:
 
 Exit criteria:
 - History and file panes feel consistent and no longer mix old/new chrome styles.
+
+### Phase 2 implementation status
+- Completed:
+  - Updated history graph contrast in `HistoryCellView.swift` to use semantic separator-based strokes instead of hard opaque strokes.
+  - Refreshed reference token rendering in `RefTokenView.swift` to lighter translucent surfaces with subtler strokes.
+  - Added ref token surface color helper in `Colors.swift`.
+  - Updated file list styling in `FileListController.swift`:
+    - Transparent list backgrounds for layered surfaces.
+    - Modernized view-switch/action control styling.
+- Attempted and reverted:
+  - History list header glass overlay treatment (header text legibility regression).
+- Deferred to later:
+  - Final history header treatment (keep visible labels and align with file-list header style).
 
 ### Phase 3: Sheets and preferences
 Files:
