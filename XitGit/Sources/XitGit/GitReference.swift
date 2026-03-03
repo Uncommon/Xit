@@ -13,7 +13,7 @@ public protocol Reference
   var type: ReferenceType { get }
   /// The reference name
   var name: any ReferenceName { get }
-
+  
   /// Peels a symbolic reference until a direct reference is reached
   func resolve() -> Self?
   /// Changes the ref to point to a different object
@@ -27,7 +27,7 @@ final public class GitReference: Reference
   public static func isValidName(_ name: String) -> Bool
   {
     var valid: Int32 = 0
-
+    
     return git_reference_name_is_valid(&valid, name) == 0 && valid != 0
   }
   
@@ -87,28 +87,27 @@ final public class GitReference: Reference
     
     return .init(oid: oid.pointee)
   }
-
+  
   private func specificRefName(_ name: String) -> (any ReferenceName)?
   {
     guard let general = GeneralRefName(rawValue: name)
     else { return nil }
-
-    return
-        LocalBranchRefName(general) ??
-        RemoteBranchRefName(general) ??
-        TagRefName(general) ??
-        general
+    
+    return LocalBranchRefName(general)
+        ?? RemoteBranchRefName(general)
+        ?? TagRefName(general)
+        ?? general
   }
-
+  
   public var symbolicTargetName: (any ReferenceName)?
   {
     guard let cName = git_reference_symbolic_target(ref)
     else { return nil }
     let name = String(cString: cName)
-
+    
     return specificRefName(name)
   }
-
+  
   public var type: ReferenceType
   {
     ReferenceType(rawValue: Int32(git_reference_type(ref).rawValue)) ?? .invalid
@@ -122,7 +121,7 @@ final public class GitReference: Reference
       return GeneralRefName(unchecked: "")
     }
     let name = String(cString: cName)
-
+    
     return specificRefName(name) ?? {
       assertionFailure("reference name is invalid")
       return GeneralRefName(unchecked: name)

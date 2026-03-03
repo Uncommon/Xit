@@ -7,7 +7,7 @@ import XitGitTestSupport
 class TestingSidebarHandler : SidebarCommandHandler
 {
   var repoUIController: RepositoryUIController?
-
+  
   var repo: XTRepository!
   {
     didSet
@@ -33,7 +33,7 @@ class TestingSidebarHandler : SidebarCommandHandler
 class SidebarHandlerTest: XTTest
 {
   var handler: TestingSidebarHandler!
-
+  
   @MainActor
   override func setUp()
   {
@@ -50,7 +50,7 @@ class SidebarHandlerTest: XTTest
   func item(forBranch branch: String) -> SidebarItem?
   {
     guard let commit = GitCommit(ref: "refs/heads/\(branch)",
-                                     repository: repository.gitRepo)
+                                 repository: repository.gitRepo)
     else {
       XCTFail("can't get commit for branch \(branch)")
       return nil
@@ -86,7 +86,7 @@ class SidebarHandlerTest: XTTest
                                     target: "refs/heads/main")
     XCTAssertTrue(checkDeleteBranch(named: "other"))
   }
-
+  
   func makeTwoStashes() throws
   {
     try execute(in: repository) {
@@ -113,7 +113,7 @@ class SidebarHandlerTest: XTTest
                      expectedText: String, action: () -> Void) throws
   {
     var expected = composeStashes([ "s2", "s1" ])
-  
+    
     try makeTwoStashes()
     XCTAssertEqual(currentStashes(), expected)
     
@@ -191,7 +191,7 @@ class SidebarHandlerTest: XTTest
         title: "Merge",
         action: #selector(SidebarController.mergeBranch(_:)),
         keyEquivalent: "")
-
+    
     try execute(in: repository) {
       CreateBranch("branch")
     }

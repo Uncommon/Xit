@@ -26,14 +26,14 @@ class SidebarDelegateTest: XTTest
     try execute(in: repository) {
       CreateBranch("b1")
     }
-
+    
     model.reload()
-
+    
     for item in model.roots {
       XCTAssertTrue(sbDelegate.outlineView(outline, isGroupItem: item))
     }
   }
-
+  
   func testTags() throws
   {
     let tagName = "t1"
@@ -45,7 +45,7 @@ class SidebarDelegateTest: XTTest
     try repository.createTag(name: tagName, targetOID: headOID, message: "msg")
     
     model.reload()
-
+    
     let tagItem = model.rootItem(.tags).children[0]
     guard let cell = sbDelegate.outlineView(outline, viewFor: nil, item: tagItem)
                      as? NSTableCellView
@@ -65,7 +65,7 @@ class SidebarDelegateTest: XTTest
       CreateBranch("b1")
     }
     model.reload()
-
+    
     for (item, name) in zip(model.rootItem(.branches).children, branchNames) {
       guard let cell = sbDelegate.outlineView(outline, viewFor: nil, item: item)
                        as? NSTableCellView
@@ -83,7 +83,7 @@ class SidebarDelegateTest: XTTest
     makeRemoteRepo()
     
     let remoteName = "origin"
-
+    
     try execute(in: repository) {
       CheckOut(branch: "main")
       CreateBranch("b1")
@@ -97,7 +97,7 @@ class SidebarDelegateTest: XTTest
     try repository.push(remote: "origin")
     
     model.reload()
-
+    
     let remoteItem = try XCTUnwrap(model.rootItem(.remotes).children.first)
     let branchItem = try XCTUnwrap(remoteItem.children.first)
     

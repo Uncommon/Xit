@@ -11,11 +11,11 @@ class BranchTest: XTTest
     remoteRepoPath = repoPath.deletingLastPathComponent
                              .appending(pathComponent: "remotetestrepo")
     try? FileManager.default.removeItem(atPath: remoteRepoPath)
-
+    
     // Remote must have the same content so the fetch will succeed
     try FileManager.default.copyItem(atPath: repoPath, toPath: remoteRepoPath)
     try repository.addRemote(named: remoteName,
-                               url: URL(fileURLWithPath: remoteRepoPath))
+                             url: URL(fileURLWithPath: remoteRepoPath))
     
     let remote = try XCTUnwrap(repository.remote(named: "origin"), "can't get remote")
     let options = FetchOptions(downloadTags: false,

@@ -10,13 +10,13 @@ class SidebarDataSourceTest: XTTest
   var model: SidebarDataModel!
   var sbds: SideBarDataSource!
   var runLoop: CFRunLoop?
-
+  
   func groupItem(_ row: SidebarGroupIndex) -> SideBarGroupItem
   {
     return sbds.outlineView(outline, child: row.rawValue, ofItem: nil)
            as! SideBarGroupItem
   }
-
+  
   @MainActor
   override func setUp()
   {
@@ -28,7 +28,7 @@ class SidebarDataSourceTest: XTTest
     sbds.outline = outline
     outline.dataSource = sbds
   }
-
+  
   /// Add a tag and make sure it gets loaded correctly
   @MainActor
   func testTags() throws
@@ -73,7 +73,7 @@ class SidebarDataSourceTest: XTTest
     let branches = groupItem(.branches)
     let branchCount = sbds.outlineView(outline,
                                        numberOfChildrenOfItem: branches)
-  
+    
     XCTAssertEqual(branchCount, 2)
     for b in 0...1 {
       let branch = sbds.outlineView(outline, child: b, ofItem: branches)
@@ -112,7 +112,7 @@ class SidebarDataSourceTest: XTTest
     makeRemoteRepo()
     
     let remoteName = "origin"
-
+    
     try execute(in: repository) {
       CheckOut(branch: "main")
       CreateBranch("b1")
@@ -155,14 +155,14 @@ class SidebarDataSourceTest: XTTest
     
     for path in [sub1Path, sub2Path] {
       let subRepo = try XCTUnwrap(XTTest.createRepo(atPath: path))
-
+      
       try execute(in: subRepo) {
         CommitFiles {
           Write("text", to: .file1)
         }
       }
     }
-  
+    
     try repository.addSubmodule(path: "sub1", url: "../repo1")
     try repository.addSubmodule(path: "sub2", url: "../repo2")
     XCTAssertEqual(repository.submodules().count, 2, "wrong submodule count")
@@ -205,14 +205,14 @@ class SidebarDSFakeRepoTest: XCTestCase
     let model = SidebarDataModel(repository: repo)
     let sidebarDS = SideBarDataSource()
     let outline = NSOutlineView()
-
+    
     _ = controller.repository // kill the warning
     model.reload()
     sidebarDS.model = model
     sidebarDS.outline = outline
     outline.dataSource = sidebarDS
     repo.controller?.waitForQueue()
-
+    
     var filteredBranches = sidebarDS.displayItem(.branches)
                                     .children.map { $0.title }
     
@@ -221,7 +221,7 @@ class SidebarDSFakeRepoTest: XCTestCase
     sidebarDS.filterSet.filters = [SidebarNameFilter(string: "1")]
     sidebarDS.reload()
     repo.controller?.waitForQueue()
-
+    
     filteredBranches = sidebarDS.displayItem(.branches)
                                 .children.map { $0.title }
     
@@ -266,7 +266,7 @@ class MockSidebarOutline: NSOutlineView
                                                         width: 20, height: 16))
     let prStatusImage = NSImageView(frame: NSRect(x: 0, y: 0,
                                                   width: 20, height: 16))
-
+    
     for view in [textField, imageView, statusImage, statusButton, statusText,
                  buttonContainer, missingImage, prContanier, pullRequestButton,
                  prStatusImage] {

@@ -20,7 +20,7 @@ final class OperationTests: XTTest
       AddRemote(url: URL(fileURLWithPath: remoteRepoPath))
       Fetch()
     }
-
+    
     let remoteBranchName = try XCTUnwrap(
       RemoteBranchRefName(remote: "origin", branch: branchName))
     let operation = CheckOutRemoteOperation(repository: repository,
