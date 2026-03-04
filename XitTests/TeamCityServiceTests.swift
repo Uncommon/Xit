@@ -2,20 +2,20 @@ import Foundation
 import Testing
 @testable import Xit
 
-@Suite("TeamCityHTTPService")
-struct TeamCityHTTPServiceTests
+@Suite("TeamCityService")
+struct TeamCityServiceTests
 {
-  private func makeService(mock: MockNetworkService) -> TeamCityHTTPService
+  private func makeService(mock: MockNetworkService) -> TeamCityService
   {
     let account = Account(type: .teamCity,
                           user: "user",
                           location: URL(string: "https://example.com")!,
                           id: UUID())
     
-    return TeamCityHTTPService(account: account,
+    return TeamCityService(account: account,
                                password: "pw",
                                passwordStorage: MemoryPasswordStorage.shared,
-                               authenticationPath: TeamCityHTTPService.rootPath,
+                               authenticationPath: TeamCityService.rootPath,
                                networkService: mock)
   }
   

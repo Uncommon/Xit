@@ -29,10 +29,10 @@ final class Services
   
   let passwordStorage: any PasswordStorage
   
-  private var teamCityHTTPServices: [String: TeamCityHTTPService] = [:]
-  private var bitbucketHTTPServices: [String: BitbucketHTTPService] = [:]
+  private var teamCityHTTPServices: [String: TeamCityService] = [:]
+  private var bitbucketHTTPServices: [String: BitbucketService] = [:]
   
-  var teamCityHTTPServiceList: [TeamCityHTTPService]
+  var teamCityHTTPServiceList: [TeamCityService]
   { Array(teamCityHTTPServices.values) }
   
   private var pullRequestServices: [any PullRequestService]
@@ -84,7 +84,7 @@ final class Services
   }
   
   /// Returns the URLSession-based TeamCity service for the given account.
-  func teamCityHTTPService(for account: Account) -> TeamCityHTTPService?
+  func teamCityHTTPService(for account: Account) -> TeamCityService?
   {
     let key = Services.accountKey(account)
     
@@ -106,7 +106,7 @@ final class Services
       configuration: .init(headers: [:]),
       authProvider: authProvider)
     
-    let service = TeamCityHTTPService(
+    let service = TeamCityService(
       account: account,
       password: password,
       passwordStorage: passwordStorage,
@@ -121,7 +121,7 @@ final class Services
     return service
   }
   
-  func bitbucketHTTPService(for account: Account) -> BitbucketHTTPService?
+  func bitbucketHTTPService(for account: Account) -> BitbucketService?
   {
     let key = Services.accountKey(account)
     
@@ -143,7 +143,7 @@ final class Services
       configuration: .init(headers: [:]),
       authProvider: authProvider)
     
-    let service = BitbucketHTTPService(
+    let service = BitbucketService(
       account: account,
       password: password,
       passwordStorage: passwordStorage,
@@ -161,7 +161,7 @@ final class Services
     pullRequestServices.first { $0.match(remote: remote) }
   }
   
-  func teamCityHTTPBuildStatus(for remoteURL: String) async -> (TeamCityHTTPService, [String])?
+  func teamCityHTTPBuildStatus(for remoteURL: String) async -> (TeamCityService, [String])?
   {
     for service in teamCityHTTPServices.values {
       let buildTypes = await service.buildTypesForRemote(remoteURL)
@@ -172,7 +172,7 @@ final class Services
     return nil
   }
   
-  func teamCityHTTPService(host: String) -> TeamCityHTTPService?
+  func teamCityHTTPService(host: String) -> TeamCityService?
   {
     teamCityHTTPServices.values.first { $0.account.location.host == host }
   }

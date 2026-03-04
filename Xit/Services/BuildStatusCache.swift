@@ -138,7 +138,7 @@ extension BuildStatusAccessor
   /// Returns the first TeamCity HTTP service that builds from the given
   /// repository, and a list of its build types.
   func matchBuildStatusServiceAndTypes(_ remoteName: String) async
-    -> (TeamCityHTTPService, [String])?
+    -> (TeamCityService, [String])?
   {
     guard let remoteMgr = self.remoteMgr,
           let remote = remoteMgr.remote(named: remoteName),

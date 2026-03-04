@@ -3,7 +3,7 @@ import XitGit
 
 /// URLSession-based Bitbucket Server service (parallel to Siesta-backed BitbucketServerAPI).
 /// Provides async endpoints for pull request workflows.
-final class BitbucketHTTPService: BaseHTTPService
+final class BitbucketService: BaseHTTPService
 {
   static let rootPath = "/rest/api/1.0"
   
@@ -236,11 +236,11 @@ final class BitbucketHTTPService: BaseHTTPService
 
   struct BitbucketPR: Xit.PullRequest
   {
-    var request: BitbucketHTTPService.PullRequest
+    var request: BitbucketService.PullRequest
     let serviceID: UUID
     let userID: Int?
     
-    init(request: BitbucketHTTPService.PullRequest, service: BitbucketHTTPService)
+    init(request: BitbucketService.PullRequest, service: BitbucketService)
     {
       self.request = request
       self.serviceID = service.id
@@ -337,12 +337,12 @@ final class BitbucketHTTPService: BaseHTTPService
   }
 }
 
-extension BitbucketHTTPService: ServiceAPI
+extension BitbucketService: ServiceAPI
 {
   var type: AccountType { .bitbucketServer }
 }
 
-extension BitbucketHTTPService: RemoteService
+extension BitbucketService: RemoteService
 {
   func match(remote: any Remote) -> Bool
   {
@@ -350,7 +350,7 @@ extension BitbucketHTTPService: RemoteService
   }
 }
 
-extension BitbucketHTTPService: PullRequestService
+extension BitbucketService: PullRequestService
 {
   func getPullRequests() async -> [any Xit.PullRequest]
   {

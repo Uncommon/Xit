@@ -1,9 +1,7 @@
 import Foundation
 import XitGit
 
-/// URLSession-based TeamCity service (parallel to Siesta-backed TeamCityAPI).
-/// Provides async endpoints; not yet wired into UI or Services.
-final class TeamCityHTTPService: BaseHTTPService
+final class TeamCityService: BaseHTTPService
 {
   nonisolated static let rootPath = TeamCityAPI.rootPath // reuse existing constant
   
@@ -320,4 +318,4 @@ final class TeamCityHTTPService: BaseHTTPService
   { vcsBranchSpecs[vcsRootID] }
 }
 
-extension TeamCityHTTPService: BuildStatusDisplayService {}
+extension TeamCityService: BuildStatusDisplayService {}
