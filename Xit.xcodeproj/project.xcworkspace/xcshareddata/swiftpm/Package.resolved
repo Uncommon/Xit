@@ -1,15 +1,6 @@
 {
-  "originHash" : "51db650aea3f5c3c76dc593208543e29d3cdc4452e825f23fa09156d34a2c201",
+  "originHash" : "48c33c35173e1cec9c578b157ba02aeb4a1b58b8bcdc63bd1a12a60532b587bc",
   "pins" : [
-    {
-      "identity" : "alamofire",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Alamofire/Alamofire",
-      "state" : {
-        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
-        "version" : "5.9.1"
-      }
-    },
     {
       "identity" : "fakedmacro",
       "kind" : "remoteSourceControl",
@@ -17,15 +8,6 @@
       "state" : {
         "branch" : "main",
         "revision" : "73cc69adabf7c698b9e3e362a43617737a7a0f13"
-      }
-    },
-    {
-      "identity" : "siesta",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/bustoutsolutions/siesta",
-      "state" : {
-        "revision" : "43f34046ebb5beb6802200353c473af303bbc31e",
-        "version" : "1.5.2"
       }
     },
     {
