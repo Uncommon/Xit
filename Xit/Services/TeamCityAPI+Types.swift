@@ -1,8 +1,10 @@
 import Foundation
 
-extension TeamCityAPI
+enum TeamCityAPI
 {
-  public struct Build: Sendable
+  static let rootPath = "/httpAuth/app/rest"
+  
+  struct Build: Sendable
   {
     enum Status: String, Sendable
     {
@@ -82,19 +84,19 @@ public class BranchSpec
     case include
     case exclude
   }
-
+  
   /// An invididual matching rule in a branch specification.
   struct Rule
   {
     let inclusion: Inclusion
     let regex: NSRegularExpression
-
+    
     init?(content: String)
     {
       let prefixEndIndex = content.index(content.startIndex,
                                          offsetBy: 2)
       let prefix = String(content[..<prefixEndIndex])
-
+      
       switch prefix {
         case "+:":
           self.inclusion = .include
@@ -104,13 +106,13 @@ public class BranchSpec
           serviceLogger.debug("Unknown prefix in rule: \(content)")
           return nil
       }
-
+      
       var substring = String(content[prefixEndIndex...])
-
+      
       // Parentheses are needed to identify a range to be extracted.
       substring = substring.replacingOccurrences(of: "*", with: "(.+)")
       substring.insert("^", at: substring.startIndex)
-
+      
       if let regex = try? NSRegularExpression(pattern: substring) {
         self.regex = regex
       }
@@ -118,7 +120,7 @@ public class BranchSpec
         return nil
       }
     }
-
+    
     func match(branch: String) -> String?
     {
       if branch == regex.pattern.dropFirst() { // skip the "^"
@@ -128,16 +130,16 @@ public class BranchSpec
       guard let match = regex.firstMatch(in: branch, options: .anchored,
                                          range: stringRange)
       else { return nil }
-
+      
       if match.numberOfRanges >= 2 {
         return (branch as NSString).substring(with: match.range(at: 1))
       }
       return nil
     }
   }
-
+  
   let rules: [Rule]
-
+  
   init?(ruleStrings: [String])
   {
     self.rules = ruleStrings.compactMap { Rule(content: $0) }
@@ -145,12 +147,13 @@ public class BranchSpec
       return nil
     }
   }
-
+  
   class func defaultSpec() -> BranchSpec
   {
-    return BranchSpec(ruleStrings: ["+:refs/heads/*"])!
+    return BranchSpec(ruleStrings: ["+:refs/heads/*"])
+    ?? BranchSpec(ruleStrings: [])! // fallback should never fire
   }
-
+  
   /// If the given branch matches the rules, the display name is returned,
   /// otherwise nil.
   func match(branch: String) -> String?

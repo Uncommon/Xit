@@ -1,5 +1,4 @@
 import Foundation
-@preconcurrency import Siesta
 import XitGit
 
 protocol BuildStatusDisplayService

@@ -20,9 +20,9 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   private(set) var model: SidebarDataModel!
   private(set) var pullRequestManager: SidebarPRManager! = nil
   private(set) var buildStatusController: BuildStatusController! = nil
-
+  
   private var sinks: [AnyCancellable] = []
-
+  
   weak var repo: XTRepository!
   {
     didSet
@@ -31,8 +31,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       pullRequestManager = SidebarPRManager(model: model, outline: sidebarOutline)
       buildStatusController = BuildStatusController(model: model,
                                                     display: sidebarDelegate)
-      if Services.xit.allServices
-                 .contains(where: { $0 is PullRequestService }) {
+      if Services.xit.hasPullRequestService {
         pullRequestManager.scheduleCacheRefresh()
       }
       
@@ -40,7 +39,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       sidebarDelegate.model = model
       sidebarDelegate.pullRequestManager = pullRequestManager
       sidebarDelegate.buildStatusController = buildStatusController
-
+      
       if let controller = repoUIController?.repoController {
         sinks.append(controller.indexPublisher
           .sinkOnMainQueue {
@@ -53,10 +52,10 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
             self?.reload()
           })
         sinks.append(controller.workspacePublisher
-                      .sinkOnMainQueue {
-          [weak self] _ in
-          self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
-        })
+          .sinkOnMainQueue {
+            [weak self] _ in
+            self?.sidebarOutline.reloadItem(self?.sidebarDS.stagingItem)
+          })
       }
       else {
         assertionFailure("repoUIController is missing")
@@ -66,9 +65,9 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   var window: NSWindow? { view.window }
   var savedSidebarWidth: UInt = 0
   var statusPopover: NSPopover?
-
+  
   private var cancellables: [AnyCancellable] = []
-
+  
   var selectedItem: SidebarItem?
   {
     get
@@ -93,7 +92,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       }
     }
   }
-
+  
   func makeMenus()
   {
     branchContextMenu = NSMenu {
@@ -110,7 +109,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
     remoteBranchContextMenu = NSMenu {
       NSMenuItem(.createTrackingBranch, target: self,
                  action: #selector(createTrackingBranch(_:)))
-        .axid(.RemoteBranchPopup.createTracking)
+      .axid(.RemoteBranchPopup.createTracking)
       NSMenuItem(.rename, target: self, action: #selector(renameBranch(_:)))
         .axid(.BranchPopup.merge)
       NSMenuItem(.merge, target: self, action: #selector(mergeBranch(_:)))
@@ -165,7 +164,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       ])
     }
   }
-
+  
   override func viewWillDisappear()
   {
     pullRequestManager?.stopCacheRefresh()
@@ -175,14 +174,14 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   {
     if let selectedItem = self.selectedItem {
       guard selectedItem.selection?.target !=
-            repoUIController?.selection?.target
+              repoUIController?.selection?.target
       else {
         return
       }
     }
     
     switch repoUIController?.selection {
-    
+        
       case let stashChanges as StashSelection:
         let stashRoot = sidebarDS.model.rootItem(.stashes)
         guard let stashItem = stashRoot.children.first(where: {
@@ -191,17 +190,17 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
         else { break }
         
         self.sidebarOutline.selectRowIndexes(
-            IndexSet(integer: sidebarOutline.row(forItem: stashItem)),
-            byExtendingSelection: false)
-      
+          IndexSet(integer: sidebarOutline.row(forItem: stashItem)),
+          byExtendingSelection: false)
+        
       case let commitChanges as CommitSelection:
         let selectedGitOID = commitChanges.target.oid
         guard let ref = selectedGitOID.map({ repo.refs(at: $0) })?
-                                      .first
+          .first
         else { break }
-      
+        
         select(ref: ref)
-      
+        
       default:
         break
     }
@@ -225,7 +224,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func selectedBranch() -> String?
   {
     let selection = sidebarOutline.item(atRow: sidebarOutline.selectedRow)
-                    as? LocalBranchSidebarItem
+    as? LocalBranchSidebarItem
     
     return selection?.title
   }
@@ -233,7 +232,7 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func selectItem(_ item: SidebarItem, group: SidebarGroupIndex)
   {
     sidebarOutline.expandItem(
-        sidebarOutline.item(atRow: group.rawValue))
+      sidebarOutline.item(atRow: group.rawValue))
     
     let row = sidebarOutline.row(forItem: item)
     
@@ -259,14 +258,14 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func select(remoteBranch: String)
   {
     let slices = remoteBranch.split(separator: "/", maxSplits: 1)
-                             .map { String($0) }
+      .map { String($0) }
     guard slices.count == 2
     else { return }
     let remote = slices[0]
     let branch = slices[1]
     let remotesGroup = sidebarDS.model.rootItem(.remotes)
     guard let remoteItem = remotesGroup.children
-                                       .first(where: { $0.title == remote }),
+      .first(where: { $0.title == remote }),
           let branchItem = remoteItem.child(matching: branch)
     else { return }
     
@@ -281,17 +280,17 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
   func select(ref: String)
   {
     switch ref {
-      
+        
       case let branchRef where branchRef.hasPrefix(RefPrefixes.heads):
         select(branch: branchRef.droppingPrefix(RefPrefixes.heads))
-      
+        
       case let remoteRef where remoteRef.hasPrefix(RefPrefixes.remotes):
         select(remoteBranch:
-            remoteRef.droppingPrefix(RefPrefixes.remotes))
-      
+                remoteRef.droppingPrefix(RefPrefixes.remotes))
+        
       case let tagRef where tagRef.hasPrefix(RefPrefixes.tags):
         select(tag: tagRef.droppingPrefix(RefPrefixes.tags))
-      
+        
       default:
         break
     }
@@ -333,22 +332,22 @@ final class SidebarController: NSViewController, SidebarCommandHandler,
       }
     }
   }
-
+  
   func confirmDelete(kind: String, name: String) async -> Bool
   {
     guard let window = view.window
     else { return false }
     let alert = NSAlert()
-
+    
     alert.messageString = .confirmDelete(kind: kind, name: name)
     alert.addButton(withString: .delete)
     alert.addButton(withString: .cancel)
     alert.buttons[0].hasDestructiveAction = true
     // Delete is destructive, so it should not be default
     alert.buttons[0].keyEquivalent = ""
-
+    
     let button = await alert.beginSheetModal(for: window)
-
+    
     return button == .alertFirstButtonReturn
   }
 }

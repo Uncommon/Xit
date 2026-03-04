@@ -1,5 +1,4 @@
 import Foundation
-import Siesta
 import XitGit
 
 protocol PullRequest: Sendable // Identifiable
@@ -67,8 +66,9 @@ protocol UserIDService
 }
 
 /// A service that manages pull requests
-protocol PullRequestService: RemoteService, UserIDService
+protocol PullRequestService: RemoteService, UserIDService, Identifiable
 {
+  var id: UUID { get }
   func getPullRequests() async -> [any Xit.PullRequest]
   func approve(request: any PullRequest) async throws
   func unapprove(request: any PullRequest) async throws

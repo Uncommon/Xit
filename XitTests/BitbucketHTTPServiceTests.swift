@@ -257,21 +257,21 @@ struct BitbucketHTTPServiceTests
     
     #expect(approveRequest.path.contains("participants/jsmith"))
     #expect(approveBody["approved"] as? Bool == true)
-    #expect(approveBody["status"] as? String == BitbucketServer.ReviewerStatus.approved.rawValue)
+    #expect(approveBody["status"] as? String == BitbucketHTTPService.ReviewerStatus.approved.rawValue)
     
     try await service.unapprove(request: pr)
     let unapproveRequest = try #require(mock.lastRequest)
     let unapproveBody = try decodeBody(unapproveRequest)
     
     #expect(unapproveBody["approved"] as? Bool == false)
-    #expect(unapproveBody["status"] as? String == BitbucketServer.ReviewerStatus.unapproved.rawValue)
+    #expect(unapproveBody["status"] as? String == BitbucketHTTPService.ReviewerStatus.unapproved.rawValue)
     
     try await service.needsWork(request: pr)
     let needsWorkRequest = try #require(mock.lastRequest)
     let needsWorkBody = try decodeBody(needsWorkRequest)
     
     #expect(needsWorkBody["approved"] as? Bool == false)
-    #expect(needsWorkBody["status"] as? String == BitbucketServer.ReviewerStatus.needsWork.rawValue)
+    #expect(needsWorkBody["status"] as? String == BitbucketHTTPService.ReviewerStatus.needsWork.rawValue)
   }
   
   @Test

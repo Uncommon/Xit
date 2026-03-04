@@ -10,7 +10,7 @@ final class BitbucketHTTPService: BaseHTTPService
   var userID: String { user?.slug ?? account.user }
   
   private let decoder = JSONDecoder()
-  private(set) var user: BitbucketServer.User?
+  private(set) var user: User?
   
   // MARK: - Init
   init?(account: Account,
@@ -32,7 +32,7 @@ final class BitbucketHTTPService: BaseHTTPService
   override func didAuthenticate(data: Data) async
   {
     do {
-      user = try decoder.decode(BitbucketServer.User.self, from: data)
+      user = try decoder.decode(User.self, from: data)
     }
     catch {
       authenticationStatus = .failed(error)
@@ -69,7 +69,7 @@ final class BitbucketHTTPService: BaseHTTPService
   
   private func update(request: BitbucketPR,
                       approved: Bool,
-                      status: BitbucketServer.ReviewerStatus) async throws
+                      status: ReviewerStatus) async throws
   {
     guard let userSlug = user?.slug
     else { throw BitbucketError.missingUser }
@@ -96,13 +96,151 @@ final class BitbucketHTTPService: BaseHTTPService
     case invalidPullRequest
   }
   
+  struct PagedResponse<T>: Codable, Sendable where T: Codable & Sendable
+  {
+    let size, limit: Int
+    let start: Int? // Not present for the first page
+    let isLastPage: Bool
+    let values: [T]
+  }
+
+  enum PullRequestState: String, Codable
+  {
+    case open = "OPEN"
+    case declined = "DECLINED"
+    case merged = "MERGED"
+    case all = "ALL" // queries only
+  }
+
+  enum ReviewerRole: String, Codable, Sendable
+  {
+    case author = "AUTHOR"
+    case reviewer = "REVIEWER"
+    case participant = "PARTICIPANT"
+  }
+
+  enum ReviewerStatus: String, Codable, Sendable
+  {
+    case approved = "APPROVED"
+    case unapproved = "UNAPPROVED"
+    case needsWork = "NEEDS_WORK"
+    
+    var approval: PullRequestApproval
+    {
+      switch self {
+        case .approved:   return .approved
+        case .unapproved: return .unreviewed
+        case .needsWork:  return .needsWork
+      }
+    }
+    
+    init(approval: PullRequestApproval)
+    {
+      switch approval {
+        case .approved:   self = .approved
+        case .unreviewed: self = .unapproved
+        case .needsWork:  self = .needsWork
+        case .unknown:    self = .unapproved
+      }
+    }
+  }
+
+  struct Project: Codable, Sendable
+  {
+    let key: String
+    let id: Int?
+    let links: Links?
+    let name: String?
+    let `public`: Bool?
+    let type: String? // NORMAL and what else?
+  }
+
+  struct Repository: Codable, Sendable
+  {
+    let slug: String
+    let name: String?
+    let project: Project
+    let links: Links?
+    let forkable: Bool?
+    let id: Int?
+    let `public`: Bool?
+    let scmId: String?
+    let statusMessage: String?
+  }
+
+  struct Ref: Codable, Sendable
+  {
+    let id: String
+    let displayId: String?
+    let latestCommit: String? // SHA
+    let repository: Repository
+  }
+
+  struct User: Codable, Equatable, Sendable
+  {
+    let name: String
+    let emailAddress: String?
+    let id: Int
+    let displayName: String
+    let active: Bool
+    let slug: String
+    let type: UserType
+    let links: Links?
+  }
+  
+  enum UserType: String, Codable, Sendable
+  {
+    case normal = "NORMAL"
+    case service = "SERVICE"
+  }
+  
+  struct Link: Codable, Equatable, Sendable
+  {
+    let href: String?
+    let name: String?
+  }
+  
+  struct Links: Codable, Equatable, Sendable
+  {
+    let `self`: [Link]
+    let clone: [Link]?
+  }
+
+  struct Participant: Codable, Sendable
+  {
+    let user: User
+    let role: ReviewerRole
+    var approved: Bool
+    var status: ReviewerStatus
+    let lastReviewedCommit: String?
+  }
+
+  struct PullRequest: Codable, Sendable
+  {
+    let id: Int
+    let version: Int
+    let title: String
+    let description: String?
+    var state: PullRequestState
+    let open: Bool
+    let closed: Bool
+    let closedDate: Int?
+    let createdDate, updatedDate: Int // convert to date
+    let fromRef, toRef: Ref
+    let locked: Bool
+    let author: Participant
+    var reviewers: [Participant]
+    let participants: [Participant]?
+    let links: Links
+  }
+
   struct BitbucketPR: Xit.PullRequest
   {
-    var request: BitbucketServer.PullRequest
+    var request: BitbucketHTTPService.PullRequest
     let serviceID: UUID
     let userID: Int?
     
-    init(request: BitbucketServer.PullRequest, service: BitbucketHTTPService)
+    init(request: BitbucketHTTPService.PullRequest, service: BitbucketHTTPService)
     {
       self.request = request
       self.serviceID = service.id
@@ -194,7 +332,7 @@ final class BitbucketHTTPService: BaseHTTPService
       else { return }
       
       request.reviewers[index].approved = status == .approved
-      request.reviewers[index].status = BitbucketServer.ReviewerStatus(approval: status)
+      request.reviewers[index].status = ReviewerStatus(approval: status)
     }
   }
 }
@@ -214,7 +352,7 @@ extension BitbucketHTTPService: RemoteService
 
 extension BitbucketHTTPService: PullRequestService
 {
-  func getPullRequests() async -> [any PullRequest]
+  func getPullRequests() async -> [any Xit.PullRequest]
   {
     var results: [BitbucketPR] = []
     var nextStart: Int?
@@ -227,7 +365,7 @@ extension BitbucketHTTPService: PullRequestService
                               queryItems: queryItems)
       
       do {
-        let page: BitbucketServer.PagedPullRequest = try await networkService.request(endpoint)
+        let page: PagedResponse<PullRequest> = try await networkService.request(endpoint)
         results.append(contentsOf: page.values.map { BitbucketPR(request: $0, service: self) })
         if page.isLastPage {
           nextStart = nil
@@ -243,10 +381,10 @@ extension BitbucketHTTPService: PullRequestService
       }
     } while nextStart != nil
     
-    return results.map { $0 as any PullRequest }
+    return results.map { $0 as any Xit.PullRequest }
   }
   
-  func approve(request: any PullRequest) async throws
+  func approve(request: any Xit.PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
     else { throw BitbucketError.invalidPullRequest }
@@ -254,7 +392,7 @@ extension BitbucketHTTPService: PullRequestService
     try await update(request: pr, approved: true, status: .approved)
   }
   
-  func unapprove(request: any PullRequest) async throws
+  func unapprove(request: any Xit.PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
     else { throw BitbucketError.invalidPullRequest }
@@ -262,7 +400,7 @@ extension BitbucketHTTPService: PullRequestService
     try await update(request: pr, approved: false, status: .unapproved)
   }
   
-  func needsWork(request: any PullRequest) async throws
+  func needsWork(request: any Xit.PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
     else { throw BitbucketError.invalidPullRequest }
@@ -270,7 +408,7 @@ extension BitbucketHTTPService: PullRequestService
     try await update(request: pr, approved: false, status: .needsWork)
   }
   
-  func merge(request: any PullRequest) async throws
+  func merge(request: any Xit.PullRequest) async throws
   {
     guard let pr = request as? BitbucketPR
     else { throw BitbucketError.invalidPullRequest }

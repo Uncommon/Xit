@@ -96,6 +96,8 @@ class FakePRService : PullRequestService
 {
   init() {}
   
+  var id: UUID = .init()
+  
   func getPullRequests() -> [any PullRequest] { [] }
   func approve(request: PullRequest) {}
   func unapprove(request: PullRequest) {}

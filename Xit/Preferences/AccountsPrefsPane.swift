@@ -59,10 +59,10 @@ struct AccountsPrefsPane: View
     VStack(spacing: -1) {
       Table(accountsManager.accounts, selection: $selectedAccountID) {
         TableColumn("Service", content: { ServiceLabel($0.type) })
-            .width(min: 40, ideal: 80)
+          .width(min: 40, ideal: 80)
         TableColumn("User name", value: \.user)
         TableColumn("Location", value: \.location.absoluteString)
-            .width(min: 40, ideal: 150)
+          .width(min: 40, ideal: 150)
         TableColumn("Status") {
           if $0.type == .teamCity {
             TeamCityHTTPStatusCell.for(service: services.teamCityHTTPService(for: $0))
@@ -71,7 +71,7 @@ struct AccountsPrefsPane: View
             HTTPAccountStatusCell.for(service: services.bitbucketHTTPService(for: $0))
           }
           else {
-            AccountStatusCell.for(service: services.service(for: $0))
+            EmptyView()
           }
         }.width(47)
       }.tableStyle(.bordered)
@@ -84,13 +84,13 @@ struct AccountsPrefsPane: View
           Divider()
           Button(action: { showDeleteConfirmation = true },
                  label: { squareImage("minus") })
-            .help("Delete account")
-            .disabled(selectedAccountID == nil)
-            .confirmationDialog(.confirmDeleteAccount,
-                                isPresented: $showDeleteConfirmation) {
-              Button(.delete, role: .destructive, action: deleteAccount)
-              Button(.cancel, role: .cancel, action: {})
-            }
+          .help("Delete account")
+          .disabled(selectedAccountID == nil)
+          .confirmationDialog(.confirmDeleteAccount,
+                              isPresented: $showDeleteConfirmation) {
+            Button(.delete, role: .destructive, action: deleteAccount)
+            Button(.cancel, role: .cancel, action: {})
+          }
           Divider()
         }.buttonStyle(.plain)
         Spacer()
@@ -100,8 +100,8 @@ struct AccountsPrefsPane: View
             .help("Edit account")
           Button(action: refreshAccount,
                  label: { squareImage("arrow.clockwise.circle.fill") })
-            .padding([.trailing], 4)
-            .help("Refresh account status")
+          .padding([.trailing], 4)
+          .help("Refresh account status")
         }.buttonStyle(.plain)
           .disabled(selectedAccountID == nil)
       }.background(.tertiary)
@@ -176,7 +176,7 @@ struct AccountsPrefsPane: View
     editAccountInfo = nil
     
     guard let account = accountsManager.accounts
-                                       .first(where: { $0.id == info.id }),
+      .first(where: { $0.id == info.id }),
           let url = URL(string: info.location)
     else { return }
     
@@ -235,7 +235,7 @@ struct AccountsPrefsPane: View
       }
     }
     else {
-      services.service(for: account)?.attemptAuthentication()
+      // No HTTP-backed service for this account type yet.
     }
   }
 }

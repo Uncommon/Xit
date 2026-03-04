@@ -1,5 +1,4 @@
 import Cocoa
-import Siesta
 
 @MainActor
 protocol RemoteSheetDelegate: AnyObject
