@@ -183,6 +183,7 @@
 		C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */; };
 		C96F65461D53A6CE001B2557 /* HistoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F65451D53A6CE001B2557 /* HistoryCellView.swift */; };
 		C9765B522F579E1800F84A14 /* TeamCityHTTPStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9765B512F579E1800F84A14 /* TeamCityHTTPStatusCell.swift */; };
+		C9765B542F57A3C200F84A14 /* HTTPAccountStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9765B532F57A3C200F84A14 /* HTTPAccountStatusCell.swift */; };
 		C9800D7D2017FEB80045B05D /* FileListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9800D7C2017FEB80045B05D /* FileListController.swift */; };
 		C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9864465207E9CAC0088209B /* StringIdentifiers.swift */; };
 		C98684702334389A0026E70B /* SidebarItemFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C986846F2334389A0026E70B /* SidebarItemFilter.swift */; };
@@ -483,6 +484,7 @@
 		C96D24B21DFEFD9F00431317 /* SidebarControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarControllerTest.swift; sourceTree = "<group>"; };
 		C96F65451D53A6CE001B2557 /* HistoryCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryCellView.swift; sourceTree = "<group>"; };
 		C9765B512F579E1800F84A14 /* TeamCityHTTPStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityHTTPStatusCell.swift; sourceTree = "<group>"; };
+		C9765B532F57A3C200F84A14 /* HTTPAccountStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPAccountStatusCell.swift; sourceTree = "<group>"; };
 		C9800D7C2017FEB80045B05D /* FileListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileListController.swift; sourceTree = "<group>"; };
 		C9864465207E9CAC0088209B /* StringIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringIdentifiers.swift; sourceTree = "<group>"; };
 		C986846F2334389A0026E70B /* SidebarItemFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarItemFilter.swift; sourceTree = "<group>"; };
@@ -1050,6 +1052,7 @@
 				C957B87B1D2DBBC00040F858 /* AccountsManager.swift */,
 				89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */,
 				891260E5285D183B00053528 /* GeneralPrefsPane.swift */,
+				C9765B532F57A3C200F84A14 /* HTTPAccountStatusCell.swift */,
 				C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */,
 				C93FFCB81F0FDAC700FDDD78 /* Preferences.swift */,
 				89E4272B285EC3F800A17651 /* PreviewsPrefsPane.swift */,
@@ -1394,6 +1397,7 @@
 				89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */,
 				895ED19529BBD23500757AEA /* CheckOutRemoteOpController.swift in Sources */,
 				89BA11E628BE432200A7999A /* HostingTitlebarController.swift in Sources */,
+				C9765B542F57A3C200F84A14 /* HTTPAccountStatusCell.swift in Sources */,
 				C9F533432183C7B100B2432C /* BasicAuthService.swift in Sources */,
 				8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */,
 				C931A0EF276BA6C0007F441C /* CommitFileListController.swift in Sources */,

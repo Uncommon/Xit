@@ -151,7 +151,6 @@ final class Services
   func initializeServices(with manager: AccountsManager)
   {
     for account in manager.accounts(ofType: .teamCity) {
-      _ = service(for: account)
       _ = teamCityHTTPService(for: account)
     }
     for account in manager.accounts(ofType: .bitbucketServer) {

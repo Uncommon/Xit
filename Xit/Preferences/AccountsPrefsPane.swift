@@ -67,6 +67,9 @@ struct AccountsPrefsPane: View
           if $0.type == .teamCity {
             TeamCityHTTPStatusCell.for(service: services.teamCityHTTPService(for: $0))
           }
+          else if $0.type == .bitbucketServer {
+            HTTPAccountStatusCell.for(service: services.bitbucketHTTPService(for: $0))
+          }
           else {
             AccountStatusCell.for(service: services.service(for: $0))
           }
@@ -223,6 +226,12 @@ struct AccountsPrefsPane: View
       Task {
         await httpService.attemptAuthentication()
         await httpService.refreshMetadata()
+      }
+    }
+    else if account.type == .bitbucketServer,
+            let httpService = services.bitbucketHTTPService(for: account) {
+      Task {
+        await httpService.attemptAuthentication()
       }
     }
     else {
