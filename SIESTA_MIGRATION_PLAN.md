@@ -1,6 +1,6 @@
 # Siesta Library Migration Plan
 
-**Date:** February 10, 2026  
+**Date:** March 4, 2026  
 **Project:** Xit  
 **Purpose:** Migrate from Siesta networking library to native URLSession APIs
 
@@ -12,25 +12,22 @@ This document outlines a comprehensive plan to migrate the Xit project away from
 
 ### Siesta Usage Overview
 
-The Siesta library is currently used in the following areas:
+Siesta has been fully removed as of March 4, 2026; the notes below capture historical usage before the migration for reference only.
 
 1. **Service Layer** (`Xit/Services/`)
-   - `BasicAuthService.swift` - Base authentication service (107 lines using Siesta)
-   - `TeamCityAPI.swift` - TeamCity build status integration (~400 lines)
-   - `BitbucketServerAPI.swift` - Bitbucket Server API (~450 lines)
-   - `Services.swift` - Service management and coordination (298 lines)
-   - `ServicesData.swift` - Pull request protocols and data types
-   - `BuildStatusCache.swift` - Build status data management
-   - `PullRequestCache.swift` - Pull request data management
+   - `BasicAuthService.swift` (removed)
+   - `TeamCityAPI.swift` (removed)
+   - `BitbucketServerAPI.swift` (removed)
+   - `Services.swift` (historically coordinated Siesta services)
+   - `ServicesData.swift` (protocols retained, no Siesta dependency)
+   - `BuildStatusCache.swift` (now HTTP-only)
+   - `PullRequestCache.swift` (now HTTP-only)
 
 2. **Extensions**
-   - `SiestaExtensions.swift` - Custom Siesta extensions adding async/await support
+   - `SiestaExtensions.swift` (removed)
 
-3. **Testing**
-   - `Repository/Fakes.swift` - Mock implementations for testing
-
-4. **UI Controllers**
-   - `RemoteSheetController.swift` - Remote repository management
+3. **Testing/UI**
+   - Siesta-dependent fakes removed; RemoteSheetController no longer imports Siesta
 
 **Note:** While Siesta was originally adopted for its caching capabilities, this turned out not to be needed for this application. The migration will use simple URLSession without implementing HTTP-level caching.
 
@@ -62,7 +59,7 @@ The Siesta library is currently used in the following areas:
 
 ### Dependencies
 
-- **Package:** `https://github.com/bustoutsolutions/siesta`
+- **Package:** `https://github.com/bustoutsolutions/siesta` (removed from project and Package.resolved)
 - **Referenced in:** `Xit.xcodeproj/project.pbxproj`
 - **Package version:** Specified in `Package.resolved`
 
@@ -561,10 +558,10 @@ enum TeamCityError: Error {
 | Phase 1: Foundation | 2 weeks | Week 1 | Week 2 | ✅ **COMPLETE** | New networking layer, tests |
 | Phase 2: Service Migration | 2 weeks | Week 3 | Week 4 | ✅ **COMPLETE** | TeamCity migrated, Bitbucket HTTP live |
 | Phase 3: Complete Migration | 2 weeks | Week 5 | Week 6 | ✅ **COMPLETE** | Bitbucket stabilized; TeamCity build-status using HTTP; legacy Siesta pending removal |
-| Phase 4: Remove Siesta | 1 week | Week 7 | Week 7 | ⏸️ Pending | Siesta removed, docs updated |
+| Phase 4: Remove Siesta | 1 week | Week 7 | Week 7 | ✅ **COMPLETE** | Siesta code and package removed; HTTP services only |
 | **Total** | **7 weeks** | | | **On Track** | **Complete migration** |
 
-**Progress:** Phases 1-3 complete; Phase 4 (Siesta removal) pending. Unit tests passing; UI tests currently blocked by an auth prompt during runner initialization.
+**Progress:** Phases 1–4 complete; Siesta removed from code and package graph. Unit tests passing; UI tests remain deferred due to auth prompt.
 
 **Coding Style Reminder:** Follow the guidelines in `CODING_STYLE.md` (brace placement, indentation, line length, whitespace) to avoid incidental formatting changes during migration work.
 
@@ -729,6 +726,6 @@ let service = URLSessionNetworkService(
 ---
 
 **Document Version:** 1.0  
-**Last Updated:** February 10, 2026  
+**Last Updated:** March 4, 2026  
 **Author:** Development Team  
-**Status:** Proposed
+**Status:** Completed
