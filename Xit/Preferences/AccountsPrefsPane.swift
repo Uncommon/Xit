@@ -222,14 +222,14 @@ struct AccountsPrefsPane: View
     else { return }
     
     if account.type == .teamCity,
-       let httpService = services.teamCityHTTPService(for: account) {
+       let httpService = services.teamCityService(for: account) {
       Task {
         await httpService.attemptAuthentication()
         await httpService.refreshMetadata()
       }
     }
     else if account.type == .bitbucketServer,
-            let httpService = services.bitbucketHTTPService(for: account) {
+            let httpService = services.bitbucketService(for: account) {
       Task {
         await httpService.attemptAuthentication()
       }

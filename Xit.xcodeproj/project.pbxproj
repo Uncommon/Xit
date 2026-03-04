@@ -198,7 +198,7 @@
 		C9A0544E228A03D6002BFFF5 /* SidebarPRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */; };
 		C9A05460228B1A05002BFFF5 /* SidebarDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */; };
 		C9A054612294B9DD002BFFF5 /* SidebarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */; };
-		C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */; };
+		C9A382492F44E925006BF65C /* TeamCityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382482F44E925006BF65C /* TeamCityServiceTests.swift */; };
 		C9A382B12F47B77F006BF65C /* BitbucketServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382B02F47B77F006BF65C /* BitbucketServiceTests.swift */; };
 		C9A382C72F47C981006BF65C /* ServicesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A382C62F47C981006BF65C /* ServicesManagerTests.swift */; };
 		C9AA80301E2929810004D670 /* FileChangesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */; };
@@ -493,7 +493,7 @@
 		C9A05433228336BB002BFFF5 /* SidebarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDelegate.swift; sourceTree = "<group>"; };
 		C9A0544D228A03D6002BFFF5 /* SidebarPRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarPRManager.swift; sourceTree = "<group>"; };
 		C9A0545F228B1A05002BFFF5 /* SidebarDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarDataModel.swift; sourceTree = "<group>"; };
-		C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityHTTPServiceTests.swift; sourceTree = "<group>"; };
+		C9A382482F44E925006BF65C /* TeamCityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamCityServiceTests.swift; sourceTree = "<group>"; };
 		C9A382B02F47B77F006BF65C /* BitbucketServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitbucketServiceTests.swift; sourceTree = "<group>"; };
 		C9A382C62F47C981006BF65C /* ServicesManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesManagerTests.swift; sourceTree = "<group>"; };
 		C9AA802F1E2929810004D670 /* FileChangesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChangesDataSource.swift; sourceTree = "<group>"; };
@@ -827,7 +827,7 @@
 				C941037F1EBDFABC002C80DC /* SideBarDataSourceTest.swift */,
 				C94D9E0122A031BE00E46A28 /* SidebarDelegateTest.swift */,
 				C9DAB5AE1D47C23900586854 /* TeamCityTest.swift */,
-				C9A382482F44E925006BF65C /* TeamCityHTTPServiceTests.swift */,
+				C9A382482F44E925006BF65C /* TeamCityServiceTests.swift */,
 				89CD209017089D220051C3D4 /* XTCategoryTests.h */,
 				89CD209117089D220051C3D4 /* XTCategoryTests.m */,
 				C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */,
@@ -1477,7 +1477,7 @@
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */,
 				C9A382C72F47C981006BF65C /* ServicesManagerTests.swift in Sources */,
-				C9A382492F44E925006BF65C /* TeamCityHTTPServiceTests.swift in Sources */,
+				C9A382492F44E925006BF65C /* TeamCityServiceTests.swift in Sources */,
 				C96D24B31DFEFD9F00431317 /* SidebarControllerTest.swift in Sources */,
 				C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */,
 				C94D9DF0229D9D7000E46A28 /* FakeRepo.swift in Sources */,

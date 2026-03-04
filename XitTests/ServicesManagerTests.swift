@@ -14,7 +14,7 @@ struct ServicesManagerTests
   }
   
   @Test
-  func bitbucketHTTPServiceCreatedWithPassword() async throws
+  func bitbucketServiceCreatedWithPassword() async throws
   {
     let storage = MemoryPasswordStorage()
     let services = Services(passwordStorage: storage)
@@ -26,25 +26,25 @@ struct ServicesManagerTests
                      account: account.user,
                      password: "pw")
     
-    let service = services.bitbucketHTTPService(for: account)
+    let service = services.bitbucketService(for: account)
     
     try #require(service != nil)
   }
   
   @Test
-  func bitbucketHTTPServiceNilWithoutPassword() async throws
+  func bitbucketServiceNilWithoutPassword() async throws
   {
     let storage = MemoryPasswordStorage()
     let services = Services(passwordStorage: storage)
     let account = makeAccount(type: .bitbucketServer)
     
-    let service = services.bitbucketHTTPService(for: account)
+    let service = services.bitbucketService(for: account)
     
     #expect(service == nil)
   }
   
   @Test
-  func teamCityHTTPServiceCreatedWithPassword() async throws
+  func teamCityServiceCreatedWithPassword() async throws
   {
     let storage = MemoryPasswordStorage()
     let services = Services(passwordStorage: storage)

@@ -145,7 +145,7 @@ extension BuildStatusAccessor
           let remoteURL = remote.urlString
     else { return nil }
     
-    return await servicesMgr.teamCityHTTPBuildStatus(for: remoteURL)
+    return await servicesMgr.teamCityBuildStatus(for: remoteURL)
   }
   
   func matchBuildStatusService(_ remoteName: String) -> (any BuildStatusDisplayService)?
@@ -155,6 +155,6 @@ extension BuildStatusAccessor
           let host = remote.url?.host
     else { return nil }
     
-    return servicesMgr.teamCityHTTPService(host: host)
+    return servicesMgr.teamCityService(host: host)
   }
 }

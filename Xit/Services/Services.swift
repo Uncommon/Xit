@@ -29,14 +29,14 @@ final class Services
   
   let passwordStorage: any PasswordStorage
   
-  private var teamCityHTTPServices: [String: TeamCityService] = [:]
-  private var bitbucketHTTPServices: [String: BitbucketService] = [:]
+  private var teamCityServices: [String: TeamCityService] = [:]
+  private var bitbucketServices: [String: BitbucketService] = [:]
   
-  var teamCityHTTPServiceList: [TeamCityService]
-  { Array(teamCityHTTPServices.values) }
+  var teamCityServiceList: [TeamCityService]
+  { Array(teamCityServices.values) }
   
   private var pullRequestServices: [any PullRequestService]
-  { bitbucketHTTPServices.values.map { $0 as any PullRequestService } }
+  { bitbucketServices.values.map { $0 as any PullRequestService } }
   
   var hasPullRequestService: Bool { !pullRequestServices.isEmpty }
   
@@ -55,10 +55,10 @@ final class Services
   func initializeServices(with manager: AccountsManager)
   {
     for account in manager.accounts(ofType: .teamCity) {
-      _ = teamCityHTTPService(for: account)
+      _ = teamCityService(for: account)
     }
     for account in manager.accounts(ofType: .bitbucketServer) {
-      _ = bitbucketHTTPService(for: account)
+      _ = bitbucketService(for: account)
     }
   }
   
@@ -75,20 +75,20 @@ final class Services
   /// Notifies all services that an account has been updated
   func accountUpdated(oldAccount: Account, newAccount: Account)
   {
-    for service in teamCityHTTPServices.values {
+    for service in teamCityServices.values {
       service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
     }
-    for service in bitbucketHTTPServices.values {
+    for service in bitbucketServices.values {
       service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
     }
   }
   
   /// Returns the URLSession-based TeamCity service for the given account.
-  func teamCityHTTPService(for account: Account) -> TeamCityService?
+  func teamCityService(for account: Account) -> TeamCityService?
   {
     let key = Services.accountKey(account)
     
-    if let existing = teamCityHTTPServices[key] {
+    if let existing = teamCityServices[key] {
       return existing
     }
     
@@ -113,7 +113,7 @@ final class Services
       authenticationPath: TeamCityAPI.rootPath,
       networkService: network)
     
-    teamCityHTTPServices[key] = service
+    teamCityServices[key] = service
     Task {
       await service.attemptAuthentication()
       await service.refreshMetadata()
@@ -121,11 +121,11 @@ final class Services
     return service
   }
   
-  func bitbucketHTTPService(for account: Account) -> BitbucketService?
+  func bitbucketService(for account: Account) -> BitbucketService?
   {
     let key = Services.accountKey(account)
     
-    if let existing = bitbucketHTTPServices[key] {
+    if let existing = bitbucketServices[key] {
       return existing
     }
     
@@ -150,7 +150,7 @@ final class Services
       networkService: network)
     
     if let service {
-      bitbucketHTTPServices[key] = service
+      bitbucketServices[key] = service
       Task { await service.attemptAuthentication() }
     }
     return service
@@ -161,9 +161,9 @@ final class Services
     pullRequestServices.first { $0.match(remote: remote) }
   }
   
-  func teamCityHTTPBuildStatus(for remoteURL: String) async -> (TeamCityService, [String])?
+  func teamCityBuildStatus(for remoteURL: String) async -> (TeamCityService, [String])?
   {
-    for service in teamCityHTTPServices.values {
+    for service in teamCityServices.values {
       let buildTypes = await service.buildTypesForRemote(remoteURL)
       if !buildTypes.isEmpty {
         return (service, buildTypes)
@@ -172,9 +172,9 @@ final class Services
     return nil
   }
   
-  func teamCityHTTPService(host: String) -> TeamCityService?
+  func teamCityService(host: String) -> TeamCityService?
   {
-    teamCityHTTPServices.values.first { $0.account.location.host == host }
+    teamCityServices.values.first { $0.account.location.host == host }
   }
 }
 
