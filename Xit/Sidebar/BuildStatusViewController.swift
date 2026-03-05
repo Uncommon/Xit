@@ -15,7 +15,7 @@ final class BuildStatusViewController: NSViewController
   @IBOutlet weak var refreshSpinner: NSProgressIndicator!
   
   var filteredStatuses: [String: BuildStatusCache.BranchStatuses] = [:]
-  var builds: [TeamCityAPI.Build] = []
+  var builds: [TeamCity.Build] = []
   
   enum CellID
   {
@@ -84,7 +84,7 @@ final class BuildStatusViewController: NSViewController
       }
     }
     
-    var buildsByNumber: [String: TeamCityAPI.Build] = [:]
+    var buildsByNumber: [String: TeamCity.Build] = [:]
     
     for branchStatus in filteredStatuses.values {
       for status in branchStatus.values {

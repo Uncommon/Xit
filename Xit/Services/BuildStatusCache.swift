@@ -22,7 +22,7 @@ protocol BuildStatusClient: AnyObject
 final class BuildStatusCache: BuildStatusAccessor
 {
   // This typealias resolves ambiguity for the compiler
-  typealias BranchStatuses = [String: TeamCityAPI.Build] // Branch to build
+  typealias BranchStatuses = [String: TeamCity.Build] // Branch to build
   
   var servicesMgr: Services { Services.xit }
   weak var remoteMgr: (any RemoteManagement)!

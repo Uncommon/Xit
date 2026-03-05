@@ -14,9 +14,9 @@ class TeamCityTest: XCTestCase
   }
   
   func parseBuild(statusString: String,
-                  status: TeamCityAPI.Build.Status,
+                  status: TeamCity.Build.Status,
                   stateString: String,
-                  state: TeamCityAPI.Build.State) throws
+                  state: TeamCity.Build.State) throws
   {
     let buildType = "TestBuildType"
     let branchName = "testBranch"
@@ -28,7 +28,7 @@ class TeamCityTest: XCTestCase
         "webUrl=\"https://teamcity.example.com/viewLog.html?buildId=45272&amp;buildTypeId=\(buildType)\"/>"
     
     let xml = try XMLDocument(xmlString: sourceXML, options: [])
-    let build = TeamCityAPI.Build(xml: xml)!
+    let build = TeamCity.Build(xml: xml)!
     
     XCTAssertEqual(build.buildType!, buildType)
     XCTAssertEqual(build.status, status)

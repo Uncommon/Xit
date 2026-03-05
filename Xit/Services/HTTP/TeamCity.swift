@@ -1,6 +1,6 @@
 import Foundation
 
-enum TeamCityAPI
+enum TeamCity
 {
   static let rootPath = "/httpAuth/app/rest"
   

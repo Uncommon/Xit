@@ -45,7 +45,7 @@ final class BuildStatusController: NSObject
       .init(systemSymbolName: imageName)!
     }
     
-    init(build: TeamCityAPI.Build)
+    init(build: TeamCity.Build)
     {
       switch build {
         case _ where build.status == .failed:

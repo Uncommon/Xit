@@ -110,7 +110,7 @@ final class Services
       account: account,
       password: password,
       passwordStorage: passwordStorage,
-      authenticationPath: TeamCityAPI.rootPath,
+      authenticationPath: TeamCity.rootPath,
       networkService: network)
     
     teamCityServices[key] = service

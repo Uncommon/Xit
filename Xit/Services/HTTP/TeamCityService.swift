@@ -3,7 +3,7 @@ import XitGit
 
 final class TeamCityService: BaseHTTPService
 {
-  nonisolated static let rootPath = TeamCityAPI.rootPath // reuse existing constant
+  nonisolated static let rootPath = TeamCity.rootPath // reuse existing constant
   
   private var vcsRootMap: [String: URL] = [:]
   private var vcsBranchSpecs: [String: BranchSpec] = [:]
@@ -66,7 +66,7 @@ final class TeamCityService: BaseHTTPService
   }
   
   /// Fetch builds and parse into models.
-  func loadBuilds(buildTypeID: String, branch: String? = nil) async throws -> [TeamCityAPI.Build]
+  func loadBuilds(buildTypeID: String, branch: String? = nil) async throws -> [TeamCity.Build]
   {
     let data = try await fetchBuilds(buildTypeID: buildTypeID, branch: branch)
     
@@ -177,7 +177,7 @@ final class TeamCityService: BaseHTTPService
     }
   }
   
-  private func parseBuilds(from data: Data) throws -> [TeamCityAPI.Build]
+  private func parseBuilds(from data: Data) throws -> [TeamCity.Build]
   {
     let xml = try XMLDocument(data: data)
     guard let root = xml.rootElement()
@@ -187,7 +187,7 @@ final class TeamCityService: BaseHTTPService
     guard !buildElements.isEmpty
     else { throw ParseError.missingBuilds }
     
-    return buildElements.compactMap { TeamCityAPI.Build(element: $0) }
+    return buildElements.compactMap { TeamCity.Build(element: $0) }
   }
   
   private func parseVCSRoot(xml: XMLDocument, vcsRootID: String)
