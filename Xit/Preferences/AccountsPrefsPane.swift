@@ -65,10 +65,10 @@ struct AccountsPrefsPane: View
           .width(min: 40, ideal: 150)
         TableColumn("Status") {
           if $0.type == .teamCity {
-            TeamCityHTTPStatusCell.for(service: services.teamCityHTTPService(for: $0))
+            AccountStatusCell.for(service: services.teamCityService(for: $0))
           }
           else if $0.type == .bitbucketServer {
-            HTTPAccountStatusCell.for(service: services.bitbucketHTTPService(for: $0))
+            AccountStatusCell.for(service: services.bitbucketService(for: $0))
           }
           else {
             EmptyView()
