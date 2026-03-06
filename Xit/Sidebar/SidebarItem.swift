@@ -94,14 +94,14 @@ class SidebarItem: NSObject
     else { return false }
     
     return displayTitle == otherItem.displayTitle &&
-           selection?.target == otherItem.selection?.target
+    selection?.target == otherItem.selection?.target
   }
 }
 
 extension SidebarItem
 {
   override var debugDescription: String { displayTitle.rawValue }
-
+  
   func printTree(_ depth: Int = 0)
   {
     let prefix = String(repeating: "  ", count: depth)
@@ -141,7 +141,7 @@ final class StagingSidebarItem: SidebarItem
   }
   
   required init(title: String) { super.init(title: title) }
-
+  
   override var icon: NSImage?
   { .xtStaging }
 }
@@ -190,7 +190,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
     return false
   }
   
-
+  
   override func branchObject() -> (any Branch)?
   {
     guard let refName = LocalBranchRefName(title)
@@ -208,7 +208,7 @@ final class LocalBranchSidebarItem: BranchSidebarItem
     
     return remoteBranch.remoteName.flatMap { repo.remote(named: $0) }
   }
-
+  
   func hasTrackingBranch() -> Bool
   {
     guard let refName = LocalBranchRefName(title),
@@ -235,7 +235,7 @@ final class RemoteBranchSidebarItem: BranchSidebarItem
   
   override var fullName: String { "\(remoteName)/\(title)" }
   
-
+  
   required init(title: String,
                 remote: String,
                 selection: (any RepositorySelection)?)
@@ -251,7 +251,7 @@ final class RemoteBranchSidebarItem: BranchSidebarItem
     self.remoteName = ""
     super.init(title: title)
   }
-
+  
   override func shallowCopy() -> Self
   {
     return type(of: self).init(title: title, remote: remoteName,
@@ -289,10 +289,9 @@ final class RemoteSidebarItem: SidebarItem
        let url = URL(string: urlString),
        let host = url.host?.lowercased() {
       let hostsWithIcons: [(String, NSImage.Name)] =
-            [("github.com", .xtGitHub),
-             ("gitlab.com", .xtGitLab),
-             ("bitbucket.com", .xtBitBucketTemplate)]
-
+      [("github.com", .xtGitHub),
+       ("gitlab.com", .xtGitLab)]
+      
       for (domain, image) in hostsWithIcons {
         if (host == domain) || host.hasSuffix("." + domain) {
           return NSImage(named: image)
@@ -336,7 +335,7 @@ final class RemoteSidebarItem: SidebarItem
 final class TagSidebarItem: SidebarItem
 {
   let tag: any Tag
-
+  
   override var displayTitle: UIString
   { UIString(rawValue: (title as NSString).lastPathComponent) }
   override var icon: NSImage?
@@ -349,7 +348,7 @@ final class TagSidebarItem: SidebarItem
     }
   }
   override var refType: RefType { .tag }
-
+  
   required init(tag: any Tag)
   {
     self.tag = tag
@@ -377,9 +376,9 @@ final class TagSidebarItem: SidebarItem
     assertionFailure("This initializer shouldn't be used.")
     self.tag = FakeTag(name: "",
                        signature: .init(
-                          name: "Mock",
-                          email: "mock@example.com",
-                          when: .init()),
+                        name: "Mock",
+                        email: "mock@example.com",
+                        when: .init()),
                        targetOID: nil, commit: nil, message: nil,
                        type: .annotated, isSigned: false)
     super.init(title: title)
@@ -427,7 +426,7 @@ class SubmoduleSidebarItem: SidebarItem
     var ignoreRule: SubmoduleIgnore { get { .none } set {} }
     var updateStrategy: SubmoduleUpdate { get { .none } set {} }
     var recurse: SubmoduleRecurse { get { .no } set {} }
-
+    
     func update(initialize: Bool, callbacks: RemoteCallbacks) throws {}
   }
 }

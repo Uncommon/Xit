@@ -14,33 +14,12 @@ struct ServicesManagerTests
   }
   
   @Test
-  func bitbucketServiceCreatedWithPassword() async throws
+  func hasNoPullRequestProviderByDefault() async
   {
-    let storage = MemoryPasswordStorage()
-    let services = Services(passwordStorage: storage)
-    let account = makeAccount(type: .bitbucketServer)
+    let services = Services(passwordStorage: MemoryPasswordStorage())
     
-    try storage.save(host: account.location.host!,
-                     path: account.location.path,
-                     port: 80,
-                     account: account.user,
-                     password: "pw")
-    
-    let service = services.bitbucketService(for: account)
-    
-    try #require(service != nil)
-  }
-  
-  @Test
-  func bitbucketServiceNilWithoutPassword() async throws
-  {
-    let storage = MemoryPasswordStorage()
-    let services = Services(passwordStorage: storage)
-    let account = makeAccount(type: .bitbucketServer)
-    
-    let service = services.bitbucketService(for: account)
-    
-    #expect(service == nil)
+    #expect(services.hasPullRequestService == false)
+    #expect(services.pullRequestService(forID: UUID()) == nil)
   }
   
   @Test
@@ -56,7 +35,7 @@ struct ServicesManagerTests
                      account: account.user,
                      password: "pw")
     
-    let service = services.teamCityHTTPService(for: account)
+    let service = services.teamCityService(for: account)
     
     try #require(service != nil)
   }

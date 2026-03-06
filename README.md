@@ -16,7 +16,6 @@ Xit began as a rewrite of GitX, born from a desire for a codebase that was easie
 
 * **Sidebar** showing branches, remotes, tags, submodules, and stashes.
   * Build status for branches you have pushed (currently supports TeamCity).
-  * Pull request indicators and actions (currently supports Bitbucket Server).
   * Support for more services, such as GitHub, is planned.
 * **History list** with a graph of commits and branches.
   * Search the list by author, message content, or hash.

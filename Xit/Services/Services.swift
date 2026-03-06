@@ -30,13 +30,13 @@ final class Services
   let passwordStorage: any PasswordStorage
   
   private var teamCityServices: [String: TeamCityService] = [:]
-  private var bitbucketServices: [String: BitbucketService] = [:]
   
   var teamCityServiceList: [TeamCityService]
   { Array(teamCityServices.values) }
   
+  // No pull-request provider is currently wired; keep this seam for future services.
   private var pullRequestServices: [any PullRequestService]
-  { bitbucketServices.values.map { $0 as any PullRequestService } }
+  { [] }
   
   var hasPullRequestService: Bool { !pullRequestServices.isEmpty }
   
@@ -57,9 +57,6 @@ final class Services
     for account in manager.accounts(ofType: .teamCity) {
       _ = teamCityService(for: account)
     }
-    for account in manager.accounts(ofType: .bitbucketServer) {
-      _ = bitbucketService(for: account)
-    }
   }
   
   private static func accountKey(_ account: Account) -> String
@@ -76,9 +73,6 @@ final class Services
   func accountUpdated(oldAccount: Account, newAccount: Account)
   {
     for service in teamCityServices.values {
-      service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
-    }
-    for service in bitbucketServices.values {
       service.accountUpdated(oldAccount: oldAccount, newAccount: newAccount)
     }
   }
@@ -117,41 +111,6 @@ final class Services
     Task {
       await service.attemptAuthentication()
       await service.refreshMetadata()
-    }
-    return service
-  }
-  
-  func bitbucketService(for account: Account) -> BitbucketService?
-  {
-    let key = Services.accountKey(account)
-    
-    if let existing = bitbucketServices[key] {
-      return existing
-    }
-    
-    guard let password = passwordStorage.find(url: account.location,
-                                              account: account.user)
-    else {
-      serviceLogger.info("No \(account.type.name) password for \(account.user)")
-      return nil
-    }
-    
-    let authProvider = BasicAuthProvider(username: account.user,
-                                         password: password)
-    let network = URLSessionNetworkService(
-      session: .init(configuration: .default),
-      configuration: .init(headers: [:]),
-      authProvider: authProvider)
-    
-    let service = BitbucketService(
-      account: account,
-      password: password,
-      passwordStorage: passwordStorage,
-      networkService: network)
-    
-    if let service {
-      bitbucketServices[key] = service
-      Task { await service.attemptAuthentication() }
     }
     return service
   }
