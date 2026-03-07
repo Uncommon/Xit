@@ -98,6 +98,7 @@ struct TeamCityServiceTests
     let branchSpec = service.branchSpecSnapshot(for: "root1")
     
     #expect(rootURL == URL(string: "https://example.com/repo.git"))
+    try #require(branchSpec != nil)
     #expect(branchSpec?.match(branch: "refs/heads/main") == "main")
   }
   

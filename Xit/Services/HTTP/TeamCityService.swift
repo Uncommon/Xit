@@ -113,7 +113,7 @@ final class TeamCityService: BaseHTTPService
     
     let rootIDs = root.childrenAttributes("id")
     
-    let parsedRoots = try await withThrowingTaskGroup(of: (ParsedVCSRoot?).self) {
+    let parsedRoots = try await withThrowingTaskGroup(of: [ParsedVCSRoot].self) {
       group in
       for rootID in rootIDs {
         group.addTask {
@@ -126,9 +126,7 @@ final class TeamCityService: BaseHTTPService
       
       var results: [ParsedVCSRoot] = []
       for try await parsed in group {
-        if let parsed {
-          results.append(parsed)
-        }
+        results.append(contentsOf: parsed)
       }
       return results
     }
@@ -216,13 +214,15 @@ final class TeamCityService: BaseHTTPService
     return buildElements.compactMap { TeamCity.Build(element: $0) }
   }
   
-  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String) -> ParsedVCSRoot?
+  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String) -> [ParsedVCSRoot]
   {
     guard let properties = xml.rootElement()?.elements(forName: "properties").first,
           let propertiesChildren = properties.children
     else {
-      return nil
+      return []
     }
+    
+    var parsedEntries: [ParsedVCSRoot] = []
     
     for property in propertiesChildren {
       guard let element = property as? XMLElement,
@@ -233,10 +233,7 @@ final class TeamCityService: BaseHTTPService
       switch name {
         case "url":
           if let parsedURL = URL(string: value) {
-            return .init(id: vcsRootID, entry: .url(parsedURL))
-          }
-          else {
-            // couldn't parse URL
+            parsedEntries.append(.init(id: vcsRootID, entry: .url(parsedURL)))
           }
         case "teamcity:branchSpec":
           let specLines = value
@@ -245,17 +242,14 @@ final class TeamCityService: BaseHTTPService
             .filter { !$0.isEmpty }
           
           if let branchSpec = BranchSpec(ruleStrings: specLines) {
-            return .init(id: vcsRootID, entry: .branchSpec(branchSpec))
-          }
-          else {
-            // couldn't parse branch spec
+            parsedEntries.append(.init(id: vcsRootID, entry: .branchSpec(branchSpec)))
           }
         default:
           break
       }
     }
     
-    return nil
+    return parsedEntries
   }
   
   /// Fetch a specific build type definition by ID (includes VCS entries).
