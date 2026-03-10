@@ -13,10 +13,10 @@ struct TeamCityServiceTests
                           id: UUID())
     
     return TeamCityService(account: account,
-                               password: "pw",
-                               passwordStorage: MemoryPasswordStorage.shared,
-                               authenticationPath: TeamCityService.rootPath,
-                               networkService: mock)
+                           password: "pw",
+                           passwordStorage: MemoryPasswordStorage.shared,
+                           authenticationPath: TeamCityService.rootPath,
+                           networkService: mock)
   }
   
   @Test

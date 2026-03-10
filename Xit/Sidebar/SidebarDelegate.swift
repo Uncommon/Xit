@@ -22,10 +22,10 @@ final class SidebarDelegate: NSObject
     guard let repository = model?.repository,
           item is LocalBranchSidebarItem
     else { return nil }
-
+    
     return graphText(repository, for: item)
   }
-
+  
   func graphText<R>(_ repository: R,
                     for item: SidebarItem) -> String?
     where R: SidebarDataModel.Repository
@@ -49,7 +49,7 @@ final class SidebarDelegate: NSObject
     }
     return numbers.isEmpty ? nil : numbers.joined(separator: " ")
   }
-
+  
   func cell(forItem item: SidebarItem) -> SidebarTableCellView?
   {
     let row = outline.row(forItem: item)
@@ -168,7 +168,7 @@ final class SidebarDelegate: NSObject
   {
     let selection = sideBarItem.selection as! StagedUnstagedSelection
     let (stagedCount, unstagedCount) = selection.counts()
-
+    
     dataView.statusText.setStatus(unstaged: unstagedCount, staged: stagedCount)
   }
   
@@ -235,13 +235,13 @@ extension SidebarDelegate: NSOutlineViewDelegate
       controller.selection = selection
     }
   }
-
+  
   public func outlineView(_ outlineView: NSOutlineView,
                           isGroupItem item: Any) -> Bool
   {
     return item is SideBarGroupItem
   }
-
+  
   public func outlineView(_ outlineView: NSOutlineView,
                           shouldShowOutlineCellForItem item: Any) -> Bool
   {
@@ -258,15 +258,15 @@ extension SidebarDelegate: NSOutlineViewDelegate
   {
     return (item as? SidebarItem)?.isSelectable ?? false
   }
-
+  
   public func outlineView(_ outlineView: NSOutlineView,
                           heightOfRowByItem item: Any) -> CGFloat
   {
     // Using this instead of setting rowSizeStyle because that prevents text
     // from displaying as bold (for the active branch).
-   return 20.0
+    return 20.0
   }
-
+  
   public func outlineView(_ outlineView: NSOutlineView,
                           viewFor tableColumn: NSTableColumn?,
                           item: Any) -> NSView?
@@ -279,7 +279,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         
         headerView.textField?.stringValue = groupItem.title.uppercased()
         return headerView
-
+        
       case let sidebarItem as SidebarItem:
         guard let dataView = outlineView.makeView(withIdentifier: CellID.data,
                                                   owner: nil)
@@ -293,7 +293,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         if sidebarItem.isEditable {
           textField.target = controller
           textField.action =
-            #selector(SidebarController.sidebarItemRenamed(_:))
+              #selector(SidebarController.sidebarItemRenamed(_:))
         }
         else {
           textField.target = nil
@@ -311,7 +311,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
         }
         update(cell: dataView, item: sidebarItem)
         return dataView
-      
+        
       default:
         return nil
     }
@@ -323,7 +323,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
     switch item {
       case let branchItem as LocalBranchSidebarItem where branchItem.isCurrent:
         return SidebarCheckedRowView()
-
+        
       case let remoteBranchItem as RemoteBranchSidebarItem:
         guard let repository = model?.repository,
               let branchName = repository.currentBranch,
@@ -335,7 +335,7 @@ extension SidebarDelegate: NSOutlineViewDelegate
                                             toolTip: .trackingToolTip)
         
         return rowView
-
+        
       default:
         return nil
     }
