@@ -62,25 +62,43 @@ final class BuildStatusViewController: NSViewController
     // Only the local "refs/heads/..." version of the branch name works
     // with the branchspec matching.
     guard let api = self.api
-    else { return }
+    else {
+      serviceLogger.debug("Build status popover has no display service for branch \(self.branch.referenceName.description, privacy: .public)")
+      return
+    }
     
     let branchName = branch.localRefName.fullPath
+    serviceLogger.debug("Build status popover filtering cached statuses for branch \(branchName, privacy: .public); cached build types: \(self.buildStatusCache.statuses.keys.sorted(), privacy: .public)")
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {
       let roots = api.cachedVCSRoots(for: buildType)
       guard !roots.isEmpty
-      else { continue }
+      else {
+        serviceLogger.debug("Build status popover found no cached VCS roots for build type \(buildType, privacy: .public)")
+        continue
+      }
       
-      let matchNames = roots.compactMap
-          { api.cachedBranchSpec(for: $0)?.match(branch: branchName) }
+      let matchNames = roots.compactMap {
+        rootID -> String? in
+        let match = api.cachedBranchSpec(for: rootID)?.match(branch: branchName)
+        serviceLogger.debug("Build status popover branch spec match for build type \(buildType, privacy: .public) root \(rootID, privacy: .public): \(match ?? "nil", privacy: .public)")
+        return match
+      }
       guard let match = matchNames.reduce(nil, {
         (shortest, name) -> String? in
         (shortest.map { $0.count < name.count } ?? false) ? shortest : name
       })
-      else { continue }
+      else {
+        serviceLogger.debug("Build status popover found no matching branch spec for build type \(buildType, privacy: .public) branch \(branchName, privacy: .public)")
+        continue
+      }
       
       if let status = branchStatuses[match] {
         filteredStatuses[buildType] = [match: status]
+        serviceLogger.debug("Build status popover kept cached status for build type \(buildType, privacy: .public) branch \(match, privacy: .public)")
+      }
+      else {
+        serviceLogger.debug("Build status popover found no cached status entry for build type \(buildType, privacy: .public) branch \(match, privacy: .public); cached branches: \(branchStatuses.keys.sorted(), privacy: .public)")
       }
     }
     
@@ -92,6 +110,7 @@ final class BuildStatusViewController: NSViewController
       }
     }
     builds = Array(buildsByNumber.values)
+    serviceLogger.debug("Build status popover prepared \(self.builds.count) build rows for branch \(branchName, privacy: .public)")
   }
   
   func setProgressVisible(_ visible: Bool)

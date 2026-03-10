@@ -102,9 +102,13 @@ final class SidebarDelegate: NSObject
   {
     guard let branchItem = item as? BranchSidebarItem,
           let cell = cell ?? self.cell(forBranchItem: branchItem)
-    else { return }
+    else {
+      serviceLogger.debug("Sidebar delegate could not find a branch cell for item \(item.title, privacy: .public)")
+      return
+    }
     
     if let (image, tint) = await buildStatusController?.statusImage(for: item) {
+      serviceLogger.debug("Sidebar delegate applying status image \(image.name() ?? "?", privacy: .public) to item \(item.title, privacy: .public)")
       cell.statusButton.image = image
       cell.statusButton.contentTintColor = tint
       if let localBranchItem = item as? LocalBranchSidebarItem,
@@ -117,7 +121,11 @@ final class SidebarDelegate: NSObject
       cell.statusButton.isEnabled = true
       cell.missingImage.isHidden = true
     }
+    else {
+      serviceLogger.debug("Sidebar delegate received no status image for item \(item.title, privacy: .public)")
+    }
     cell.buttonContainer.isHidden = cell.statusButton.image == nil
+    serviceLogger.debug("Sidebar delegate button container for item \(item.title, privacy: .public) hidden: \(cell.buttonContainer.isHidden)")
   }
   
   fileprivate func configureLocalBranchItem(sideBarItem: SidebarItem,
@@ -181,6 +189,7 @@ final class SidebarDelegate: NSObject
     cell.statusText.isHidden = true
     cell.statusButton.image = nil
     cell.statusButton.action = nil
+    serviceLogger.debug("Sidebar delegate resetting cell state for item \(item.title, privacy: .public)")
     
     Task {
       await updateStatusImage(item: item, cell: cell)
@@ -190,6 +199,7 @@ final class SidebarDelegate: NSObject
     }
     pullRequestManager?.updatePullRequestButton(item: item, view: cell)
     cell.buttonContainer.isHidden = cell.statusButton.image == nil
+    serviceLogger.debug("Sidebar delegate finished cell update for item \(item.title, privacy: .public); status image present: \(cell.statusButton.image != nil)")
     
     let textField = cell.textField!
     let fontSize = textField.font?.pointSize ?? 12

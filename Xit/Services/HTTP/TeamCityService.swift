@@ -112,6 +112,7 @@ final class TeamCityService: BaseHTTPService
     else { throw ParseError.missingRoot }
     
     let rootIDs = root.childrenAttributes("id")
+    serviceLogger.debug("TeamCity loading \(rootIDs.count) VCS roots from \(self.account.location.absoluteString, privacy: .public)")
     
     let parsedRoots = try await withThrowingTaskGroup(of: [ParsedVCSRoot].self) {
       group in

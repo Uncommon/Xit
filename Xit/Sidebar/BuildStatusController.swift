@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import Cocoa
 import XitGit
+import os
 
 @MainActor
 protocol BuildStatusDisplay: AnyObject
@@ -92,14 +93,19 @@ final class BuildStatusController: NSObject
     
     buildStatusCache.add(client: self)
     if let api = Services.xit.teamCityServiceList.first {
+      serviceLogger.debug("Build status controller subscribing to TeamCity service at \(api.account.location.absoluteString, privacy: .public)")
       statusSink = api.$buildTypesStatus.sink {
         [weak self] _ in
         self?.buildStatusCache.refresh()
       }
     }
+    else {
+      serviceLogger.debug("Build status controller found no TeamCity service to subscribe to")
+    }
     refreshTimer = .mainScheduledTimer(withTimeInterval: refreshInterval,
                                        repeats: true) {
       [weak self] _ in
+      serviceLogger.debug("Build status controller periodic refresh fired")
       self?.buildStatusCache.refresh()
     }
   }
@@ -156,6 +162,7 @@ final class BuildStatusController: NSObject
       }
     }
     
+    serviceLogger.debug("Returning sidebar status image \(overallState.imageName, privacy: .public) for item \(item.title, privacy: .public)")
     return (overallState.image, overallState.tint)
   }
 }
@@ -167,6 +174,7 @@ extension BuildStatusController: BuildStatusClient
   {
     DispatchQueue.main.async {
       [self] in
+      serviceLogger.debug("Build status controller received cache update for branch \(branch, privacy: .public) build type \(buildType, privacy: .public)")
       Signpost.interval(.buildStatusUpdate(buildType)) {
         updateBranches(model.rootItem(.branches).children)
         for remoteItem in model.rootItem(.remotes).children {
@@ -182,6 +190,7 @@ extension BuildStatusController: BuildStatusClient
       switch item {
         case is BranchSidebarItem:
           if let display {
+            serviceLogger.debug("Requesting sidebar display refresh for branch item \(item.title, privacy: .public)")
             Task {
               @MainActor in
               display.updateStatusImage(item: item)
