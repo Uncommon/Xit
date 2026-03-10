@@ -35,7 +35,7 @@ public struct TagReference: ReferenceKind
 /// reference name or just the branch name with no "refs/heads/" prefix.
 ///
 /// As a `RawRepresentable` type, the raw value is the full path.
-public protocol ReferenceName: Fakable, Equatable, RawRepresentable
+public protocol ReferenceName: Fakable, Equatable, RawRepresentable, CustomStringConvertible
   where RawValue == String
 {
   // TODO: Maybe remove from protocol since GeneralRefName doesn't need it
@@ -59,6 +59,11 @@ extension ReferenceName
 {
   public var localName: String { name }
   public var rawValue: String { fullPath }
+}
+
+extension ReferenceName // CustomStringConvertible
+{
+  public var description: String { fullPath }
 }
 
 public struct GeneralRefName: ReferenceName, Hashable
