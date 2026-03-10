@@ -190,4 +190,101 @@ struct TeamCityServiceTests
         Issue.record("Expected buildTypesStatus to be failed, got \(status)")
     }
   }
+  
+  @Test
+  func refreshBuildTypesMatchesEquivalentGitHubRemoteForms() async throws
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    let rootsList = """
+        <vcs-roots>
+          <vcs-root id="root1" />
+        </vcs-roots>
+        """.data(using: .utf8)!
+    
+    let rootDetail = """
+        <vcs-root id="root1">
+          <properties>
+            <property name="url" value="git@github.com:Verisk-Claims/pes-xactimate.git" />
+            <property name="teamcity:branchSpec" value="+:refs/heads/*" />
+          </properties>
+        </vcs-root>
+        """.data(using: .utf8)!
+    
+    let buildTypesXML = """
+        <buildTypes>
+          <buildType id="bt1" name="Build One" projectName="Proj1"/>
+        </buildTypes>
+        """.data(using: .utf8)!
+    
+    let buildTypeDetail = """
+        <buildType id="bt1" name="Build One" projectName="Proj1">
+          <vcs-root-entries>
+            <vcs-root-entry id="root1" />
+          </vcs-root-entries>
+        </buildType>
+        """.data(using: .utf8)!
+    
+    mock.responseQueue = [
+      .success(rootsList),
+      .success(rootDetail),
+      .success(buildTypesXML),
+      .success(buildTypeDetail)
+    ]
+    
+    await service.refreshMetadata()
+    
+    #expect(await service.buildTypesForRemote("git@github.com:Verisk-Claims/pes-xactimate.git") == ["bt1"])
+    #expect(await service.buildTypesForRemote("https://github.com/Verisk-Claims/pes-xactimate") == ["bt1"])
+    #expect(await service.buildTypesForRemote("https://github.com/Verisk-Claims/pes-xactimate.git") == ["bt1"])
+    #expect(await service.buildTypesForRemote("ssh://git@ssh.github.com:443/Verisk-Claims/pes-xactimate.git") == ["bt1"])
+  }
+  
+  @Test
+  func refreshBuildTypesDoesNotMatchDifferentRepo() async throws
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    let rootsList = """
+        <vcs-roots>
+          <vcs-root id="root1" />
+        </vcs-roots>
+        """.data(using: .utf8)!
+    
+    let rootDetail = """
+        <vcs-root id="root1">
+          <properties>
+            <property name="url" value="git@github.com:Verisk-Claims/pes-xactimate.git" />
+            <property name="teamcity:branchSpec" value="+:refs/heads/*" />
+          </properties>
+        </vcs-root>
+        """.data(using: .utf8)!
+    
+    let buildTypesXML = """
+        <buildTypes>
+          <buildType id="bt1" name="Build One" projectName="Proj1"/>
+        </buildTypes>
+        """.data(using: .utf8)!
+    
+    let buildTypeDetail = """
+        <buildType id="bt1" name="Build One" projectName="Proj1">
+          <vcs-root-entries>
+            <vcs-root-entry id="root1" />
+          </vcs-root-entries>
+        </buildType>
+        """.data(using: .utf8)!
+    
+    mock.responseQueue = [
+      .success(rootsList),
+      .success(rootDetail),
+      .success(buildTypesXML),
+      .success(buildTypeDetail)
+    ]
+    
+    await service.refreshMetadata()
+    
+    #expect(await service.buildTypesForRemote("ssh://git@ssh.github.com:443/Verisk-Claims/other-repo.git") == [])
+  }
 }

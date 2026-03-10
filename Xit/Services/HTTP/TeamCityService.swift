@@ -3,7 +3,34 @@ import XitGit
 
 final class TeamCityService: BaseHTTPService
 {
-  nonisolated static let rootPath = TeamCity.rootPath // reuse existing constant
+  nonisolated static let rootPath = TeamCity.rootPath
+  
+  private struct CanonicalRepoID: Hashable
+  {
+    let host: String
+    let path: String
+  }
+  
+  private struct ParsedVCSRoot
+  {
+    enum Entry
+    {
+      case url(URL)
+      case branchSpec(BranchSpec)
+    }
+    
+    let id: String
+    let entry: Entry
+  }
+  
+  enum ParseError: Error
+  {
+    case invalidXML
+    case missingRoot
+    case missingBuildTypes
+    case missingBuilds
+    case missingVCSRootID
+  }
   
   private var vcsRootMap: [String: URL] = [:]
   private var vcsBranchSpecs: [String: BranchSpec] = [:]
@@ -33,10 +60,8 @@ final class TeamCityService: BaseHTTPService
     if let branch {
       locator += ",branch:\(branch)"
     }
-    let path = Self.rootPath + "/builds/?locator=" + locator
-    
     let endpoint = Endpoint(baseURL: account.location,
-                            path: path,
+                            path: Self.rootPath + "/builds/?locator=" + locator,
                             method: .get)
     return try await networkService.request(endpoint)
   }
@@ -51,28 +76,9 @@ final class TeamCityService: BaseHTTPService
     return try await networkService.request(endpoint)
   }
   
-  enum ParseError: Error
+  func fetchBuildStatus(href: String) async throws -> Data
   {
-    case invalidXML
-    case missingRoot
-    case missingBuildTypes
-    case missingBuilds
-  }
-  
-  /// Fetch build types and parse into models.
-  func loadBuildTypes() async throws -> [BuildType]
-  {
-    let data = try await fetchBuildTypes()
-    
-    return try parseBuildTypes(from: data)
-  }
-  
-  /// Fetch builds and parse into models.
-  func loadBuilds(buildTypeID: String, branch: String? = nil) async throws -> [TeamCity.Build]
-  {
-    let data = try await fetchBuilds(buildTypeID: buildTypeID, branch: branch)
-    
-    return try parseBuilds(from: data)
+    try await fetchBuild(href: href)
   }
   
   /// Fetch list of VCS roots (summary XML).
@@ -95,12 +101,22 @@ final class TeamCityService: BaseHTTPService
     return try await networkService.request(endpoint)
   }
   
-  private struct ParsedVCSRoot
+  func fetchBuildType(id: String) async throws -> Data
   {
-    enum Entry { case url(URL), branchSpec(BranchSpec) }
-    
-    let id: String
-    let entry: Entry
+    let endpoint = Endpoint(baseURL: account.location,
+                            path: Self.rootPath + "/buildTypes/id:\(id)",
+                            method: .get)
+    return try await networkService.request(endpoint)
+  }
+  
+  func loadBuildTypes() async throws -> [BuildType]
+  {
+    try parseBuildTypes(from: await fetchBuildTypes())
+  }
+  
+  func loadBuilds(buildTypeID: String, branch: String? = nil) async throws -> [TeamCity.Build]
+  {
+    try parseBuilds(from: await fetchBuilds(buildTypeID: buildTypeID, branch: branch))
   }
   
   /// Load VCS roots and populate URL + branch spec caches.
@@ -132,162 +148,119 @@ final class TeamCityService: BaseHTTPService
       return results
     }
     
+    cacheLock.withLock {
+      self.vcsRootMap.removeAll()
+      self.vcsBranchSpecs.removeAll()
+      for parsed in parsedRoots {
+        switch parsed.entry {
+          case .url(let url):
+            self.vcsRootMap[parsed.id] = url
+          case .branchSpec(let branchSpec):
+            self.vcsBranchSpecs[parsed.id] = branchSpec
+        }
+      }
+    }
+    
     for parsed in parsedRoots {
       switch parsed.entry {
         case .url(let url):
-          vcsRootMap[parsed.id] = url
-        case .branchSpec(let branchSpec):
-          vcsBranchSpecs[parsed.id] = branchSpec
+          serviceLogger.debug("TeamCity cached VCS root URL for \(parsed.id, privacy: .public): \(url.absoluteString, privacy: .public)")
+        case .branchSpec:
+          serviceLogger.debug("TeamCity cached branch spec for \(parsed.id, privacy: .public)")
       }
     }
   }
   
-  /// Returns a cached build type with a matching ID
-  func buildType(id: String) async -> BuildType?
-  { cacheLock.withLock { cachedBuildTypes.first { $0.id == id } } }
-  
-  /// Returns all the build types that use the given remote.
-  func buildTypesForRemote(_ remoteURLString: String) async -> [String]
-  {
-    if let cached = buildTypesCache[remoteURLString] {
-      return cached
-    }
-    guard let remoteURL = URL(string: remoteURLString)
-    else { return [] }
-    func matchHostPath(_ url: URL) -> Bool { remoteURL.host == url.host && remoteURL.path == url.path }
-    let result = buildTypeURLs.keys.filter { buildTypeURLs[$0]?.contains(where: matchHostPath) ?? false }
-    
-    buildTypesCache[remoteURLString] = result
-    return result
-  }
-  
-  /// Returns the VCS root IDs that use the given build type.
-  func vcsRootsForBuildType(_ buildType: String) async -> [String]
-  {
-    if let cached = vcsRootsCache[buildType] { return cached }
-    guard let urls = buildTypeURLs[buildType]
-    else { return [] }
-    let result = vcsRootMap.compactMap { (vcsRoot, rootURL) in urls.contains(rootURL) ? vcsRoot : nil }
-    
-    vcsRootsCache[buildType] = result
-    return result
-  }
-  
-  /// Use the branch specs to determine display name for the given build type
-  func displayName(for branch: LocalBranchRefName, buildType: String) async -> String?
-  {
-    let rootIDs = await vcsRootsForBuildType(buildType)
-    let displayNames = rootIDs.compactMap { vcsBranchSpecs[$0]?.match(branch: branch.fullPath) }
-    
-    return displayNames.reduce(nil) { shortest, name in (shortest?.count ?? Int.max) < name.count ? shortest : name }
-  }
-  
-  private func parseBuildTypes(from data: Data) throws -> [BuildType]
-  {
-    let xml = try XMLDocument(data: data)
-    guard let root = xml.rootElement()
-    else { throw ParseError.missingRoot }
-    
-    let buildTypeElements = root.elements(forName: "buildType")
-    guard !buildTypeElements.isEmpty
-    else { throw ParseError.missingBuildTypes }
-    
-    return buildTypeElements.compactMap {
-      element in
-      guard let id = element.attribute(forName: "id")?.stringValue,
-            let name = element.attribute(forName: "name")?.stringValue
-      else { return nil }
-      let projectName = element.attribute(forName: "projectName")?.stringValue ?? ""
-      return BuildType(id: id, name: name, projectName: projectName)
-    }
-  }
-  
-  private func parseBuilds(from data: Data) throws -> [TeamCity.Build]
-  {
-    let xml = try XMLDocument(data: data)
-    guard let root = xml.rootElement()
-    else { throw ParseError.missingRoot }
-    
-    let buildElements = root.elements(forName: "build")
-    guard !buildElements.isEmpty
-    else { throw ParseError.missingBuilds }
-    
-    return buildElements.compactMap { TeamCity.Build(element: $0) }
-  }
-  
-  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String) -> [ParsedVCSRoot]
-  {
-    guard let properties = xml.rootElement()?.elements(forName: "properties").first,
-          let propertiesChildren = properties.children
-    else {
-      return []
-    }
-    
-    var parsedEntries: [ParsedVCSRoot] = []
-    
-    for property in propertiesChildren {
-      guard let element = property as? XMLElement,
-            let name = element.attribute(forName: "name")?.stringValue,
-            let value = element.attribute(forName: "value")?.stringValue
-      else { continue }
-      
-      switch name {
-        case "url":
-          if let parsedURL = URL(string: value) {
-            parsedEntries.append(.init(id: vcsRootID, entry: .url(parsedURL)))
-          }
-        case "teamcity:branchSpec":
-          let specLines = value
-            .split(whereSeparator: \.isNewline)
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-          
-          if let branchSpec = BranchSpec(ruleStrings: specLines) {
-            parsedEntries.append(.init(id: vcsRootID, entry: .branchSpec(branchSpec)))
-          }
-        default:
-          break
-      }
-    }
-    
-    return parsedEntries
-  }
-  
-  /// Fetch a specific build type definition by ID (includes VCS entries).
-  func fetchBuildType(id: String) async throws -> Data
-  {
-    let endpoint = Endpoint(baseURL: account.location,
-                            path: Self.rootPath + "/buildTypes/id:\(id)",
-                            method: .get)
-    
-    return try await networkService.request(endpoint)
-  }
-  
-  /// Full refresh of TeamCity metadata (VCS roots + build types + mappings).
   func refreshMetadata() async
   {
-    await MainActor.run { buildTypesStatus = .inProgress }
+    await MainActor.run { self.buildTypesStatus = .inProgress }
+    serviceLogger.debug("TeamCity metadata refresh started for \(self.account.location.absoluteString, privacy: .public)")
     
     do {
       try await loadVCSRoots()
       try await refreshBuildTypes()
-      await MainActor.run { buildTypesStatus = .done }
+      await MainActor.run { self.buildTypesStatus = .done }
+      serviceLogger.debug("TeamCity metadata refresh finished successfully for \(self.account.location.absoluteString, privacy: .public)")
     }
     catch {
-      await MainActor.run { buildTypesStatus = .failed(error) }
+      await MainActor.run { self.buildTypesStatus = .failed(error) }
+      serviceLogger.debug("TeamCity metadata refresh failed for \(self.account.location.absoluteString, privacy: .public): \(String(describing: error), privacy: .public)")
     }
   }
   
-  /// Loads build types and fetches details to populate VCS mappings.
+  func buildType(id: String) async -> BuildType?
+  {
+    cacheLock.withLock { cachedBuildTypes.first { $0.id == id } }
+  }
+  
+  func buildTypesForRemote(_ remoteURLString: String) async -> [String]
+  {
+    if let cached = buildTypesCache[remoteURLString] {
+      serviceLogger.debug("TeamCity build types cache hit for remote \(remoteURLString, privacy: .public): \(cached, privacy: .public)")
+      return cached
+    }
+    
+    let normalizedRemoteString = normalizedRemoteURLString(remoteURLString)
+    let remoteID = canonicalRepoID(from: remoteURLString)
+    if remoteID == nil, normalizedRemoteString == nil {
+      serviceLogger.debug("TeamCity could not canonicalize or normalize remote URL string \(remoteURLString, privacy: .public)")
+      return []
+    }
+    
+    let result = cacheLock.withLock {
+      buildTypeURLs.keys.filter {
+        buildType in
+        buildTypeURLs[buildType]?.contains {
+          url in
+          if let remoteID, canonicalRepoID(from: url) == remoteID {
+            return true
+          }
+          guard let normalizedRemoteString,
+                let normalizedCandidate = normalizedRemoteURLString(url.absoluteString)
+          else { return false }
+          return normalizedCandidate == normalizedRemoteString
+        } ?? false
+      }
+    }
+    
+    buildTypesCache[remoteURLString] = result
+    if let remoteID {
+      let canonicalDescription = remoteID.host + "/" + remoteID.path
+      serviceLogger.debug("TeamCity matched build types \(result, privacy: .public) for remote \(remoteURLString, privacy: .public) canonical \(canonicalDescription, privacy: .public)")
+    }
+    else {
+      serviceLogger.debug("TeamCity matched build types \(result, privacy: .public) for normalized remote \(normalizedRemoteString ?? remoteURLString, privacy: .public)")
+    }
+    return result
+  }
+  
+  func displayName(for branch: LocalBranchRefName, buildType: String) async -> String?
+  {
+    let vcsRootIDs = cachedVCSRoots(for: buildType)
+    if vcsRootIDs.isEmpty {
+      return BranchSpec.defaultSpec().match(branch: branch.fullPath)
+    }
+    
+    for vcsRootID in vcsRootIDs {
+      if let matched = cachedBranchSpec(for: vcsRootID)?.match(branch: branch.fullPath) {
+        return matched
+      }
+    }
+    
+    return BranchSpec.defaultSpec().match(branch: branch.fullPath)
+  }
+  
   private func refreshBuildTypes() async throws
   {
-    let data = try await fetchBuildTypes()
-    let buildTypes = try parseBuildTypes(from: data)
+    let buildTypes = try await loadBuildTypes()
+    serviceLogger.debug("TeamCity parsed \(buildTypes.count) build types from metadata refresh")
     
-    cachedBuildTypes = buildTypes
-    buildTypesCache.removeAll()
-    buildTypeURLs.removeAll()
-    vcsRootsCache.removeAll()
+    cacheLock.withLock {
+      self.cachedBuildTypes = buildTypes
+      self.buildTypesCache.removeAll()
+      self.buildTypeURLs.removeAll()
+      self.vcsRootsCache.removeAll()
+    }
     
     try await withThrowingTaskGroup(of: Void.self) {
       group in
@@ -301,36 +274,216 @@ final class TeamCityService: BaseHTTPService
     }
   }
   
+  private func parseBuildTypes(from data: Data) throws -> [BuildType]
+  {
+    let xml = try XMLDocument(data: data)
+    guard let root = xml.rootElement() ?? xml.children?.first as? XMLElement
+    else { throw ParseError.missingRoot }
+    guard root.name == "buildTypes"
+    else { throw ParseError.missingBuildTypes }
+    
+    let buildTypes = root.elements(forName: "buildType").map {
+      element in
+      BuildType(id: element.attribute(forName: "id")?.stringValue ?? "",
+                name: element.attribute(forName: "name")?.stringValue ?? "",
+                projectName: element.attribute(forName: "projectName")?.stringValue ?? "")
+    }
+    return buildTypes.filter { !$0.id.isEmpty }
+  }
+  
+  private func parseBuilds(from data: Data) throws -> [TeamCity.Build]
+  {
+    let xml = try XMLDocument(data: data)
+    guard let root = xml.rootElement() ?? xml.children?.first as? XMLElement
+    else { throw ParseError.missingRoot }
+    
+    let elements: [XMLElement]
+    switch root.name {
+      case "build":
+        elements = [root]
+      case "builds":
+        elements = root.elements(forName: "build")
+      default:
+        throw ParseError.missingBuilds
+    }
+    
+    return elements.compactMap(TeamCity.Build.init(element:))
+  }
+  
+  private func parseVCSRoot(xml: XMLDocument, vcsRootID: String) -> [ParsedVCSRoot]
+  {
+    guard let root = xml.rootElement() ?? xml.children?.first as? XMLElement
+    else { return [] }
+    let resolvedID = root.attribute(forName: "id")?.stringValue ?? vcsRootID
+    
+    let properties = root.elements(forName: "properties").first?.elements(forName: "property") ?? []
+    var parsed: [ParsedVCSRoot] = []
+    
+    for property in properties {
+      let name = property.attribute(forName: "name")?.stringValue
+      let value = property.attribute(forName: "value")?.stringValue
+      
+      switch name {
+        case "url":
+          if let value, let url = URL(string: value) {
+            parsed.append(ParsedVCSRoot(id: resolvedID, entry: .url(url)))
+          }
+        case "teamcity:branchSpec":
+          guard let value else { continue }
+          let rules = value
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+          if let branchSpec = BranchSpec(ruleStrings: rules) {
+            parsed.append(ParsedVCSRoot(id: resolvedID, entry: .branchSpec(branchSpec)))
+          }
+        default:
+          continue
+      }
+    }
+    
+    return parsed
+  }
+  
   private func parseBuildTypeDetail(from data: Data) throws
   {
     let xml = try XMLDocument(data: data)
     guard let buildType = xml.rootElement() ?? xml.children?.first as? XMLElement
     else { throw ParseError.missingRoot }
-    
     guard let buildTypeID = buildType.attribute(forName: "id")?.stringValue
     else { throw ParseError.missingBuildTypes }
     
     let name = buildType.attribute(forName: "name")?.stringValue ?? ""
     let projectName = buildType.attribute(forName: "projectName")?.stringValue ?? ""
+    let vcsIDs = buildType.elements(forName: "vcs-root-entries").first?.childrenAttributes("id") ?? []
     
-    // Extract VCS root entries
-    let rootEntries = buildType.elements(forName: "vcs-root-entries").first
-    let vcsIDs = rootEntries?.childrenAttributes("id") ?? []
     var urls: [URL] = []
-    
     for id in vcsIDs {
       if let url = vcsRootURLSnapshot(for: id) {
         urls.append(url)
       }
+      else {
+        serviceLogger.debug("TeamCity build type \(buildTypeID, privacy: .public) referenced VCS root \(id, privacy: .public) without cached URL")
+      }
     }
     
     cacheLock.withLock {
-      cachedBuildTypes.removeAll { $0.id == buildTypeID }
-      cachedBuildTypes.append(BuildType(id: buildTypeID,
-                                        name: name,
-                                        projectName: projectName))
-      buildTypeURLs[buildTypeID] = urls
+      self.cachedBuildTypes.removeAll { $0.id == buildTypeID }
+      self.cachedBuildTypes.append(BuildType(id: buildTypeID,
+                                             name: name,
+                                             projectName: projectName))
+      self.buildTypeURLs[buildTypeID] = urls
+      self.vcsRootsCache[buildTypeID] = vcsIDs
     }
+    
+    serviceLogger.debug("TeamCity cached build type \(buildTypeID, privacy: .public) with VCS roots \(vcsIDs, privacy: .public) and VCS URLs \(urls.map(\.absoluteString), privacy: .public)")
+  }
+  
+  private func canonicalRepoID(from url: URL) -> CanonicalRepoID?
+  {
+    canonicalRepoID(from: url.absoluteString)
+  }
+  
+  private func canonicalRepoID(from remote: String) -> CanonicalRepoID?
+  {
+    let trimmed = remote.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else { return nil }
+    
+    if let scpID = canonicalSCPRepoID(from: trimmed) {
+      return scpID
+    }
+    guard let url = URL(string: trimmed) else { return nil }
+    
+    let normalizedHost = normalizedRepoHost(url.host)
+    let path = normalizedRepoPath(url.path)
+    guard let normalizedHost, let path else { return nil }
+    
+    return CanonicalRepoID(host: normalizedHost, path: path)
+  }
+  
+  private func canonicalSCPRepoID(from remote: String) -> CanonicalRepoID?
+  {
+    guard !remote.contains("://"),
+          let atIndex = remote.firstIndex(of: "@"),
+          let colonIndex = remote[atIndex...].firstIndex(of: ":")
+    else { return nil }
+    
+    let hostPart = String(remote[remote.index(after: atIndex)..<colonIndex])
+    let pathPart = String(remote[remote.index(after: colonIndex)...])
+    guard let host = normalizedRepoHost(hostPart),
+          let path = normalizedRepoPath(pathPart)
+    else { return nil }
+    
+    return CanonicalRepoID(host: host, path: path)
+  }
+  
+  private func normalizedRepoHost(_ host: String?) -> String?
+  {
+    guard let host else { return nil }
+    
+    switch host.lowercased() {
+      case "ssh.github.com":
+        return "github.com"
+      default:
+        return host.lowercased()
+    }
+  }
+  
+  private func normalizedRepoPath(_ path: String) -> String?
+  {
+    let trimmed = path
+      .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+      .replacingOccurrences(of: #"/+"#, with: "/", options: .regularExpression)
+    guard !trimmed.isEmpty else { return nil }
+    
+    let withoutGitSuffix: String
+    if trimmed.lowercased().hasSuffix(".git") {
+      withoutGitSuffix = String(trimmed.dropLast(4))
+    }
+    else {
+      withoutGitSuffix = trimmed
+    }
+    
+    let components = withoutGitSuffix.split(separator: "/", omittingEmptySubsequences: true)
+    guard components.count >= 2 else { return nil }
+    
+    let owner = String(components[components.count - 2]).lowercased()
+    let repo = String(components[components.count - 1]).lowercased()
+    return owner + "/" + repo
+  }
+  
+  private func normalizedRemoteURLString(_ remote: String) -> String?
+  {
+    let trimmed = remote.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard let url = URL(string: trimmed),
+          var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+    else { return nil }
+    
+    components.scheme = components.scheme?.lowercased()
+    components.host = components.host?.lowercased()
+    components.user = nil
+    components.password = nil
+    components.fragment = nil
+    components.query = nil
+    components.percentEncodedQuery = nil
+    
+    let normalizedPath = normalizedPathString(components.percentEncodedPath)
+    components.percentEncodedPath = normalizedPath
+    
+    return components.string
+  }
+  
+  private func normalizedPathString(_ path: String) -> String
+  {
+    let collapsed = path
+      .replacingOccurrences(of: #"/+"#, with: "/", options: .regularExpression)
+    guard !collapsed.isEmpty else { return "/" }
+    
+    var normalized = collapsed.hasPrefix("/") ? collapsed : "/" + collapsed
+    if normalized.count > 1, normalized.hasSuffix("/") {
+      normalized.removeLast()
+    }
+    return normalized
   }
   
   // Test helpers
