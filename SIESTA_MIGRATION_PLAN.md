@@ -729,3 +729,28 @@ let service = URLSessionNetworkService(
 **Last Updated:** March 4, 2026  
 **Author:** Development Team  
 **Status:** Completed
+
+## Post-Migration Follow-Up (March 6, 2026)
+
+### Bitbucket Decommissioning and PR Service Preservation
+
+Bitbucket is now considered obsolete for Xit. We will remove Bitbucket-specific product references, service wiring, and tests while keeping the generic pull request architecture in place so a different provider (for example, GitHub) can be added later with minimal UI/model changes.
+
+#### Scope
+
+- Remove Bitbucket-specific service registration and account routing from `Xit/Services/Services.swift`.
+- Remove Bitbucket-only implementation and tests that are no longer used.
+- Keep provider-agnostic protocols/models and pull request cache flows intact (`PullRequestService`, pull-request cache/controller paths).
+- Replace Bitbucket-branded UI text where needed with generic pull-request wording.
+
+#### Deliverables
+
+- Build succeeds without Bitbucket-specific runtime dependencies.
+- `XitTests` passes after removing or adapting Bitbucket-specific tests.
+- Existing pull request UI paths remain functional when no provider is configured.
+- A clean integration seam remains for a future provider implementation (for example, a `GitHubHTTPService` conforming to `PullRequestService`).
+
+#### Verification
+
+- Run unit tests only (UI tests remain deferred):
+  - `xcodebuild -project Xit.xcodeproj -scheme Xit -configuration Debug test`

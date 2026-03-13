@@ -287,4 +287,57 @@ struct TeamCityServiceTests
     
     #expect(await service.buildTypesForRemote("ssh://git@ssh.github.com:443/Verisk-Claims/other-repo.git") == [])
   }
+  
+  @Test
+  func loadBuildsUsesLocatorQueryItem() async throws
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    let xml = """
+        <builds>
+          <build id="1" number="42" buildTypeId="bt1" status="SUCCESS" state="finished" />
+        </builds>
+        """.data(using: .utf8)!
+    
+    mock.setNextResponse(data: xml)
+    _ = try await service.loadBuilds(buildTypeID: "bt1", branch: "main")
+    
+    let request = try #require(mock.lastRequest)
+    let url = try #require(request.url())
+    let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+    
+    #expect(url.absoluteString == "https://example.com/httpAuth/app/rest/builds?locator=buildType:(id:bt1),branch:main")
+    #expect(components.path == "/httpAuth/app/rest/builds")
+    #expect(components.queryItems?.first?.name == "locator")
+    #expect(components.queryItems?.first?.value == "buildType:(id:bt1),branch:main")
+  }
+  
+  @Test
+  func loadBuildsEncodesSlashBranchInLocatorQuery() async throws
+  {
+    let mock = MockNetworkService()
+    let service = makeService(mock: mock)
+    
+    let xml = """
+        <builds>
+          <build id="1" number="42" buildTypeId="bt1" status="SUCCESS" state="finished" />
+        </builds>
+        """.data(using: .utf8)!
+    
+    let branch = "dtc/XMI-14771_AndroidCPM"
+    let buildTypeID = "Xactimate_Vibranium_Oew_HelperAndTools_UpdateVersionParameters"
+    mock.setNextResponse(data: xml)
+    _ = try await service.loadBuilds(buildTypeID: buildTypeID,
+                                     branch: branch)
+    
+    let request = try #require(mock.lastRequest)
+    let url = try #require(request.url())
+    let components = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false))
+    let locator = try #require(components.queryItems?.first?.value)
+    
+    #expect(components.path == "/httpAuth/app/rest/builds")
+    #expect(!url.absoluteString.contains("%3Flocator="))
+    #expect(locator == "buildType:(id:\(buildTypeID)),branch:\(branch)")
+  }
 }

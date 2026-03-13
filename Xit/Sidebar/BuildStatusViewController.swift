@@ -31,11 +31,10 @@ final class BuildStatusViewController: NSViewController
     super.init(nibName: .buildStatusNib, bundle: nil)
     
     cache.add(client: self)
-    if let remoteName = branch.remoteName,
+    if let (_, remoteName) = resolvedLocalBranchContext(),
        let api = matchBuildStatusService(remoteName) {
       self.api = api
     }
-    cache.add(client: self)
     filterStatuses()
   }
   
@@ -59,15 +58,14 @@ final class BuildStatusViewController: NSViewController
   {
     filteredStatuses.removeAll()
     
-    // Only the local "refs/heads/..." version of the branch name works
-    // with the branchspec matching.
-    guard let api = self.api
+    guard let api = self.api,
+          let (localBranch, _) = resolvedLocalBranchContext()
     else {
-      serviceLogger.debug("Build status popover has no display service for branch \(self.branch.referenceName.description, privacy: .public)")
+      serviceLogger.debug("Build status popover has no display service or local branch context for branch \(self.branch.referenceName.description, privacy: .public)")
       return
     }
     
-    let branchName = branch.localRefName.fullPath
+    let branchName = localBranch.referenceName.fullPath
     serviceLogger.debug("Build status popover filtering cached statuses for branch \(branchName, privacy: .public); cached build types: \(self.buildStatusCache.statuses.keys.sorted(), privacy: .public)")
     
     for (buildType, branchStatuses) in buildStatusCache.statuses {
@@ -130,8 +128,7 @@ final class BuildStatusViewController: NSViewController
   @IBAction
   func refresh(_ sender: Any)
   {
-    if let localBranch = repository.localBranch(for: branch),
-       let remoteName = branch.remoteName {
+    if let (localBranch, remoteName) = resolvedLocalBranchContext() {
       setProgressVisible(true)
       Task {
         do {
@@ -192,7 +189,7 @@ extension BuildStatusViewController: NSTableViewDelegate
   {
     guard let cell = tableView.makeView(withIdentifier: CellID.build,
                                         owner: self)
-                     as? BuildStatusCellView
+            as? BuildStatusCellView
     else { return nil }
     let build = builds[row]
     let buildType = build.buildType.flatMap { id in api?.cachedBuildTypesSnapshot().first { $0.id == id } }
@@ -209,7 +206,7 @@ extension BuildStatusViewController: NSTableViewDelegate
     }
     
     let state: BuildStatusController.DisplayState = build.status == .succeeded
-        ? .success : .failure
+    ? .success : .failure
     
     cell.statusImage.image = state.image
     cell.statusImage.contentTintColor = state.tint
@@ -223,5 +220,27 @@ extension BuildStatusViewController: NSTableViewDataSource
   func numberOfRows(in tableView: NSTableView) -> Int
   {
     return builds.count
+  }
+}
+
+private extension BuildStatusViewController
+{
+  func resolvedLocalBranchContext() -> (any LocalBranch, String)?
+  {
+    if let localBranch = self.branch as? any LocalBranch,
+       let remoteName = localBranch.trackingBranch?.remoteName {
+      return (localBranch, remoteName)
+    }
+    
+    guard let remoteBranch = self.branch as? any RemoteBranch,
+          let remoteRef = RemoteBranchRefName(rawValue: remoteBranch.referenceName.fullPath),
+          let localBranch = repository.localTrackingBranch(forBranch: remoteRef),
+          let remoteName = localBranch.trackingBranch?.remoteName
+    else {
+      serviceLogger.debug("Build status popover could not resolve tracked local branch for \(self.branch.referenceName.fullPath, privacy: .public)")
+      return nil
+    }
+    
+    return (localBranch, remoteName)
   }
 }

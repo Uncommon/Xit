@@ -41,10 +41,8 @@ final class TeamCityService: BaseHTTPService
   
   let cacheLock = NSLock()
   
-  /// Tracks build type loading status (mirrors legacy API)
   @MainActor @Published var buildTypesStatus: Services.Status = .notStarted
   
-  /// Fetch build types list (raw XML data for now).
   func fetchBuildTypes() async throws -> Data
   {
     let endpoint = Endpoint(baseURL: account.location,
@@ -53,20 +51,19 @@ final class TeamCityService: BaseHTTPService
     return try await networkService.request(endpoint)
   }
   
-  /// Fetch builds for a specific build type and optional branch.
   func fetchBuilds(buildTypeID: String, branch: String? = nil) async throws -> Data
   {
-    var locator = "affectedProject:(id:\(buildTypeID))"
+    var locator = "buildType:(id:\(buildTypeID))"
     if let branch {
       locator += ",branch:\(branch)"
     }
     let endpoint = Endpoint(baseURL: account.location,
-                            path: Self.rootPath + "/builds/?locator=" + locator,
-                            method: .get)
+                            path: Self.rootPath + "/builds",
+                            method: .get,
+                            queryItems: [URLQueryItem(name: "locator", value: locator)])
     return try await networkService.request(endpoint)
   }
   
-  /// Fetch build status by href (raw XML data).
   func fetchBuild(href: String) async throws -> Data
   {
     let path = href.hasPrefix("/") ? href : "/" + href
@@ -81,23 +78,19 @@ final class TeamCityService: BaseHTTPService
     try await fetchBuild(href: href)
   }
   
-  /// Fetch list of VCS roots (summary XML).
   func fetchVCSRoots() async throws -> Data
   {
     let endpoint = Endpoint(baseURL: account.location,
                             path: Self.rootPath + "/vcs-roots",
                             method: .get)
-    
     return try await networkService.request(endpoint)
   }
   
-  /// Fetch a specific VCS root definition by ID.
   func fetchVCSRoot(id: String) async throws -> Data
   {
     let endpoint = Endpoint(baseURL: account.location,
                             path: Self.rootPath + "/vcs-roots/id:\(id)",
                             method: .get)
-    
     return try await networkService.request(endpoint)
   }
   
@@ -119,7 +112,6 @@ final class TeamCityService: BaseHTTPService
     try parseBuilds(from: await fetchBuilds(buildTypeID: buildTypeID, branch: branch))
   }
   
-  /// Load VCS roots and populate URL + branch spec caches.
   func loadVCSRoots() async throws
   {
     let listData = try await fetchVCSRoots()
@@ -136,7 +128,6 @@ final class TeamCityService: BaseHTTPService
         group.addTask {
           let data = try await self.fetchVCSRoot(id: rootID)
           let xml = try XMLDocument(data: data)
-          
           return self.parseVCSRoot(xml: xml, vcsRootID: rootID)
         }
       }
