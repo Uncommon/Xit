@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import XitGit
 
 /// A view with a specific data model type.
 protocol DataModelView: View
@@ -19,6 +20,25 @@ protocol SheetDialog
   func createModel() -> ContentView.Model?
 }
 
+struct SheetDialogView<ContentView>: View where ContentView: DataModelView
+{
+  @ObservedObject var model: ContentView.Model
+  let acceptButtonTitle: UIString
+  let cancel: ButtonAction
+  let accept: ButtonAction
+
+  var body: some View
+  {
+    VStack {
+      ContentView(model: model)
+      DialogButtonRow(validator: model, buttons: [
+        (.cancel, cancel),
+        (.accept(acceptButtonTitle), accept),
+      ])
+    }.padding(20)
+  }
+}
+
 extension SheetDialog
 {
   /// Presents the sheet, and returns the user-approved settings, or `nil`
@@ -29,17 +49,12 @@ extension SheetDialog
     guard let model = createModel()
     else { return nil }
     let sheet = NSWindow()
-    let viewController = NSHostingController {
-      VStack {
-        ContentView(model: model)
-        DialogButtonRow(validator: model, buttons: [
-          (.cancel,
-           { parent.endSheet(sheet, returnCode: .cancel) }),
-          (.accept(acceptButtonTitle),
-           { parent.endSheet(sheet, returnCode: .OK) }),
-        ])
-      }.padding()
-    }
+    let rootView = SheetDialogView<ContentView>(
+        model: model,
+        acceptButtonTitle: acceptButtonTitle,
+        cancel: { parent.endSheet(sheet, returnCode: .cancel) },
+        accept: { parent.endSheet(sheet, returnCode: .OK) })
+    let viewController = NSHostingController(rootView: rootView)
 
     sheet.contentViewController = viewController
     sheet.contentMinSize = viewController.view.intrinsicContentSize
@@ -48,5 +63,41 @@ extension SheetDialog
     else { return nil }
 
     return model
+  }
+}
+
+struct SheetDialogView_Previews: PreviewProvider
+{
+  static var fetchModel: FetchPanel.Options = .init(
+      remotes: ["origin", "constantinople"],
+      remote: "origin",
+      downloadTags: false,
+      pruneBranches: true)
+
+  static var stashModel = StashPanel.Model()
+
+  static var tagModel: TagPanel.Model = .init(
+      commitMessage: "Commit message",
+      signature: .init(name: "Name", email: "email", when: .now))
+
+  static var previews: some View
+  {
+    Group {
+      SheetDialogView<FetchPanel>(
+          model: fetchModel,
+          acceptButtonTitle: .fetch,
+          cancel: {},
+          accept: {}).previewDisplayName("Fetch")
+      SheetDialogView<StashPanel>(
+          model: stashModel,
+          acceptButtonTitle: .stash,
+          cancel: {},
+          accept: {}).previewDisplayName("Stash")
+      SheetDialogView<TagPanel>(
+          model: tagModel,
+          acceptButtonTitle: .create,
+          cancel: {},
+          accept: {}).previewDisplayName("Tag")
+    }
   }
 }
