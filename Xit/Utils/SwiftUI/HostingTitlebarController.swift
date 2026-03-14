@@ -15,8 +15,6 @@ class HostingTitlebarController<T>: NSTitlebarAccessoryViewController
 
     host.view.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(host.view)
-    view.installLiquidGlassBackground(
-        cornerRadius: LiquidGlassTheme.compactCornerRadius)
     NSLayoutConstraint.activate([
       // Center vertically because the accessory view has a fixed height
       view.centerYAnchor.constraint(equalTo: host.view.centerYAnchor),

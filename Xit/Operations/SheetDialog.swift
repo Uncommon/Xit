@@ -38,8 +38,7 @@ extension SheetDialog
           (.accept(acceptButtonTitle),
            { parent.endSheet(sheet, returnCode: .OK) }),
         ])
-      }
-      .liquidGlassSurface(padding: LiquidGlassTheme.containerSpacing)
+      }.padding()
     }
 
     sheet.contentViewController = viewController

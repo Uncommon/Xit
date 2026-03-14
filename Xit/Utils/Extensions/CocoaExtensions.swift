@@ -157,54 +157,6 @@ extension NSImage
 private let glassBackgroundIdentifier =
     NSUserInterfaceItemIdentifier("xt.liquidGlassBackground")
 
-extension NSView
-{
-  /// Installs a single shared liquid-glass background view behind this view's
-  /// existing contents.
-  @discardableResult
-  func installLiquidGlassBackground(
-      cornerRadius: CGFloat = LiquidGlassTheme.cornerRadius,
-      material: NSVisualEffectView.Material = .headerView,
-      blendingMode: NSVisualEffectView.BlendingMode = .withinWindow)
-    -> NSVisualEffectView
-  {
-    if let existing = subviews.first(where: {
-      $0.identifier == glassBackgroundIdentifier
-    }) as? NSVisualEffectView {
-      return existing
-    }
-
-    let background = NSVisualEffectView()
-    
-    background.identifier = glassBackgroundIdentifier
-    background.translatesAutoresizingMaskIntoConstraints = false
-    background.blendingMode = blendingMode
-    background.state = .followsWindowActiveState
-    background.material = LiquidGlassAccessibility.shouldReduceTransparency
-        ? .windowBackground : material
-    background.wantsLayer = true
-    background.layer?.cornerRadius = cornerRadius
-    background.layer?.cornerCurve = .continuous
-    background.layer?.borderColor = NSColor.xtLiquidGlassFallbackStroke.cgColor
-    background.layer?.borderWidth =
-        LiquidGlassAccessibility.shouldIncreaseContrast ? 1.0 : 0.5
-    
-    if LiquidGlassAccessibility.shouldReduceTransparency ||
-       LiquidGlassAccessibility.shouldIncreaseContrast {
-      background.layer?.backgroundColor = NSColor.xtLiquidGlassFallbackFill.cgColor
-    }
-
-    addSubview(background, positioned: .below, relativeTo: nil)
-    NSLayoutConstraint.activate([
-      background.leadingAnchor.constraint(equalTo: leadingAnchor),
-      background.trailingAnchor.constraint(equalTo: trailingAnchor),
-      background.topAnchor.constraint(equalTo: topAnchor),
-      background.bottomAnchor.constraint(equalTo: bottomAnchor),
-    ])
-    return background
-  }
-}
-
 extension NSMenu
 {
   func item(withIdentifier identifier: NSUserInterfaceItemIdentifier)
