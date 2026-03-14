@@ -41,6 +41,34 @@ struct SheetDialogView<ContentView>: View where ContentView: DataModelView
 
 extension SheetDialog
 {
+  @MainActor
+  private func resolvedContentSize(for viewController: NSHostingController<
+      SheetDialogView<ContentView>>) -> CGSize
+  {
+    viewController.view.layoutSubtreeIfNeeded()
+
+    let fittingSize = viewController.view.fittingSize
+    let intrinsicSize = viewController.view.intrinsicContentSize
+    let width = resolvedDimension(fittingSize.width,
+                                  fallback: intrinsicSize.width)
+    let height = resolvedDimension(fittingSize.height,
+                                   fallback: intrinsicSize.height)
+
+    return .init(width: width, height: height)
+  }
+
+  private func resolvedDimension(_ value: CGFloat, fallback: CGFloat) -> CGFloat
+  {
+    if value.isFinite && value > 0 {
+      value
+    }
+    else if fallback.isFinite && fallback > 0 {
+      fallback
+    } else {
+      1
+    }
+  }
+
   /// Presents the sheet, and returns the user-approved settings, or `nil`
   /// if the user chooses to cancel.
   @MainActor
@@ -57,7 +85,9 @@ extension SheetDialog
     let viewController = NSHostingController(rootView: rootView)
 
     sheet.contentViewController = viewController
-    sheet.contentMinSize = viewController.view.intrinsicContentSize
+    let contentSize = resolvedContentSize(for: viewController)
+    sheet.contentMinSize = contentSize
+    sheet.setContentSize(contentSize)
 
     guard await parent.beginSheet(sheet) == .OK
     else { return nil }

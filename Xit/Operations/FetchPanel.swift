@@ -39,7 +39,7 @@ struct FetchPanel: DataModelView
             .accessibilityIdentifier(.FetchSheet.pruneCheck)
         }
       }
-    }
+    }.fixedSize() // whole panel is too narrow without this
   }
 }
 
