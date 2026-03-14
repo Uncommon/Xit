@@ -154,23 +154,6 @@ class ModifyingUITests: XCTestCase
          timeout: 5)
   }
   
-  func testTitleBarBranchSwitch() throws
-  {
-    env.open()
-    
-    let otherBranch = "feature"
-    
-    Window.branchPopup.click()
-    XitApp.menuItems[otherBranch].click()
-    wait(for: [expectation(for: .init(format: "value == '\(otherBranch)'"),
-                           evaluatedWith: Window.branchPopup)],
-         timeout: 2)
-    
-    let currentBranch = try env.git.currentBranch()
-
-    XCTAssertEqual(currentBranch, otherBranch)
-  }
-  
   func testFilterBranchFolder() throws
   {
     let folderName = "folder"

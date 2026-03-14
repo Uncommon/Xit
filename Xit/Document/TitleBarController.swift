@@ -7,7 +7,6 @@ protocol TitleBarDelegate: AnyObject
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
-  func branchSelecetd(_ branch: String)
   func goBack()
   func goForward()
   func fetchSelected()
@@ -31,7 +30,6 @@ class TitleBarController: NSObject
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var stashButton: NSSegmentedControl!
   @IBOutlet weak var spinner: NSProgressIndicator!
-  @IBOutlet weak var branchPopup: NSPopUpButton!
   @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   var stashMenu: NSMenu!
@@ -277,53 +275,9 @@ class TitleBarController: NSObject
   }
   
   @IBAction
-  func branchSelected(_ sender: NSPopUpButton)
-  {
-    guard let branch = branchPopup.titleOfSelectedItem
-    else { return }
-    
-    delegate?.branchSelecetd(branch)
-  }
-  
-  @IBAction
   func search(_ sender: Any)
   {
     delegate?.search()
-  }
-  
-  var selectedBranch: String?
-  {
-    get { branchPopup.titleOfSelectedItem }
-    set {
-      DispatchQueue.main.async {
-        [weak self] in
-        self?.branchPopup.selectItem(withTitle: newValue ?? "")
-      }
-    }
-  }
-  
-  func updateBranchList(_ branches: [LocalBranchRefName],
-                        current: LocalBranchRefName?)
-  {
-    branchPopup.removeAllItems()
-    for branch in branches {
-      let item = NSMenuItem(title: branch.name, action: nil, keyEquivalent: "")
-
-      item.image = .xtBranch
-      branchPopup.menu?.addItem(item)
-    }
-    if let current = current, branches.contains(current) {
-      selectedBranch = current.name
-    }
-    else {
-      let detachedItem = NSMenuItem(title: current?.name ??
-                                           UIString.detached.rawValue,
-                                    action: nil, keyEquivalent: "")
-      
-      detachedItem.isEnabled = false
-      branchPopup.menu?.insertItem(detachedItem, at: 0)
-      branchPopup.selectItem(at: 0)
-    }
   }
 }
 
@@ -331,7 +285,6 @@ extension NSToolbarItem.Identifier
 {
   static let navigation: Self = ◊"xit.nav"
   static let spinner: Self = ◊"xit.spinner"
-  static let branches: Self = ◊"xit.branches"
   static let remoteOps: Self = ◊"xit.remote"
   static let stash: Self = ◊"xit.stash"
   static let search: Self = ◊"xit.search"
@@ -368,9 +321,6 @@ extension TitleBarController: NSToolbarDelegate
       case .spinner:
         spinner = item.view as? NSProgressIndicator
         
-      case .branches:
-        branchPopup = item.view as? NSPopUpButton
-
       case .remoteOps:
         remoteControls = item.view as? NSSegmentedControl
         
@@ -417,10 +367,6 @@ extension TitleBarController: NSMenuItemValidation
 {
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
-    if menuItem.menu?.identifier == ◊"branchMenu" {
-      return true
-    }
-    
     guard let states = delegate?.viewStates
     else { return false }
     let state: Bool

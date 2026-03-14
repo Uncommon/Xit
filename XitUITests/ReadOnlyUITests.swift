@@ -26,8 +26,6 @@ class ReadOnlyUITests: XCTestCase
 
     XCTAssertTrue(window.waitForExistence(timeout: 1.0))
     XCTAssertEqual(window.title, repoName)
-    
-    XCTAssertEqual(Window.branchPopup.value as? String, "master")
   }
     
   func testSidebar()

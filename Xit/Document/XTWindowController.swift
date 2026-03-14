@@ -92,17 +92,12 @@ final class XTWindowController: NSWindowController,
     
     repoController = GitRepositoryController(repository: repo)
     sinks.append(contentsOf: [
-      repoController.refsPublisher.sinkOnMainQueue {
-        [weak self] in
-        self?.updateBranchList()
-      },
       repoController.workspacePublisher.sinkOnMainQueue {
         [weak self] _ in
         self?.updateTabStatus()
       },
       repo.currentBranchPublisher.sink {
-        [weak self] in
-        self?.titleBarController?.selectedBranch = $0?.name
+        [weak self] _ in
         self?.updateMiniwindowTitle()
       },
       window.publisher(for: \.tabbedWindows).sink {
