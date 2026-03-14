@@ -44,6 +44,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   @IBOutlet weak var blameController: BlameViewController!
   @IBOutlet weak var previewController: PreviewController!
   @IBOutlet weak var textController: TextPreviewController!
+  @IBOutlet weak var previewSegmentControl: NSSegmentedControl!
   var commitHeader: CommitHeaderHostingView!
   var commitEntryController: CommitEntryController!
 
@@ -181,6 +182,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     scrollView.documentView = commitHeader
     scrollView.hasVerticalScroller = true
     headerTabView.tabViewItem(at: 0).view = commitHeader
+    previewSegmentControl.prefersCompactControlSizeMetrics = true
   }
   
   func finishLoad(repository: any Repository)

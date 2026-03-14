@@ -113,8 +113,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
       scrollView.contentView.drawsBackground = false
     }
 
-    viewSwitch.segmentStyle = .separated
-    viewSwitch.controlSize = .regular
+    viewSwitch.prefersCompactControlSizeMetrics = true
     actionButton.bezelStyle = .recessed
     actionButton.controlSize = .small
   }
