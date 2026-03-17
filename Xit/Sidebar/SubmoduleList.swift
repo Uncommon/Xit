@@ -5,19 +5,46 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
 {
   @ObservedObject var model: SubmoduleListModel<Manager>
   @Binding var selection: String?
+  @EnvironmentObject private var coordinator: SidebarCoordinator
 
   var body: some View
   {
-    VStack {
+    VStack(spacing: 0) {
       List(model.submodules, id: \.name, selection: $selection) {
         Label($0.name, systemImage: "square.split.bottomrightquarter")
-      }.overlay {
+      }
+        .contextMenu(forSelectionType: String.self) {
+          if let name = $0.first {
+            Button("Show in Finder", systemImage: "folder") {
+              coordinator.showSubmoduleInFinder(name)
+            }
+            Button("Update", systemImage: "arrow.clockwise") {
+              coordinator.updateSubmodule(name)
+            }
+          }
+        }
+        .overlay {
         if model.submodules.isEmpty {
           model.contentUnavailableView(
               "No Submodules", systemImage: "square.split.bottomrightquarter")
         }
       }
-      FilterBar(text: $model.filter)
+      FilterBar(text: $model.filter) {
+        SidebarActionButton {
+          Button("Show in Finder", systemImage: "folder") {
+            if let selection {
+              coordinator.showSubmoduleInFinder(selection)
+            }
+          }
+            .disabled(selection == nil)
+          Button("Update", systemImage: "arrow.clockwise") {
+            if let selection {
+              coordinator.updateSubmodule(selection)
+            }
+          }
+            .disabled(selection == nil)
+        }
+      }
     }
   }
 }

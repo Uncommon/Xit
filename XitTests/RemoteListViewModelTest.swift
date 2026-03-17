@@ -11,7 +11,9 @@ struct RemoteListViewModelTest
     let brancher = FakeBrancher(remoteBranches: [
       .init(remoteName: remoteName, name: "main")
     ])
-    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    let model = RemoteListViewModel(manager: manager,
+                                    brancher: brancher,
+                                    publisher: NullRepositoryPublishing())
     
     try #require(model.remotes.count == 1)
     #expect(model.remotes[0].name == remoteName)
@@ -30,7 +32,9 @@ struct RemoteListViewModelTest
     } + branches2.map {
       .init(remoteName: remoteNames[1], name: $0)
     })
-    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    let model = RemoteListViewModel(manager: manager,
+                                    brancher: brancher,
+                                    publisher: NullRepositoryPublishing())
     
     try #require(model.remotes.count == 2)
     #expect(model.remotes[0].name == remoteNames[0])
@@ -49,7 +53,9 @@ struct RemoteListViewModelTest
       .init(remoteName: remoteName, name: "superBranch"),
       .init(remoteName: remoteName, name: "superBranch/subBranch"),
     ])
-    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    let model = RemoteListViewModel(manager: manager,
+                                    brancher: brancher,
+                                    publisher: NullRepositoryPublishing())
 
     try #require(model.remotes.count == 1)
     #expect(model.remotes[0].name == remoteName)
@@ -71,7 +77,9 @@ struct RemoteListViewModelTest
     } + branches2.map {
       .init(remoteName: remoteNames[1], name: $0)
     })
-    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    let model = RemoteListViewModel(manager: manager,
+                                    brancher: brancher,
+                                    publisher: NullRepositoryPublishing())
 
     model.searchScope = .remotes
     // Call filterChanged directly instead of trying to wait for the debounce
@@ -99,7 +107,9 @@ struct RemoteListViewModelTest
     } + branches2.map {
       .init(remoteName: remoteNames[1], name: $0)
     })
-    let model = RemoteListViewModel(manager: manager, brancher: brancher)
+    let model = RemoteListViewModel(manager: manager,
+                                    brancher: brancher,
+                                    publisher: NullRepositoryPublishing())
 
     model.searchScope = .branches
     // Call filterChanged directly instead of trying to wait for the debounce

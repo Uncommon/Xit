@@ -1,26 +1,14 @@
 import SwiftUI
 import Combine
 
-@MainActor
-// swiftlint:disable:next class_delegate_protocol
-protocol TagListDelegate
-{
-  func delete(tag: TagRefName)
-}
-
-extension EnvironmentValues
-{
-  @Entry var tagListDelegate: (any TagListDelegate)? = nil
-}
-
 struct TagList<Tagger: Tagging>: View
 {
   @ObservedObject var model: TagListViewModel<Tagger>
 
-  @Binding var selection: String?
+  @Binding var selection: TagRefName?
   @Binding var expandedItems: Set<String>
 
-  @Environment(\.tagListDelegate) var delegate: TagListDelegate?
+  @EnvironmentObject private var coordinator: SidebarCoordinator
 
   var body: some View
   {
@@ -40,16 +28,31 @@ struct TagList<Tagger: Tagging>: View
                   .symbolVariant(item?.type == .lightweight ? .none : .fill)
               }
             )
-            // TODO: Asynchronously load dates as needed
-          }.selectionDisabled(item == nil)
+            Spacer()
+            if let item,
+               item.type == .annotated {
+              Button {
+                coordinator.showTagInfo(.init(
+                    tagName: item.name.rawValue,
+                    authorName: item.signature?.name ?? "-",
+                    authorEmail: item.signature?.email ?? "",
+                    date: item.signature?.when ?? .distantPast,
+                    message: item.message ?? ""))
+              } label: {
+                Image(systemName: "info.circle")
+              }
+                .buttonStyle(.borderless)
+            }
+          }
+            .tag(item?.name)
+            .selectionDisabled(item == nil)
         }
       }
         .axid(.Sidebar.tagsList)
-        .contextMenu(forSelectionType: String.self) {
-          if let selection = $0.first,
-             let tagRef = TagRefName(rawValue: selection) {
+        .contextMenu(forSelectionType: TagRefName.self) {
+          if let tagRef = $0.first {
             Button(.delete, systemImage: "trash", role: .destructive) {
-              delegate?.delete(tag: tagRef)
+              coordinator.deleteTag(tagRef)
             }
               .axid(.TagPopup.delete)
           }
@@ -59,12 +62,7 @@ struct TagList<Tagger: Tagging>: View
             model.contentUnavailableView("No Tags", systemImage: "tag")
           }
         }
-      FilterBar(text: $model.filter) {
-        // TODO: sort by date or name
-        SidebarBottomButton(systemImage: "plus") {
-          // new tag panel
-        }
-      }
+      FilterBar(text: $model.filter)
     }
   }
 }
@@ -74,7 +72,7 @@ struct TagListPreview: View
 {
   struct Tag: EmptyTag
   {
-    var name: String
+    var name: TagRefName
     var commit: NullCommit?
     var signature: Signature?
     var targetOID: GitOID?
@@ -87,7 +85,7 @@ struct TagListPreview: View
          message: String? = nil, isSigned: Bool = false)
     {
       self.commit = commit
-      self.name = name
+      self.name = .named(name)!
       self.signature = signature
       self.targetOID = targetOID
       self.message = message
@@ -109,11 +107,14 @@ struct TagListPreview: View
     }
 
     func tags() -> [Tag] { tagList }
-    func tag(named name: String) -> Tag? { .init(name: name) }
+    func tag(named name: TagRefName) -> Tag?
+    {
+      tagList.first { $0.name == name }
+    }
     func createTag(name: String, targetOID: GitOID, message: String?) throws {}
     func createLightweightTag(name: String, targetOID: GitOID) throws {}
     
-    func deleteTag(name: String) throws
+    func deleteTag(name: TagRefName) throws
     {
       if let index = tagList.firstIndex(where: { $0.name == name }) {
         tagList.remove(at: index)
@@ -123,7 +124,7 @@ struct TagListPreview: View
   }
 
   let tagger: Tagger
-  @State var selection: String?
+  @State var selection: TagRefName?
   @State var expandedItems: Set<String> = []
 
   var body: some View
@@ -131,6 +132,7 @@ struct TagListPreview: View
     TagList(model: .init(tagger: tagger, publisher: tagger),
             selection: $selection,
             expandedItems: $expandedItems)
+      .environmentObject(SidebarCoordinator())
       .listStyle(.sidebar)
   }
 

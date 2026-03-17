@@ -52,6 +52,7 @@ final class XTWindowController: NSWindowController,
   
   var historyController: HistoryViewController!
   var historySplitController: HistorySplitController!
+  var tabbedSidebarController: TabbedSidebarController?
   weak var repoDocument: RepoDocument?
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
@@ -145,6 +146,7 @@ final class XTWindowController: NSWindowController,
         TabbedSidebarController(repo: repo,
                                 workspaceCountModel: workspaceCountModel,
                                 controller: self)
+    self.tabbedSidebarController = tabbedSidebarController
     let tabbedSidebarItem =
           NSSplitViewItem(sidebarWithViewController: tabbedSidebarController)
 
@@ -250,6 +252,43 @@ final class XTWindowController: NSWindowController,
   func reselect()
   {
     reselectSubject.send()
+  }
+
+  nonisolated func passwordPrompt(for remoteURL: URL?) -> (String, String)?
+  {
+    guard !Thread.isMainThread
+    else {
+      assertionFailure("password prompt called on the main thread")
+      return nil
+    }
+
+    let sheetController = DispatchQueue.main.sync {
+      PasswordPanelController()
+    }
+    guard let window = DispatchQueue.main.sync(execute: {
+      MainActor.assumeIsolated {
+        self.window
+      }
+    })
+    else { return nil }
+
+    let host = remoteURL?.host ?? ""
+    let path = remoteURL?.path ?? ""
+    let port = UInt16(remoteURL?.port ?? remoteURL?.defaultPort ?? 80)
+
+    return sheetController.getPassword(parentWindow: window,
+                                       host: host,
+                                       path: path,
+                                       port: port)
+  }
+
+  func remoteCallbacks(for remoteURL: URL?) -> RemoteCallbacks
+  {
+    let progress = RemoteProgressPublisher(passwordBlock: { [weak self] in
+      self?.passwordPrompt(for: remoteURL)
+    })
+
+    return progress.callbacks
   }
 
   nonisolated func updateMiniwindowTitle()
@@ -449,4 +488,3 @@ extension XTWindowController: NSMenuDelegate
     }
   }
 }
-

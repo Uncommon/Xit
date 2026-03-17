@@ -49,7 +49,7 @@ enum SidebarTab: TabItem, Hashable
   var toolTip: UIString
   {
     switch self {
-      case .local: ›"Local"
+      case .local: .branches
       case .remote: .remotes
       case .tags: .tags
       case .stashes: .stashes
@@ -90,16 +90,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
         Stasher: Stashing, Tagger: Tagging, SubManager: SubmoduleManagement,
         Brancher.LocalBranch == Referencer.LocalBranch
 {
-  @State var tab: SidebarTab = .local(modified: false)
-  @State var expandedBranches: Set<String> = []
-  @State var expandedRemotes: Set<String> = []
-  @State var expandedTags: Set<String> = []
-
   @Binding var repoSelection: (any RepositorySelection)?
-  @State private var selectedBranch: String? = nil
-  @State private var selectedTag: String? = nil
-  @State private var selectedStash: GitOID? = nil
-  @State private var selectedSubmodule: String? = nil
 
   // These are separate for testing/preview convenience
   let brancher: Brancher
@@ -115,14 +106,17 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   
   @State var model: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
                                      Tagger, SubManager>
+  @EnvironmentObject private var coordinator: SidebarCoordinator
+  @EnvironmentObject private var accessories: BranchAccessoryStore
   
   var body: some View {
     VStack(spacing: 0) {
       Divider()
-      IconTabPicker(items: SidebarTab.cleanCases, selection: $tab)
+      IconTabPicker(items: SidebarTab.cleanCases,
+                    selection: $coordinator.activeTab)
         .padding(6)
       Divider()
-      switch tab {
+      switch coordinator.activeTab {
         case .local:
           branchList()
         case .remote:
@@ -135,6 +129,16 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
           AnyView(submoduleList(manager: submobuleManager))
       }
     }
+      .popover(isPresented: Binding(
+          get: { coordinator.presentedTagInfo != nil },
+          set: { if !$0 { coordinator.dismissTagInfo() } })) {
+        if let presentation = coordinator.presentedTagInfo {
+          TagInfoView(presentation: presentation)
+        }
+      }
+      .onAppear {
+        coordinator.refreshAction = refreshModels
+      }
       .listStyle(.sidebar)
       .frame(width: 300)
   }
@@ -166,7 +170,9 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
                           detector: detector,
                           publisher: publisher,
                           workspaceCountModel: workspaceCountModel),
-        remoteModel: .init(manager: remoteManager, brancher: brancher),
+        remoteModel: .init(manager: remoteManager,
+                           brancher: brancher,
+                           publisher: publisher),
         tagModel: .init(tagger: tagger, publisher: publisher),
         stashModel: .init(stasher: stasher, publisher: publisher),
         submoduleModel: .init(manager: submobuleManager, publisher: publisher))
@@ -177,28 +183,29 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     BranchList(model: model.brachModel,
                brancher: brancher,
                referencer: referencer,
-               accessorizer: .empty,
-               selection: $selectedBranch,
-               expandedItems: $expandedBranches)
-      .onChange(of: selectedBranch) {
-        guard let selectedBranch,
+               selection: $coordinator.branchSelection,
+               expandedItems: $coordinator.expandedBranches)
+      .onChange(of: coordinator.branchSelection) {
+        guard let branchSelection = coordinator.branchSelection,
               let repo = brancher as? any FileChangesRepo
         else {
           repoSelection = nil
           return
         }
-        if selectedBranch.isEmpty {
-          repoSelection = StagingSelection(repository: repo, amending: false)
-        }
-        else if let refName = LocalBranchRefName.named(selectedBranch),
-                let branch = brancher.localBranch(named: refName),
-                let commit = branch.targetCommit {
-          repoSelection = CommitSelection(repository: repo, commit: commit)
-        }
-        else {
-          repoSelection = nil
+        switch branchSelection {
+          case .staging:
+            repoSelection = StagingSelection(repository: repo, amending: false)
+          case .branch(let refName):
+            if let branch = brancher.localBranch(named: refName),
+               let commit = branch.targetCommit {
+              repoSelection = CommitSelection(repository: repo, commit: commit)
+            }
+            else {
+              repoSelection = nil
+            }
         }
       }
+      .environmentObject(accessories)
   }
   
   private func remoteList() -> some View
@@ -206,24 +213,36 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     RemoteList(model: model.remoteModel,
                manager: remoteManager,
                brancher: brancher,
-               accessorizer: .empty,
-               selection: $selectedBranch,
-               expandedItems: $expandedRemotes)
-      .onChange(of: selectedBranch) {
-        
+               selection: $coordinator.remoteSelection,
+               expandedItems: $coordinator.expandedRemotes)
+      .onChange(of: coordinator.remoteSelection) {
+        switch coordinator.remoteSelection {
+          case .remote, nil:
+            repoSelection = nil
+          case .branch(let refName):
+            if let branch = brancher.remoteBranch(named: refName.name,
+                                                  remote: refName.remoteName),
+               let commit = branch.targetCommit,
+               let repo = brancher as? any FileChangesRepo {
+              repoSelection = CommitSelection(repository: repo, commit: commit)
+            }
+            else {
+              repoSelection = nil
+            }
+        }
       }
+      .environmentObject(accessories)
   }
 
   // These views need generic wrappers because the list views are generic
   private func tagList(tagger: some Tagging,
-                       publisher: some RepositoryPublishing) -> some View
+                       publisher _: some RepositoryPublishing) -> some View
   {
     TagList(model: model.tagModel,
-            selection: $selectedTag,
-            expandedItems: $expandedTags)
-      .onChange(of: selectedTag) {
-        if let selectedTag,
-           let tagRef = TagRefName.named(selectedTag),
+            selection: $coordinator.tagSelection,
+            expandedItems: $coordinator.expandedTags)
+      .onChange(of: coordinator.tagSelection) {
+        if let tagRef = coordinator.tagSelection,
            let tag = tagger.tag(named: tagRef),
            let commit = tag.commit,
            let repo = tagger as? any FileChangesRepo {
@@ -240,9 +259,9 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     StashList(model: model.stashModel,
               stasher: stasher,
               publisher: publisher,
-              selection: $selectedStash)
-      .onChange(of: selectedStash) {
-        if let selectedStash,
+              selection: $coordinator.stashSelection)
+      .onChange(of: coordinator.stashSelection) {
+        if let selectedStash = coordinator.stashSelection,
            let index = stasher.findStashIndex(selectedStash),
            let repo = stasher as? (any FileChangesRepo & Stashing) {
           repoSelection = StashSelection(repository: repo, index: UInt(index))
@@ -256,7 +275,16 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   private func submoduleList(manager: some SubmoduleManagement) -> some View
   {
     SubmoduleList(model: model.submoduleModel,
-                  selection: $selectedSubmodule)
+                  selection: $coordinator.submoduleSelection)
+  }
+
+  private func refreshModels()
+  {
+    model.brachModel.updateBranchList()
+    model.remoteModel.updateList()
+    model.tagModel.setTagHierarchy()
+    model.stashModel.filterChanged(model.stashModel.filter)
+    model.submoduleModel.updateList()
   }
 }
 
@@ -288,5 +316,7 @@ private class NFSD: EmptyFileStatusDetection {}
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
                 workspaceCountModel: .init(),
                 selection: .constant(nil))
+    .environmentObject(SidebarCoordinator())
+    .environmentObject(BranchAccessoryStore())
 }
 #endif

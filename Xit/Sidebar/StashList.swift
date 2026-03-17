@@ -8,6 +8,7 @@ struct StashList<Stasher: Stashing>: View
   @State private var showAlert = false
   @State private var alertAction: StashAction?
   @Environment(\.showError) private var showError
+  @EnvironmentObject private var coordinator: SidebarCoordinator
 
   @Binding var selection: GitOID?
 
@@ -94,11 +95,27 @@ struct StashList<Stasher: Stashing>: View
         }
       FilterBar(text: $model.filter) {
         SidebarActionButton {
-          Button("Stash current changes", systemImage: "tray.and.arrow.down") {}
+          let topStash = model.stashes.first?.id
+
           Divider()
-          Button("Pop top stash", systemImage: "arrow.up.square.fill") {}
-          Button("Apply top stash", systemImage: "arrow.up.square") {}
-          Button("Drop top stash", systemImage: "trash") {}
+          Button("Pop top stash", systemImage: "arrow.up.square.fill") {
+            if let topStash {
+              coordinator.popStash(topStash)
+            }
+          }
+            .disabled(topStash == nil)
+          Button("Apply top stash", systemImage: "arrow.up.square") {
+            if let topStash {
+              coordinator.applyStash(topStash)
+            }
+          }
+            .disabled(topStash == nil)
+          Button("Drop top stash", systemImage: "trash") {
+            if let topStash {
+              coordinator.dropStash(topStash)
+            }
+          }
+            .disabled(topStash == nil)
         }
       }
     }
@@ -216,6 +233,7 @@ struct StashListPreview: View
     let repo = StashListPreview.PreviewStashing(stashes: stashes)
     StashList(model: .init(stasher: repo, publisher: repo),
               stasher: repo, publisher: repo, selection: $selection)
+      .environmentObject(SidebarCoordinator())
       .listStyle(.sidebar)
   }
 }

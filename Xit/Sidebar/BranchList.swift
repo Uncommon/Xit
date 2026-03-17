@@ -1,44 +1,8 @@
 import SwiftUI
 import Combine
 
-protocol BranchAccessorizing<Content>
-{
-  associatedtype Content: View
-  
-  func accessoryView(for branch: any ReferenceName) -> Content
-}
-
-struct EmptyBranchAccessorizer: BranchAccessorizing
-{
-  func accessoryView(for branch: any ReferenceName) -> some View { EmptyView() }
-}
-
-extension BranchAccessorizing where Self == EmptyBranchAccessorizer
-{
-  static var empty: EmptyBranchAccessorizer { .init() }
-}
-
-@MainActor
-// swiftlint:disable:next class_delegate_protocol
-protocol BranchListDelegate
-{
-  func newBranch()
-  func checkOut(_ branch: LocalBranchRefName)
-  func merge(_ branch: LocalBranchRefName)
-  func rename(_ branch: LocalBranchRefName)
-  func delete(_ branch: LocalBranchRefName)
-}
-
-extension EnvironmentValues
-{
-  @Entry var branchListDelegate: (any BranchListDelegate)? = nil
-}
-
-private let stagingSelectionTag = ""
-
 struct BranchList<Brancher: Branching,
-                  Referencer: CommitReferencing,
-                  Accessorizer: BranchAccessorizing>: View
+                  Referencer: CommitReferencing>: View
   where Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.RemoteBranch == Referencer.RemoteBranch
 {
@@ -46,11 +10,11 @@ struct BranchList<Brancher: Branching,
 
   let brancher: Brancher
   let referencer: Referencer
-  let accessorizer: Accessorizer
-  @Binding var selection: String?
+  @Binding var selection: BranchListSelection?
   @Binding var expandedItems: Set<String>
 
-  @Environment(\.branchListDelegate) var delegate: BranchListDelegate?
+  @EnvironmentObject private var coordinator: SidebarCoordinator
+  @EnvironmentObject private var accessories: BranchAccessoryStore
 
   var body: some View
   {
@@ -67,7 +31,9 @@ struct BranchList<Brancher: Branching,
           WorkspaceStatusBadge(
               unstagedCount: model.workspaceCountModel.counts.unstaged,
               stagedCount: model.workspaceCountModel.counts.staged)
-        }.tag(stagingSelectionTag).listRowSeparator(.hidden)
+        }
+          .tag(BranchListSelection.staging)
+          .listRowSeparator(.hidden)
         // TODO: Reduce the divider height
         // This could be done with .environment(\.defaultMinListRowHeight, x)
         // but then the row height would be dynamic for all other rows which
@@ -82,29 +48,33 @@ struct BranchList<Brancher: Branching,
                      trailingContent: {
             if let item = node.item {
               upstreamIndicator(for: item)
-              accessorizer.accessoryView(for: item.refName)
+              let _ = accessories.revision
+              accessories.accessory(for: item.refName)
             }
           })
+            .tag(node.item.map { BranchListSelection.branch($0.refName) })
         }
       }
         .axid(.Sidebar.branchList)
-        .contextMenu(forSelectionType: String.self) {
+        .contextMenu(forSelectionType: BranchListSelection.self) {
           if let ref = branchRef(from: $0) {
             if ref != brancher.currentBranch {
-              Button(command: .checkOut) { delegate?.checkOut(ref) }
+              Button(command: .checkOut) { coordinator.checkoutBranch(ref) }
                 .axid(.BranchPopup.checkOut)
             }
-            Button(command: .rename) { delegate?.rename(ref) }
+            Button(command: .rename) { coordinator.renameBranch(ref) }
               .axid(.BranchPopup.rename)
-            Button(command: .merge) { delegate?.merge(ref) }
+            Button(command: .merge) { coordinator.mergeBranch(ref) }
               .axid(.BranchPopup.merge)
             Divider()
-            Button(command: .delete, role: .destructive) { delegate?.delete(ref) }
+            Button(command: .delete, role: .destructive) {
+              coordinator.deleteBranch(ref)
+            }
               .axid(.BranchPopup.delete)
           }
         } primaryAction: {
           if let ref = branchRef(from: $0) {
-            delegate?.checkOut(ref)
+            coordinator.checkoutBranch(ref)
           }
         }
         .overlay {
@@ -114,31 +84,47 @@ struct BranchList<Brancher: Branching,
         }
       FilterBar(text: $model.filter, leftContent: {
         SidebarActionButton {
-          let branchRef = selection.flatMap { LocalBranchRefName.named($0) }
+          let branchRef = selectedBranch
+          let canEditSelection = branchRef != nil && branchRef != brancher.currentBranch
 
           Button("New branch...", systemImage: "plus") {
-            delegate?.newBranch()
+            coordinator.newBranch()
           }
           Button("Rename branch", systemImage: "pencil") {
             if let branchRef {
-              delegate?.rename(branchRef)
+              coordinator.renameBranch(branchRef)
             }
           }
-            .disabled(branchRef == nil)
+            .disabled(!canEditSelection)
+          Button(command: .merge) {
+            if let branchRef {
+              coordinator.mergeBranch(branchRef)
+            }
+          }
+            .disabled(branchRef == nil || branchRef == brancher.currentBranch)
           Button("Delete branch", systemImage: "trash") {
             if let branchRef {
-              delegate?.delete(branchRef)
+              coordinator.deleteBranch(branchRef)
             }
           }
-            .disabled(branchRef == nil)
+            .disabled(!canEditSelection)
         }
       })
     }
   }
   
-  func branchRef(from selection: Set<String>) -> LocalBranchRefName?
+  var selectedBranch: LocalBranchRefName?
   {
-    selection.first.flatMap { LocalBranchRefName(rawValue: $0) }
+    guard case let .branch(ref)? = selection
+    else { return nil }
+    return ref
+  }
+
+  func branchRef(from selection: Set<BranchListSelection>) -> LocalBranchRefName?
+  {
+    guard case let .branch(ref)? = selection.first
+    else { return nil }
+    return ref
   }
   
   func upstreamIndicator(for branch: BranchListItem) -> some View
@@ -174,7 +160,7 @@ struct BranchList<Brancher: Branching,
 
 struct BranchListPreview: View
 {
-  class Brancher: EmptyBranching, EmptyRepositoryPublishing, BranchAccessorizing
+  class Brancher: EmptyBranching, EmptyRepositoryPublishing
   {
     typealias LocalBranch = FakeLocalBranch
     typealias RemoteBranch = FakeRemoteBranch
@@ -192,17 +178,13 @@ struct BranchListPreview: View
     var refsPublisher: AnyPublisher<Void, Never>
     { publisher.eraseToAnyPublisher() }
     
-    let builtBranches: [LocalBranchRefName]
-
     init(localBranches: [LocalBranch],
          remoteBranches: [RemoteBranch] = [],
-         currentBranch: LocalBranchRefName? = nil,
-         builtBranches: [LocalBranchRefName] = [])
+         currentBranch: LocalBranchRefName? = nil)
     {
       self.localBranchArray = localBranches
       self.remoteBranchArray = remoteBranches
       self.currentBranch = currentBranch
-      self.builtBranches = builtBranches
     }
 
     func localBranch(named refName: LocalBranchRefName) -> LocalBranch?
@@ -215,19 +197,10 @@ struct BranchListPreview: View
       remoteBranchArray.first { $0.name == name }
     }
     
-    @ViewBuilder
-    func accessoryView(for branch: any ReferenceName) -> some View
-    {
-      let branchName = branch.name
-      
-      if builtBranches.contains(where: { $0.name == branchName }) {
-        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-      }
-    }
   }
   
   let brancher: Brancher
-  @State var selection: String? = nil
+  @State var selection: BranchListSelection? = nil
   @State var expandedItems: Set<String> = []
   
   typealias CommitReferencer = FakeCommitReferencing<
@@ -243,37 +216,21 @@ struct BranchListPreview: View
                             workspaceCountModel: .init()),
                brancher: brancher,
                referencer: referencer,
-               accessorizer: brancher,
                selection: $selection,
                expandedItems: $expandedItems)
-      .environment(\.branchListDelegate, PrintingBranchDelegate())
+      .environmentObject(SidebarCoordinator())
+      .environmentObject(BranchAccessoryStore())
       .listStyle(.sidebar)
       .frame(maxWidth: 250)
   }
   
   init(localBranches: [String],
-       currentBranch: LocalBranchRefName? = nil,
-       builtBranches: [LocalBranchRefName] = [])
+       currentBranch: LocalBranchRefName? = nil)
   {
     self.brancher = Brancher(
         localBranches: localBranches.map { .init(name: $0) },
-        currentBranch: currentBranch,
-        builtBranches: builtBranches)
+        currentBranch: currentBranch)
   }
-}
-
-struct PrintingBranchDelegate: BranchListDelegate
-{
-  func newBranch()
-  { print("new branch") }
-  func checkOut(_ branch: LocalBranchRefName)
-  { print("check out \(branch.name)") }
-  func merge(_ branch: LocalBranchRefName)
-  { print("merge \(branch.name)") }
-  func rename(_ branch: LocalBranchRefName)
-  { print("rename \(branch.name)") }
-  func delete(_ branch: LocalBranchRefName)
-  { print("delete \(branch.name)") }
 }
 
 #Preview
@@ -283,7 +240,6 @@ struct PrintingBranchDelegate: BranchListDelegate
       "feature/things",
       "someWork",
     ],
-    currentBranch: .init("refs/heads/master"),
-                    builtBranches: ["refs/heads/someWork"].map { .named($0)! })
+    currentBranch: .init("refs/heads/master"))
 }
 #endif

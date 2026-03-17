@@ -20,7 +20,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   @Published var searchScope: RemoteSearchScope = .branches
   @Published var expandedRemotes: Set<String>
   
-  init(manager: Manager, brancher: Brancher)
+  init(manager: Manager, brancher: Brancher, publisher: any RepositoryPublishing)
   {
     self.manager = manager
     self.brancher = brancher
@@ -29,6 +29,14 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
     super.init()
     
     updateList()
+    sinks.append(contentsOf: [
+      publisher.refsPublisher.sinkOnMainQueue { [weak self] in
+        self?.updateList()
+      },
+      publisher.configPublisher.sinkOnMainQueue { [weak self] in
+        self?.updateList()
+      },
+    ])
   }
   
   func updateList()

@@ -23,31 +23,18 @@ enum RemoteSearchScope: CaseIterable, Identifiable
   }
 }
 
-@MainActor
-protocol RemoteListDelegate
-{
-  func createTrackingBranch(for branch: RemoteBranchRefName)
-}
-
-extension EnvironmentValues
-{
-  @Entry var remoteListDelegate: (any RemoteListDelegate)? = nil
-}
-
-
 struct RemoteList<Manager: RemoteManagement,
-                  Brancher: Branching,
-                  Accessorizer: BranchAccessorizing>: View
+                  Brancher: Branching>: View
 {
   @StateObject var model: RemoteListViewModel<Manager, Brancher>
   
   let manager: Manager
   let brancher: Brancher
-  let accessorizer: Accessorizer
-  @Binding var selection: String?
+  @Binding var selection: RemoteListSelection?
   @Binding var expandedItems: Set<String>
   
-  @Environment(\.remoteListDelegate) var delegate
+  @EnvironmentObject private var coordinator: SidebarCoordinator
+  @EnvironmentObject private var accessories: BranchAccessoryStore
 
   var body: some View
   {
@@ -61,22 +48,46 @@ struct RemoteList<Manager: RemoteManagement,
               (node) in
               BranchCell(node: node, trailingContent: {
                 if let branch = node.item {
-                  accessorizer.accessoryView(for: branch)
+                  let _ = accessories.revision
+                  accessories.accessory(for: branch)
                 }
               })
+                .tag(node.item.map { RemoteListSelection.branch(ref: $0) })
             }
           } label: {
             Label(remote.name, systemImage: "network")
-          }.listRowSeparator(.hidden)
+          }
+            .tag(RemoteListSelection.remote(name: remote.name))
+            .listRowSeparator(.hidden)
         }
       }
         .axid(.Sidebar.remotesList)
-        .contextMenu(forSelectionType: String.self) {
+        .contextMenu(forSelectionType: RemoteListSelection.self) {
           selection in
-          if let branchRef = selection.first.flatMap({RemoteBranchRefName(rawValue: $0)}) {
-            Button(.createTrackingBranch, systemImage: "plus.circle") {
-              delegate?.createTrackingBranch(for: branchRef)
-            }.axid(.RemoteBranchPopup.createTracking)
+          if let selected = selection.first {
+            switch selected {
+            case .remote(let name):
+              Button(.rename, systemImage: "pencil") {
+                coordinator.renameRemote(name)
+              }
+              Button(.edit, systemImage: "slider.horizontal.3") {
+                coordinator.editRemote(name)
+              }
+              Button(.delete, systemImage: "trash", role: .destructive) {
+                coordinator.deleteRemote(name)
+              }
+              Button(.copyURL, systemImage: "document.on.document") {
+                coordinator.copyRemoteURL(name)
+              }
+
+            case .branch(let branchRef):
+              Button(.createTrackingBranch, systemImage: "plus.circle") {
+                coordinator.createTrackingBranch(branchRef)
+              }.axid(.RemoteBranchPopup.createTracking)
+              Button(command: .merge) {
+                coordinator.mergeRemoteBranch(branchRef)
+              }
+            }
           }
         }
         .overlay {
@@ -84,17 +95,39 @@ struct RemoteList<Manager: RemoteManagement,
             model.contentUnavailableView("No Remotes", systemImage: "network")
           }
         }
-      // TODO: context menu
       FilterBar(text: $model.filter,
                 prompt: model.searchScope.text,
                 leftContent: {
         SidebarActionButton {
-          Button("New remote...", systemImage: "plus") {}
-          Button("Rename remote", systemImage: "pencil") {}
-          // TODO: enabled specifically if a remote is selected
-            .disabled(selection == nil)
-          Button("Delete remote", systemImage: "trash") {}
-            .disabled(selection == nil)
+          let remoteName = selectedRemote
+
+          Button("New remote...", systemImage: "plus") {
+            coordinator.newRemote()
+          }
+          Button("Rename remote", systemImage: "pencil") {
+            if let remoteName {
+              coordinator.renameRemote(remoteName)
+            }
+          }
+            .disabled(remoteName == nil)
+          Button("Edit remote", systemImage: "slider.horizontal.3") {
+            if let remoteName {
+              coordinator.editRemote(remoteName)
+            }
+          }
+            .disabled(remoteName == nil)
+          Button("Delete remote", systemImage: "trash") {
+            if let remoteName {
+              coordinator.deleteRemote(remoteName)
+            }
+          }
+            .disabled(remoteName == nil)
+          Button("Copy remote URL", systemImage: "document.on.document") {
+            if let remoteName {
+              coordinator.copyRemoteURL(remoteName)
+            }
+          }
+            .disabled(remoteName == nil)
         }
       }, fieldRightContent: {
         Picker(selection: $model.searchScope, content: {
@@ -115,6 +148,13 @@ struct RemoteList<Manager: RemoteManagement,
         }
     }
   }
+
+  var selectedRemote: String?
+  {
+    guard case let .remote(name)? = selection
+    else { return nil }
+    return name
+  }
   
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
@@ -128,17 +168,19 @@ struct RemoteListPreview: View
   let manager: FakeRemoteManager
   let brancher: FakeBrancher
   
-  @State var selection: String? = nil
+  @State var selection: RemoteListSelection? = nil
   @State var expandedItems: Set<String> = []
   
   var body: some View
   {
-    RemoteList(model: .init(manager: manager, brancher: brancher),
+    RemoteList(model: .init(manager: manager, brancher: brancher,
+                            publisher: NullRepositoryPublishing()),
                manager: manager,
                brancher: brancher,
-               accessorizer: .empty,
                selection: $selection,
                expandedItems: $expandedItems)
+      .environmentObject(SidebarCoordinator())
+      .environmentObject(BranchAccessoryStore())
   }
 }
 
