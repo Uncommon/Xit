@@ -22,37 +22,36 @@ struct BranchList<Brancher: Branching,
     
     VStack(spacing: 0) {
       List(selection: $selection) {
-        HStack {
-          // stagingCell ID has to go here because putting it
-          // on the cell doesn't work.
-          Label("Staging", systemImage: "arrow.up.square")
-            .axid(.Sidebar.stagingCell)
-          Spacer()
-          WorkspaceStatusBadge(
-              unstagedCount: model.workspaceCountModel.counts.unstaged,
-              stagedCount: model.workspaceCountModel.counts.staged)
+        Section {
+          HStack {
+            // stagingCell ID has to go here because putting it
+            // on the cell doesn't work.
+            Label("Staging", systemImage: "arrow.up.square")
+              .axid(.Sidebar.stagingCell)
+            Spacer()
+            WorkspaceStatusBadge(
+                unstagedCount: model.workspaceCountModel.counts.unstaged,
+                stagedCount: model.workspaceCountModel.counts.staged)
+          }
+            .tag(BranchListSelection.staging)
+            .listRowSeparator(.hidden)
         }
-          .tag(BranchListSelection.staging)
-          .listRowSeparator(.hidden)
-        // TODO: Reduce the divider height
-        // This could be done with .environment(\.defaultMinListRowHeight, x)
-        // but then the row height would be dynamic for all other rows which
-        // could have a performance impact.
-        Divider()
-        RecursiveDisclosureGroup(model.branches,
-                                 expandedItems: $expandedItems) {
-          (node) in
-          let isCurrent = node.item?.refName == currentBranch
-          BranchCell(node: node,
-                     isCurrent: isCurrent,
-                     trailingContent: {
-            if let item = node.item {
-              upstreamIndicator(for: item)
-              let _ = accessories.revision
-              accessories.accessory(for: item.refName)
-            }
-          })
-            .tag(node.item.map { BranchListSelection.branch($0.refName) })
+        Section {
+          RecursiveDisclosureGroup(model.branches,
+                                   expandedItems: $expandedItems) {
+            (node) in
+            let isCurrent = node.item?.refName == currentBranch
+            BranchCell(node: node,
+                       isCurrent: isCurrent,
+                       trailingContent: {
+              if let item = node.item {
+                upstreamIndicator(for: item)
+                let _ = accessories.revision
+                accessories.accessory(for: item.refName)
+              }
+            })
+              .tag(node.item.map { BranchListSelection.branch($0.refName) })
+          }
         }
       }
         .axid(.Sidebar.branchList)
