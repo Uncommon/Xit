@@ -31,17 +31,17 @@ struct TagList<Tagger: Tagging>: View
             Spacer()
             if let item,
                item.type == .annotated {
+              let tagInfo = tagInfoModel(for: item)
               Button {
-                coordinator.showTagInfo(.init(
-                    tagName: item.name.rawValue,
-                    authorName: item.signature?.name ?? "-",
-                    authorEmail: item.signature?.email ?? "",
-                    date: item.signature?.when ?? .distantPast,
-                    message: item.message ?? ""))
+                coordinator.showTagInfo(tagInfo)
               } label: {
                 Image(systemName: "info.circle")
               }
                 .buttonStyle(.borderless)
+                .popover(isPresented: tagInfoBinding(for: tagInfo),
+                         arrowEdge: .bottom) {
+                  TagInfoView(presentation: tagInfo)
+                }
             }
           }
             .tag(item?.name)
@@ -64,6 +64,29 @@ struct TagList<Tagger: Tagging>: View
         }
       FilterBar(text: $model.filter)
     }
+  }
+
+  private func tagInfoModel(for tag: Tagger.Tag) -> TagInfoModel
+  {
+    .init(tagName: tag.name.rawValue,
+          authorName: tag.signature?.name ?? "-",
+          authorEmail: tag.signature?.email ?? "",
+          date: tag.signature?.when ?? .distantPast,
+          message: tag.message ?? "")
+  }
+
+  private func tagInfoBinding(for info: TagInfoModel) -> Binding<Bool>
+  {
+    Binding(
+        get: { coordinator.presentedTagInfo?.id == info.id },
+        set: { isPresented in
+          if isPresented {
+            coordinator.showTagInfo(info)
+          }
+          else if coordinator.presentedTagInfo?.id == info.id {
+            coordinator.dismissTagInfo()
+          }
+        })
   }
 }
 

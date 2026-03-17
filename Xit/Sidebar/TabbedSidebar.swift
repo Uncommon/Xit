@@ -129,13 +129,6 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
           AnyView(submoduleList(manager: submobuleManager))
       }
     }
-      .popover(isPresented: Binding(
-          get: { coordinator.presentedTagInfo != nil },
-          set: { if !$0 { coordinator.dismissTagInfo() } })) {
-        if let presentation = coordinator.presentedTagInfo {
-          TagInfoView(presentation: presentation)
-        }
-      }
       .onAppear {
         coordinator.refreshAction = refreshModels
       }
