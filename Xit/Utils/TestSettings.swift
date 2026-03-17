@@ -14,12 +14,8 @@ enum TestSettings
   static let tempAccountsData: [Account] = [
     .init(type: .gitHub, user: "This guy",
           location: .init(string: "https://github.com")!, id: .init()),
-    .init(type: .teamCity, user: "Person",
-          location: .init(string: "https://teamcity.com")!, id: .init()),
     .init(type: .gitLab, user: "Henry",
           location: .init(string: "https://gitlab.com")!, id: .init()),
-    .init(type: .bitbucketServer, user: "Hank",
-          location: .init(string: "https://bitbucket.com")!, id: .init()),
   ]
 
   @MainActor

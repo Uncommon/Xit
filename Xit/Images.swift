@@ -5,11 +5,9 @@ import AppKit
 
 extension NSImage.Name
 {
-  static let xtBitBucketTemplate = "bitbucketTemplate"
   static let xtGitHub = "github"
   static let xtGitLab = "gitlab"
   static let xtStageAllTemplate = "stageAllTemplate"
-  static let xtTeamCity = "teamcity"
   static let xtTrackingMissing = "trackingMissing"
   static let xtUnstageAllTemplate = "unstageAllTemplate"
 }
