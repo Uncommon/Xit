@@ -4,6 +4,26 @@ import XCTest
 
 final class PullRequestCacheTest: XCTestCase
 {
+  struct TestPullRequest: PullRequest
+  {
+    var serviceID: UUID
+    var availableActions: PullRequestActions
+    var sourceBranch: String
+    var sourceRepo: URL?
+    var displayName: String
+    var id: String
+    var authorName: String?
+    var status: PullRequestStatus
+    var webURL: URL?
+
+    func reviewerStatus(userID: String) -> PullRequestApproval
+    {
+      .unreviewed
+    }
+
+    mutating func setReviewerStatus(userID: String, status: PullRequestApproval) {}
+  }
+
   final class ClientSpy: PullRequestClient
   {
     var updates: [(branch: String, requestIDs: [String])] = []
@@ -16,14 +36,14 @@ final class PullRequestCacheTest: XCTestCase
 
   func testPullRequestCacheUpdateStatusMutatesAndNotifiesOnce()
   {
-    let repo = FakeRepo()
+    let repo = TestRemoteManager(remoteNames: [])
     let cache = PullRequestCache(repository: repo)
     let client = ClientSpy()
-    let request = FakePullRequest(
+    let request = TestPullRequest(
       serviceID: .init(),
       availableActions: [],
       sourceBranch: "refs/heads/branch1",
-      sourceRepo: repo.remote1.url,
+      sourceRepo: URL(string: "https://example.com/repo1.git"),
       displayName: "PR1",
       id: "1",
       authorName: "Author",

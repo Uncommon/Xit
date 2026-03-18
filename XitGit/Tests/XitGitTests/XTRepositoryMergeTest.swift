@@ -74,6 +74,80 @@ class XTRepositoryMergeTest: XTTest
     }
   }
   
+  func isWorkspaceClean() -> Bool
+  {
+    let selection = StagingSelection(repository: repository, amending: false)
+    
+    return selection.fileList.changes.isEmpty &&
+           selection.unstagedFileList.changes.isEmpty
+  }
+  
+  func assertWorkspaceContent(staged: [String], unstaged: [String],
+                              file: StaticString = #file, line: UInt = #line)
+  {
+    let selection = StagingSelection(repository: repository, amending: false)
+    
+    XCTAssertEqual(selection.fileList.changes.map { $0.path }, staged,
+                   "staged", file: file, line: line)
+    XCTAssertEqual(selection.unstagedFileList.changes.map { $0.path }, unstaged,
+                   "unstaged", file: file, line: line)
+  }
+
+  func mergeC0C1(useCLI: Bool) throws
+  {
+    guard let c1OID = repository.localBranch(named: .named("c1")!)?.oid
+    else {
+      XCTFail("c1 branch missing")
+      return
+    }
+
+    if useCLI {
+      _ = try repository.executeGit(args: ["merge", "c1"], writes: true)
+    }
+    else {
+      try execute(in: repository) {
+        Merge(branch: "c1")
+      }
+    }
+    assertContent(result1, file: fileName)
+    try assertStagedContent(result1, file: fileName)
+    assertWorkspaceContent(staged: [], unstaged: [])
+
+    guard let headOID = repository.headReference?.targetOID
+    else {
+      XCTFail("no head")
+      return
+    }
+
+    XCTAssertTrue(c1OID == headOID)
+  }
+  
+  // Fast-forward case. This could also have a ff-only variant.
+  func testMergeC0C1() throws
+  {
+    try mergeC0C1(useCLI: false)
+  }
+
+  func testMergeC0C1CLI() throws
+  {
+    try mergeC0C1(useCLI: true)
+  }
+
+  // Actually merging changes.
+  func testMergeC1C2() throws
+  {
+    try execute(in: repository) {
+      CheckOut(branch: "c1")
+      Merge(branch: "c2")
+    }
+
+    let contents = try XCTUnwrap(String(contentsOf: repository.fileURL(fileName),
+                                        encoding: .utf8))
+
+    XCTAssertEqual(contents, result15)
+    assertWorkspaceContent(staged: [], unstaged: [])
+  }
+
   // Not from the git test.
   func testConflict() throws
   {

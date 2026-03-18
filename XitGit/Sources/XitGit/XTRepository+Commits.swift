@@ -51,6 +51,11 @@ extension XTRepository: CommitStorage
 
 extension XTRepository: CommitReferencing
 {
+  public typealias Tag = GitTag
+  public typealias Tree = GitTree
+  public typealias LocalBranch = GitLocalBranch
+  public typealias RemoteBranch = GitRemoteBranch
+  
   var headReference: (any Reference)?
   { GitReference(headForRepo: gitRepo) }
   
@@ -167,33 +172,27 @@ extension XTRepository: CommitReferencing
     
     return GitOID(oidPtr: oid)
   }
-  
-  public func deleteBranch(_ name: String) throws
-  {
-    return try writing {
-      guard let refName = LocalBranchRefName(name),
-            let branch = localBranch(named: refName)
-      else { throw RepoError.notFound }
 
-      try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))
-    }
-  }
-  
-  /// Returns the list of tags, or throws if libgit2 hit an error.
-  public func tags() throws -> [GitTag]
+  public func tagNames() throws -> [TagRefName]
   {
     var tagNames = git_strarray()
     let result = git_tag_list(&tagNames, gitRepo)
-    
+
     try RepoError.throwIfGitError(result)
     defer { git_strarray_free(&tagNames) }
-    
+
     return tagNames.compactMap {
-      name in name.flatMap { GitTag(repository: self, name: $0) }
+      (name) in name.flatMap { TagRefName.named($0) }
     }
   }
+
+  /// Returns the list of tags, or throws if libgit2 hit an error.
+  public func tags() throws -> [GitTag]
+  {
+    try tagNames().compactMap { GitTag(repository: self, name: $0) }
+  }
   
-  public func reference(named name: String) -> (any Reference)?
+  public func reference(named name: some ReferenceName) -> (any Reference)?
   {
     return GitReference(name: name, repository: gitRepo)
   }

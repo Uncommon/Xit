@@ -1,6 +1,7 @@
 import Cocoa
 import Combine
 import XitGit
+import SwiftUI
 
 @MainActor
 protocol RepositoryUIController: AnyObject
@@ -14,7 +15,28 @@ protocol RepositoryUIController: AnyObject
 
   func select(oid: GitOID)
   func reselect()
+  func showAlert(message: UIString, info: UIString)
+  func showAlert(nsError: NSError)
+}
+
+extension RepositoryUIController
+{
+  var selectionBinding: Binding<(any RepositorySelection)?>
+  {
+    .init {
+      [weak self] in
+      self?.selection
+    }
+    set: {
+      [weak self] in
+      self?.selection = $0
+    }
+  }
+
   func showErrorMessage(error: RepoError)
+  {
+    showAlert(message: error.message, info: .empty)
+  }
 }
 
 extension RepositoryUIController
@@ -27,16 +49,17 @@ final class XTWindowController: NSWindowController,
                                 RepositoryUIController
 {
   var splitViewController: NSSplitViewController!
-  @IBOutlet var sidebarController: SidebarController!
   @IBOutlet var titleBarController: TitleBarController!
   
   var historyController: HistoryViewController!
   var historySplitController: HistorySplitController!
+  var tabbedSidebarController: TabbedSidebarController?
   weak var repoDocument: RepoDocument?
   var repoController: GitRepositoryController!
   var sinks: [AnyCancellable] = []
   var repository: any FullRepository
   { (repoDocument?.repository as (any FullRepository)?)! }
+  let workspaceCountModel: WorkspaceStatusCountModel = .init()
 
   var defaults: UserDefaults = .xit
 
@@ -76,7 +99,6 @@ final class XTWindowController: NSWindowController,
     super.close()
   }
 
-  @objc
   func finalizeSetup()
   {
     guard document != nil,
@@ -90,16 +112,14 @@ final class XTWindowController: NSWindowController,
     guard let repo = repoDocument?.repository
     else { return }
     
+    if let headOID = repo.headOID,
+       let headCommit = repo.commit(forOID: headOID) {
+      selection = CommitSelection(repository: repo, commit: headCommit)
+    }
     repoController = GitRepositoryController(repository: repo)
+    workspaceCountModel.subscribe(to: repoController, detector: repo)
+    
     sinks.append(contentsOf: [
-      repoController.refsPublisher.sinkOnMainQueue {
-        [weak self] in
-        self?.updateBranchList()
-      },
-      repoController.workspacePublisher.sinkOnMainQueue {
-        [weak self] _ in
-        self?.updateTabStatus()
-      },
       repo.currentBranchPublisher.sink {
         [weak self] in
         self?.titleBarController?.selectedBranch = $0?.name
@@ -112,12 +132,27 @@ final class XTWindowController: NSWindowController,
           self.updateWindowStyle(window)
         }
       },
+      workspaceCountModel.$counts.sinkOnMainQueue {
+        [weak self] in
+        self?.updateTabStatus(staged: $0.staged, unstaged: $0.unstaged)
+      }
     ])
-    sidebarController.repo = repo
     historyController.finishLoad(repository: repo)
     configureTitleBarController(repository: repo)
-    updateTabStatus()
+    updateTabStatus(staged: workspaceCountModel.counts.staged,
+                    unstaged: workspaceCountModel.counts.unstaged)
     updateWindowStyle(window)
+
+    let tabbedSidebarController =
+        TabbedSidebarController(repo: repo,
+                                workspaceCountModel: workspaceCountModel,
+                                controller: self)
+    self.tabbedSidebarController = tabbedSidebarController
+    let tabbedSidebarItem =
+          NSSplitViewItem(sidebarWithViewController: tabbedSidebarController)
+
+    splitViewController.splitViewItems.remove(at: 0)
+    splitViewController.splitViewItems.insert(tabbedSidebarItem, at: 0)
   }
   
   func updateWindowStyle(_ window: NSWindow)
@@ -220,6 +255,43 @@ final class XTWindowController: NSWindowController,
     reselectSubject.send()
   }
 
+  nonisolated func passwordPrompt(for remoteURL: URL?) -> (String, String)?
+  {
+    guard !Thread.isMainThread
+    else {
+      assertionFailure("password prompt called on the main thread")
+      return nil
+    }
+
+    let sheetController = DispatchQueue.main.sync {
+      PasswordPanelController()
+    }
+    guard let window = DispatchQueue.main.sync(execute: {
+      MainActor.assumeIsolated {
+        self.window
+      }
+    })
+    else { return nil }
+
+    let host = remoteURL?.host ?? ""
+    let path = remoteURL?.path ?? ""
+    let port = UInt16(remoteURL?.port ?? remoteURL?.defaultPort ?? 80)
+
+    return sheetController.getPassword(parentWindow: window,
+                                       host: host,
+                                       path: path,
+                                       port: port)
+  }
+
+  func remoteCallbacks(for remoteURL: URL?) -> RemoteCallbacks
+  {
+    let progress = RemoteProgressPublisher(passwordBlock: { [weak self] in
+      self?.passwordPrompt(for: remoteURL)
+    })
+
+    return progress.callbacks
+  }
+
   nonisolated func updateMiniwindowTitle()
   {
     DispatchQueue.main.async {
@@ -232,7 +304,7 @@ final class XTWindowController: NSWindowController,
       var newTitle: String!
     
       if let currentBranch = repo.currentBranch {
-        newTitle = "\(window.title) - \(currentBranch)"
+        newTitle = "\(window.title) - \(currentBranch.name)"
       }
       else {
         newTitle = window.title
@@ -241,16 +313,13 @@ final class XTWindowController: NSWindowController,
       window.tab.title = newTitle
     }
   }
-  
-  private func updateTabStatus()
+
+  fileprivate func updateTabStatus(staged: Int, unstaged: Int)
   {
     guard let tab = window?.tab
     else { return }
     
-    guard defaults.statusInTabs,
-          let stagingItem = sidebarController.model.rootItem(.workspace)
-                                             .children.first,
-          let selection = stagingItem.selection as? StagedUnstagedSelection
+    guard defaults.statusInTabs
     else {
       tab.accessoryView = nil
       return
@@ -258,14 +327,13 @@ final class XTWindowController: NSWindowController,
     
     let tabButton = tab.accessoryView as? WorkspaceStatusIndicator ??
                     WorkspaceStatusIndicator()
-    let (stagedCount, unstagedCount) = selection.counts()
 
-    tabButton.setStatus(unstaged: unstagedCount, staged: stagedCount)
+    tabButton.setStatus(unstaged: unstaged, staged: staged)
     tabButton.setAccessibilityIdentifier("tabStatus")
     tab.accessoryView = tabButton
   }
 
-  public func startRenameBranch(_ branchName: String)
+  public func startRenameBranch(_ branchName: LocalBranchRefName)
   {
     _ = startOperation { RenameBranchOpController(windowController: self,
                                                   branchName: branchName) }
@@ -303,8 +371,6 @@ extension XTWindowController: NSWindowDelegate
     window.delegate = self
     splitViewController = contentViewController as? NSSplitViewController
     titleBarController.splitView = splitViewController.splitView
-    sidebarController = splitViewController.splitViewItems[0].viewController
-        as? SidebarController
 
     historySplitController = splitViewController.splitViewItems[1].viewController
                              as? HistorySplitController
@@ -323,7 +389,11 @@ extension XTWindowController: NSWindowDelegate
     })
     kvObservers.append(defaults.observe(\.statusInTabs) {
       [weak self] (_, _) in
-      MainActor.assumeIsolated { self?.updateTabStatus() }
+      MainActor.assumeIsolated {
+        guard let self else { return }
+        self.updateTabStatus(staged: self.workspaceCountModel.counts.staged,
+                             unstaged: self.workspaceCountModel.counts.unstaged)
+      }
     })
     splitObserver = NotificationCenter.default.addObserver(
         forName: NSSplitView.didResizeSubviewsNotification,

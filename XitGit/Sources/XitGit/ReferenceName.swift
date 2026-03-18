@@ -24,7 +24,7 @@ public struct RemoteBranchReference: ReferenceKind
 
 public struct TagReference: ReferenceKind
 {
-  public static var prefix: String { RefPrefixes.tags}
+  public static var prefix: String { RefPrefixes.tags }
 }
 
 /// A type that wraps a full reference name for a specific kind of reference:
@@ -35,7 +35,8 @@ public struct TagReference: ReferenceKind
 /// reference name or just the branch name with no "refs/heads/" prefix.
 ///
 /// As a `RawRepresentable` type, the raw value is the full path.
-public protocol ReferenceName: Fakable, Equatable, RawRepresentable
+public protocol ReferenceName: Fakable, PathTreeData,
+                               Sendable, Equatable, RawRepresentable
   where RawValue == String
 {
   // TODO: Maybe remove from protocol since GeneralRefName doesn't need it
@@ -55,6 +56,11 @@ public protocol ReferenceName: Fakable, Equatable, RawRepresentable
   var fullPath: String { get }
 }
 
+extension ReferenceName // PathTreeData
+{
+  public var treeNodePath: String { fullPath }
+}
+
 extension ReferenceName
 {
   public var localName: String { name }
@@ -70,14 +76,17 @@ public struct GeneralRefName: ReferenceName, Hashable
 
   public static func fakeDefault() -> GeneralRefName { .init(unchecked: "fake") }
 
-  static var head: GeneralRefName { .init(unchecked: "HEAD") }
-
   public init?(rawValue: String)
   {
     guard GitReference.isValidName(rawValue)
     else { return nil }
 
     self.rawValue = rawValue
+  }
+
+  public init(_ refName: some ReferenceName)
+  {
+    self.rawValue = refName.rawValue
   }
 
   /// Use when the name is statically known to be valid, or when an instance must
@@ -88,7 +97,12 @@ public struct GeneralRefName: ReferenceName, Hashable
   }
 }
 
-public struct PrefixedRefName<Kind>: ReferenceName
+extension ReferenceName where Self == GeneralRefName
+{
+  static var head: GeneralRefName { .init(unchecked: "HEAD") }
+}
+
+public struct PrefixedRefName<Kind>: ReferenceName, Hashable
   where Kind: ReferenceKind
 {
   public let name: String
@@ -122,13 +136,16 @@ public struct PrefixedRefName<Kind>: ReferenceName
     self.name = fullPath.droppingPrefix(Kind.prefix)
   }
 
-  public init?(_ name: String)
+  // Originally, the intent was to have init(_:) be checked, and
+  // init(stringLiteral:) be unchecked. But because of SE-0213 the compiler
+  // always prefers the stringLiteral version.
+  public static func named(_ name: String) -> Self?
   {
     // +/ (appending path component) will quietly consume leading slashes
     guard !name.hasPrefix("/") && GitReference.isValidName(Kind.prefix +/ name)
     else { return nil }
-    
-    self.name = name
+
+    return .init(rawValue: Kind.prefix +/ name)
   }
 }
 
@@ -136,6 +153,7 @@ public extension PrefixedRefName where Kind == RemoteBranchReference
 {
   var remoteName: String
   { String(name.split(maxSplits: 1) { $0 == "/" }.first ?? "") }
+
   var localName: String
   {
     guard let slashIndex = name.firstIndex(of: "/")
@@ -158,8 +176,17 @@ public extension PrefixedRefName where Kind == RemoteBranchReference
   {
     guard !remote.hasPrefix("/") && !branch.hasPrefix("/")
     else { return nil }
-    
-    self.init(remote +/ branch)
+
+    self.init(rawValue: Kind.prefix +/ remote +/ branch)
+  }
+}
+
+extension PrefixedRefName: ExpressibleByStringLiteral,
+                           ExpressibleByStringInterpolation
+{
+  public init(stringLiteral: StringLiteralType)
+  {
+    self.init(rawValue: Kind.prefix +/ stringLiteral)!
   }
 }
 
@@ -168,4 +195,4 @@ public typealias RemoteBranchRefName = PrefixedRefName<RemoteBranchReference>
 public typealias TagRefName = PrefixedRefName<TagReference>
 
 extension PrefixedRefName: Fakable
-{ public static func fakeDefault() -> Self { .init("fake")! } }
+{ public static func fakeDefault() -> Self { .named("fake")! } }

@@ -27,6 +27,30 @@ extension NSApplication
   }
 }
 
+extension NSAlert
+{
+  /// Displays a confirmation alert for deleting an item.
+  /// - parameter kind: the kind of item being deleted
+  /// - parameter name: the name of the item beind deleted
+  /// - parameter window: parent window for the alert sheet
+  static func confirmDelete(kind: UIString, name: String, window: NSWindow) async
+    -> Bool
+  {
+    let alert = NSAlert()
+
+    alert.messageString = .confirmDelete(kind: kind.rawValue, name: name)
+    alert.addButton(withString: .delete)
+    alert.addButton(withString: .cancel)
+    alert.buttons[0].hasDestructiveAction = true
+    // Delete is destructive, so it should not be default
+    alert.buttons[0].keyEquivalent = ""
+
+    let button = await alert.beginSheetModal(for: window)
+
+    return button == .alertFirstButtonReturn
+  }
+}
+
 extension NSColor
 {
   var invertingBrightness: NSColor
@@ -143,10 +167,14 @@ extension NSMenuItem
 
   @MainActor
   convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
                    keyEquivalent: String = "",
                    _ block: @escaping ActionBlock)
   {
     self.init(titleString.rawValue, keyEquivalent: keyEquivalent, block)
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   convenience init(_ titleString: UIString, action: Selector? = nil)
@@ -154,10 +182,15 @@ extension NSMenuItem
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
   }
 
-  convenience init(_ titleString: UIString, target: AnyObject, action: Selector)
+  convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
+                   target: AnyObject, action: Selector)
   {
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
     self.target = target
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   func with(identifier: NSUserInterfaceItemIdentifier) -> NSMenuItem

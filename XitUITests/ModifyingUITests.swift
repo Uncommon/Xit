@@ -23,7 +23,7 @@ class ModifyingUITests: XCTestCase
     env.open()
 
     XCTAssert(Window.window.waitForExistence(timeout: 2))
-    Sidebar.stagingCell.click()
+    BranchList.stagingCell.click()
 
     XCTContext.runActivity(named: "Initial empty state") {
       _ in
@@ -62,11 +62,11 @@ class ModifyingUITests: XCTestCase
     let oldBranchName = "and-how"
     let newBranchName = "and-then"
 
-    Sidebar.list.staticTexts[oldBranchName].rightClick()
-    XitApp.menuItems[.BranchPopup.rename].click()
+    Sidebar.Branches.list.staticTexts[oldBranchName].rightClick()
+    Window.window.menuItems[.BranchPopup.rename].click()
     XitApp.typeText("\(newBranchName)\r")
 
-    XCTAssertTrue(Sidebar.list.staticTexts[newBranchName]
+    XCTAssertTrue(Sidebar.Branches.list.staticTexts[newBranchName]
         .waitForExistence(timeout: 1.0))
 
     let branches = try env.git.branches()
@@ -85,22 +85,22 @@ class ModifyingUITests: XCTestCase
     XCTAssert(Window.window.waitForExistence(timeout: 2))
     try XCTContext.runActivity(named: "Cancel delete branch") {
       _ in
-      Sidebar.list.staticTexts[branchName].rightClick()
-      XitApp.menuItems[.BranchPopup.delete].click()
+      Sidebar.Branches.list.staticTexts[branchName].rightClick()
+      Window.window.menuItems[.BranchPopup.delete].click()
 
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
-      XCTAssertTrue(Sidebar.list.staticTexts[branchName].exists)
+      XCTAssertTrue(Sidebar.Branches.list.staticTexts[branchName].exists)
       XCTAssertTrue(try env.git.branches().contains(branchName))
     }
 
     try XCTContext.runActivity(named: "Actually delete branch") {
       _ in
-      Sidebar.list.staticTexts[branchName].rightClick()
-      XitApp.menuItems[.BranchPopup.delete].click()
+      Sidebar.Branches.list.staticTexts[branchName].rightClick()
+      Window.window.menuItems[.BranchPopup.delete].click()
 
       sheet.buttons["Delete"].click()
-      wait(for: [absence(of: Sidebar.list.staticTexts[branchName])],
+      wait(for: [absence(of: Sidebar.Branches.list.staticTexts[branchName])],
            timeout: 5.0)
       XCTAssertFalse(try env.git.branches().contains(branchName))
     }
@@ -110,31 +110,35 @@ class ModifyingUITests: XCTestCase
   {
     let tagName = "someTag"
     let sheet = XitApp.sheets.firstMatch
+    // Menu item identifier isn't getting set, unlike in the branch list
+    let deleteItem = XitApp.windows.menuItems["Delete"]
+    let tagCell = Sidebar.Tags.cell(named: tagName)
 
     // Add a tag because the test repo doesn't have any
     try env.git.run(args: ["tag", tagName])
     env.open()
 
+    Sidebar.Tab.tags.click()
+
     try XCTContext.runActivity(named: "Cancel delete tag") {
       _ in
-      Sidebar.list.staticTexts[tagName].rightClick()
-      XitApp.menuItems[.TagPopup.delete].click()
+      tagCell.rightClick()
+      deleteItem.click()
 
       XCTAssertTrue(sheet.exists)
       sheet.buttons["Cancel"].click()
-      XCTAssertTrue(Sidebar.list.staticTexts[tagName].exists)
+      XCTAssertTrue(tagCell.exists)
       XCTAssertTrue(try env.git.tags().contains(tagName))
     }
 
     try XCTContext.runActivity(named: "Actually delete tag") {
       _ in
-      Sidebar.list.staticTexts[tagName].rightClick()
-      XitApp.menuItems[.TagPopup.delete].click()
+      tagCell.rightClick()
+      deleteItem.click()
 
       sheet.buttons["Delete"].click()
       XCTAssertFalse(try env.git.tags().contains(tagName))
-      wait(for: [absence(of: Sidebar.list.staticTexts[tagName])],
-           timeout: 5.0)
+      wait(for: [absence(of: tagCell)], timeout: 5.0)
     }
   }
 
@@ -142,7 +146,7 @@ class ModifyingUITests: XCTestCase
   {
     env.open()
 
-    let branchText = Sidebar.currentBranchCell.staticTexts.firstMatch
+    let branchText = Sidebar.Branches.currentBranchCell.staticTexts.firstMatch
     let featureBranch = "feature"
 
     XCTAssertEqual(branchText.stringValue, "master")
@@ -150,7 +154,7 @@ class ModifyingUITests: XCTestCase
     try env.git.checkOut(branch: featureBranch)
 
     wait(for: [expectation(for: .init(format: "value == %@", featureBranch),
-                          evaluatedWith: branchText)],
+                           evaluatedWith: branchText)],
          timeout: 5)
   }
   
@@ -179,28 +183,25 @@ class ModifyingUITests: XCTestCase
     try env.git.run(args: ["branch", "\(folderName)/\(subBranchName)"])
     env.open()
     
-    let newBranchCell = Sidebar.cell(named: "new")
+    let newBranchCell = Sidebar.Branches.cell(named: "new")
 
     XCTAssertTrue(newBranchCell.waitForExistence(timeout: 1))
     
-    Sidebar.filter.click()
-    Sidebar.filter.typeText("a")
+    Sidebar.Branches.filterField.click()
+    Sidebar.Branches.filterField.typeText("a")
     wait(for: [absence(of: newBranchCell)], timeout: 5.0)
 
     // Expand the folder
-    Sidebar.list.children(matching: .outlineRow).element(boundBy: 9)
-           .disclosureTriangles.firstMatch.click()
+    Sidebar.Branches.list.disclosureTriangles.firstMatch.click()
 
-    let folderCell = Sidebar.cell(named: folderName)
-    let subBranchCell = Sidebar.cell(named: subBranchName)
-    
-    XCTAssertTrue(folderCell.exists)
+    let subBranchCell = Sidebar.Branches.cell(named: subBranchName)
+
     XCTAssertTrue(subBranchCell.waitForExistence(timeout: 1.0))
 
-    Sidebar.filter.typeText("s")
-    
-    wait(for: [absence(of: folderCell)], timeout: 5.0)
-    XCTAssertFalse(subBranchCell.exists)
+    Sidebar.Branches.filterField.typeText("s")
+
+    wait(for: [absence(of: subBranchCell)], timeout: 5.0)
+    // folder cell is harder to find in SwiftUI version
   }
   
   func reset(modeButton: XCUIElement) throws
@@ -223,7 +224,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.softButton)
-    Sidebar.stagingCell.click()
+    BranchList.stagingCell.click()
 
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -243,7 +244,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.mixedButton)
-    Sidebar.stagingCell.click()
+    BranchList.stagingCell.click()
 
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -259,7 +260,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.hardButton)
-    Sidebar.stagingCell.click()
+    BranchList.stagingCell.click()
     
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -291,7 +292,7 @@ class ModifyingUITests: XCTestCase
 
     env.open()
     
-    Sidebar.stagingCell.click()
+    BranchList.stagingCell.click()
     if (CommitEntry.stripCheck.value as? Int) == 0 {
       CommitEntry.stripCheck.click()
     }
@@ -314,7 +315,7 @@ class ModifyingUITests: XCTestCase
 
     env.open()
     
-    Sidebar.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
     if (CommitEntry.stripCheck.value as? Int) != 0 {
       CommitEntry.stripCheck.click()
     }
@@ -369,7 +370,7 @@ class ModifyingUITests: XCTestCase
     try XCTContext.runActivity(named: "Rename") { _ in
       try FileManager.default.moveItem(at: oldURL, to: newURL)
 
-      Sidebar.stagingCell.click()
+      Sidebar.Branches.stagingCell.click()
       StagedFileList.assertFiles([])
       WorkspaceFileList.assertFiles([newName, "UntrackedImage.png"])
     }

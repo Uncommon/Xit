@@ -8,7 +8,7 @@ extension XTWindowController
   func refresh(_ sender: AnyObject)
   {
     historyController.reload()
-    sidebarController.reload()
+    tabbedSidebarController?.refresh()
   }
   
   @IBAction
@@ -169,11 +169,16 @@ extension XTWindowController
     alert.messageString = .noStashes
     alert.beginSheetModal(for: window!)
   }
-  
+
+  func firstStash<R>(_ repo: R) -> (any Stash)? where R: Stashing
+  {
+    repo.stashes.first
+  }
+
   @IBAction
   func popStash(_: AnyObject)
   {
-    guard let stash = repository.stashes.first
+    guard let stash = firstStash(repository)
     else {
       noStashesAlert()
       return
@@ -191,7 +196,7 @@ extension XTWindowController
   @IBAction
   func applyStash(_: AnyObject)
   {
-    guard let stash = repository.stashes.first
+    guard let stash = firstStash(repository)
     else {
       noStashesAlert()
       return
@@ -209,7 +214,7 @@ extension XTWindowController
   @IBAction
   func dropStash(_: AnyObject)
   {
-    guard let stash = repository.stashes.first
+    guard let stash = firstStash(repository)
     else {
       noStashesAlert()
       return

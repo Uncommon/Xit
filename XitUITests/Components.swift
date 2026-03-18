@@ -68,37 +68,80 @@ enum PrefsWindow
   }
 }
 
+protocol SidebarList
+{
+  static var list: XCUIElement { get }
+}
+
+extension SidebarList
+{
+  static var cancelButton: XCUIElement { Window.window.buttons["cancelFilter"] }
+  
+  static func cell(named name: String) -> XCUIElement
+  {
+    return list.cells.containing(.staticText, identifier: name).firstMatch
+  }
+}
+
 enum Sidebar
 {
+  enum Tab {
+    static let local = Window.window.buttons["Local"]
+    static let remotes = Window.window.buttons["Remotes"]
+    static let tags = Window.window.buttons["Tags"]
+    static let stashes = Window.window.buttons["Stashes"]
+    static let submodules = Window.window.buttons["Submodules"]
+  }
+  
+  enum Branches: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.branchList]
+    static let stagingCell = list.cells.element(boundBy: 0)
+    static let currentBranchCell =
+        list.cells
+            .containing(.any, identifier: .Sidebar.currentBranch)
+            .firstMatch
+    static let filterField = Window.window.textFields[.Sidebar.filter]
+    
+    static func branchCell(_ branch: String) -> XCUIElement
+    {
+      Sidebar.Branches.list.cells
+        .containing(.staticText, identifier: branch)
+        .firstMatch
+    }
+  }
+  
+  enum Remotes: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.remotesList]
+  }
+
+  enum Tags: SidebarList
+  {
+    static let list = Window.window.outlines[.Sidebar.tagsList]
+  }
+
   static let list = Window.window.outlines[.Sidebar.list]
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
-  static let stagingCell = list.cells.element(boundBy: 1)
-  static let currentBranchCell =
-      list.cells.containing(.staticText,
-                            identifier: .Sidebar.currentBranch).firstMatch
+  static let stagingCell = Branches.list.cells.element(boundBy: 0)
 
   static let branchPopup = XitApp.menus[.Menu.branch]
   static let remoteBranchPopup = XitApp.menus[.Menu.remoteBranch]
   static let tagPopup = XitApp.menus[.Menu.tag]
 
-  static func cell(named name: String) -> XCUIElement
-  {
-    return list.cells.containing(.staticText, identifier: name).firstMatch
-  }
-  
   static func assertStagingStatus(workspace: Int, staged: Int)
   {
-    let expected = "\(workspace)▸\(staged)"
-    let statusButton = stagingCell.buttons[.Sidebar.workspaceStatus]
+    let expected = "\(workspace) ▸ \(staged)"
+    let statusButton = stagingCell.staticTexts[.Sidebar.workspaceStatus]
     
-    XCTAssertEqual(expected, statusButton.title)
+    XCTAssertEqual(expected, statusButton.stringValue)
   }
   
   static func assertBranches(_ branches: [String])
   {
     for (index, branch) in branches.enumerated() {
-      let cell = list.cells.element(boundBy: index + 3)
+      let cell = Branches.list.cells.element(boundBy: index + 2)
       let label = cell.staticTexts.firstMatch.value as? String ?? ""
       
       XCTAssertEqual(label, branch,
@@ -116,7 +159,7 @@ enum Sidebar
       XCTFail("could not construct predicate")
       return
     }
-    let item = Sidebar.list.staticTexts.matching(predicate)
+    let item = Sidebar.Branches.list.staticTexts.matching(predicate)
     
     XCTAssert(item.element.waitForExistence(timeout: 2),
               "current branch did not match",
@@ -125,16 +168,36 @@ enum Sidebar
   
   static func workspaceStatusIndicator(branch: String) -> XCUIElement
   {
-    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
+    let cell = Sidebar.Branches.branchCell(branch)
     
-    return cell.buttons[.Sidebar.workspaceStatus]
+    return cell.staticTexts[.Sidebar.workspaceStatus]
   }
   
   static func trackingStatusIndicator(branch: String) -> XCUIElement
   {
-    let cell = Sidebar.list.cells.containing(.staticText, identifier: branch)
-    
-    return cell.buttons[.Sidebar.trackingStatus]
+    let cell = Sidebar.Branches.branchCell(branch)
+
+    return cell.images[.Sidebar.trackingStatus]
+  }
+}
+
+enum BranchList
+{
+  static var list: XCUIElement { Window.window.outlines[.Sidebar.branchList] }
+  static var stagingCell: XCUIElement
+  {
+    list.cells.containing(.staticText,
+                          identifier: .Sidebar.stagingCell).firstMatch
+  }
+  static var currentBranchCell: XCUIElement
+  {
+    list.cells.containing(.image, identifier: .Sidebar.currentBranchCheck)
+      .firstMatch
+  }
+  
+  static func cell(named name: String) -> XCUIElement
+  {
+    list.cells.containing(.staticText, identifier: name).firstMatch
   }
 }
 
@@ -312,6 +375,11 @@ enum CleanSheet
                                file: StaticString = #filePath,
                                line: UInt = #line)
   {
+    // It can take a moment for the main sheet to be found after another sheet,
+    // like the delete confirmation, is closed.
+    XCTAssert(window.waitForExistence(timeout: 2.0),
+              "Clean sheet not open",
+              file: file, line: line)
     let cellTitles = window.cells.staticTexts.allElementsBoundByIndex
                            .map { $0.stringValue }
 

@@ -1,10 +1,11 @@
 import Cocoa
+import XitGit
 
 final class RenameBranchOpController: OperationController
 {
-  let branchName: String
-  
-  init(windowController: XTWindowController, branchName: String)
+  let branchName: LocalBranchRefName
+
+  init(windowController: XTWindowController, branchName: LocalBranchRefName)
   {
     self.branchName = branchName
     
@@ -29,7 +30,8 @@ final class RenameBranchOpController: OperationController
   
   func executeRename(_ newName: String)
   {
-    guard let repository = self.repository
+    guard let repository = self.repository,
+          let newName = LocalBranchRefName.named(newName)
     else { return }
     
     tryRepoOperation {

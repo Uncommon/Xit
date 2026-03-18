@@ -135,6 +135,15 @@ extension Button where Label == Text
   }
 }
 
+extension Button where Label == SwiftUI.Label<Text, Image> {
+  // Trying to do this like the above version, but just adding the systemImage
+  // parameter, confused the compiler.
+  init(_ string: UIString, systemImage: String, role: ButtonRole? = nil, action: @escaping () -> Void)
+  {
+    self.init(role: role, action: action, label: { Label(string.rawValue, systemImage: systemImage) })
+  }
+}
+
 extension LabeledContent where Label == Text, Content: View
 {
   init(_ title: UIString, content: () -> Content)
@@ -145,7 +154,9 @@ extension LabeledContent where Label == Text, Content: View
 
 extension Picker where Label == Text
 {
-  init(_ title: UIString, selection: Binding<SelectionValue>, @ViewBuilder content: () -> Content)
+  init(_ title: UIString,
+       selection: Binding<SelectionValue>,
+       @ViewBuilder content: () -> Content)
   {
     self.init(title.rawValue, selection: selection, content: content)
   }

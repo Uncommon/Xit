@@ -11,7 +11,7 @@ public enum RemoteProgressMessage
 public final class RemoteProgressPublisher
 {
   public let subject = PassthroughSubject<RemoteProgressMessage, RepoError>()
-  private(set) var callbacks = RemoteCallbacks()
+  public private(set) var callbacks = RemoteCallbacks()
   var canceled: Bool = false
   
   public init(passwordBlock: RemoteCallbacks.PasswordBlock? = nil)

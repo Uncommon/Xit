@@ -41,7 +41,7 @@ class FetchTests: UnicodeRepoUITests
     
     env.open()
     
-    let statusIndicator = Sidebar.workspaceStatusIndicator(branch: "master")
+    let statusIndicator = Sidebar.trackingStatusIndicator(branch: "master")
     
     // The remote hasn't been fetched since the above commit, so this repo
     // doesn't know yet that it's behind.
@@ -52,7 +52,7 @@ class FetchTests: UnicodeRepoUITests
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
     
     XCTAssertTrue(statusIndicator.exists)
-    XCTAssertEqual(statusIndicator.title, "↓1")
+    XCTAssertEqual(statusIndicator.value as? String, "↓1")
   }
 }
 
@@ -61,7 +61,7 @@ class PushTests: UnicodeRepoUITests
   let newFileName = "newfile.txt"
 
   var statusIndicator: XCUIElement
-  { Sidebar.workspaceStatusIndicator(branch: "master") }
+  { Sidebar.trackingStatusIndicator(branch: "master") }
   
   override func setUpWithError() throws
   {
@@ -83,7 +83,11 @@ class PushTests: UnicodeRepoUITests
     
     env.open()
     
-    XCTAssertTrue(statusIndicator.exists && statusIndicator.title == "↑1")
+    let cell = Sidebar.Branches.branchCell("master")
+    
+    XCTAssertTrue(cell.exists)
+    XCTAssertTrue(statusIndicator.exists, "status indicator not found")
+    XCTAssertEqual(statusIndicator.value as? String, "↑1", "unexpected status")
   }
   
   func testPushDefault()
@@ -131,36 +135,41 @@ class PushNewTests: UnicodeRepoUITests
 
     XCTAssertFalse(indicator.exists)
     
-    Window.pushButton.press(forDuration: 0.25)
-    Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
-    
-    let trackingButton = PushNewSheet.setTrackingCheck
-    
-    wait(for: [presence(of: trackingButton)], timeout: 2.0)
-    
-    let buttonValue: Int = try testConvert(trackingButton.value)
-    
-    // Should be checked by default
-    XCTAssertTrue(buttonValue != 0)
-    if !tracking {
-      trackingButton.click()
+    try XCTContext.runActivity(named: "Push branch") { _ in
+      Window.pushButton.press(forDuration: 0.25)
+      Window.pushMenu.menuItems["Push to New Remote Branch..."].click()
+      
+      let trackingButton = PushNewSheet.setTrackingCheck
+      
+      wait(for: [presence(of: trackingButton)], timeout: 2.0)
+      
+      let buttonValue: Int = try testConvert(trackingButton.value)
+      
+      // Should be checked by default
+      XCTAssertTrue(buttonValue != 0)
+      if !tracking {
+        trackingButton.click()
+      }
+      
+      PushNewSheet.pushButton.click()
+      wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
     }
-    
-    PushNewSheet.pushButton.click()
-    wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
 
-    // check in git whether the tracking branch is set
-    let result = try env.git.run(args: ["branch", "-lvv", branchName])
-    let trackingFound = result.contains("[\(remoteName)/\(branchName)]")
-    
-    XCTAssertEqual(tracking, trackingFound, "tracking branch not set correctly")
-    
-    if tracking {
-      // Cloud icon should appear in the sidebar
-      wait(for: [presence(of: indicator)], timeout: 2.0)
+    try XCTContext.runActivity(named: "Check repo for tracking branch") { _ in
+      let result = try env.git.run(args: ["branch", "-lvv", branchName])
+      let trackingFound = result.contains("[\(remoteName)/\(branchName)]")
+
+      XCTAssertEqual(tracking, trackingFound, "tracking branch not set correctly")
     }
-    else {
-      XCTAssertFalse(indicator.exists)
+    
+    XCTContext.runActivity(named: "Check for indicator") { _ in
+      if tracking {
+        XCTAssert(indicator.waitForExistence(timeout: 2.0),
+                  "tracking icon did not appear")
+      }
+      else {
+        XCTAssertFalse(indicator.exists)
+      }
     }
   }
   
@@ -192,15 +201,17 @@ class RemoteBranchTests: UnicodeRepoUITests
   {
     XCTContext.runActivity(named: "open Create Tracking Branch sheet") {
       _ in
-      Sidebar.cell(named: newBranchName).rightClick()
-      Sidebar.remoteBranchPopup
-             .menuItems[.RemoteBranchPopup.createTracking].tap()
+      Sidebar.Remotes.cell(named: newBranchName)
+        .staticTexts.firstMatch // Right click on the cell itself seems to miss
+        .rightClick()
+      XitApp.windows.menuItems[UIString.createTrackingBranch.rawValue].tap()
     }
   }
   
   func testCreateTrackingBranch() throws
   {
     env.open()
+    Sidebar.Tab.remotes.click()
     openCreateTrackingSheet()
 
     XCTContext.runActivity(named: "check initial setup") { _ in
@@ -214,7 +225,7 @@ class RemoteBranchTests: UnicodeRepoUITests
 
     XCTContext.runActivity(named: "test cancel") { _ in
       CreateTrackingSheet.cancelButton.tap()
-      XCTAssert(!CreateTrackingSheet.window.exists, "sheet did not open")
+      XCTAssert(!CreateTrackingSheet.window.exists, "sheet did not close")
     }
 
     openCreateTrackingSheet()
@@ -249,7 +260,9 @@ class RemoteBranchTests: UnicodeRepoUITests
     try XCTContext.runActivity(named: "verify branch is checked out") { _ in
       let currentBranch = try env.git.currentBranch()
 
-      XCTAssertEqual(currentBranch, newBranchName)
+      XCTAssertEqual(currentBranch, newBranchName,
+                     "new tracking branch doesn't match")
+      Sidebar.Tab.local.tap()
       Sidebar.assertCurrentBranch(newBranchName)
     }
   }

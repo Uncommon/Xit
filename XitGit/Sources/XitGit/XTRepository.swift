@@ -256,8 +256,7 @@ extension XTRepository: WritingManagement
 
 extension XTRepository
 {
-  func graphBetween(local: GitOID, upstream: GitOID) -> (ahead: Int,
-                                                         behind: Int)?
+  func graphBetween(local: GitOID, upstream: GitOID) -> GraphStatus?
   {
     var ahead = 0
     var behind = 0
@@ -267,21 +266,17 @@ extension XTRepository
                                localOID, upstreamOID)
       }
     }
+    guard graphResult == 0
+    else { return nil }
     
-    if graphResult == 0 {
-      return (ahead, behind)
-    }
-    else {
-      return nil
-    }
+    return .init(ahead: ahead, behind: behind)
   }
   
-  public func graphBetween(localBranch: GitLocalBranch,
-                           upstreamBranch: GitRemoteBranch) ->(ahead: Int,
-                                                               behind: Int)?
+  public func graphBetween(localBranch: LocalBranchRefName,
+                           upstreamBranch: any ReferenceName) -> GraphStatus?
   {
-    if let localOID = localBranch.oid,
-       let upstreamOID = upstreamBranch.oid {
+    if let localOID = oid(forRef: localBranch),
+       let upstreamOID = oid(forRef: upstreamBranch) {
       return graphBetween(local: localOID, upstream: upstreamOID)
     }
     else {

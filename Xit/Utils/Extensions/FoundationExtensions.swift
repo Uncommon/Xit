@@ -1,5 +1,8 @@
 import Foundation
 import UniformTypeIdentifiers
+#if canImport(AppKit)
+import AppKit
+#endif
 
 public extension XMLElement
 {
@@ -42,6 +45,12 @@ public extension Thread
   }
 }
 
+public extension ProcessInfo
+{
+  static var runningForPreviews: Bool
+  { processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" }
+}
+
 public extension DecodingError
 {
   var context: Context
@@ -72,6 +81,17 @@ public extension NSObject
     return try block()
   }
 }
+
+#if canImport(AppKit)
+public extension NSFont
+{
+  static var systemFontSized: NSFont
+  { systemFont(ofSize: systemFontSize) }
+
+  static func systemFontSized(weight: NSFont.Weight) -> NSFont
+  { systemFont(ofSize: systemFontSize, weight: weight) }
+}
+#endif
 
 public extension TimeInterval
 {

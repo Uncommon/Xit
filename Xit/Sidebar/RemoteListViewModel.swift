@@ -1,0 +1,84 @@
+import Foundation
+import XitGit
+
+class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
+  : FilteringListViewModel
+{
+  typealias Remote = Manager.Remote
+  typealias RemoteBranch = Brancher.RemoteBranch
+  
+  let manager: Manager
+  let brancher: Brancher
+  
+  struct RemoteItem
+  {
+    let name: String
+    let branches: [PathTreeNode<RemoteBranchRefName>]
+  }
+  
+  var unfilteredRemotes: [RemoteItem] = []
+  @Published var remotes: [RemoteItem] = []
+  @Published var searchScope: RemoteSearchScope = .branches
+  @Published var expandedRemotes: Set<String>
+  
+  init(manager: Manager, brancher: Brancher, publisher: any RepositoryPublishing)
+  {
+    self.manager = manager
+    self.brancher = brancher
+    // Expand all remotes by default
+    self.expandedRemotes = .init(manager.remotes().compactMap { $0.name })
+    super.init()
+    
+    updateList()
+    sinks.append(contentsOf: [
+      publisher.refsPublisher.sinkOnMainQueue { [weak self] in
+        self?.updateList()
+      },
+      publisher.configPublisher.sinkOnMainQueue { [weak self] in
+        self?.updateList()
+      },
+    ])
+  }
+  
+  func updateList()
+  {
+    var branchesByRemote: [String: [RemoteBranchRefName]] = [:]
+    
+    for branch in brancher.remoteBranches {
+      if let remoteName = branch.remoteName {
+        branchesByRemote[remoteName, default: []].append(branch.referenceName)
+      }
+    }
+    
+    unfilteredRemotes = branchesByRemote
+      .map {
+        .init(name: $0.key,
+              branches: PathTreeNode<RemoteBranchRefName>.makeHierarchy(
+                from: $0.value, prefix: "refs/remotes/\($0.key)/"))
+      }
+      .sorted(byKeyPath: \.name)
+    filterChanged(filter)
+  }
+  
+  override func filterChanged(_ newFilter: String)
+  {
+    if newFilter.isEmpty {
+      remotes = unfilteredRemotes
+    }
+    else {
+      let lowerCased = LowerCaseString(newFilter)
+      
+      remotes = switch searchScope {
+        case .branches:
+          unfilteredRemotes.map {
+            .init(name: $0.name,
+                  branches: $0.branches.filtered(with: lowerCased))
+          }
+        case .remotes:
+          unfilteredRemotes.filter {
+            lowerCased.isSubString(of: $0.name)
+          }
+      }
+    }
+  }
+}

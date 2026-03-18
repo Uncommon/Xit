@@ -26,7 +26,7 @@ class BranchTest: XTTest
     
     try repository.fetch(remote: remote, options: options)
 
-    let localBranch = try XCTUnwrap(repository.localBranch(named: .init("main")!))
+    let localBranch = try XCTUnwrap(repository.localBranch(named: .named("main")!))
     let remoteBranch = try XCTUnwrap(repository.remoteBranch(named: "main",
                                                              remote: "origin"))
     

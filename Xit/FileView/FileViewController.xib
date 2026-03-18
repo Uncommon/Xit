@@ -17,6 +17,7 @@
                 <outlet property="headerTabView" destination="krT-Kf-MrD" id="t9e-WI-aqg"/>
                 <outlet property="previewController" destination="Aqt-Qq-ti3" id="1dY-oq-X5F"/>
                 <outlet property="previewPath" destination="gna-OS-Gx2" id="RDg-dh-fJV"/>
+                <outlet property="previewSelector" destination="zOv-gm-Q8M" id="Cme-sc-nta"/>
                 <outlet property="previewTabView" destination="52" id="62"/>
                 <outlet property="textController" destination="58" id="xo6-ln-nOf"/>
                 <outlet property="view" destination="68" id="75"/>

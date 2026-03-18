@@ -59,6 +59,17 @@ struct TagInfoView: View
     formatter.dateStyle  = .short
     formatter.timeStyle = .short
   }
+
+  init(presentation: TagInfoModel)
+  {
+    self.name = presentation.authorName
+    self.email = presentation.authorEmail
+    self.when = presentation.date
+    self.message = presentation.message
+
+    formatter.dateStyle  = .short
+    formatter.timeStyle = .short
+  }
 }
 
 struct TagInfoView_Previews: PreviewProvider

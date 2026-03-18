@@ -2,6 +2,8 @@ import Foundation
 
 extension AXID
 {
+  static let empty = AXID("")
+
   public enum Button
   {
     static let accept = AXID("acceptButton")
@@ -91,10 +93,12 @@ extension AXID
 
   enum BranchPopup
   {
-    static let checkOut = AXID("checkOutBranch")
-    static let rename = AXID("renameBranch")
-    static let merge = AXID("mergeBranch")
-    static let delete = AXID("deleteBranch")
+    // Setting identifiers on menu items doesn't seem to work in SwiftUI
+    // so tests will use the UI string as a lookup
+    static let checkOut = AXID(UIString.checkOut.rawValue)
+    static let rename = AXID(UIString.rename.rawValue)
+    static let merge = AXID(UIString.merge.rawValue)
+    static let delete = AXID(UIString.delete.rawValue)
   }
   
   enum RemoteBranchPopup
@@ -143,8 +147,16 @@ extension AXID
   {
     static let add = AXID("sidebarAdd")
     static let currentBranch = AXID("currentBranch")
+    static let branch = AXID("branch")
     static let filter = AXID("sidebarFilter")
     static let list = AXID("sidebar")
+    static let branchList = AXID("branchList")
+    static let currentBranchCheck = AXID("currentBranchCheck")
+    static let stagingCell = AXID("stagingCell")
+    static let remotesList = AXID("remotesList")
+    static let tagsList = AXID("tagsList")
+    static let stashesList = AXID("stashesList")
+    static let submodulesList = AXID("submodulesList")
     static let trackingStatus = AXID("trackingStatus")
     static let workspaceStatus = AXID("workspaceStatus")
   }

@@ -64,7 +64,7 @@ public struct GitOID: Sendable
     
     self.oid = oid
   }
-  
+
   public var sha: SHA
   {
     let length = GitOID.shaLength + 1

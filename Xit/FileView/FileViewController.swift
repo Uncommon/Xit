@@ -40,6 +40,7 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
   @IBOutlet weak var headerTabView: NSTabView!
   @IBOutlet weak var previewTabView: NSTabView!
   @IBOutlet weak var previewPath: NSPathControl!
+  @IBOutlet weak var previewSelector: NSSegmentedControl!
   @IBOutlet weak var diffController: FileDiffController!
   @IBOutlet weak var blameController: BlameViewController!
   @IBOutlet weak var previewController: PreviewController!
@@ -181,6 +182,9 @@ final class FileViewController: NSViewController, RepositoryWindowViewController
     scrollView.documentView = commitHeader
     scrollView.hasVerticalScroller = true
     headerTabView.tabViewItem(at: 0).view = commitHeader
+    if #available(macOS 26.0, *) {
+      previewSelector.prefersCompactControlSizeMetrics = true
+    }
   }
   
   func finishLoad(repository: any Repository)
