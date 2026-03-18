@@ -74,14 +74,14 @@ struct TagInfoView: View
 
 struct TagInfoView_Previews: PreviewProvider
 {
-  static let noMessageTag = FakeTag(
+  static let noMessageTag = XitGit.FakeTag(
       name: "someTag",
       signature: .init(name: "This Guy",
                        email: "thisguy@example.com",
                        when: .init(timeIntervalSinceReferenceDate: 0)),
       targetOID: nil, commit: nil,
       message: "", type: .annotated, isSigned: false)
-  static let wrappedMessageTag = FakeTag(
+  static let wrappedMessageTag = XitGit.FakeTag(
       name: "someTag",
       signature: .init(name: "Other Odd Guy",
                        email: "otherguy@exampleexample.com",
@@ -90,7 +90,7 @@ struct TagInfoView_Previews: PreviewProvider
       commit: nil,
       message: "Long enough text to hopefully wrap around to two lines of text",
       type: .annotated, isSigned: false)
-  static let truncatedMessageTag = FakeTag(
+  static let truncatedMessageTag = XitGit.FakeTag(
       name: "someTag",
       signature: .init(name: "Other Guy",
                        email: "otherguy@example.com",

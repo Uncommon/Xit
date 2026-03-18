@@ -9,7 +9,7 @@ struct BranchListItem: Sendable
   let graphStatus: GraphStatus
 }
 
-extension BranchListItem: PathTreeData
+extension BranchListItem: XitGit.PathTreeData
 {
   var treeNodePath: String { refName.fullPath }
 }
@@ -34,8 +34,8 @@ class BranchListViewModel<Brancher: Branching,
   let statusDetector: any FileStatusDetection
   let publisher: any RepositoryPublishing
 
-  var unfilteredList: [PathTreeNode<BranchListItem>] = []
-  @Published var branches: [PathTreeNode<BranchListItem>] = []
+  var unfilteredList: [XitGit.PathTreeNode<BranchListItem>] = []
+  @Published var branches: [XitGit.PathTreeNode<BranchListItem>] = []
   @Published var workspaceCountModel: WorkspaceStatusCountModel
 
   init(brancher: Brancher,
@@ -84,8 +84,8 @@ class BranchListViewModel<Brancher: Branching,
                        graphStatus: branchStatus($0))
       }
     
-    unfilteredList = PathTreeNode.makeHierarchy(from: branchList,
-                                                prefix: RefPrefixes.heads)
+    unfilteredList = XitGit.PathTreeNode.makeHierarchy(from: branchList,
+                                                       prefix: RefPrefixes.heads)
     branches = unfilteredList
   }
   

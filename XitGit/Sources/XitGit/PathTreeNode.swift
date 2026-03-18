@@ -1,28 +1,25 @@
 import Foundation
-import XitGit
 
-public typealias PathTreeData = XitGit.PathTreeData
-
-/// An element in a hirerarchy of items where each item is identified by
+/// An element in a hierarchy of items where each item is identified by
 /// a slash-separated path name.
-enum PathTreeNode<Item: PathTreeData>
+public enum PathTreeNode<Item: PathTreeData>
 {
-  /// An item in the hierarchy that never has child items
+  /// An item in the hierarchy that never has child items.
   case leaf(Item)
-  /// An item in the hierarchy with a possibly empty list of sub-items
+  /// An item in the hierarchy with a possibly empty list of sub-items.
   indirect case node(content: NodeContent<Item>, children: [Self])
 
-  static func node(path: String, children: [Self]) -> Self
+  public static func node(path: String, children: [Self]) -> Self
   {
     .node(content: .virtual(path: path), children: children)
   }
 
-  static func node(item: Item, children: [Self]) -> Self
+  public static func node(item: Item, children: [Self]) -> Self
   {
     .node(content: .item(item), children: children)
   }
 
-  var path: String
+  public var path: String
   {
     switch self {
       case .leaf(let item):
@@ -32,7 +29,7 @@ enum PathTreeNode<Item: PathTreeData>
     }
   }
 
-  var children: [Self]?
+  public var children: [Self]?
   {
     switch self {
       case .leaf: nil
@@ -40,7 +37,7 @@ enum PathTreeNode<Item: PathTreeData>
     }
   }
 
-  var item: Item?
+  public var item: Item?
   {
     switch self {
       case .leaf(let item): item
@@ -49,7 +46,7 @@ enum PathTreeNode<Item: PathTreeData>
     }
   }
 
-  var isLeaf: Bool
+  public var isLeaf: Bool
   {
     switch self {
       case .leaf: true
@@ -58,12 +55,12 @@ enum PathTreeNode<Item: PathTreeData>
   }
 }
 
-enum NodeContent<Item: PathTreeData>
+public enum NodeContent<Item: PathTreeData>
 {
   case virtual(path: String)
   case item(Item)
 
-  var path: String
+  public var path: String
   {
     switch self {
       case .virtual(let path): path
@@ -74,7 +71,7 @@ enum NodeContent<Item: PathTreeData>
 
 extension NodeContent: Equatable where Item: Equatable
 {
-  static func == (lhs: NodeContent<Item>, rhs: NodeContent<Item>) -> Bool
+  public static func == (lhs: NodeContent<Item>, rhs: NodeContent<Item>) -> Bool
   {
     lhs.path == rhs.path
   }
@@ -84,14 +81,16 @@ extension PathTreeNode
 {
   /// Creates a hierarchy from a list of items, adding container nodes
   /// for each "folder" represented in the path names.
-  static func makeHierarchy(from items: [Item]) -> [Self]
+  public static func makeHierarchy(from items: [Item]) -> [Self]
   {
-    makeHierarchy(from: items.sorted(by: { $0.treeNodePath <~ $1.treeNodePath }),
+    makeHierarchy(from: items.sorted {
+      $0.treeNodePath.localizedStandardCompare($1.treeNodePath) == .orderedAscending
+    },
                   prefix: "")
   }
 
-  static func makeHierarchy<C>(from items: C,
-                               prefix: String) -> [Self]
+  public static func makeHierarchy<C>(from items: C,
+                                      prefix: String) -> [Self]
     where C: RandomAccessCollection<Item>,
           C.Index == Int
   {
@@ -135,7 +134,7 @@ extension PathTreeNode
 
 extension PathTreeNode: Equatable where Item: Equatable
 {
-  static func == (lhs: PathTreeNode<Item>, rhs: PathTreeNode<Item>) -> Bool
+  public static func == (lhs: PathTreeNode<Item>, rhs: PathTreeNode<Item>) -> Bool
   {
     switch (lhs, rhs) {
       case (.leaf(let a), .leaf(let b)):
@@ -151,7 +150,7 @@ extension PathTreeNode: Equatable where Item: Equatable
 
 extension PathTreeNode: Hashable where Item: Equatable
 {
-  func hash(into hasher: inout Hasher)
+  public func hash(into hasher: inout Hasher)
   {
     path.hash(into: &hasher)
   }
@@ -164,20 +163,20 @@ extension String: PathTreeData
 
 // MARK: Filtering
 
-extension Array
+public extension Array
 {
   func filtered<T>(with text: String) -> Self where Element == PathTreeNode<T>
   {
     filtered(with: LowerCaseString(text))
   }
-  
+
   func filtered<T>(with text: LowerCaseString) -> Self where Element == PathTreeNode<T>
   {
     compactMap { $0.filtered(with: text) }
   }
 }
 
-extension PathTreeNode
+public extension PathTreeNode
 {
   func filtered(with text: LowerCaseString) -> Self?
   {
@@ -203,7 +202,7 @@ extension PathTreeNode
   }
 }
 
-fileprivate extension PathTreeData
+private extension PathTreeData
 {
   func passes(filter: LowerCaseString) -> Bool
   {

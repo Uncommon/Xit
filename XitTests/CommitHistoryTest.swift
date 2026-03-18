@@ -4,12 +4,12 @@ import XCTest
 
 class StringRepository: CommitStorage
 {
-  typealias Commit = StringCommit
+  typealias Commit = XitGit.StringCommit
   typealias RevWalk = NullRevWalk
 
-  let commits: [StringCommit]
+  let commits: [XitGit.StringCommit]
   
-  init(commits: [StringCommit])
+  init(commits: [XitGit.StringCommit])
   {
     self.commits = commits
   }
@@ -19,12 +19,12 @@ class StringRepository: CommitStorage
     .init(sha: sha)
   }
   
-  func commit(forSHA sha: SHA) -> StringCommit?
+  func commit(forSHA sha: SHA) -> XitGit.StringCommit?
   {
     commits.first { $0.id.sha == sha }
   }
 
-  func commit(forOID oid: GitOID) -> StringCommit?
+  func commit(forOID oid: GitOID) -> XitGit.StringCommit?
   {
     commits.first { $0.id == oid }
   }
@@ -41,7 +41,7 @@ extension Xit.CommitConnection: @retroactive CustomDebugStringConvertible
 }
 
 
-typealias TestCommitHistory = CommitHistory<StringCommit>
+typealias TestCommitHistory = CommitHistory<XitGit.StringCommit>
 
 class CommitHistoryTest: XCTestCase
 {
@@ -51,7 +51,7 @@ class CommitHistoryTest: XCTestCase
                    heads: [GitOID]? = nil) -> TestCommitHistory?
   {
     let commits = commitData.map {
-      (id, parents) -> StringCommit in
+      (id, parents) -> XitGit.StringCommit in
       return .init(parentOIDs: parents, id: id)
     }
     

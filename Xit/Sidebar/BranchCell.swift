@@ -1,9 +1,10 @@
 import SwiftUI
+import XitGit
 
 /// List cell view used by local and remote branch lists.
-struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
+struct BranchCell<Item: XitGit.PathTreeData, TrailingContent: View>: View
 {
-  let node: PathTreeNode<Item>
+  let node: XitGit.PathTreeNode<Item>
   let isCurrent: Bool
   @ViewBuilder
   let trailingContent: () -> TrailingContent
@@ -49,7 +50,7 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
       .selectionDisabled(branch == nil)
   }
   
-  init(node: PathTreeNode<Item>,
+  init(node: XitGit.PathTreeNode<Item>,
        isCurrent: Bool = false,
        @ViewBuilder trailingContent: @escaping () -> TrailingContent)
   {
@@ -58,4 +59,3 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
     self.trailingContent = trailingContent
   }
 }
-

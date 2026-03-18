@@ -13,7 +13,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   struct RemoteItem
   {
     let name: String
-    let branches: [PathTreeNode<RemoteBranchRefName>]
+    let branches: [XitGit.PathTreeNode<RemoteBranchRefName>]
   }
   
   var unfilteredRemotes: [RemoteItem] = []
@@ -53,7 +53,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
     unfilteredRemotes = branchesByRemote
       .map {
         .init(name: $0.key,
-              branches: PathTreeNode<RemoteBranchRefName>.makeHierarchy(
+              branches: XitGit.PathTreeNode<RemoteBranchRefName>.makeHierarchy(
                 from: $0.value, prefix: "refs/remotes/\($0.key)/"))
       }
       .sorted(byKeyPath: \.name)
@@ -66,7 +66,7 @@ class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
       remotes = unfilteredRemotes
     }
     else {
-      let lowerCased = LowerCaseString(newFilter)
+      let lowerCased = XitGit.LowerCaseString(newFilter)
       
       remotes = switch searchScope {
         case .branches:

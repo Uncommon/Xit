@@ -17,7 +17,7 @@ struct TagList<Tagger: Tagging>: View
       List(selection: $selection) {
         RecursiveDisclosureGroup(model.tags,
                                  expandedItems: $expandedItems) {
-          (tag: PathTreeNode<Tagger.Tag>) in
+          (tag: XitGit.PathTreeNode<Tagger.Tag>) in
           let item = tag.item
           HStack {
             Label(

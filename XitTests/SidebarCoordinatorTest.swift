@@ -5,7 +5,8 @@ import XitGit
 @testable import Xit
 
 private typealias SidebarTestReferencer =
-    FakeCommitReferencing<FakeCommit, FakeTree, TestLocalBranch, TestRemoteBranch>
+    FakeCommitReferencing<XitGit.FakeCommit, XitGit.FakeTree,
+                          TestLocalBranch, TestRemoteBranch>
 
 @MainActor
 private final class SidebarCoordinatorDelegateSpy: SidebarCoordinatorDelegate

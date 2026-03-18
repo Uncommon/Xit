@@ -220,7 +220,7 @@ struct CommitHeader_Previews: PreviewProvider
   {
     let parentOIDs: [GitOID] = ["A", "B"]
     let message: String? = "Single line"
-    let tree: FakeTree? = nil
+    let tree: XitGit.FakeTree? = nil
     let id: GitOID = "45a608978"
 
     let authorSig: Signature? = Signature(name: "Author Person",

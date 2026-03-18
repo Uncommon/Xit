@@ -1,4 +1,5 @@
 import SwiftUI
+import XitGit
 
 /// A partial re-implementation of `OutlineGroup` with the addition of a binding
 /// to read and write the set of expanded items.
@@ -51,11 +52,11 @@ struct RecursiveDisclosureGroup<Data, ID, RowContent>: View
 
 extension RecursiveDisclosureGroup
 {
-  init<Item: PathTreeData>(
+  init<Item: XitGit.PathTreeData>(
       _ data: Data,
       expandedItems: Binding<Set<String>>,
       @ViewBuilder content: @escaping (DataElement) -> RowContent)
-    where Data == [PathTreeNode<Item>], ID == String
+    where Data == [XitGit.PathTreeNode<Item>], ID == String
   {
     self.data = data
     self.id = \.path
@@ -68,7 +69,7 @@ extension RecursiveDisclosureGroup
 #if DEBUG
 struct RDGPreview: View
 {
-  let data: [PathTreeNode<String>]
+  let data: [XitGit.PathTreeNode<String>]
   let folderPaths: [String]
   @State var expandedItems: Set<String> = []
 
@@ -107,7 +108,7 @@ struct RDGPreview: View
     }
   }
 
-  func nodeLabel(_ node: PathTreeNode<String>) -> some View
+  func nodeLabel(_ node: XitGit.PathTreeNode<String>) -> some View
   {
     Label {
       Text(node.path.lastPathComponent)
@@ -118,7 +119,7 @@ struct RDGPreview: View
 
   init(_ paths: [String])
   {
-    self.data = PathTreeNode.makeHierarchy(from: paths)
+    self.data = XitGit.PathTreeNode.makeHierarchy(from: paths)
     self.folderPaths = paths
   }
 }

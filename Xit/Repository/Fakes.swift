@@ -3,7 +3,7 @@ import Combine
 import Siesta
 import XitGit
 
-extension FakeCommit
+extension XitGit.FakeCommit
 {
   init(branchHead branch: any Branch)
   {
@@ -59,9 +59,9 @@ struct FakeRefSpec: RefSpec
 class FakeStash: Stash
 {
   var message: String? = nil
-  var mainCommit: FakeCommit? = nil
-  var indexCommit: FakeCommit? = nil
-  var untrackedCommit: FakeCommit? = nil
+  var mainCommit: XitGit.FakeCommit? = nil
+  var indexCommit: XitGit.FakeCommit? = nil
+  var untrackedCommit: XitGit.FakeCommit? = nil
 
   func indexChanges() -> [FileChange] { [] }
   func workspaceChanges() -> [FileChange] { [] }
@@ -179,7 +179,7 @@ class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
 {
   typealias Commit = NullCommit
   typealias Tag = NullTag
-  typealias Tree = FakeTree
+  typealias Tree = XitGit.FakeTree
   typealias Blob = NullBlob
   typealias LocalBranch = NullLocalBranch
   typealias RemoteBranch = NullRemoteBranch

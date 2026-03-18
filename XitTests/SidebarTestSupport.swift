@@ -315,7 +315,7 @@ struct TestTag: Tag
   var name: TagRefName
   var signature: Signature?
   var targetOID: GitOID?
-  var commit: FakeCommit?
+  var commit: XitGit.FakeCommit?
   var message: String?
   var type: TagType { message == nil ? .lightweight : .annotated }
   var isSigned = false
@@ -353,15 +353,15 @@ final class TestTagger: Tagging
 final class TestStash: Stash
 {
   var message: String?
-  var mainCommit: FakeCommit?
-  var indexCommit: FakeCommit?
-  var untrackedCommit: FakeCommit?
+  var mainCommit: XitGit.FakeCommit?
+  var indexCommit: XitGit.FakeCommit?
+  var untrackedCommit: XitGit.FakeCommit?
 
   init(message: String? = nil, id: GitOID = .random())
   {
     self.message = message
-    self.mainCommit = FakeCommit(parentOIDs: [], message: message,
-                                 isSigned: false, id: id)
+    self.mainCommit = XitGit.FakeCommit(parentOIDs: [], message: message,
+                                        isSigned: false, id: id)
   }
 
   func indexChanges() -> [FileChange] { [] }
@@ -388,7 +388,7 @@ final class TestStasher: Stashing
   func popStash(index: UInt) throws {}
   func applyStash(index: UInt) throws {}
   func dropStash(index: UInt) throws {}
-  func commitForStash(at index: UInt) -> FakeCommit?
+  func commitForStash(at index: UInt) -> XitGit.FakeCommit?
   {
     stashArray[Int(index)].mainCommit
   }
