@@ -68,21 +68,6 @@ extension FormatStyle where Self == Date.FormatStyle
   static var sidebar: Self { sidebarDateFormatStyle }
 }
 
-struct SidebarViewModel<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
-  where Brancher: Branching, Manager: RemoteManagement,
-        Referencer: CommitReferencing,
-        Stasher: Stashing, Tagger: Tagging,
-        SubManager: SubmoduleManagement,
-        Brancher.LocalBranch == Referencer.LocalBranch
-{
-  let brachModel: BranchListViewModel<Brancher, Referencer>
-  let remoteModel: RemoteListViewModel<Manager, Brancher>
-  let tagModel: TagListViewModel<Tagger>
-  let stashModel: StashListViewModel<Stasher>
-  let submoduleModel: SubmoduleListModel<SubManager>
-}
-
-
 struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   : View
   where Brancher: Branching, Manager: RemoteManagement,
@@ -94,18 +79,15 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
 
   // These are separate for testing/preview convenience
   let brancher: Brancher
-  let detector: any FileStatusDetection
   let remoteManager: Manager
   let referencer: Referencer
   let publisher: any RepositoryPublishing
   let stasher: Stasher
   let submobuleManager: SubManager
   let tagger: Tagger
-  
-  let workspaceCountModel: WorkspaceStatusCountModel
-  
-  @State var model: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
-                                     Tagger, SubManager>
+
+  let models: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
+                               Tagger, SubManager>
   @EnvironmentObject private var coordinator: SidebarCoordinator
   @EnvironmentObject private var accessories: BranchAccessoryStore
   
@@ -129,51 +111,35 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
           AnyView(submoduleList(manager: submobuleManager))
       }
     }
-      .onAppear {
-        coordinator.refreshAction = refreshModels
-      }
       .listStyle(.sidebar)
       .frame(width: 300)
   }
 
   init(brancher: Brancher,
-       detector: any FileStatusDetection,
        remoteManager: Manager,
        referencer: Referencer,
        publisher: any RepositoryPublishing,
        stasher: Stasher,
        submoduleManager: SubManager,
        tagger: Tagger,
-       workspaceCountModel: WorkspaceStatusCountModel,
+       models: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
+                                Tagger, SubManager>,
        selection: Binding<(any RepositorySelection)?>)
   {
     self.brancher = brancher
-    self.detector = detector
     self.remoteManager = remoteManager
     self.referencer = referencer
     self.publisher = publisher
     self.stasher = stasher
     self.submobuleManager = submoduleManager
     self.tagger = tagger
-    self.workspaceCountModel = workspaceCountModel
+    self.models = models
     self._repoSelection = selection
-    self.model = .init(
-        brachModel: .init(brancher: brancher,
-                          referencer: referencer,
-                          detector: detector,
-                          publisher: publisher,
-                          workspaceCountModel: workspaceCountModel),
-        remoteModel: .init(manager: remoteManager,
-                           brancher: brancher,
-                           publisher: publisher),
-        tagModel: .init(tagger: tagger, publisher: publisher),
-        stashModel: .init(stasher: stasher, publisher: publisher),
-        submoduleModel: .init(manager: submobuleManager, publisher: publisher))
   }
 
   private func branchList() -> some View
   {
-    BranchList(model: model.brachModel,
+    BranchList(model: models.branchModel,
                brancher: brancher,
                referencer: referencer,
                selection: $coordinator.branchSelection,
@@ -203,7 +169,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   
   private func remoteList() -> some View
   {
-    RemoteList(model: model.remoteModel,
+    RemoteList(model: models.remoteModel,
                manager: remoteManager,
                brancher: brancher,
                selection: $coordinator.remoteSelection,
@@ -231,7 +197,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   private func tagList(tagger: some Tagging,
                        publisher _: some RepositoryPublishing) -> some View
   {
-    TagList(model: model.tagModel,
+    TagList(model: models.tagModel,
             selection: $coordinator.tagSelection,
             expandedItems: $coordinator.expandedTags)
       .onChange(of: coordinator.tagSelection) {
@@ -249,7 +215,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
 
   private func stashList(publisher: some RepositoryPublishing) -> some View
   {
-    StashList(model: model.stashModel,
+    StashList(model: models.stashModel,
               stasher: stasher,
               publisher: publisher,
               selection: $coordinator.stashSelection)
@@ -267,17 +233,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   
   private func submoduleList(manager: some SubmoduleManagement) -> some View
   {
-    SubmoduleList(model: model.submoduleModel,
+    SubmoduleList(model: models.submoduleModel,
                   selection: $coordinator.submoduleSelection)
-  }
-
-  private func refreshModels()
-  {
-    model.brachModel.updateBranchList()
-    model.remoteModel.updateList()
-    model.tagModel.setTagHierarchy()
-    model.stashModel.filterChanged(model.stashModel.filter)
-    model.submoduleModel.updateList()
   }
 }
 
@@ -303,11 +260,20 @@ private class NFSD: EmptyFileStatusDetection {}
   ].map { .init(name: $0) })
   let subManager = SubmoduleListPreview.SubmoduleManager()
   let referencer = BranchListPreview.CommitReferencer()
+  let models = SidebarViewModel(brancher: brancher,
+                                detector: NFSD(),
+                                remoteManager: manager,
+                                referencer: referencer,
+                                publisher: publisher,
+                                stasher: stasher,
+                                submoduleManager: subManager,
+                                tagger: tagger,
+                                workspaceCountModel: .init())
   
-  TabbedSidebar(brancher: brancher, detector: NFSD(), remoteManager: manager,
+  TabbedSidebar(brancher: brancher, remoteManager: manager,
                 referencer: referencer, publisher: publisher,
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
-                workspaceCountModel: .init(),
+                models: models,
                 selection: .constant(nil))
     .environmentObject(SidebarCoordinator())
     .environmentObject(BranchAccessoryStore())

@@ -237,6 +237,7 @@
 		C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* NewTagOpController.swift */; };
 		C98AA0012EA6E00000C0D301 /* BranchAccessoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0002EA6E00000C0D301 /* BranchAccessoryStore.swift */; };
 		C98AA0032EA6E0A000C0D301 /* SidebarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0022EA6E0A000C0D301 /* SidebarCoordinator.swift */; };
+		C98AA0152EA6E8F000C0D301 /* SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0142EA6E8F000C0D301 /* SidebarViewModel.swift */; };
 		C98AA0112EA6E70000C0D301 /* BranchAccessoryStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0102EA6E70000C0D301 /* BranchAccessoryStoreTest.swift */; };
 		C98AA0132EA6E78000C0D301 /* SidebarCoordinatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0122EA6E78000C0D301 /* SidebarCoordinatorTest.swift */; };
 		C98AFF9D24FEA63900AD20EC /* GitWorkTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */; };
@@ -620,6 +621,7 @@
 		C98925D41DB6D3D300E5645C /* NewTagOpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTagOpController.swift; sourceTree = "<group>"; };
 		C98AA0002EA6E00000C0D301 /* BranchAccessoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchAccessoryStore.swift; sourceTree = "<group>"; };
 		C98AA0022EA6E0A000C0D301 /* SidebarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCoordinator.swift; sourceTree = "<group>"; };
+		C98AA0142EA6E8F000C0D301 /* SidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewModel.swift; sourceTree = "<group>"; };
 		C98AA0102EA6E70000C0D301 /* BranchAccessoryStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchAccessoryStoreTest.swift; sourceTree = "<group>"; };
 		C98AA0122EA6E78000C0D301 /* SidebarCoordinatorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarCoordinatorTest.swift; sourceTree = "<group>"; };
 		C98AFF9C24FEA63900AD20EC /* GitWorkTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWorkTree.swift; sourceTree = "<group>"; };
@@ -1257,6 +1259,7 @@
 				891BC3942CB0A3E500455AA9 /* RemoteList.swift */,
 				891BC38D2CA766F400455AA9 /* RemoteListViewModel.swift */,
 				C98AA0022EA6E0A000C0D301 /* SidebarCoordinator.swift */,
+				C98AA0142EA6E8F000C0D301 /* SidebarViewModel.swift */,
 				C9E7DA3F2C87415700B539E0 /* StashList.swift */,
 				891BC3852CA477B400455AA9 /* StashListViewModel.swift */,
 				C9E594C22C91568200C518C4 /* SidebarButtons.swift */,
@@ -1704,6 +1707,7 @@
 				896A29F71E4C3620002C5EC8 /* PreviewItem.swift in Sources */,
 				C9E594C72C931B8B00C518C4 /* TabbedSidebarController.swift in Sources */,
 				C98AA0012EA6E00000C0D301 /* BranchAccessoryStore.swift in Sources */,
+				C98AA0152EA6E8F000C0D301 /* SidebarViewModel.swift in Sources */,
 				C959A7271F6C8440004277CD /* GitBlob.swift in Sources */,
 				89FC6EC726FD009A00839D45 /* CocoaExtensions.swift in Sources */,
 				C93FFCB91F0FDAC700FDDD78 /* Preferences.swift in Sources */,

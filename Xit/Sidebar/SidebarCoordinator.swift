@@ -1,6 +1,31 @@
 import Foundation
 import SwiftUI
 
+/// Delegate that executes sidebar commands on behalf of the SwiftUI sidebar.
+@MainActor
+protocol SidebarCoordinatorDelegate: AnyObject
+{
+  func newBranch()
+  func newRemote()
+  func checkoutBranch(_ branch: LocalBranchRefName)
+  func mergeBranch(_ branch: LocalBranchRefName)
+  func renameBranch(_ branch: LocalBranchRefName)
+  func deleteBranch(_ branch: LocalBranchRefName)
+  func createTrackingBranch(_ branch: RemoteBranchRefName)
+  func mergeRemoteBranch(_ branch: RemoteBranchRefName)
+  func renameRemote(_ remote: String)
+  func editRemote(_ remote: String)
+  func deleteRemote(_ remote: String)
+  func copyRemoteURL(_ remote: String)
+  func deleteTag(_ tag: TagRefName)
+  func popStash(_ stashID: GitOID)
+  func applyStash(_ stashID: GitOID)
+  func dropStash(_ stashID: GitOID)
+  func showSubmoduleInFinder(_ name: String)
+  func updateSubmodule(_ name: String)
+  func refreshSidebar()
+}
+
 /// Sidebar selection for the local branches tab.
 enum BranchListSelection: Hashable
 {
@@ -49,45 +74,27 @@ final class SidebarCoordinator: ObservableObject
   /// Current annotated tag popover payload, if one is being shown.
   @Published var presentedTagInfo: TagInfoModel?
 
-  /// Command hooks supplied by `TabbedSidebarController`.
-  var newBranchAction: () -> Void = {}
-  var newRemoteAction: () -> Void = {}
-  var checkoutBranchAction: (LocalBranchRefName) -> Void = { _ in }
-  var mergeBranchAction: (LocalBranchRefName) -> Void = { _ in }
-  var renameBranchAction: (LocalBranchRefName) -> Void = { _ in }
-  var deleteBranchAction: (LocalBranchRefName) -> Void = { _ in }
-  var createTrackingBranchAction: (RemoteBranchRefName) -> Void = { _ in }
-  var mergeRemoteBranchAction: (RemoteBranchRefName) -> Void = { _ in }
-  var renameRemoteAction: (String) -> Void = { _ in }
-  var editRemoteAction: (String) -> Void = { _ in }
-  var deleteRemoteAction: (String) -> Void = { _ in }
-  var copyRemoteURLAction: (String) -> Void = { _ in }
-  var deleteTagAction: (TagRefName) -> Void = { _ in }
-  var popStashAction: (GitOID) -> Void = { _ in }
-  var applyStashAction: (GitOID) -> Void = { _ in }
-  var dropStashAction: (GitOID) -> Void = { _ in }
-  var showSubmoduleInFinderAction: (String) -> Void = { _ in }
-  var updateSubmoduleAction: (String) -> Void = { _ in }
-  var refreshAction: () -> Void = {}
+  /// Delegate supplied by `TabbedSidebarController`.
+  weak var delegate: (any SidebarCoordinatorDelegate)?
 
   /// Convenience wrappers used by SwiftUI views instead of calling closures
   /// directly. Keeping these methods centralized makes later validation or
   /// enablement changes easier.
-  func newBranch() { newBranchAction() }
-  func newRemote() { newRemoteAction() }
-  func checkoutBranch(_ branch: LocalBranchRefName) { checkoutBranchAction(branch) }
-  func mergeBranch(_ branch: LocalBranchRefName) { mergeBranchAction(branch) }
-  func renameBranch(_ branch: LocalBranchRefName) { renameBranchAction(branch) }
-  func deleteBranch(_ branch: LocalBranchRefName) { deleteBranchAction(branch) }
+  func newBranch() { delegate?.newBranch() }
+  func newRemote() { delegate?.newRemote() }
+  func checkoutBranch(_ branch: LocalBranchRefName) { delegate?.checkoutBranch(branch) }
+  func mergeBranch(_ branch: LocalBranchRefName) { delegate?.mergeBranch(branch) }
+  func renameBranch(_ branch: LocalBranchRefName) { delegate?.renameBranch(branch) }
+  func deleteBranch(_ branch: LocalBranchRefName) { delegate?.deleteBranch(branch) }
   func createTrackingBranch(_ branch: RemoteBranchRefName)
-  { createTrackingBranchAction(branch) }
+  { delegate?.createTrackingBranch(branch) }
   func mergeRemoteBranch(_ branch: RemoteBranchRefName)
-  { mergeRemoteBranchAction(branch) }
-  func renameRemote(_ remote: String) { renameRemoteAction(remote) }
-  func editRemote(_ remote: String) { editRemoteAction(remote) }
-  func deleteRemote(_ remote: String) { deleteRemoteAction(remote) }
-  func copyRemoteURL(_ remote: String) { copyRemoteURLAction(remote) }
-  func deleteTag(_ tag: TagRefName) { deleteTagAction(tag) }
+  { delegate?.mergeRemoteBranch(branch) }
+  func renameRemote(_ remote: String) { delegate?.renameRemote(remote) }
+  func editRemote(_ remote: String) { delegate?.editRemote(remote) }
+  func deleteRemote(_ remote: String) { delegate?.deleteRemote(remote) }
+  func copyRemoteURL(_ remote: String) { delegate?.copyRemoteURL(remote) }
+  func deleteTag(_ tag: TagRefName) { delegate?.deleteTag(tag) }
 
   /// Presents the annotated-tag popover.
   func showTagInfo(_ presentation: TagInfoModel)
@@ -100,12 +107,12 @@ final class SidebarCoordinator: ObservableObject
     presentedTagInfo = nil
   }
 
-  func popStash(_ stashID: GitOID) { popStashAction(stashID) }
-  func applyStash(_ stashID: GitOID) { applyStashAction(stashID) }
-  func dropStash(_ stashID: GitOID) { dropStashAction(stashID) }
-  func showSubmoduleInFinder(_ name: String) { showSubmoduleInFinderAction(name) }
-  func updateSubmodule(_ name: String) { updateSubmoduleAction(name) }
+  func popStash(_ stashID: GitOID) { delegate?.popStash(stashID) }
+  func applyStash(_ stashID: GitOID) { delegate?.applyStash(stashID) }
+  func dropStash(_ stashID: GitOID) { delegate?.dropStash(stashID) }
+  func showSubmoduleInFinder(_ name: String) { delegate?.showSubmoduleInFinder(name) }
+  func updateSubmodule(_ name: String) { delegate?.updateSubmodule(name) }
 
   /// Re-runs the sidebar models' refresh logic.
-  func refresh() { refreshAction() }
+  func refresh() { delegate?.refreshSidebar() }
 }

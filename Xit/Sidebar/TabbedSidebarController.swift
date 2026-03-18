@@ -15,21 +15,34 @@ final class TabbedSidebarController: NSHostingController<AnyView>
   /// Shared branch accessory renderer injected into local and remote lists.
   let accessories = BranchAccessoryStore()
 
+  /// Cached SwiftUI sidebar models retained across tab switches and refreshed
+  /// in response to explicit sidebar reloads.
+  private let viewModels: any SidebarViewModelRefreshing
+
   init(repo: some FullRepository,
        workspaceCountModel: WorkspaceStatusCountModel,
        controller: XTWindowController)
   {
     self.controller = controller
+    let viewModels = SidebarViewModel(brancher: repo,
+                                      detector: repo,
+                                      remoteManager: repo,
+                                      referencer: repo,
+                                      publisher: controller.repoController,
+                                      stasher: repo,
+                                      submoduleManager: repo,
+                                      tagger: repo,
+                                      workspaceCountModel: workspaceCountModel)
+    self.viewModels = viewModels
 
     let view = TabbedSidebar(brancher: repo,
-                             detector: repo,
                              remoteManager: repo,
                              referencer: repo,
                              publisher: controller.repoController,
                              stasher: repo,
                              submoduleManager: repo,
                              tagger: repo,
-                             workspaceCountModel: workspaceCountModel,
+                             models: viewModels,
                              selection: controller.selectionBinding)
       .environment(\.showError) { [weak controller] error in
         controller?.showAlert(nsError: error)
@@ -38,7 +51,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
       .environmentObject(accessories)
 
     super.init(rootView: AnyView(view))
-    configureCoordinator()
+    coordinator.delegate = self
   }
   
   required dynamic init?(coder: NSCoder)
@@ -52,93 +65,6 @@ final class TabbedSidebarController: NSHostingController<AnyView>
     coordinator.refresh()
   }
 
-  /// Wires coordinator command closures to existing repository operations and
-  /// window-controller UI flows.
-  private func configureCoordinator()
-  {
-    coordinator.newBranchAction = { [weak self] in
-      guard let controller = self?.controller else { return }
-      controller.startOperation {
-        NewBranchOpController(windowController: controller)
-      }
-    }
-    coordinator.newRemoteAction = { [weak self] in
-      guard let controller = self?.controller else { return }
-      controller.startOperation {
-        NewRemoteOpController(windowController: controller)
-      }
-    }
-    coordinator.checkoutBranchAction = { [weak self] branch in
-      self?.executeAndReport {
-        try self?.controller?.repository.checkOut(branch: branch)
-      }
-    }
-    coordinator.mergeBranchAction = { [weak self] branch in
-      self?.mergeLocalBranch(branch)
-    }
-    coordinator.renameBranchAction = { [weak self] branch in
-      guard let controller = self?.controller else { return }
-      controller.startOperation {
-        RenameBranchOpController(windowController: controller, branchName: branch)
-      }
-    }
-    coordinator.deleteBranchAction = { [weak self] branch in
-      self?.confirmDelete(kind: .ItemType.branch, name: branch.name) { value in
-        try self?.controller?.repository.deleteBranch(value)
-      }(branch)
-    }
-    coordinator.createTrackingBranchAction = { [weak self] branch in
-      guard let controller = self?.controller else { return }
-      controller.startOperation {
-        CheckOutRemoteOpController(windowController: controller,
-                                   branch: branch)
-      }
-    }
-    coordinator.mergeRemoteBranchAction = { [weak self] branch in
-      self?.mergeRemoteBranch(branch)
-    }
-    coordinator.renameRemoteAction = { [weak self] remote in
-      self?.controller?.remoteSettings(remote: remote)
-    }
-    coordinator.editRemoteAction = { [weak self] remote in
-      self?.controller?.remoteSettings(remote: remote)
-    }
-    coordinator.deleteRemoteAction = { [weak self] remote in
-      self?.confirmDelete(kind: .ItemType.remote, name: remote) { value in
-        try self?.controller?.repository.deleteRemote(named: value)
-      }(remote)
-    }
-    coordinator.copyRemoteURLAction = { [weak self] remote in
-      self?.copyRemoteURL(named: remote)
-    }
-    coordinator.deleteTagAction = { [weak self] tag in
-      self?.confirmDelete(kind: .ItemType.tag, name: tag.name) { value in
-        try self?.controller?.repository.deleteTag(name: value)
-      }(tag)
-    }
-    coordinator.popStashAction = { [weak self] stashID in
-      self?.runStashAction(stashID) { index in
-        try self?.controller?.repository.popStash(index: UInt(index))
-      }
-    }
-    coordinator.applyStashAction = { [weak self] stashID in
-      self?.runStashAction(stashID) { index in
-        try self?.controller?.repository.applyStash(index: UInt(index))
-      }
-    }
-    coordinator.dropStashAction = { [weak self] stashID in
-      self?.runStashAction(stashID) { index in
-        try self?.controller?.repository.dropStash(index: UInt(index))
-      }
-    }
-    coordinator.showSubmoduleInFinderAction = { [weak self] submoduleName in
-      self?.showSubmoduleInFinder(named: submoduleName)
-    }
-    coordinator.updateSubmoduleAction = { [weak self] submoduleName in
-      self?.updateSubmodule(named: submoduleName)
-    }
-  }
-
   private func mergeLocalBranch(_ refName: LocalBranchRefName)
   {
     guard let branch = controller?.repository.localBranch(named: refName)
@@ -149,7 +75,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
     }
   }
 
-  private func mergeRemoteBranch(_ refName: RemoteBranchRefName)
+  private func performMergeRemoteBranch(_ refName: RemoteBranchRefName)
   {
     guard let branch = controller?.repository.remoteBranch(named: refName.name,
                                                            remote: refName.remoteName)
@@ -240,5 +166,129 @@ final class TabbedSidebarController: NSHostingController<AnyView>
         }
       }
     }
+  }
+}
+
+extension TabbedSidebarController: SidebarCoordinatorDelegate
+{
+  func newBranch()
+  {
+    guard let controller else { return }
+    controller.startOperation {
+      NewBranchOpController(windowController: controller)
+    }
+  }
+
+  func newRemote()
+  {
+    guard let controller else { return }
+    controller.startOperation {
+      NewRemoteOpController(windowController: controller)
+    }
+  }
+
+  func checkoutBranch(_ branch: LocalBranchRefName)
+  {
+    executeAndReport {
+      try self.controller?.repository.checkOut(branch: branch)
+    }
+  }
+
+  func mergeBranch(_ branch: LocalBranchRefName)
+  {
+    mergeLocalBranch(branch)
+  }
+
+  func renameBranch(_ branch: LocalBranchRefName)
+  {
+    guard let controller else { return }
+    controller.startOperation {
+      RenameBranchOpController(windowController: controller, branchName: branch)
+    }
+  }
+
+  func deleteBranch(_ branch: LocalBranchRefName)
+  {
+    confirmDelete(kind: .ItemType.branch, name: branch.name) { value in
+      try self.controller?.repository.deleteBranch(value)
+    }(branch)
+  }
+
+  func createTrackingBranch(_ branch: RemoteBranchRefName)
+  {
+    guard let controller else { return }
+    controller.startOperation {
+      CheckOutRemoteOpController(windowController: controller, branch: branch)
+    }
+  }
+
+  func mergeRemoteBranch(_ branch: RemoteBranchRefName)
+  {
+    performMergeRemoteBranch(branch)
+  }
+
+  func renameRemote(_ remote: String)
+  {
+    controller?.remoteSettings(remote: remote)
+  }
+
+  func editRemote(_ remote: String)
+  {
+    controller?.remoteSettings(remote: remote)
+  }
+
+  func deleteRemote(_ remote: String)
+  {
+    confirmDelete(kind: .ItemType.remote, name: remote) { value in
+      try self.controller?.repository.deleteRemote(named: value)
+    }(remote)
+  }
+
+  func copyRemoteURL(_ remote: String)
+  {
+    copyRemoteURL(named: remote)
+  }
+
+  func deleteTag(_ tag: TagRefName)
+  {
+    confirmDelete(kind: .ItemType.tag, name: tag.name) { value in
+      try self.controller?.repository.deleteTag(name: value)
+    }(tag)
+  }
+
+  func popStash(_ stashID: GitOID)
+  {
+    runStashAction(stashID) { index in
+      try self.controller?.repository.popStash(index: UInt(index))
+    }
+  }
+
+  func applyStash(_ stashID: GitOID)
+  {
+    runStashAction(stashID) { index in
+      try self.controller?.repository.applyStash(index: UInt(index))
+    }
+  }
+
+  func dropStash(_ stashID: GitOID)
+  {
+    runStashAction(stashID) { index in
+      try self.controller?.repository.dropStash(index: UInt(index))
+    }
+  }
+
+  func showSubmoduleInFinder(_ name: String)
+  {
+    showSubmoduleInFinder(named: name)
+  }
+
+  func updateSubmodule(_ name: String)
+  {
+    updateSubmodule(named: name)
+  }
+
+  func refreshSidebar()
+  {
+    viewModels.refresh()
   }
 }

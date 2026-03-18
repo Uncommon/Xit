@@ -45,25 +45,273 @@ private final class SidebarTestFileStatusDetector: EmptyFileStatusDetection {}
 private typealias SidebarTestReferencer =
     FakeCommitReferencing<NullCommit, FakeTree, FakeLocalBranch, FakeRemoteBranch>
 
+private struct SidebarTestTag: EmptyTag
+{
+  var name: TagRefName
+  var commit: NullCommit?
+  var signature: Signature?
+  var targetOID: GitOID?
+  var message: String?
+  var type: TagType { message == nil ? .lightweight : .annotated }
+  var isSigned = false
+}
+
+private final class SidebarTestTagger: EmptyTagging, EmptyRepositoryPublishing
+{
+  var tagList: [SidebarTestTag]
+
+  init(tagList: [SidebarTestTag] = [])
+  {
+    self.tagList = tagList
+  }
+
+  func tags() throws -> [SidebarTestTag] { tagList }
+
+  func tag(named name: TagRefName) -> SidebarTestTag?
+  {
+    tagList.first { $0.name == name }
+  }
+
+  func createTag(name: String, targetOID: GitOID, message: String?) throws {}
+  func createLightweightTag(name: String, targetOID: GitOID) throws {}
+  func deleteTag(name: TagRefName) throws {}
+}
+
+private final class SidebarTestStasher: EmptyStashing, EmptyRepositoryPublishing
+{
+  var stashArray: [FakeStash]
+  var stashes: AnyRandomAccessCollection<FakeStash> { .init(stashArray) }
+
+  init(stashes: [FakeStash] = [])
+  {
+    self.stashArray = stashes
+  }
+
+  func stash(index: UInt, message: String?) -> FakeStash
+  {
+    stashArray[Int(index)]
+  }
+}
+
+private struct SidebarTestSubmodule: Submodule
+{
+  var name: String
+  var path: String
+  var url: URL?
+  var ignoreRule: SubmoduleIgnore = .unspecified
+  var updateStrategy: SubmoduleUpdate = .default
+  var recurse: SubmoduleRecurse = .yes
+
+  func update(initialize: Bool, callbacks: RemoteCallbacks) throws {}
+}
+
+private final class SidebarTestSubmoduleManager: SubmoduleManagement
+{
+  var submoduleList: [any Submodule]
+
+  init(submodules: [any Submodule] = [])
+  {
+    self.submoduleList = submodules
+  }
+
+  func submodules() -> [any Submodule] { submoduleList }
+  func addSubmodule(path: String, url: String) throws {}
+}
+
+@MainActor
+private final class SidebarCoordinatorDelegateSpy: SidebarCoordinatorDelegate
+{
+  enum Event: Equatable
+  {
+    case newBranch
+    case newRemote
+    case checkout(LocalBranchRefName)
+    case merge(LocalBranchRefName)
+    case renameBranch(LocalBranchRefName)
+    case deleteBranch(LocalBranchRefName)
+    case createTracking(RemoteBranchRefName)
+    case mergeRemote(RemoteBranchRefName)
+    case renameRemote(String)
+    case editRemote(String)
+    case deleteRemote(String)
+    case copyRemoteURL(String)
+    case deleteTag(TagRefName)
+    case popStash(GitOID)
+    case applyStash(GitOID)
+    case dropStash(GitOID)
+    case showSubmodule(String)
+    case updateSubmodule(String)
+    case refresh
+  }
+
+  var events: [Event] = []
+
+  func newBranch()
+  {
+    events.append(.newBranch)
+  }
+
+  func newRemote()
+  {
+    events.append(.newRemote)
+  }
+
+  func checkoutBranch(_ branch: LocalBranchRefName)
+  {
+    events.append(.checkout(branch))
+  }
+
+  func mergeBranch(_ branch: LocalBranchRefName)
+  {
+    events.append(.merge(branch))
+  }
+
+  func renameBranch(_ branch: LocalBranchRefName)
+  {
+    events.append(.renameBranch(branch))
+  }
+
+  func deleteBranch(_ branch: LocalBranchRefName)
+  {
+    events.append(.deleteBranch(branch))
+  }
+
+  func createTrackingBranch(_ branch: RemoteBranchRefName)
+  {
+    events.append(.createTracking(branch))
+  }
+
+  func mergeRemoteBranch(_ branch: RemoteBranchRefName)
+  {
+    events.append(.mergeRemote(branch))
+  }
+
+  func renameRemote(_ remote: String)
+  {
+    events.append(.renameRemote(remote))
+  }
+
+  func editRemote(_ remote: String)
+  {
+    events.append(.editRemote(remote))
+  }
+
+  func deleteRemote(_ remote: String)
+  {
+    events.append(.deleteRemote(remote))
+  }
+
+  func copyRemoteURL(_ remote: String)
+  {
+    events.append(.copyRemoteURL(remote))
+  }
+
+  func deleteTag(_ tag: TagRefName)
+  {
+    events.append(.deleteTag(tag))
+  }
+
+  func popStash(_ stashID: GitOID)
+  {
+    events.append(.popStash(stashID))
+  }
+
+  func applyStash(_ stashID: GitOID)
+  {
+    events.append(.applyStash(stashID))
+  }
+
+  func dropStash(_ stashID: GitOID)
+  {
+    events.append(.dropStash(stashID))
+  }
+
+  func showSubmoduleInFinder(_ name: String)
+  {
+    events.append(.showSubmodule(name))
+  }
+
+  func updateSubmodule(_ name: String)
+  {
+    events.append(.updateSubmodule(name))
+  }
+
+  func refreshSidebar()
+  {
+    events.append(.refresh)
+  }
+}
+
 @MainActor
 struct SidebarCoordinatorTest
 {
   @Test
-  func branchActionsDispatch() throws
+  func branchAndRemoteCommandsDispatchThroughDelegate() throws
   {
     let coordinator = SidebarCoordinator()
+    let delegate = SidebarCoordinatorDelegateSpy()
     let branch = try #require(LocalBranchRefName.named("main"))
-    var checkedOut: LocalBranchRefName?
-    var merged: LocalBranchRefName?
+    let remoteBranch = try #require(RemoteBranchRefName(remote: "origin",
+                                                        branch: "main"))
 
-    coordinator.checkoutBranchAction = { checkedOut = $0 }
-    coordinator.mergeBranchAction = { merged = $0 }
+    coordinator.delegate = delegate
 
+    coordinator.newBranch()
+    coordinator.newRemote()
     coordinator.checkoutBranch(branch)
     coordinator.mergeBranch(branch)
+    coordinator.renameBranch(branch)
+    coordinator.deleteBranch(branch)
+    coordinator.createTrackingBranch(remoteBranch)
+    coordinator.mergeRemoteBranch(remoteBranch)
+    coordinator.renameRemote("origin")
+    coordinator.editRemote("origin")
+    coordinator.deleteRemote("origin")
+    coordinator.copyRemoteURL("origin")
 
-    #expect(checkedOut == branch)
-    #expect(merged == branch)
+    #expect(delegate.events == [
+      .newBranch,
+      .newRemote,
+      .checkout(branch),
+      .merge(branch),
+      .renameBranch(branch),
+      .deleteBranch(branch),
+      .createTracking(remoteBranch),
+      .mergeRemote(remoteBranch),
+      .renameRemote("origin"),
+      .editRemote("origin"),
+      .deleteRemote("origin"),
+      .copyRemoteURL("origin"),
+    ])
+  }
+
+  @Test
+  func tagStashSubmoduleAndRefreshCommandsDispatchThroughDelegate() throws
+  {
+    let coordinator = SidebarCoordinator()
+    let delegate = SidebarCoordinatorDelegateSpy()
+    let tag = try #require(TagRefName.named("v1.0"))
+    let stashID = GitOID.fakeDefault()
+
+    coordinator.delegate = delegate
+
+    coordinator.deleteTag(tag)
+    coordinator.popStash(stashID)
+    coordinator.applyStash(stashID)
+    coordinator.dropStash(stashID)
+    coordinator.showSubmoduleInFinder("Dependencies/Core")
+    coordinator.updateSubmodule("Dependencies/Core")
+    coordinator.refresh()
+
+    #expect(delegate.events == [
+      .deleteTag(tag),
+      .popStash(stashID),
+      .applyStash(stashID),
+      .dropStash(stashID),
+      .showSubmodule("Dependencies/Core"),
+      .updateSubmodule("Dependencies/Core"),
+      .refresh,
+    ])
   }
 
   @Test
@@ -91,65 +339,67 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func stashAndSubmoduleActionsDispatch() throws
+  func sidebarViewModelsRefreshUpdatesCachedLists() throws
   {
-    let coordinator = SidebarCoordinator()
-    let stashID = GitOID.fakeDefault()
-    var popped: GitOID?
-    var updatedSubmodule: String?
+    let current = try #require(LocalBranchRefName.named("main"))
+    let brancher = SidebarTestBrancher(localBranches: [.init(name: "main")],
+                                       remoteBranches: [
+                                        .init(remoteName: "origin", name: "main")
+                                       ],
+                                       currentBranch: current)
+    let remoteManager = FakeRemoteManager(remoteNames: ["origin"])
+    let referencer = SidebarTestReferencer()
+    let tagger = SidebarTestTagger(tagList: [
+      .init(name: try #require(TagRefName.named("v1.0")))
+    ])
+    let stash = FakeStash()
+    stash.mainCommit = FakeCommit(parentOIDs: [], message: "WIP", id: .random())
+    stash.message = "WIP"
+    let stasher = SidebarTestStasher(stashes: [stash])
+    let submoduleManager = SidebarTestSubmoduleManager(submodules: [
+      SidebarTestSubmodule(name: "Core",
+                           path: "Dependencies/Core",
+                           url: URL(string: "https://example.com/core.git"))
+    ])
+    let models = SidebarViewModel(brancher: brancher,
+                                  detector: SidebarTestFileStatusDetector(),
+                                  remoteManager: remoteManager,
+                                  referencer: referencer,
+                                  publisher: NullRepositoryPublishing(),
+                                  stasher: stasher,
+                                  submoduleManager: submoduleManager,
+                                  tagger: tagger,
+                                  workspaceCountModel: .init())
 
-    coordinator.popStashAction = { popped = $0 }
-    coordinator.updateSubmoduleAction = { updatedSubmodule = $0 }
+    try #require(models.branchModel.branches.count == 1)
+    try #require(models.remoteModel.remotes.map(\.name) == ["origin"])
+    try #require(models.tagModel.tags.count == 1)
+    try #require(models.stashModel.stashes.count == 1)
+    try #require(models.submoduleModel.submodules.count == 1)
 
-    coordinator.popStash(stashID)
-    coordinator.updateSubmodule("Dependencies/Core")
+    brancher.localBranchArray.append(.init(name: "feature"))
+    remoteManager.remoteNames = ["origin", "upstream"]
+    brancher.remoteBranchArray = [
+      .init(remoteName: "origin", name: "main"),
+      .init(remoteName: "upstream", name: "develop"),
+    ]
+    tagger.tagList.append(.init(name: try #require(TagRefName.named("v2.0"))))
+    let secondStash = FakeStash()
+    secondStash.mainCommit = FakeCommit(parentOIDs: [], message: "Next", id: .random())
+    secondStash.message = "Next"
+    stasher.stashArray.append(secondStash)
+    submoduleManager.submoduleList.append(
+      SidebarTestSubmodule(name: "UI",
+                           path: "Dependencies/UI",
+                           url: URL(string: "https://example.com/ui.git")))
 
-    #expect(popped == stashID)
-    #expect(updatedSubmodule == "Dependencies/Core")
-  }
+    models.refresh()
 
-  @Test
-  func remoteActionsTagDeletionAndRefreshDispatch() throws
-  {
-    let coordinator = SidebarCoordinator()
-    let remoteBranch = try #require(RemoteBranchRefName(remote: "origin",
-                                                        branch: "main"))
-    let tag = try #require(TagRefName.named("v1.0"))
-    var createdTracking: RemoteBranchRefName?
-    var mergedRemote: RemoteBranchRefName?
-    var renamedRemote: String?
-    var editedRemote: String?
-    var deletedRemote: String?
-    var copiedRemote: String?
-    var deletedTag: TagRefName?
-    var refreshed = false
-
-    coordinator.createTrackingBranchAction = { createdTracking = $0 }
-    coordinator.mergeRemoteBranchAction = { mergedRemote = $0 }
-    coordinator.renameRemoteAction = { renamedRemote = $0 }
-    coordinator.editRemoteAction = { editedRemote = $0 }
-    coordinator.deleteRemoteAction = { deletedRemote = $0 }
-    coordinator.copyRemoteURLAction = { copiedRemote = $0 }
-    coordinator.deleteTagAction = { deletedTag = $0 }
-    coordinator.refreshAction = { refreshed = true }
-
-    coordinator.createTrackingBranch(remoteBranch)
-    coordinator.mergeRemoteBranch(remoteBranch)
-    coordinator.renameRemote("origin")
-    coordinator.editRemote("origin")
-    coordinator.deleteRemote("origin")
-    coordinator.copyRemoteURL("origin")
-    coordinator.deleteTag(tag)
-    coordinator.refresh()
-
-    #expect(createdTracking == remoteBranch)
-    #expect(mergedRemote == remoteBranch)
-    #expect(renamedRemote == "origin")
-    #expect(editedRemote == "origin")
-    #expect(deletedRemote == "origin")
-    #expect(copiedRemote == "origin")
-    #expect(deletedTag == tag)
-    #expect(refreshed)
+    #expect(models.branchModel.branches.count == 2)
+    #expect(models.remoteModel.remotes.map(\.name) == ["origin", "upstream"])
+    #expect(models.tagModel.tags.count == 2)
+    #expect(models.stashModel.stashes.count == 2)
+    #expect(models.submoduleModel.submodules.count == 2)
   }
 
   @Test
