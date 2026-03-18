@@ -84,7 +84,7 @@ struct BranchList<Brancher: Branching,
       FilterBar(text: $model.filter, leftContent: {
         SidebarActionButton {
           let branchRef = selectedBranch
-          let canEditSelection = branchRef != nil && branchRef != brancher.currentBranch
+          let canEditSelection = canEditSelection(branchRef)
 
           Button("New branch...", systemImage: "plus") {
             coordinator.newBranch()
@@ -100,7 +100,7 @@ struct BranchList<Brancher: Branching,
               coordinator.mergeBranch(branchRef)
             }
           }
-            .disabled(branchRef == nil || branchRef == brancher.currentBranch)
+            .disabled(!canMergeSelection(branchRef))
           Button("Delete branch", systemImage: "trash") {
             if let branchRef {
               coordinator.deleteBranch(branchRef)
@@ -124,6 +124,16 @@ struct BranchList<Brancher: Branching,
     guard case let .branch(ref)? = selection.first
     else { return nil }
     return ref
+  }
+
+  func canEditSelection(_ branchRef: LocalBranchRefName?) -> Bool
+  {
+    branchRef != nil && branchRef != brancher.currentBranch
+  }
+
+  func canMergeSelection(_ branchRef: LocalBranchRefName?) -> Bool
+  {
+    branchRef != nil && branchRef != brancher.currentBranch
   }
   
   func upstreamIndicator(for branch: BranchListItem) -> some View

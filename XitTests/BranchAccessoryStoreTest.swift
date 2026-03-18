@@ -28,4 +28,35 @@ struct BranchAccessoryStoreTest
 
     #expect(store.revision == start + 1)
   }
+
+  @Test
+  func invalidateSpecificRefsAdvancesRevision() throws
+  {
+    let store = BranchAccessoryStore()
+    let start = store.revision
+
+    store.invalidate(refs: ["refs/heads/main"])
+
+    #expect(store.revision == start + 1)
+  }
+
+  @Test
+  func providerHandlesLocalAndRemoteBranches() throws
+  {
+    let store = BranchAccessoryStore()
+    let local = try #require(LocalBranchRefName.named("main"))
+    let remote = try #require(RemoteBranchRefName(remote: "origin",
+                                                  branch: "main"))
+    var renderedRefs: [String] = []
+
+    store.setProvider { ref in
+      renderedRefs.append(ref.fullPath)
+      return AnyView(Text(ref.name))
+    }
+
+    _ = store.accessory(for: local)
+    _ = store.accessory(for: remote)
+
+    #expect(renderedRefs == [local.fullPath, remote.fullPath])
+  }
 }
