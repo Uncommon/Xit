@@ -140,11 +140,9 @@ struct BranchList<Brancher: Branching,
   func upstreamIndicator(for branch: BranchListItem) -> some View
   {
     if let remoteBranch = branch.trackingRefName {
-      // TODO: Cache graphBetween values
-      guard let status = referencer.graphBetween(
-                localBranch: branch.refName,
-                upstreamBranch: remoteBranch),
-            status.ahead > 0 || status.behind > 0
+      let status = branch.graphStatus
+
+      guard status.ahead > 0 || status.behind > 0
       else {
         return AnyView(Image(systemName: "network")
           .axid(.Sidebar.trackingStatus))

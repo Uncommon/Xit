@@ -45,7 +45,7 @@ class FetchTests: UnicodeRepoUITests
     
     // The remote hasn't been fetched since the above commit, so this repo
     // doesn't know yet that it's behind.
-    XCTAssertFalse(statusIndicator.exists)
+    XCTAssertEqual(statusIndicator.label, "network")
     
     Window.fetchButton.press(forDuration: 0.25)
     Window.fetchMenu.menuItems["Fetch Remote \"\(remoteName)\""].click()

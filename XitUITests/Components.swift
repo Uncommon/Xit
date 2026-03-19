@@ -177,7 +177,9 @@ enum Sidebar
   {
     let cell = Sidebar.Branches.branchCell(branch)
 
-    return cell.images[.Sidebar.trackingStatus]
+    return cell.descendants(matching: .any)
+      .matching(identifier: .Sidebar.trackingStatus)
+      .firstMatch
   }
 }
 
