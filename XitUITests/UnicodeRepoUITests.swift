@@ -96,9 +96,7 @@ class PushTests: UnicodeRepoUITests
     
     Window.window.sheets.buttons["Push"].click()
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 2.0)
-
-    XCTWaiter(delegate: self).wait(for: [hiding(of: statusIndicator)],
-                                   timeout: 2.0)
+    waitForNetworkIndicator()
   }
   
   func testPushAnyTracking() throws
@@ -108,9 +106,18 @@ class PushTests: UnicodeRepoUITests
     
     Window.window.sheets.buttons["Push"].click()
     wait(for: [hiding(of: Window.progressSpinner)], timeout: 3.0)
+    waitForNetworkIndicator()
+  }
 
-    XCTWaiter(delegate: self).wait(for: [absence(of: statusIndicator)],
-                                   timeout: 2.0)
+  func waitForNetworkIndicator(file: StaticString = #file, line: UInt = #line)
+  {
+    let exists = expectation(for: NSPredicate(format: "exists == true"),
+                             evaluatedWith: statusIndicator)
+    let label = expectation(for: NSPredicate(format: "label == %@", "network"),
+                            evaluatedWith: statusIndicator)
+
+    wait(for: [exists, label], timeout: 2.0)
+    XCTAssertEqual(statusIndicator.label, "network", file: file, line: line)
   }
 }
 
