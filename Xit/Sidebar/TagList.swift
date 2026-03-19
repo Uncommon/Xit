@@ -45,18 +45,17 @@ struct TagList<Tagger: Tagging>: View
                 }
             }
           }
+            .contextMenu {
+              if let item {
+                tagContextMenu(for: item.name)
+              }
+            }
             .tag(item?.name)
             .selectionDisabled(item == nil)
         }
       }
         .axid(.Sidebar.tagsList)
-        .contextMenu(forSelectionType: TagRefName.self) {
-          if let tagRef = $0.first {
-            Button(.delete, systemImage: "trash", role: .destructive) {
-              coordinator.deleteTag(tagRef)
-            }
-              .axid(.TagPopup.delete)
-          }
+        .contextMenu(forSelectionType: TagRefName.self) { _ in
         }
         .overlay {
           if model.tags.isEmpty {
@@ -88,6 +87,15 @@ struct TagList<Tagger: Tagging>: View
             coordinator.dismissTagInfo()
           }
         })
+  }
+
+  @ViewBuilder
+  private func tagContextMenu(for tagRef: TagRefName) -> some View
+  {
+    Button(.delete, systemImage: "trash", role: .destructive) {
+      coordinator.deleteTag(tagRef)
+    }
+      .axid(.TagPopup.delete)
   }
 }
 
