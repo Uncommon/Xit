@@ -96,7 +96,11 @@ enum Sidebar
   enum Branches: SidebarList
   {
     static let list = Window.window.outlines[.Sidebar.branchList]
-    static let stagingCell = list.cells.element(boundBy: 0)
+    static var stagingCell: XCUIElement
+    {
+      list.cells.containing(.staticText,
+                            identifier: .Sidebar.stagingCell).firstMatch
+    }
     static let currentBranchCell =
         list.cells
             .containing(.any, identifier: .Sidebar.currentBranch)
@@ -180,26 +184,6 @@ enum Sidebar
     return cell.descendants(matching: .any)
       .matching(identifier: .Sidebar.trackingStatus)
       .firstMatch
-  }
-}
-
-enum BranchList
-{
-  static var list: XCUIElement { Window.window.outlines[.Sidebar.branchList] }
-  static var stagingCell: XCUIElement
-  {
-    list.cells.containing(.staticText,
-                          identifier: .Sidebar.stagingCell).firstMatch
-  }
-  static var currentBranchCell: XCUIElement
-  {
-    list.cells.containing(.image, identifier: .Sidebar.currentBranchCheck)
-      .firstMatch
-  }
-  
-  static func cell(named name: String) -> XCUIElement
-  {
-    list.cells.containing(.staticText, identifier: name).firstMatch
   }
 }
 

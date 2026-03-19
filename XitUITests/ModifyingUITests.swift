@@ -23,7 +23,7 @@ class ModifyingUITests: XCTestCase
     env.open()
 
     XCTAssert(Window.window.waitForExistence(timeout: 2))
-    BranchList.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
 
     XCTContext.runActivity(named: "Initial empty state") {
       _ in
@@ -224,7 +224,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.softButton)
-    BranchList.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
 
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -244,7 +244,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.mixedButton)
-    BranchList.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
 
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -260,7 +260,7 @@ class ModifyingUITests: XCTestCase
     env.open()
     
     try reset(modeButton: ResetSheet.hardButton)
-    BranchList.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
     
     // Temporary workaround
     StagedFileList.refreshButton.click()
@@ -292,7 +292,7 @@ class ModifyingUITests: XCTestCase
 
     env.open()
     
-    BranchList.stagingCell.click()
+    Sidebar.Branches.stagingCell.click()
     if (CommitEntry.stripCheck.value as? Int) == 0 {
       CommitEntry.stripCheck.click()
     }
