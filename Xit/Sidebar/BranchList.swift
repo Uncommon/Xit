@@ -80,27 +80,17 @@ struct BranchList<Brancher: Branching,
                 accessories.accessory(for: item.refName)
               }
             })
+              .contextMenu {
+                if let ref = node.item?.refName {
+                  branchContextMenu(for: ref)
+                }
+              }
               .tag(node.item.map { BranchListSelection.branch($0.refName) })
           }
         }
       }
         .axid(.Sidebar.branchList)
-        .contextMenu(forSelectionType: BranchListSelection.self) {
-          if let ref = branchRef(from: $0) {
-            if ref != brancher.currentBranch {
-              Button(command: .checkOut) { coordinator.checkoutBranch(ref) }
-                .axid(.BranchPopup.checkOut)
-            }
-            Button(command: .rename) { coordinator.renameBranch(ref) }
-              .axid(.BranchPopup.rename)
-            Button(command: .merge) { coordinator.mergeBranch(ref) }
-              .axid(.BranchPopup.merge)
-            Divider()
-            Button(command: .delete, role: .destructive) {
-              coordinator.deleteBranch(ref)
-            }
-              .axid(.BranchPopup.delete)
-          }
+        .contextMenu(forSelectionType: BranchListSelection.self) { _ in
         } primaryAction: {
           if let ref = branchRef(from: $0) {
             coordinator.checkoutBranch(ref)
@@ -164,6 +154,27 @@ struct BranchList<Brancher: Branching,
   func canMergeSelection(_ branchRef: LocalBranchRefName?) -> Bool
   {
     branchRef != nil && branchRef != brancher.currentBranch
+  }
+
+  @ViewBuilder
+  func branchContextMenu(for ref: LocalBranchRefName) -> some View
+  {
+    if ref != brancher.currentBranch {
+      Button(command: .checkOut) { coordinator.checkoutBranch(ref) }
+        .axid(.BranchPopup.checkOut)
+    }
+    Button(command: .rename) { coordinator.renameBranch(ref) }
+      .axid(.BranchPopup.rename)
+      .disabled(!canEditSelection(ref))
+    Button(command: .merge) { coordinator.mergeBranch(ref) }
+      .axid(.BranchPopup.merge)
+      .disabled(!canMergeSelection(ref))
+    Divider()
+    Button(command: .delete, role: .destructive) {
+      coordinator.deleteBranch(ref)
+    }
+      .axid(.BranchPopup.delete)
+      .disabled(!canEditSelection(ref))
   }
   
   func upstreamIndicator(for branch: BranchListItem) -> some View
