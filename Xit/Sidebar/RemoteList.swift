@@ -53,43 +53,25 @@ struct RemoteList<Manager: RemoteManagement,
                   accessories.accessory(for: branch)
                 }
               })
+                .contextMenu {
+                  if let branch = node.item {
+                    remoteBranchContextMenu(for: branch)
+                  }
+                }
                 .tag(node.item.map { RemoteListSelection.branch(ref: $0) })
             }
           } label: {
             Label(remote.name, systemImage: "network")
           }
+            .contextMenu {
+              remoteContextMenu(for: remote.name)
+            }
             .tag(RemoteListSelection.remote(name: remote.name))
             .listRowSeparator(.hidden)
         }
       }
         .axid(.Sidebar.remotesList)
-        .contextMenu(forSelectionType: RemoteListSelection.self) {
-          selection in
-          if let selected = selection.first {
-            switch selected {
-            case .remote(let name):
-              Button(.rename, systemImage: "pencil") {
-                coordinator.renameRemote(name)
-              }
-              Button(.edit, systemImage: "slider.horizontal.3") {
-                coordinator.editRemote(name)
-              }
-              Button(.delete, systemImage: "trash", role: .destructive) {
-                coordinator.deleteRemote(name)
-              }
-              Button(.copyURL, systemImage: "document.on.document") {
-                coordinator.copyRemoteURL(name)
-              }
-
-            case .branch(let branchRef):
-              Button(.createTrackingBranch, systemImage: "plus.circle") {
-                coordinator.createTrackingBranch(branchRef)
-              }.axid(.RemoteBranchPopup.createTracking)
-              Button(command: .merge) {
-                coordinator.mergeRemoteBranch(branchRef)
-              }
-            }
-          }
+        .contextMenu(forSelectionType: RemoteListSelection.self) { _ in
         }
         .overlay {
           if model.remotes.isEmpty {
@@ -160,6 +142,35 @@ struct RemoteList<Manager: RemoteManagement,
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
     return $model.expandedRemotes.binding(for: remoteName)
+  }
+
+  @ViewBuilder
+  func remoteContextMenu(for name: String) -> some View
+  {
+    Button(.rename, systemImage: "pencil") {
+      coordinator.renameRemote(name)
+    }
+    Button(.edit, systemImage: "slider.horizontal.3") {
+      coordinator.editRemote(name)
+    }
+    Button(.delete, systemImage: "trash", role: .destructive) {
+      coordinator.deleteRemote(name)
+    }
+    Button(.copyURL, systemImage: "document.on.document") {
+      coordinator.copyRemoteURL(name)
+    }
+  }
+
+  @ViewBuilder
+  func remoteBranchContextMenu(for branchRef: RemoteBranchRefName) -> some View
+  {
+    Button(.createTrackingBranch, systemImage: "plus.circle") {
+      coordinator.createTrackingBranch(branchRef)
+    }
+      .axid(.RemoteBranchPopup.createTracking)
+    Button(command: .merge) {
+      coordinator.mergeRemoteBranch(branchRef)
+    }
   }
 }
 

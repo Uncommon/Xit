@@ -12,17 +12,13 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
   {
     VStack(spacing: 0) {
       List(model.submodules, id: \.name, selection: $selection) {
-        Label($0.name, systemImage: "square.split.bottomrightquarter")
-      }
-        .contextMenu(forSelectionType: String.self) {
-          if let name = $0.first {
-            Button("Show in Finder", systemImage: "folder") {
-              coordinator.showSubmoduleInFinder(name)
-            }
-            Button("Update", systemImage: "arrow.clockwise") {
-              coordinator.updateSubmodule(name)
-            }
+        submodule in
+        Label(submodule.name, systemImage: "square.split.bottomrightquarter")
+          .contextMenu {
+            submoduleContextMenu(for: submodule.name)
           }
+      }
+        .contextMenu(forSelectionType: String.self) { _ in
         }
         .overlay {
         if model.submodules.isEmpty {
@@ -46,6 +42,17 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
             .disabled(selection == nil)
         }
       }
+    }
+  }
+
+  @ViewBuilder
+  func submoduleContextMenu(for name: String) -> some View
+  {
+    Button("Show in Finder", systemImage: "folder") {
+      coordinator.showSubmoduleInFinder(name)
+    }
+    Button("Update", systemImage: "arrow.clockwise") {
+      coordinator.updateSubmodule(name)
     }
   }
 }

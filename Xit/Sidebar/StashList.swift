@@ -72,14 +72,13 @@ struct StashList<Stasher: Stashing>: View
           WorkspaceStatusBadge(unstagedCount: stash.workspaceChanges().count,
                               stagedCount: stash.indexChanges().count)
         }
-      }
-        .contextMenu(forSelectionType: GitOID.self) {
-          if let stash = $0.first,
-             let index = model.stasher.findStashIndex(stash) {
-            Button(.pop, systemImage: "arrow.up.square.fill") { confirm(.pop(index)) }
-            Button(.apply, systemImage: "arrow.up.square") { confirm(.apply(index)) }
-            Button(.drop, systemImage: "trash") { confirm(.drop(index)) }
+          .contextMenu {
+            if let index = model.stasher.findStashIndex(stash.id) {
+              stashContextMenu(for: index)
+            }
           }
+      }
+        .contextMenu(forSelectionType: GitOID.self) { _ in
         }
         .confirmationDialog(alertAction?.confirmText.rawValue ?? "",
                             isPresented: $showAlert,
@@ -152,6 +151,14 @@ struct StashList<Stasher: Stashing>: View
     catch let error as NSError {
       showError(error)
     }
+  }
+
+  @ViewBuilder
+  func stashContextMenu(for index: Int) -> some View
+  {
+    Button(.pop, systemImage: "arrow.up.square.fill") { confirm(.pop(index)) }
+    Button(.apply, systemImage: "arrow.up.square") { confirm(.apply(index)) }
+    Button(.drop, systemImage: "trash") { confirm(.drop(index)) }
   }
 }
 
