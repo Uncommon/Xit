@@ -5,8 +5,8 @@ import XitGit
 class CommitLinesTest: XCTestCase
 {
   // Only the SHA/OID matters
-  let entry = CommitEntry(commit: XitGit.StringCommit(parentOIDs: [], id: "a"))
-  let history = CommitHistory<XitGit.StringCommit>()
+  let entry = CommitEntry(commit: StringCommit(parentOIDs: [], id: "a"))
+  let history = CommitHistory<StringCommit>()
   
   override func setUp()
   {

@@ -6,7 +6,7 @@ class TagListViewModel<Tagger: Tagging>: FilteringListViewModel
 {
   let tagger: Tagger
 
-  @Published var tags: [XitGit.PathTreeNode<Tagger.Tag>] = []
+  @Published var tags: [PathTreeNode<Tagger.Tag>] = []
 
   init(tagger: Tagger, publisher: any RepositoryPublishing)
   {
@@ -23,8 +23,8 @@ class TagListViewModel<Tagger: Tagging>: FilteringListViewModel
   func setTagHierarchy()
   {
     let tagList = (try? tagger.tags()) ?? []
-    var tags = XitGit.PathTreeNode.makeHierarchy(from: tagList,
-                                                 prefix: RefPrefixes.tags)
+    var tags = PathTreeNode.makeHierarchy(from: tagList,
+                                          prefix: RefPrefixes.tags)
 
     if !filter.isEmpty {
       tags = tags.filtered(with: filter)

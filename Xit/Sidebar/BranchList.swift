@@ -214,7 +214,7 @@ struct BranchListPreview: View
   @State var expandedItems: Set<String> = []
   
   typealias CommitReferencer = FakeCommitReferencing<
-      NullCommit, XitGit.FakeTree, Brancher.LocalBranch, Brancher.RemoteBranch>
+      NullCommit, FakeTree, Brancher.LocalBranch, Brancher.RemoteBranch>
   
   var body: some View
   {

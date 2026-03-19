@@ -7,7 +7,7 @@ final class PathTreeTest: XCTestCase
   func testFlat() throws
   {
     let nodes = ["first", "second"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     XCTAssertEqual(items, [
       .leaf("first"),
@@ -18,7 +18,7 @@ final class PathTreeTest: XCTestCase
   func testOneFolder()
   {
     let nodes = ["folder/item"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -29,7 +29,7 @@ final class PathTreeTest: XCTestCase
   func testLevel2Folder()
   {
     let nodes = ["folder1/folder2/item"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -48,7 +48,7 @@ final class PathTreeTest: XCTestCase
       "folder1/folder2",
       "folder1/folder2/item",
     ]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -63,7 +63,7 @@ final class PathTreeTest: XCTestCase
   func testItemIsFolder()
   {
     let nodes = ["folder", "folder/item", "other"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -77,7 +77,7 @@ final class PathTreeTest: XCTestCase
   func testTwoSubItems()
   {
     let nodes = ["folder/item1", "folder/item2", "other"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes)
+    let items = PathTreeNode.makeHierarchy(from: nodes)
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -92,7 +92,7 @@ final class PathTreeTest: XCTestCase
   func testSingeAndSubWithPrefx()
   {
     let nodes = ["refs/heads/main1", "refs/heads/work/things1"]
-    let items = XitGit.PathTreeNode.makeHierarchy(from: nodes, prefix: "refs/heads/")
+    let items = PathTreeNode.makeHierarchy(from: nodes, prefix: "refs/heads/")
 
     print(items.printed())
     XCTAssertEqual(items, [
@@ -119,16 +119,16 @@ final class PathTreeTest: XCTestCase
     ]
 
     for testCase in data {
-      let items = XitGit.PathTreeNode.makeHierarchy(from: testCase.nodes)
+      let items = PathTreeNode.makeHierarchy(from: testCase.nodes)
       let filtered = items.filtered(with: testCase.filter)
-      let expectedNodes = XitGit.PathTreeNode.makeHierarchy(from: testCase.expected)
+      let expectedNodes = PathTreeNode.makeHierarchy(from: testCase.expected)
 
       XCTAssertEqual(filtered, expectedNodes)
     }
   }
 }
 
-extension XitGit.PathTreeNode
+extension PathTreeNode
 {
   func printed(indent: Int) -> String
   {
@@ -149,7 +149,7 @@ extension XitGit.PathTreeNode
 
 extension Array
 {
-  func printed<T>(indent: Int = 0) -> String where Element == XitGit.PathTreeNode<T>
+  func printed<T>(indent: Int = 0) -> String where Element == PathTreeNode<T>
   {
     map {
       $0.printed(indent: indent)

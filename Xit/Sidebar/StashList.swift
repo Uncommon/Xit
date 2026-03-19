@@ -163,9 +163,9 @@ struct StashListPreview: View
 
   class Stash: EmptyStash
   {
-    var mainCommit: XitGit.FakeCommit?
-    var indexCommit: XitGit.FakeCommit?
-    var untrackedCommit: XitGit.FakeCommit?
+    var mainCommit: FakeCommit?
+    var indexCommit: FakeCommit?
+    var untrackedCommit: FakeCommit?
     var message: String? { mainCommit?.messageSummary }
 
     var index: [FileChange]

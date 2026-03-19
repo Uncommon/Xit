@@ -5,9 +5,9 @@ class FakeRepo: FileChangesRepo &
   EmptyCommitReferencing & EmptyFileDiffing & EmptyFileContents &
   EmptyFileStaging & EmptyFileStatusDetection
 {
-  typealias Commit = XitGit.FakeCommit
+  typealias Commit = FakeCommit
   typealias Tag = NullTag
-  typealias Tree = XitGit.FakeTree
+  typealias Tree = FakeTree
   typealias Blob = NullBlob
   typealias LocalBranch = FakeLocalBranch
   typealias RemoteBranch = FakeRemoteBranch
@@ -27,7 +27,7 @@ class FakeRepo: FileChangesRepo &
   
   var isWriting: Bool { false }
   
-  var commits: [GitOID: XitGit.FakeCommit] = [:]
+  var commits: [GitOID: FakeCommit] = [:]
 
   init()
   {
@@ -40,10 +40,10 @@ class FakeRepo: FileChangesRepo &
     self.remoteBranch1.remoteName = remote1.name
     self.remoteBranch2.remoteName = remote2.name
     
-    let commit1 = XitGit.FakeCommit(branchHead: localBranch1)
-    let commit2 = XitGit.FakeCommit(branchHead: localBranch2)
-    let commitR1 = XitGit.FakeCommit(branchHead: remoteBranch1)
-    let commitR2 = XitGit.FakeCommit(branchHead: remoteBranch2)
+    let commit1 = FakeCommit(branchHead: localBranch1)
+    let commit2 = FakeCommit(branchHead: localBranch2)
+    let commitR1 = FakeCommit(branchHead: remoteBranch1)
+    let commitR2 = FakeCommit(branchHead: remoteBranch2)
 
     commits[commit1.id] = commit1
     commits[commit2.id] = commit2
