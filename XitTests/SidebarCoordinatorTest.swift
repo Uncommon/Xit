@@ -346,3 +346,42 @@ struct SidebarCoordinatorTest
     #expect(branchList.selectedRemote == nil)
   }
 }
+
+struct BranchListTest
+{
+  @Test
+  func trackingIndicatorUsesCachedGraphStatus() throws
+  {
+    let trackingBranch = TestRemoteBranch(remoteName: "origin", name: "main")
+    let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
+                                trackingRefName: trackingBranch.referenceName,
+                                isCurrent: false,
+                                graphStatus: .init(ahead: 0, behind: 1))
+
+    #expect(branch.trackingIndicator
+              == BranchTrackingIndicator.statusBadge("↓1"))
+  }
+
+  @Test
+  func trackingIndicatorShowsNetworkWhenCachedStatusIsZero() throws
+  {
+    let trackingBranch = TestRemoteBranch(remoteName: "origin", name: "main")
+    let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
+                                trackingRefName: trackingBranch.referenceName,
+                                isCurrent: false,
+                                graphStatus: .zero)
+
+    #expect(branch.trackingIndicator == BranchTrackingIndicator.network)
+  }
+
+  @Test
+  func trackingIndicatorIsAbsentWithoutTrackingBranch() throws
+  {
+    let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
+                                trackingRefName: nil,
+                                isCurrent: false,
+                                graphStatus: .init(ahead: 3, behind: 2))
+
+    #expect(branch.trackingIndicator == BranchTrackingIndicator.none)
+  }
+}

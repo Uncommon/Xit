@@ -2,6 +2,35 @@ import SwiftUI
 import Combine
 import XitGit
 
+enum BranchTrackingIndicator: Equatable
+{
+  case none
+  case network
+  case statusBadge(String)
+}
+
+extension BranchListItem
+{
+  var trackingIndicator: BranchTrackingIndicator
+  {
+    guard trackingRefName != nil
+    else { return .none }
+
+    guard graphStatus.ahead > 0 || graphStatus.behind > 0
+    else { return .network }
+
+    var numbers = [String]()
+
+    if graphStatus.ahead > 0 {
+      numbers.append("↑\(graphStatus.ahead)")
+    }
+    if graphStatus.behind > 0 {
+      numbers.append("↓\(graphStatus.behind)")
+    }
+    return .statusBadge(numbers.joined(separator: " "))
+  }
+}
+
 struct BranchList<Brancher: Branching,
                   Referencer: CommitReferencing>: View
   where Brancher.LocalBranch == Referencer.LocalBranch,
@@ -139,27 +168,16 @@ struct BranchList<Brancher: Branching,
   
   func upstreamIndicator(for branch: BranchListItem) -> some View
   {
-    if let remoteBranch = branch.trackingRefName {
-      let status = branch.graphStatus
+    switch branch.trackingIndicator {
+      case .none:
+        return AnyView(EmptyView())
 
-      guard status.ahead > 0 || status.behind > 0
-      else {
+      case .network:
         return AnyView(Image(systemName: "network")
           .axid(.Sidebar.trackingStatus))
-      }
-      var numbers = [String]()
-      
-      if status.ahead > 0 {
-        numbers.append("↑\(status.ahead)")
-      }
-      if status.behind > 0 {
-        numbers.append("↓\(status.behind)")
-      }
-      return AnyView(StatusBadge(numbers.joined(separator: " "),
-                                 axid: .Sidebar.trackingStatus))
-    }
-    else {
-      return AnyView(EmptyView())
+
+      case .statusBadge(let text):
+        return AnyView(StatusBadge(text, axid: .Sidebar.trackingStatus))
     }
   }
 }

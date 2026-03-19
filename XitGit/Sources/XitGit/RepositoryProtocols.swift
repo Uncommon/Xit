@@ -117,6 +117,12 @@ public protocol CommitStorage: AnyObject
 public struct GraphStatus: Sendable
 {
   public let ahead, behind: Int
+
+  public init(ahead: Int, behind: Int)
+  {
+    self.ahead = ahead
+    self.behind = behind
+  }
   
   public static var zero: GraphStatus { .init(ahead: 0, behind: 0) }
 }
