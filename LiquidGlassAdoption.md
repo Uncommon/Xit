@@ -1,10 +1,10 @@
-# Liquid Glass Adoption Plan (Non-Sidebar UI)
+# Liquid Glass Adoption Plan
 
-This plan is based on the current UI implementation in this repo and is scoped to non-sidebar surfaces only.
+This plan reflects the current post-merge UI state in this repo.
 
 ## Scope
-- Included: main window chrome, history/file panes, preview surfaces, commit entry/header, operation sheets, preferences, and shared SwiftUI/AppKit UI helpers.
-- Excluded: `Xit/Sidebar/*` and sidebar-specific work in `Xit/Document/XTWindowController.storyboard` (handled in a separate branch).
+- Included: main window chrome, sidebar, history/file panes, preview surfaces, commit entry/header, operation sheets, preferences, and shared SwiftUI/AppKit UI helpers.
+- Excluded: none. Sidebar work is now in scope after the merge from main.
 
 ## Files Reviewed
 - Main window and title bar:
@@ -12,6 +12,8 @@ This plan is based on the current UI implementation in this repo and is scoped t
   - `Xit/Document/XTWindowController+TitleBar.swift`
   - `Xit/Document/TitleBarController.swift`
   - `Xit/Document/XTWindowController.storyboard`
+- Sidebar:
+  - `Xit/Sidebar/*`
 - History and commit list:
   - `Xit/HistoryView/HistoryViewController.storyboard`
   - `Xit/HistoryView/HistoryCellView.swift`
@@ -45,232 +47,102 @@ This plan is based on the current UI implementation in this repo and is scoped t
   - `XitUITests/Components.swift`
 
 ## Key Findings
-- The main toolbar still uses older AppKit control styles (`texturedSquare`, `texturedRounded`) in `XTWindowController.storyboard`.
-- A single glass-like surface already exists (`NSVisualEffectView material="headerView"`) in `FileListView.xib`, but this is isolated and not system-wide.
-- Multiple views still force opaque fills (`controlBackgroundColor`, `textBackgroundColor`, `windowBackgroundColor`), which limits Liquid Glass depth.
-- `WebViewController.swift` forces a hard-coded gray background (`deviceWhite: 0.8`) that breaks translucency.
-- History reference tokens and graph drawing use custom gradients/strokes that read as pre-Liquid-Glass.
-- Operations are mixed: some SwiftUI sheets are modern; several `.xib` sheets are still legacy-styled.
+- Earlier Liquid Glass adoption tasks are either complete, merged, or no longer needed after visual review.
+- Sidebar work is now unblocked and can be updated directly.
+- The sidebar search field layout needs follow-up after the merge.
+- History list ref tags are not currently showing after the merge and need to be restored before further history polish.
+- A command icon audit is still open for menu bar and context menu actions.
+- The search toolbar item should be revisited to see whether the expanding Liquid Glass search style can support the additional controls used here (arrow buttons and search type popup).
 
-## Specific Recommendations
+## Current Work Items
 
-### 1. Main window chrome and toolbar controls
+### 1. Sidebar search field layout
 Files:
+- `Xit/Sidebar/*`
 - `Xit/Document/XTWindowController.storyboard`
-- `Xit/Document/XTWindowController.swift`
-- `Xit/Document/TitleBarController.swift`
 
 Actions:
-- Replace legacy toolbar cell styles (`texturedSquare`, `texturedRounded`) with modern unified control styling to sit naturally on glass.
-- Keep `fullSizeContentView` behavior from `XTWindowController.updateWindowStyle(_:)`, but add an explicit shared "toolbar glass" pass through code to avoid storyboard churn.
-- Group toolbar controls into consistent visual clusters (navigation, remote ops, stash/search/view) with one shared surface treatment instead of independent textured buttons.
-- Preserve accessibility IDs (`repoWindow`, `remoteOps`, `branchPopup`, `progress`) to keep UITests stable.
+- Update the merged sidebar search field layout to fit the current sidebar structure and spacing.
+- Keep the merged sidebar work intact; adjust layout, alignment, and sizing only as needed.
+- Preserve accessibility and search behavior while updating the visual layout.
 
 Why:
-- This is the highest-visibility surface and currently mixes modern symbols with legacy control chrome.
+- The sidebar is now in scope, and the merged search layout still needs cleanup.
 
-### 2. History list and reference chips
+### 2. History list ref tags restore
 Files:
 - `Xit/HistoryView/HistoryViewController.storyboard`
 - `Xit/HistoryView/HistoryCellView.swift`
 - `Xit/HistoryView/RefTokenView.swift`
 
 Actions:
-- Add a glass-backed header treatment for the history table to match the file list header treatment.
-- Reduce opaque table background dependence; make rows and separators rely on semantic colors that work over translucency.
-- Rework `RefTokenView` from heavy gradient + emboss + shine into lightweight tinted capsules/tags that keep shape semantics (branch/tag/remote) with subtler depth.
-- Keep graph line contrast logic in `HistoryCellView` but replace hard `textBackgroundColor` strokes with a semantic separator strategy suitable for layered material.
+- Restore history list ref tag rendering after the merge.
+- Verify the merge did not break token insertion, visibility, coloring, or layout in history rows.
+- Reconcile any conflicts between the merged sidebar/history changes and the existing Phase 2 token styling updates.
 
 Why:
-- History is visually dense; current gradients and hard backgrounds compete with Liquid Glass.
+- History list readability depends on those ref tags, and this is currently a functional regression.
 
-### 3. File list and preview chrome unification
+### 3. Menu bar and context menu icons
 Files:
-- `Xit/FileView/FileViewController.xib`
-- `Xit/FileView/File List/FileListView.xib`
-- `Xit/FileView/File List/FileListController.swift`
+- Command/menu definitions across the app
+- Menu bar item and context menu builders
 
 Actions:
-- Keep and modernize the existing file-list `NSVisualEffectView` header as the pattern for other non-sidebar headers.
-- Replace "fake chrome" buttons used as header/footer bars in `FileViewController.xib` (`previewHeader`, `previewFooter`) with dedicated material-backed container views.
-- Update top-right action buttons and list mode controls to use a unified icon weight and border behavior over glass.
+- Add more icons to menu bar commands or context menu commands where doing so improves scanability without clutter.
+- Prefer icons on the highest-frequency or most visually ambiguous actions.
+- Keep icon use consistent with AppKit menu conventions and existing symbol choices.
 
 Why:
-- File pane currently mixes one modern glass header with several legacy small-square bars and controls.
+- This is still an obvious affordance gap in the current UI.
 
-### 4. Commit header and commit entry surfaces
+### 4. Search toolbar item
 Files:
-- `Xit/FileView/CommitHeader.swift`
-- `Xit/FileView/CommitEntryController.xib`
+- `Xit/Document/XTWindowController.storyboard`
+- `Xit/Document/TitleBarController.swift`
+- `Xit/HistoryView/HistorySearchBar.swift`
+- Related toolbar/search support code
 
 Actions:
-- Convert commit header backgrounds from hard `windowBackgroundColor` / `textBackgroundColor` blocks to layered material sections.
-- In `CommitEntryController.xib`, replace the custom filled `NSBox` container and hard separator line with a material host + subtle separator stroke.
-- Keep existing AX IDs (`commitButton`, `messageField`, `amendCheck`, `stripCheck`) unchanged.
+- Investigate adopting the Liquid Glass expanding Search toolbar item style.
+- Validate whether it can coexist with the extra search controls used here:
+  - previous/next arrow buttons
+  - search type popup
+- If the expanding style cannot support the full control set cleanly, keep the current search interaction model and limit changes to iconography and layout polish.
 
 Why:
-- Commit area is a large, persistent surface; this is a visible gain after toolbar/history updates.
-
-### 5. Web-based diff, blame, and text preview integration
-Files:
-- `Xit/FileView/Previews/WebViewController.swift`
-- `Xit/html/colors.css`
-- `Xit/html/blame.css`
-- `Xit/html/text.css`
-
-Actions:
-- Remove hard-coded `NSColor(deviceWhite: 0.8, alpha: 1.0)` in `WebViewController.webView(_:didFinish:)`.
-- Keep web content legible by pushing semantic color tokens from AppKit and using alpha-capable CSS surface variables.
-- Tone down heavy shadow and hard card edges in diff/blame CSS to better match a layered glass environment.
-
-Why:
-- Web previews are large and currently look detached from the native container.
-
-### 6. Operations and sheets: unify presentation style
-Files:
-- Legacy XIB sheets:
-  - `Xit/Operations/NewBranchPanelController.xib`
-  - `Xit/Operations/RenameBranchPanelController.xib`
-  - `Xit/Operations/RemoteSheetController.xib`
-  - `Xit/Operations/PushNewPanelController.xib`
-  - `Xit/Operations/ResetPanelController.xib`
-  - `Xit/Operations/PasswordPanelController.xib`
-- SwiftUI sheet scaffolding:
-  - `Xit/Operations/SheetDialog.swift`
-  - `Xit/Operations/ClonePanel.swift`
-  - `Xit/Operations/CleanPanel.swift`
-
-Actions:
-- Standardize sheet visuals around one shared container style for both SwiftUI and AppKit-hosted sheets.
-- Prefer migrating remaining xib sheets to the existing `SheetDialog` SwiftUI pattern where practical.
-- For xib sheets that stay AppKit, wrap the root content in a material-backed view and remove unnecessary hard background fills.
-- Keep existing sheet accessibility identifiers (`ResetSheet`, `PushNewSheet`, `cleanWindow`) unchanged.
-
-Why:
-- Sheets are currently inconsistent: some modern SwiftUI, some legacy xib visual language.
-
-### 7. Preferences window and pane styling
-Files:
-- `Xit/Preferences/Preferences.storyboard`
-- `Xit/Preferences/PrefsWindowController.swift`
-- `Xit/Preferences/AccountsPrefsPane.swift`
-- `Xit/Preferences/GeneralPrefsPane.swift`
-- `Xit/Preferences/PreviewsPrefsPane.swift`
-
-Actions:
-- Apply the same window chrome treatment as the main document window for consistency.
-- Replace the `AccountsPrefsPane` bottom bar (`.background(.tertiary)` + border) with a lighter material strip.
-- Keep form layouts and control density as-is; update surface treatment first.
-
-Why:
-- Preferences should look like part of the same app family, not a different visual era.
+- Search is one of the remaining high-visibility toolbar surfaces and now needs a post-merge design pass.
 
 ## Phased Implementation Plan
 
-### Phase 0: Shared foundation
+### Phase 0-3 status
+- Complete or no longer needed:
+  - Shared Liquid Glass helpers and accessibility fallbacks landed.
+  - Web preview transparency and interaction fixes landed.
+  - History/file-list token and separator refresh landed.
+  - Sheet and preference work that proved unnecessary or visually counterproductive was dropped.
+  - Earlier toolbar/header items that no longer make sense after the merge are closed unless re-opened by one of the current work items below.
+
+### Phase 4: Post-merge follow-up
 Files:
-- New helper(s) in `Xit/Utils` and `Xit/Utils/SwiftUI`
+- `Xit/Sidebar/*`
+- `Xit/Document/XTWindowController.storyboard`
+- `Xit/Document/TitleBarController.swift`
+- `Xit/HistoryView/*`
+- Command/menu builders across the app
 
 Tasks:
-- Add shared material tokens/modifiers for AppKit and SwiftUI (one source of truth).
-- Add availability and accessibility fallbacks (Reduce Transparency and high-contrast friendly colors).
-- Define "do not touch" sidebar paths in PR scope to avoid cross-branch churn.
-
-Exit criteria:
-- One reusable abstraction for glass surfaces exists and is used by at least one screen.
-
-### Phase 0 implementation status
-- Added shared non-sidebar liquid glass helpers:
-  - `Xit/Utils/Extensions/CocoaExtensions.swift`
-  - `Xit/Utils/Extensions/SwiftUIExtensions.swift`
-- Wired into non-sidebar screens:
-  - `Xit/Utils/SwiftUI/HostingTitlebarController.swift`
-  - `Xit/Operations/SheetDialog.swift`
-  - `Xit/Operations/ClonePanel.swift`
-- PR scope guard for this phase:
-  - Do not change `Xit/Sidebar/*`
-  - Do not change sidebar scene content in `Xit/Document/XTWindowController.storyboard`
-
-### Phase 1: Window chrome + preview quick wins
-Files:
-- `XTWindowController.storyboard`, `XTWindowController.swift`, `TitleBarController.swift`
-- `FileViewController.xib`
-- `WebViewController.swift`
-
-Tasks:
-- Update toolbar control styles and grouping.
-- Replace preview header/footer fake chrome bars with real material containers.
-- Remove hard-coded webview gray background.
-
-Exit criteria:
-- Main window, toolbar, and preview pane read as one visual system.
-
-### Phase 1 implementation status
-- Completed:
-  - Web preview behavior and rendering fixes in `Xit/FileView/Previews/WebViewController.swift`:
-    - Removed hard-coded gray background behavior.
-    - Restored interactive web previews on macOS 26.
-    - Applied liquid-glass-aware transparency and accessibility fallback handling.
-- Attempted and reverted:
-  - Toolbar restyling and grouping updates in titlebar/window controllers.
-  - Preview header/footer material-bar replacement in `FileViewController.xib`.
-- Deferred to later:
-  - Main toolbar visual regrouping and control-style migration.
-  - Preview header/footer container redesign.
-
-### Phase 2: History + file list harmonization
-Files:
-- `HistoryViewController.storyboard`, `HistoryCellView.swift`, `RefTokenView.swift`
-- `FileListView.xib`, `FileListController.swift`
-
-Tasks:
-- Unify header/list surfaces across history and file list.
-- Refresh ref token visuals and separator strategy for translucency.
-
-Exit criteria:
-- History and file panes feel consistent and no longer mix old/new chrome styles.
-
-### Phase 2 implementation status
-- Completed:
-  - Updated history graph contrast in `HistoryCellView.swift` to use semantic separator-based strokes instead of hard opaque strokes.
-  - Refreshed reference token rendering in `RefTokenView.swift` to lighter translucent surfaces with subtler strokes.
-  - Added ref token surface color helper in `Colors.swift`.
-  - Updated file list styling in `FileListController.swift`:
-    - Transparent list backgrounds for layered surfaces.
-    - Modernized view-switch/action control styling.
-- Attempted and reverted:
-  - History list header glass overlay treatment (header text legibility regression).
-- Deferred to later:
-  - Final history header treatment (keep visible labels and align with file-list header style).
-
-### Phase 3: Sheets and preferences
-Files:
-- `Operations/*.xib`, `SheetDialog.swift`, SwiftUI panels
-- `Preferences/*`
-
-Tasks:
-- Bring xib sheets to shared material style or migrate to SwiftUI dialog path.
-- Update preferences surfaces to match app chrome.
-
-Exit criteria:
-- Sheet and settings visual language matches main document window.
-
-### Phase 4: Polish and hardening
-Files:
-- Cross-cutting
-
-Tasks:
+- Update sidebar search field layout now that sidebar work is merged.
+- Restore history list ref tags after the merge.
+- Add more icons to menu bar or context menu commands where appropriate.
+- Investigate adopting the Liquid Glass expanding Search toolbar item with the extra arrow/search-type controls.
 - Verify AX IDs and UITests remain stable.
 - Validate dark/light mode, increased contrast, and Reduce Transparency.
 - Check scroll and redraw performance in history and diff/blame views.
 
 Exit criteria:
 - No regressions in UI tests and no noticeable performance regressions in large repos.
-
-## Merge and Branch Safety (Sidebar Exclusion)
-- Do not modify `Xit/Sidebar/*`.
-- Avoid structural edits in sidebar scene sections of `XTWindowController.storyboard`.
-- Prefer code-side style hooks where possible to reduce storyboard merge conflicts with the sidebar branch.
+- Sidebar search layout, history ref tags, command icon coverage, and toolbar search treatment are all resolved or intentionally ruled out.
 
 ## Validation Checklist
 - Main window toolbar IDs still pass UI tests (`repoWindow`, `remoteOps`, `branchPopup`).
