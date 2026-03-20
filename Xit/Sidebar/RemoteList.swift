@@ -52,20 +52,16 @@ struct RemoteList<Manager: RemoteManagement,
                   let _ = accessories.revision
                   accessories.accessory(for: branch)
                 }
-              })
-                .contextMenu {
-                  if let branch = node.item {
-                    remoteBranchContextMenu(for: branch)
-                  }
+              }, contextMenu: {
+                if let branch = node.item {
+                  remoteBranchContextMenu(for: branch)
                 }
+              })
                 .tag(node.item.map { RemoteListSelection.branch(ref: $0) })
             }
           } label: {
-            Label(remote.name, systemImage: "network")
+            remoteRow(for: remote.name)
           }
-            .contextMenu {
-              remoteContextMenu(for: remote.name)
-            }
             .tag(RemoteListSelection.remote(name: remote.name))
             .listRowSeparator(.hidden)
         }
@@ -159,6 +155,19 @@ struct RemoteList<Manager: RemoteManagement,
     Button(.copyURL, systemImage: "document.on.document") {
       coordinator.copyRemoteURL(name)
     }
+  }
+
+  @ViewBuilder
+  func remoteRow(for name: String) -> some View
+  {
+    HStack {
+      Label(name, systemImage: "network")
+      Spacer()
+    }
+      .contentShape(Rectangle())
+      .contextMenu {
+        remoteContextMenu(for: name)
+      }
   }
 
   @ViewBuilder

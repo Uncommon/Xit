@@ -209,7 +209,6 @@ class RemoteBranchTests: UnicodeRepoUITests
     XCTContext.runActivity(named: "open Create Tracking Branch sheet") {
       _ in
       Sidebar.Remotes.cell(named: newBranchName)
-        .staticTexts.firstMatch // Right click on the cell itself seems to miss
         .rightClick()
       XitApp.windows.menuItems[UIString.createTrackingBranch.rawValue].tap()
     }

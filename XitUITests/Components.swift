@@ -86,7 +86,7 @@ extension SidebarList
 enum Sidebar
 {
   enum Tab {
-    static let local = Window.window.buttons["Local"]
+    static let local = Window.window.buttons["Branches"]
     static let remotes = Window.window.buttons["Remotes"]
     static let tags = Window.window.buttons["Tags"]
     static let stashes = Window.window.buttons["Stashes"]

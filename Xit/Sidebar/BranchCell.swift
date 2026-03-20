@@ -2,17 +2,33 @@ import SwiftUI
 import XitGit
 
 /// List cell view used by local and remote branch lists.
-struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
+struct BranchCell<Item: PathTreeData,
+                  TrailingContent: View,
+                  ContextMenuContent: View>: View
 {
   let node: PathTreeNode<Item>
   let isCurrent: Bool
+  let hasContextMenu: Bool
   @ViewBuilder
   let trailingContent: () -> TrailingContent
+  @ViewBuilder
+  let contextMenuContent: () -> ContextMenuContent
 
   var body: some View
   {
+    if hasContextMenu {
+      row.contextMenu(menuItems: contextMenuContent)
+    }
+    else {
+      row
+    }
+  }
+
+  @ViewBuilder
+  private var row: some View
+  {
     let branch = node.item
-    
+
     HStack {
       Label(
         title: {
@@ -49,13 +65,28 @@ struct BranchCell<Item: PathTreeData, TrailingContent: View>: View
       .listRowSeparator(.hidden)
       .selectionDisabled(branch == nil)
   }
-  
+
   init(node: PathTreeNode<Item>,
        isCurrent: Bool = false,
        @ViewBuilder trailingContent: @escaping () -> TrailingContent)
+    where ContextMenuContent == EmptyView
   {
     self.node = node
     self.isCurrent = isCurrent
+    self.hasContextMenu = false
     self.trailingContent = trailingContent
+    self.contextMenuContent = { EmptyView() }
+  }
+
+  init(node: PathTreeNode<Item>,
+       isCurrent: Bool = false,
+       @ViewBuilder trailingContent: @escaping () -> TrailingContent,
+       @ViewBuilder contextMenu: @escaping () -> ContextMenuContent)
+  {
+    self.node = node
+    self.isCurrent = isCurrent
+    self.hasContextMenu = true
+    self.trailingContent = trailingContent
+    self.contextMenuContent = contextMenu
   }
 }
