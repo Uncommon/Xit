@@ -123,6 +123,7 @@ final class HistoryTableController: NSViewController,
         return
       }
       
+      repository.rebuildRefsIndex()
       walker.setSorting([.topological])
       
       let refs = repository.allRefs()
