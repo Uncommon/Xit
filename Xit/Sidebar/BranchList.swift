@@ -130,6 +130,8 @@ struct BranchList<Brancher: Branching,
         }
       })
     }
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.branchList)
   }
   
   var selectedBranch: LocalBranchRefName?

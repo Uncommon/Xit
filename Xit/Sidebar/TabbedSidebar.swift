@@ -115,6 +115,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     }
       .listStyle(.sidebar)
       .frame(width: 300)
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.list)
   }
 
   init(brancher: Brancher,

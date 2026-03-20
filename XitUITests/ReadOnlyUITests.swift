@@ -32,9 +32,9 @@ class ReadOnlyUITests: XCTestCase
     
   func testSidebar()
   {
-    Sidebar.assertStagingStatus(workspace: 1, staged: 0)
+    Sidebar.Branches.assertStagingStatus(workspace: 1, staged: 0)
     
-    Sidebar.assertBranches(Self.env.repo.defaultBranches)
+    Sidebar.Branches.assertBranches(Self.env.repo.defaultBranches)
   }
   
   /// Tests filtering with no branch folders
@@ -50,21 +50,21 @@ class ReadOnlyUITests: XCTestCase
       Sidebar.Branches.filterField.typeText("a")
       wait(for: [absence(of: newBranchCell)], timeout: 5.0)
       
-      Sidebar.assertBranches(aBranches)
+      Sidebar.Branches.assertBranches(aBranches)
     }
     
     XCTContext.runActivity(named: "Filter with 'and'") { _ in
       Sidebar.Branches.filterField.typeText("nd")
       wait(for: [absence(of: masterBranchCell)], timeout: 5.0)
 
-      Sidebar.assertBranches(andBranches)
+      Sidebar.Branches.assertBranches(andBranches)
     }
     
     XCTContext.runActivity(named: "Clear filter") { _ in
       Sidebar.Branches.cancelButton.click()
       wait(for: [presence(of: newBranchCell)], timeout: 8.0)
 
-      Sidebar.assertBranches(Self.env.repo.defaultBranches)
+      Sidebar.Branches.assertBranches(Self.env.repo.defaultBranches)
     }
   }
 

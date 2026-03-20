@@ -119,6 +119,8 @@ struct StashList<Stasher: Stashing>: View
         }
       }
     }
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.stashesList)
   }
 
   init(model: StashListViewModel<Stasher>,

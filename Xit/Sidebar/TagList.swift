@@ -64,6 +64,8 @@ struct TagList<Tagger: Tagging>: View
         }
       FilterBar(text: $model.filter)
     }
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.tagsList)
   }
 
   private func tagInfoModel(for tag: Tagger.Tag) -> TagInfoModel

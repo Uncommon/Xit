@@ -85,6 +85,13 @@ extension SidebarList
 
 enum Sidebar
 {
+  static func list(for identifier: AXID) -> XCUIElement
+  {
+    Window.window.descendants(matching: .any)
+      .matching(identifier: identifier)
+      .firstMatch
+  }
+
   enum Tab {
     static let local = Window.window.buttons["Branches"]
     static let remotes = Window.window.buttons["Remotes"]
@@ -95,7 +102,7 @@ enum Sidebar
   
   enum Branches: SidebarList
   {
-    static let list = Window.window.outlines[.Sidebar.branchList]
+    static let list = Sidebar.list(for: .Sidebar.branchList)
     static var stagingCell: XCUIElement
     {
       list.cells.containing(.staticText,
@@ -113,46 +120,48 @@ enum Sidebar
         .containing(.staticText, identifier: branch)
         .firstMatch
     }
+
+    static func assertStagingStatus(workspace: Int, staged: Int)
+    {
+      let expected = "\(workspace) ▸ \(staged)"
+      let statusButton = stagingCell.staticTexts[.Sidebar.workspaceStatus]
+      
+      XCTAssertEqual(expected, statusButton.stringValue)
+    }
+
+    static func assertBranches(_ branches: [String])
+    {
+      let branchTextIdentifiers = [
+        AXID.Sidebar.branch.rawValue,
+        AXID.Sidebar.currentBranch.rawValue,
+      ]
+      let labels = list.descendants(matching: .staticText)
+        .allElementsBoundByIndex
+        .filter { branchTextIdentifiers.contains($0.identifier) }
+        .map(\.stringValue)
+      
+      XCTAssertEqual(labels, branches, "unexpected branches: \(labels)")
+    }
   }
   
   enum Remotes: SidebarList
   {
-    static let list = Window.window.outlines[.Sidebar.remotesList]
+    static let list = Sidebar.list(for: .Sidebar.remotesList)
   }
 
   enum Tags: SidebarList
   {
-    static let list = Window.window.outlines[.Sidebar.tagsList]
+    static let list = Sidebar.list(for: .Sidebar.tagsList)
   }
 
-  static let list = Window.window.outlines[.Sidebar.list]
+  static let list = list(for: .Sidebar.list)
   static let filter = Window.window.searchFields[.Sidebar.filter]
   static let addButton = Window.window.popUpButtons[.Sidebar.add]
-  static let stagingCell = Branches.list.cells.element(boundBy: 0)
 
   static let branchPopup = XitApp.menus[.Menu.branch]
   static let remoteBranchPopup = XitApp.menus[.Menu.remoteBranch]
   static let tagPopup = XitApp.menus[.Menu.tag]
 
-  static func assertStagingStatus(workspace: Int, staged: Int)
-  {
-    let expected = "\(workspace) ▸ \(staged)"
-    let statusButton = stagingCell.staticTexts[.Sidebar.workspaceStatus]
-    
-    XCTAssertEqual(expected, statusButton.stringValue)
-  }
-  
-  static func assertBranches(_ branches: [String])
-  {
-    for (index, branch) in branches.enumerated() {
-      let cell = Branches.list.cells.element(boundBy: index + 2)
-      let label = cell.staticTexts.firstMatch.value as? String ?? ""
-      
-      XCTAssertEqual(label, branch,
-                     "item \(index) is '\(label)' instead of '\(branch)'")
-    }
-  }
-  
   static func assertCurrentBranch(_ branch: String,
                                   file: StaticString = #file,
                                   line: UInt = #line)

@@ -126,6 +126,8 @@ struct RemoteList<Manager: RemoteManagement,
           model.filterChanged(model.filter)
         }
     }
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.remotesList)
   }
 
   var selectedRemote: String?

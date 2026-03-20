@@ -43,6 +43,8 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
         }
       }
     }
+      .accessibilityElement(children: .contain)
+      .axid(.Sidebar.submodulesList)
   }
 
   @ViewBuilder
