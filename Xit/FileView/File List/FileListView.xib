@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -203,7 +203,7 @@
                             </textFieldCell>
                         </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oZ7-u4-Nl7">
-                            <rect key="frame" x="304" y="3" width="25" height="15"/>
+                            <rect key="frame" x="308" y="3" width="25" height="15"/>
                             <subviews>
                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="OlX-7Q-Bzy">
                                     <rect key="frame" x="-5" y="0.0" width="30" height="15"/>
@@ -215,23 +215,23 @@
                                                 <menuItem image="NSActionTemplate" hidden="YES" id="cjU-tH-Zw9">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                 </menuItem>
-                                                <menuItem title="Sort By" identifier="sortBy" id="hoQ-ce-CWn">
+                                                <menuItem title="Sort By" secondaryImage="arrow.up.arrow.down" catalog="system" identifier="sortBy" id="hoQ-ce-CWn">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <menu key="submenu" title="Sort By" id="Exo-MC-75a">
                                                         <items>
-                                                            <menuItem title="Full Path" id="3UL-Ou-6lD">
+                                                            <menuItem title="Full Path" secondaryImage="textformat.characters.arrow.left.and.right" catalog="system" id="3UL-Ou-6lD">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
                                                                     <action selector="sortFilesBy:" target="-1" id="eaj-Rr-5Ih"/>
                                                                 </connections>
                                                             </menuItem>
-                                                            <menuItem title="File Name" tag="1" id="QRo-j6-OpG">
+                                                            <menuItem title="File Name" image="textformat.characters" catalog="system" tag="1" id="QRo-j6-OpG">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
                                                                     <action selector="sortFilesBy:" target="-1" id="B3K-up-uBk"/>
                                                                 </connections>
                                                             </menuItem>
-                                                            <menuItem title="Status" tag="2" id="TQV-un-T7v">
+                                                            <menuItem title="Status" image="questionmark.circle" catalog="system" tag="2" id="TQV-un-T7v">
                                                                 <modifierMask key="keyEquivalentModifierMask"/>
                                                                 <connections>
                                                                     <action selector="sortFilesBy:" target="-1" id="u9R-KM-DzX"/>
@@ -241,39 +241,39 @@
                                                     </menu>
                                                 </menuItem>
                                                 <menuItem isSeparatorItem="YES" id="LIG-q1-ez7"/>
-                                                <menuItem title="Stage All" id="RWJ-Cl-NhJ">
+                                                <menuItem title="Stage All" secondaryImage="chevron.up.2" catalog="system" id="RWJ-Cl-NhJ">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="stageAll:" target="-2" id="xX5-EW-aST"/>
                                                     </connections>
                                                 </menuItem>
-                                                <menuItem title="Unstage All" id="uyC-Rm-xOQ">
+                                                <menuItem title="Unstage All" secondaryImage="chevron.down.2" catalog="system" id="uyC-Rm-xOQ">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="unstageAll:" target="-2" id="1wp-Xp-CpX"/>
                                                     </connections>
                                                 </menuItem>
-                                                <menuItem title="Revert" id="J5Y-DV-RIc" userLabel="Revert">
+                                                <menuItem title="Revert" secondaryImage="arrow.uturn.backward" catalog="system" id="J5Y-DV-RIc" userLabel="Revert">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="revert:" target="-2" id="AE5-3a-0Wg"/>
                                                     </connections>
                                                 </menuItem>
                                                 <menuItem isSeparatorItem="YES" id="9WW-vS-0eu"/>
-                                                <menuItem title="Show Ignored Files" id="9nZ-X0-lps">
+                                                <menuItem title="Show Ignored Files" secondaryImage="eye.slash" catalog="system" id="9nZ-X0-lps">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="showIgnored:" target="-2" id="8nK-DJ-lvE"/>
                                                     </connections>
                                                 </menuItem>
                                                 <menuItem isSeparatorItem="YES" id="oa3-WC-5I0"/>
-                                                <menuItem title="Open" id="sAe-3u-SKM">
+                                                <menuItem title="Open" secondaryImage="arrow.up.right.square" catalog="system" id="sAe-3u-SKM">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="open:" target="-2" id="29T-l1-l3y"/>
                                                     </connections>
                                                 </menuItem>
-                                                <menuItem title="Show in Finder" id="Fef-jx-E7e">
+                                                <menuItem title="Show in Finder" secondaryImage="finder" catalog="system" id="Fef-jx-E7e">
                                                     <modifierMask key="keyEquivalentModifierMask"/>
                                                     <connections>
                                                         <action selector="showInFinder:" target="-2" id="sxD-b8-zoE"/>
@@ -295,7 +295,7 @@
                             </customSpacing>
                         </stackView>
                         <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eB6-ub-8f2">
-                            <rect key="frame" x="335" y="-2" width="71" height="24"/>
+                            <rect key="frame" x="341" y="-3" width="63" height="24"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="selectOne" id="8Tl-dI-Xev">
                                 <font key="font" metaFont="system"/>
                                 <segments>
@@ -331,33 +331,33 @@
         </customView>
         <menu id="xba-e5-1Y8">
             <items>
-                <menuItem title="Stage" id="qDf-k0-76D">
+                <menuItem title="Stage" image="chevron.up.circle" catalog="system" id="qDf-k0-76D">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="stage:" target="-2" id="Far-CC-WSV"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Unstage" id="E1n-mV-gTs">
+                <menuItem title="Unstage" image="chevron.down.circle" catalog="system" id="E1n-mV-gTs">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="unstage:" target="-2" id="eU2-sO-BQe"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="2Zd-xN-7Ao"/>
-                <menuItem title="Revert" id="7jC-IS-HXg">
+                <menuItem title="Revert" secondaryImage="arrow.uturn.backward" catalog="system" id="7jC-IS-HXg">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="revert:" target="-2" id="uje-Oo-gmg"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="5dV-b7-Pzm"/>
-                <menuItem title="Open With" id="EG1-a7-JgJ">
+                <menuItem title="Open With" secondaryImage="arrow.up.right.square" catalog="system" id="EG1-a7-JgJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="open:" target="-2" id="y1m-9a-Sgt"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Show in Finder" id="ZGE-jn-s4V">
+                <menuItem title="Show in Finder" secondaryImage="finder" catalog="system" id="ZGE-jn-s4V">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showInFinder:" target="-2" id="jNo-Mq-rgj"/>
@@ -368,17 +368,17 @@
         </menu>
         <menu id="lJK-iI-1Rn">
             <items>
-                <menuItem title="Export Revision..." id="DjF-Fe-7s2">
+                <menuItem title="Export Revision..." image="square.and.arrow.up" catalog="system" id="DjF-Fe-7s2">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="Check Out Revision" id="FLM-3Z-vYt">
+                <menuItem title="Check Out Revision" secondaryImage="arrow.down.to.line" catalog="system" id="FLM-3Z-vYt">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="Open Revision" id="xyL-Wk-Gam">
+                <menuItem title="Open Revision" secondaryImage="square.stack" catalog="system" id="xyL-Wk-Gam">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="bNX-8a-jlw"/>
-                <menuItem title="Show Current in Finder" id="95D-Gr-gp7">
+                <menuItem title="Show Current in Finder" image="finder" catalog="system" id="95D-Gr-gp7">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="showInFinder:" target="-2" id="xaZ-hT-iK3"/>
@@ -391,10 +391,25 @@
     <resources>
         <image name="NSActionTemplate" width="20" height="20"/>
         <image name="NSFolder" width="32" height="32"/>
+        <image name="arrow.down.to.line" catalog="system" width="13" height="16"/>
+        <image name="arrow.up.arrow.down" catalog="system" width="18" height="15"/>
+        <image name="arrow.up.right.square" catalog="system" width="15" height="14"/>
+        <image name="arrow.uturn.backward" catalog="system" width="15" height="14"/>
+        <image name="chevron.down.2" catalog="system" width="15" height="14"/>
+        <image name="chevron.down.circle" catalog="system" width="15" height="15"/>
+        <image name="chevron.up.2" catalog="system" width="15" height="14"/>
+        <image name="chevron.up.circle" catalog="system" width="15" height="15"/>
         <image name="circle" catalog="system" width="15" height="15"/>
         <image name="document" catalog="system" width="14" height="16"/>
+        <image name="eye.slash" catalog="system" width="21" height="16"/>
+        <image name="finder" catalog="system" width="16" height="15"/>
         <image name="list.bullet" catalog="system" width="16" height="12"/>
         <image name="list.bullet.indent" catalog="system" width="19" height="12"/>
         <image name="pencil.circle.fill" catalog="system" width="15" height="15"/>
+        <image name="questionmark.circle" catalog="system" width="15" height="15"/>
+        <image name="square.and.arrow.up" catalog="system" width="15" height="18"/>
+        <image name="square.stack" catalog="system" width="15" height="18"/>
+        <image name="textformat.characters" catalog="system" width="25" height="12"/>
+        <image name="textformat.characters.arrow.left.and.right" catalog="system" width="25" height="17"/>
     </resources>
 </document>

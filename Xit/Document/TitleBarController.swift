@@ -113,16 +113,30 @@ class TitleBarController: NSObject
     }
     pushMenu.setAccessibilityIdentifier(AXID.PopupMenu.push)
     stashMenu = NSMenu {
-      NSMenuItem(.saveStash, action: #selector(XTWindowController.stash(_:)))
+      NSMenuItem(.saveStash,
+                 systemImage: "tray.and.arrow.down.fill",
+                 action: #selector(XTWindowController.stash(_:)))
       NSMenuItem.separator()
-      NSMenuItem(.pop, action: #selector(XTWindowController.popStash(_:)))
-      NSMenuItem(.apply, action: #selector(XTWindowController.applyStash(_:)))
-      NSMenuItem(.drop, action: #selector(XTWindowController.dropStash(_:)))
+      NSMenuItem(.pop,
+                 systemImage: "tray.and.arrow.up.fill",
+                 action: #selector(XTWindowController.popStash(_:)))
+      NSMenuItem(.apply,
+                 systemImage: "tray.and.arrow.up",
+                 action: #selector(XTWindowController.applyStash(_:)))
+      NSMenuItem(.drop,
+                  systemImage: "trash",
+                 action: #selector(XTWindowController.dropStash(_:)))
     }
     remoteOpsMenu = NSMenu {
-      NSMenuItem(.pull, action: #selector(XTWindowController.pull(_:)))
-      NSMenuItem(.push, action: #selector(XTWindowController.push(_:)))
-      NSMenuItem(.fetch, action: #selector(XTWindowController.fetch(_:)))
+      NSMenuItem(.pull,
+                 systemImage: "square.and.arrow.down.fill",
+                 action: #selector(XTWindowController.pull(_:)))
+      NSMenuItem(.push,
+                 systemImage: "square.and.arrow.up.fill",
+                 action: #selector(XTWindowController.push(_:)))
+      NSMenuItem(.fetch,
+                 systemImage: "square.and.arrow.down",
+                 action: #selector(XTWindowController.fetch(_:)))
     }
     viewMenu = NSMenu {
       NSMenuItem(.sidebar,

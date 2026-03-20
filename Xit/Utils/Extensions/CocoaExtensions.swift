@@ -228,9 +228,14 @@ extension NSMenuItem
     }
   }
 
-  convenience init(_ titleString: UIString, action: Selector? = nil)
+  convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
+                   action: Selector? = nil)
   {
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   convenience init(_ titleString: UIString,

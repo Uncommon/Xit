@@ -28,7 +28,7 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
       }
       FilterBar(text: $model.filter) {
         SidebarActionButton {
-          Button("Show in Finder", systemImage: "folder") {
+          Button("Show in Finder", systemImage: "finder") {
             if let selection {
               coordinator.showSubmoduleInFinder(selection)
             }
@@ -50,7 +50,7 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
   @ViewBuilder
   func submoduleContextMenu(for name: String) -> some View
   {
-    Button("Show in Finder", systemImage: "folder") {
+    Button("Show in Finder", systemImage: "finder") {
       coordinator.showSubmoduleInFinder(name)
     }
     Button("Update", systemImage: "arrow.clockwise") {
