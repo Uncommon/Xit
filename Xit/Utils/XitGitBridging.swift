@@ -8,7 +8,7 @@ import Clibgit2 // Need Clibgit2 module types visibly to cast to them? No, XitGi
 // So `git_oid` (Clibgit2) must be visible if `GitOID` is public?
 // Yes.
 
-extension XitGit.GitOID
+extension GitOID
 {
   // Initialize from bridging header git_oid
   init(bridging: git_oid)
@@ -26,7 +26,7 @@ extension XitGit.GitOID
     // Hack: construct via pointer rebound.
     // We need to trick the compiler that UnsafePointer<__C.git_oid> is UnsafePointer<Clibgit2.git_oid>
     // But we can't name Clibgit2.git_oid easily if not imported.
-    // However, init(oidPtr:) takes UnsafePointer<XitGit.Clibgit2.git_oid>
+    // However, init(oidPtr:) takes UnsafePointer<Clibgit2.git_oid>
     
     // So we can assume the argument type of init(oidPtr:) IS the target type.
     
@@ -36,7 +36,7 @@ extension XitGit.GitOID
         // We can cheat by using unsafeBitCast on the function/pointer? No.
         
         // Let's rely on unsafeBitCast of the STRUCT itself which we know has just one field of 20 bytes.
-        return unsafeBitCast(local, to: XitGit.GitOID.self)
+        return unsafeBitCast(local, to: GitOID.self)
     }
   }
 

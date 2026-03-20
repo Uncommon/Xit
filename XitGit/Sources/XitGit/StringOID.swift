@@ -8,15 +8,11 @@ public prefix func § (sha: StringLiteralType) -> GitOID
   .init(stringLiteral: sha)
 }
 
-extension GitOID: ExpressibleByStringLiteral
+extension GitOID: ExpressibleByStringLiteral, ExpressibleByStringInterpolation
 {
   public init(stringLiteral value: StringLiteralType)
   {
-    let padded = String(repeating: "0",
-                        count: GitOID.shaLength - value.count) + value
-
-    self.oid = .init()
-    precondition(git_oid_fromstr(&oid, padded) == 0, "failed to parse OID string")
+    self.init(sha: SHA(stringLiteral: value))!
   }
 }
 

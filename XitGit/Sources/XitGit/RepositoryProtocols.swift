@@ -17,6 +17,7 @@ public protocol BasicRepository
 
 public typealias ProgressValue = (current: Float, total: Float)
 
+//@Faked
 public protocol RepositoryPublishing
 {
   // These all just notify that a thing in the repository has changed.
@@ -28,16 +29,42 @@ public protocol RepositoryPublishing
   var stashPublisher: AnyPublisher<Void, Never> { get }
   
   var progressPublisher: AnyPublisher<ProgressValue, Never> { get }
-  
-  func post(progress: Float, total: Float)
 
   /// Published value is the paths that changed this time.
   var workspacePublisher: AnyPublisher<[String], Never> { get }
+
+  func post(progress: Float, total: Float)
 
   // Methods for manually triggering change messages without waiting for
   // changes to be detected automatically.
   func indexChanged()
   func refsChanged()
+}
+// Macro extension visibility isn't working right
+//@Faked_Imp
+protocol EmptyRepositoryPublishing: RepositoryPublishing {}
+extension EmptyRepositoryPublishing {
+  var configPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var headPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var indexPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var refLogPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var refsPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var stashPublisher: AnyPublisher<Void, Never> { .fakeDefault() }
+  var progressPublisher: AnyPublisher<ProgressValue, Never> { .fakeDefault() }
+  var workspacePublisher: AnyPublisher<[String], Never> { .fakeDefault() }
+  func post(progress: Float, total: Float) {}
+  func indexChanged() {}
+  func refsChanged() {}
+}
+
+struct NullRepositoryPublishing: EmptyRepositoryPublishing {}
+
+extension AnyPublisher: @retroactive Fakable
+{
+  public static func fakeDefault() -> AnyPublisher<Output, Failure>
+  {
+    Empty(completeImmediately: false).eraseToAnyPublisher()
+  }
 }
 
 public protocol RepositoryCaching: AnyObject
@@ -86,6 +113,19 @@ public protocol CommitStorage: AnyObject
   func walker() -> RevWalk?
 }
 
+/// How many commits one commit is compared to another in the graph.
+public struct GraphStatus: Sendable
+{
+  public let ahead, behind: Int
+
+  public init(ahead: Int, behind: Int)
+  {
+    self.ahead = ahead
+    self.behind = behind
+  }
+  
+  public static var zero: GraphStatus { .init(ahead: 0, behind: 0) }
+}
 
 @Faked(types: ["Tree": "FakeTree"])
 public protocol CommitReferencing: AnyObject
@@ -100,11 +140,10 @@ public protocol CommitReferencing: AnyObject
 
   func oid(forRef: any ReferenceName) -> GitOID?
   func sha(forRef: any ReferenceName) -> SHA?
-  func tags() throws -> [Tag]
-  func graphBetween(localBranch: LocalBranch,
-                    upstreamBranch: RemoteBranch) -> (ahead: Int, behind: Int)?
+  func graphBetween(localBranch: LocalBranchRefName,
+                    upstreamBranch: any ReferenceName) -> GraphStatus?
 
-  func reference(named name: String) -> (any Reference)?
+  func reference(named name: some ReferenceName) -> (any Reference)?
   func refs(at oid: GitOID) -> [String]
   func allRefs() -> [GeneralRefName]
 
@@ -120,9 +159,40 @@ public protocol CommitReferencing: AnyObject
 
 public extension CommitReferencing
 {
-  var headReference: (any Reference)? { reference(named: "HEAD") }
+  var headReference: (any Reference)? { reference(named: .head) }
   var headSHA: SHA? { headRefName.flatMap { self.sha(forRef: $0) } }
   var headOID: GitOID? { headRefName.flatMap { self.oid(forRef: $0) } }
+}
+
+public class FakeCommitReferencing<
+    Commit: XitGit.Commit,
+    Tree: XitGit.Tree,
+    LocalBranch: XitGit.LocalBranch,
+    RemoteBranch: XitGit.RemoteBranch>: CommitReferencing
+{
+  public typealias Tag = FakeTag
+
+  public var headRefName: (any ReferenceName)? { nil }
+
+  public init() {}
+
+  public func oid(forRef: any ReferenceName) -> GitOID? { nil }
+  public func sha(forRef: any ReferenceName) -> SHA? { nil }
+  public func graphBetween(localBranch: LocalBranchRefName,
+                           upstreamBranch: any ReferenceName) -> GraphStatus?
+  { nil }
+  public func reference(named name: some ReferenceName) -> (any Reference)? { nil }
+  public func refs(at oid: GitOID) -> [String] { [] }
+  public func allRefs() -> [GeneralRefName] { [] }
+  public func rebuildRefsIndex() {}
+
+  public func createCommit(with tree: Tree,
+                           message: String,
+                           parents: [Commit],
+                           updatingReference refName: String) throws -> GitOID
+  {
+    .zero()
+  }
 }
 
 public extension CommitReferencing where Self: CommitStorage
@@ -246,19 +316,23 @@ public extension FileStaging
   }
 }
 
-@Faked
+// The way the associated type is used isn't compatible with @Faked
+// because of the type of `stashes`, and stash() must produce a value.
+//@Faked(types: ["Stash": "NullStash"])
 public protocol Stashing: AnyObject
 {
-  @FakeDefault(exp: ".init([any Stash]())")
-  var stashes: AnyCollection<any Stash> { get }
-  
+  associatedtype Stash: XitGit.Stash
+
+  @FakeDefault(exp: ".init([NullStash]())")
+  var stashes: AnyRandomAccessCollection<Stash> { get }
+
   @FakeDefault(exp: "NullStash()")
-  func stash(index: UInt, message: String?) -> any Stash
+  func stash(index: UInt, message: String?) -> Stash
   func popStash(index: UInt) throws
   func applyStash(index: UInt) throws
   func dropStash(index: UInt) throws
-  func commitForStash(at index: UInt) -> (any Commit)?
-  
+  func commitForStash(at index: UInt) -> Stash.Commit?
+
   /// Make a new stash entry
   /// - parameter name: Name of the stash entry
   /// - parameter keepIndex: Do not stash staged changes
@@ -268,6 +342,38 @@ public protocol Stashing: AnyObject
                  keepIndex: Bool,
                  includeUntracked: Bool,
                  includeIgnored: Bool) throws
+}
+protocol EmptyStashing: Stashing {}
+extension EmptyStashing {
+  var stashes: AnyRandomAccessCollection<Stash> { .init([Stash]()) }
+  // stash(index:message:) not implemented because it must produce an instance
+  func popStash(index: UInt) throws {}
+  func applyStash(index: UInt) throws {}
+  func dropStash(index: UInt) throws {}
+  func commitForStash(at index: UInt) -> Stash.Commit? { nil }
+  func saveStash(name: String?,
+                 keepIndex: Bool,
+                 includeUntracked: Bool,
+                 includeIgnored: Bool) throws {}
+}
+
+public extension Stashing
+{
+  func findStashIndex(_ stash: Stash) -> Int?
+  {
+    guard let mainCommit = stash.mainCommit
+    else { return nil }
+    return findStashIndex(mainCommit.id)
+  }
+  
+  func findStashIndex(_ oid: GitOID) -> Int?
+  {
+    return stashes.firstIndex {
+      $0.mainCommit?.id == oid
+    }.map {
+      stashes.distance(from: stashes.startIndex, to: $0)
+    }
+  }
 }
 
 @Faked
@@ -409,9 +515,10 @@ public protocol Branching: AnyObject
   var remoteBranches: AnySequence<RemoteBranch> { get }
   
   /// Creates a branch at the given target ref
-  func createBranch(named name: String,
-                    target: String) throws -> LocalBranch?
-  func rename(branch: String, to: String) throws
+  func createBranch(named name: LocalBranchRefName,
+                    target: some ReferenceName) throws -> LocalBranch?
+  func rename(branch: LocalBranchRefName, to: LocalBranchRefName) throws
+  func deleteBranch(_ name: LocalBranchRefName) throws
   func localBranch(named refName: LocalBranchRefName) -> LocalBranch?
   func remoteBranch(named name: String) -> RemoteBranch?
   func remoteBranch(named name: String, remote: String) -> RemoteBranch?
@@ -442,6 +549,7 @@ public extension Branching
 
 public protocol Merging: AnyObject
 {
+  // TODO: take a reference name instead of a branch object
   func merge(branch: any Branch) throws
   // In the future, expose more merge analysis and options
 }
@@ -468,6 +576,7 @@ public enum ResetMode: Sendable
 
 public enum TrackingBranchStatus: Sendable
 {
+  // TODO: use reference name instead of string
   /// No tracking branch set
   case none
   /// References a non-existent branch
@@ -478,14 +587,13 @@ public enum TrackingBranchStatus: Sendable
 
 public extension Branching
 {
-  func trackingBranchStatus(for branch: String) -> TrackingBranchStatus
+  func trackingBranchStatus(for branch: LocalBranchRefName) -> TrackingBranchStatus
   {
-    if let localBranchRef = LocalBranchRefName(branch),
-       let localBranch = localBranch(named: localBranchRef),
+    if let localBranch = self.localBranch(named: branch),
        let trackingBranchName = localBranch.trackingBranchName {
-      return remoteBranch(named: trackingBranchName) == nil
-          ? .missing(trackingBranchName)
-          : .set(trackingBranchName)
+      return remoteBranch(named: trackingBranchName.name) == nil
+          ? .missing(trackingBranchName.fullPath)
+          : .set(trackingBranchName.fullPath)
     }
     else {
       return .none
@@ -496,15 +604,18 @@ public extension Branching
 @Faked
 public protocol Tagging: AnyObject
 {
+  associatedtype Tag: XitGit.Tag
+  func tags() throws -> [Tag]
+  func tag(named name: TagRefName) -> Tag?
   func createTag(name: String, targetOID: GitOID, message: String?) throws
   func createLightweightTag(name: String, targetOID: GitOID) throws
-  func deleteTag(name: String) throws
+  func deleteTag(name: TagRefName) throws
 }
 
 @Faked
 public protocol Workspace: AnyObject
 {
-  func checkOut(branch: String) throws
-  func checkOut(refName: String) throws
+  func checkOut(branch: LocalBranchRefName) throws
+  func checkOut(refName: some ReferenceName) throws
   func checkOut(sha: SHA) throws
 }

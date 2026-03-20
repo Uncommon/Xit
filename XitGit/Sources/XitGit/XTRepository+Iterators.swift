@@ -66,7 +66,7 @@ public extension XTRepository
   }
   
   /// The indexable collection of stashes in the repository.
-  class StashCollection: Collection
+  public class StashCollection: RandomAccessCollection
   {
     public typealias Iterator = StashIterator
     
@@ -103,7 +103,7 @@ public extension XTRepository
       .init(stashes: self)
     }
     
-    public subscript(position: Int) -> any Stash
+    public subscript(position: Int) -> GitStash
     {
       let entry = git_reflog_entry_byindex(refLog, position)
       let message = String(cString: git_reflog_entry_message(entry))
@@ -131,7 +131,7 @@ public extension XTRepository
       self.index = 0
     }
     
-    public func next() -> (any Stash)?
+    public func next() -> GitStash?
     {
       guard index < stashes.count
       else {

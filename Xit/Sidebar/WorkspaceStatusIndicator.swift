@@ -25,7 +25,7 @@ final class WorkspaceStatusIndicator: NSButton
   func setStatus(unstaged: Int, staged: Int)
   {
     isHidden = unstaged == 0 && staged == 0
-    title = "\(unstaged)▸\(staged)"
+    title = "\(unstaged) ▸ \(staged)"
     setFrameSize(intrinsicContentSize)
   }
 }

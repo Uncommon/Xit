@@ -3,7 +3,7 @@ import Clibgit2
 import FakedMacro
 
 @Faked(skip: ["localRefName", "remoteName"], createNull: false)
-public protocol Branch: AnyObject
+public protocol Branch: AnyObject, PathTreeData
 {
   associatedtype BranchRefName: ReferenceName
 
@@ -20,21 +20,31 @@ public protocol Branch: AnyObject
   var remoteName: String? { get }
 }
 
+extension Branch // PathTreeData
+{
+  public var treeNodePath: String { referenceName.fullPath }
+}
 
-@Faked(anyObject: true, inherit: ["EmptyBranch"])
+@Faked(skip: ["shortName"], anyObject: true, inherit: ["EmptyBranch"])
 public protocol LocalBranch: Branch
   where BranchRefName == LocalBranchRefName
 {
   associatedtype RemoteBranch: XitGit.RemoteBranch
 
-  var trackingBranchName: String? { get set }
+  /// Can be a `LocalBranchRefName` or a `RemoteBranchRefName` depeding on
+  /// the configuration.
+  var trackingBranchName: (any ReferenceName)? { get set }
   var trackingBranch: RemoteBranch? { get }
+  
+  func setTrackingBranch(_ branch: (any ReferenceName)?) throws
 }
 
 extension LocalBranch
 {
   public var localRefName: LocalBranchRefName { referenceName }
   public var remoteName: String? { trackingBranch?.remoteName }
+  public var remoteTrackingBranchName: RemoteBranchRefName?
+  { trackingBranchName as? RemoteBranchRefName }
 }
 
 
@@ -42,6 +52,10 @@ extension LocalBranch
 public protocol RemoteBranch: Branch
   where BranchRefName == RemoteBranchRefName
 {
+}
+extension EmptyRemoteBranch
+{
+  public var shortName: String { "" }
 }
 
 extension RemoteBranch
@@ -140,7 +154,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
   
   /// The name of this branch's remote tracking branch, even if the
   /// referenced branch does not exist.
-  public var trackingBranchName: String?
+  public var trackingBranchName: (any ReferenceName)?
   {
     get
     {
@@ -152,7 +166,7 @@ public final class GitLocalBranch: GitBranch, LocalBranch
       else { return nil }
       
       if remoteName == "." {
-        return mergeName
+        return LocalBranchRefName.named(mergeName)
       }
       else {
         guard let repo = git_reference_owner(branchRef),
@@ -163,13 +177,14 @@ public final class GitLocalBranch: GitBranch, LocalBranch
               })
         else { return nil }
         
-        return refSpec.transformToTarget(name: mergeName)?
-                      .droppingPrefix(RefPrefixes.remotes)
+        return refSpec.transformToTarget(name: mergeName).flatMap {
+          RemoteBranchRefName(rawValue: $0)
+        }
       }
     }
     set
     {
-      git_branch_set_upstream(branchRef, newValue)
+      git_branch_set_upstream(branchRef, newValue?.fullPath)
       (config as? GitConfig)?.loadSnapshot()
     }
   }
@@ -185,6 +200,13 @@ public final class GitLocalBranch: GitBranch, LocalBranch
     else { return nil }
     
     return GitRemoteBranch(branch: upstream, config: config)
+  }
+  
+  public func setTrackingBranch(_ branch: (any ReferenceName)?) throws
+  {
+    try RepoError.throwIfGitError(git_branch_set_upstream(branchRef,
+                                                          branch?.name))
+    (config as? GitConfig)?.loadSnapshot()
   }
 }
 

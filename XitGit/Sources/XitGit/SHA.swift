@@ -52,6 +52,20 @@ extension SHA: CustomStringConvertible
   public var description: String { rawValue }
 }
 
+extension SHA: ExpressibleByStringLiteral, ExpressibleByStringInterpolation
+{
+  public init(stringLiteral value: StringLiteralType)
+  {
+    if value.count < Self.standardLength {
+      self.init(String(repeating: "0",
+                       count: Self.standardLength - value.count) + value)!
+    }
+    else {
+      self.init(value)!
+    }
+  }
+}
+
 extension SHA: Comparable
 {
   public static func < (lhs: SHA, rhs: SHA) -> Bool

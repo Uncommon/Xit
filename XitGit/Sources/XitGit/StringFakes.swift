@@ -99,7 +99,7 @@ public struct FakeTree: Tree
 
 public struct FakeTag: Tag
 {
-  public let name: String
+  public let name: TagRefName
   public let signature: Signature?
   public let targetOID: GitOID?
   public let commit: FakeCommit?
@@ -107,7 +107,7 @@ public struct FakeTag: Tag
   public let type: TagType
   public let isSigned: Bool
   
-  public init(name: String, signature: Signature?, targetOID: GitOID?,
+  public init(name: TagRefName, signature: Signature?, targetOID: GitOID?,
               commit: FakeCommit?, message: String?,
               type: TagType, isSigned: Bool)
   {

@@ -22,7 +22,7 @@ extension XTRepository: Branching
       if currentBranchSubject.value == nil {
         refsChanged()
       }
-      return currentBranchSubject.value
+      return currentBranchSubject.value.flatMap { .init($0) }
     }
   }
 
@@ -35,8 +35,8 @@ extension XTRepository: Branching
   public var remoteBranches: AnySequence<GitRemoteBranch>
   { AnySequence { RemoteBranchIterator(repo: self) } }
 
-  public func createBranch(named name: String,
-                           target: String) throws -> GitLocalBranch?
+  public func createBranch(named name: LocalBranchRefName,
+                           target: some ReferenceName) throws -> GitLocalBranch?
   {
     if isWriting {
       throw RepoError.alreadyWriting
@@ -49,26 +49,39 @@ extension XTRepository: Branching
     else { return nil }
     
     let branchRef = try OpaquePointer.from {
-      git_branch_create(&$0, gitRepo, name, targetCommit.commit, 0)
+      git_branch_create(&$0, gitRepo, name.name, targetCommit.commit, 0)
     }
     
     return GitLocalBranch(branch: branchRef, config: config)
   }
   
   /// Renames the given local branch.
-  public func rename(branch: String, to newName: String) throws
+  public func rename(branch: LocalBranchRefName,
+                     to newName: LocalBranchRefName) throws
   {
     if isWriting {
       throw RepoError.alreadyWriting
     }
-    
+
+    // git_branch_lookup and git_branch_move do not take full reference names.
+    // They will always attempt to prepend the /refs/something prefix.
     let branchRef = try OpaquePointer.from {
-      git_branch_lookup(&$0, gitRepo, branch, GIT_BRANCH_LOCAL)
+      git_branch_lookup(&$0, gitRepo, branch.name, GIT_BRANCH_LOCAL)
     }
     var newRef: OpaquePointer? = nil
-    let result = git_branch_move(&newRef, branchRef, newName, 0)
-    
+    let result = git_branch_move(&newRef, branchRef, newName.name, 0)
+
     try RepoError.throwIfGitError(result)
+  }
+
+  public func deleteBranch(_ name: LocalBranchRefName) throws
+  {
+    return try writing {
+      guard let branch = localBranch(named: name)
+      else { throw RepoError.notFound }
+
+      try RepoError.throwIfGitError(git_branch_delete(branch.branchRef))
+    }
   }
 
   public func localBranch(named refName: LocalBranchRefName) -> GitLocalBranch?
@@ -145,7 +158,7 @@ extension XTRepository: Branching
       let expectedMergeName = RefPrefixes.heads +/ branchRef.localName
       
       if mergeName == expectedMergeName,
-         let refName = LocalBranchRefName(entryBranch) {
+         let refName = LocalBranchRefName.named(entryBranch) {
         return localBranch(named: refName)
       }
     }
@@ -166,6 +179,11 @@ extension XTRepository: Branching
 
 extension XTRepository: Tagging
 {
+  public func tag(named name: TagRefName) -> GitTag?
+  {
+    GitTag(repository: self, name: name)
+  }
+
   public func createTag(name: String, targetOID: GitOID, message: String?) throws
   {
     try performWriting {
@@ -200,11 +218,11 @@ extension XTRepository: Tagging
     }
   }
   
-  public func deleteTag(name: String) throws
+  public func deleteTag(name: TagRefName) throws
   {
     try performWriting {
-      let result = git_tag_delete(gitRepo, name)
-      
+      let result = git_tag_delete(gitRepo, name.name)
+
       try RepoError.throwIfGitError(result)
     }
   }

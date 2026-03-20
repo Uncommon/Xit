@@ -36,10 +36,6 @@ public enum Signpost
     case loadWorkspace
     case loadTags
     case refreshPullRequests
-    case refreshBuildStatus
-    case teamCityQuery
-    case teamCityProcess
-    case buildStatusUpdate(String)
     case networkOperation
     
     var name: StaticString
@@ -55,10 +51,6 @@ public enum Signpost
         case .loadWorkspace: return "load workspace"
         case .loadTags: return "load tags"
         case .refreshPullRequests: return "refresh pull requests"
-        case .refreshBuildStatus: return "refresh build status"
-        case .teamCityQuery: return "query TeamCity"
-        case .teamCityProcess: return "process TeamCity response"
-        case .buildStatusUpdate: return "build status update"
         case .networkOperation: return "network operation"
       }
     }
@@ -77,9 +69,6 @@ public enum Signpost
            .generateLines(let batchStart):
         os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id,
                     "batch start: %d", batchStart)
-      case .buildStatusUpdate(let buildType):
-        os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id,
-                    "build type: %s", buildType)
       default:
         os_signpost(.begin, log: Signpost.logger, name: code.name, signpostID: id)
     }

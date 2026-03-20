@@ -31,33 +31,6 @@ struct AccountStatusCell: View
     }
   }
 
-  func statusImage(forTeamCity api: TeamCityAPI?) -> NSImage.Name
-  {
-    guard let api = api
-    else { return NSImage.statusUnavailableName }
-
-    switch api.authenticationStatus {
-      case .unknown, .notStarted:
-        return NSImage.statusNoneName
-      case .inProgress:
-        // eventually have a spinner instead
-        return NSImage.statusPartiallyAvailableName
-      case .done:
-        break
-      case .failed:
-        return NSImage.statusUnavailableName
-    }
-
-    switch api.buildTypesStatus {
-      case .unknown, .notStarted, .inProgress:
-        return NSImage.statusAvailableName
-      case .done:
-        return NSImage.statusAvailableName
-      case .failed:
-        return NSImage.statusPartiallyAvailableName
-    }
-  }
-
   func statusImage(for service: BasicAuthService) -> NSImage.Name
   {
     switch service.authenticationStatus {

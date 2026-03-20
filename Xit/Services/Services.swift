@@ -38,9 +38,6 @@ final class Services
 
   let passwordStorage: any PasswordStorage
 
-  private var teamCityServices: [String: TeamCityAPI] = [:]
-  private var bitbucketServices: [String: BitbucketServerAPI] = [:]
-
   private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
@@ -52,12 +49,6 @@ final class Services
   init(passwordStorage: any PasswordStorage)
   {
     self.passwordStorage = passwordStorage
-
-    let teamCityMaker: (Account) -> TeamCityAPI? = createService(for:)
-    let bbsMaker: (Account) -> BitbucketServerAPI? = createService(for:)
-
-    serviceMakers[.teamCity] = teamCityMaker
-    serviceMakers[.bitbucketServer] = bbsMaker
 
 #if false // #available(macOS 13, *) {
     Task {
@@ -142,10 +133,7 @@ final class Services
   /// authorization and other state info.
   func initializeServices(with manager: AccountsManager)
   {
-    for account in manager.accounts(ofType: .teamCity) {
-      _ = service(for: account)
-    }
-    for account in manager.accounts(ofType: .bitbucketServer) {
+    for account in manager.accounts {
       _ = service(for: account)
     }
   }
@@ -187,31 +175,6 @@ final class Services
     return nil
   }
 
-  func buildStatusService(for remoteURL: String)
-    -> (BuildStatusService, [String])?
-  {
-    for service in allServices.compactMap({ $0 as? BuildStatusService }) {
-      let buildTypes = service.buildTypesForRemote(remoteURL)
-
-      if !buildTypes.isEmpty {
-        return (service, buildTypes)
-      }
-    }
-    return nil
-  }
-
-  /// Returns the TeamCity service object for the given account, or nil if
-  /// the password cannot be found.
-  func teamCityAPI(for account: Account) -> TeamCityAPI?
-  {
-    service(for: account) as? TeamCityAPI
-  }
-  
-  func bitbucketServerAPI(for account: Account) -> BitbucketServerAPI?
-  {
-    service(for: account) as? BitbucketServerAPI
-  }
-
   func createService<T>(for account: Account) -> T? where T: BasicAuthService
   {
     guard let password = passwordStorage.find(url: account.location,
@@ -241,7 +204,7 @@ extension Services
   public static var xit: Services
   {
 #if DEBUG
-    return Testing.defaults == .standard ? .shared : .testing
+    return TestSettings.defaults == .standard ? .shared : .testing
 #else
     return shared
 #endif

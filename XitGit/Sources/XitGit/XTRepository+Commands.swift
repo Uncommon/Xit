@@ -8,10 +8,10 @@ public extension XTRepository
     _ = try executeGit(args: ["push", "--all", remote], writes: true)
   }
   
-  func moveHead(to refName: String) throws
+  func moveHead(to refName: some ReferenceName) throws
   {
-    let result = git_repository_set_head(gitRepo, refName)
-    
+    let result = git_repository_set_head(gitRepo, refName.fullPath)
+
     try RepoError.throwIfGitError(result)
   }
   
@@ -56,19 +56,17 @@ public extension XTRepository
 
 extension XTRepository: Workspace
 {
-  public func checkOut(branch: String) throws
+  public func checkOut(branch: LocalBranchRefName) throws
   {
     try performWriting {
       // invalidate ref caches
       
-      let branchRef = RefPrefixes.heads.appending(pathComponent: branch)
-      
-      try checkOut(refName: branchRef)
-      try moveHead(to: branchRef)
+      try checkOut(refName: branch)
+      try moveHead(to: branch)
     }
   }
   
-  public func checkOut(refName: String) throws
+  public func checkOut(refName: some ReferenceName) throws
   {
     guard let ref = reference(named: refName),
           let oid = ref.targetOID
@@ -103,11 +101,13 @@ extension XTRepository: Workspace
 
 extension XTRepository: Stashing
 {
-  public var stashes: AnyCollection<any Stash>
-  { AnyCollection(StashCollection(repo: self)) }
-  
+  public typealias Stash = GitStash
+
+  public var stashes: AnyRandomAccessCollection<GitStash>
+  { .init(StashCollection(repo: self)) }
+
   // TODO: Don't require the message parameter
-  public func stash(index: UInt, message: String?) -> any Stash
+  public func stash(index: UInt, message: String?) -> GitStash
   {
     GitStash(repo: self, index: index, message: message)
   }
@@ -178,7 +178,7 @@ extension XTRepository: Stashing
     }
   }
   
-  public func commitForStash(at index: UInt) -> (any XitGit.Commit)?
+  public func commitForStash(at index: UInt) -> GitCommit?
   {
     guard let stashLog = GitRefLog(repository: gitRepo, refName: "refs/stash"),
           index < stashLog.entryCount

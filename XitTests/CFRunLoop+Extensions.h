@@ -1,6 +1,8 @@
 #ifndef Xit_CFRunLoop_Extensions_h
 #define Xit_CFRunLoop_Extensions_h
 
+#include <CoreFoundation/CoreFoundation.h>
+
 /**
  * Runs the run loop with the given timeout.
  * @return False if the timeout expires, otherwise true.

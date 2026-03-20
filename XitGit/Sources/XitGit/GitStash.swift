@@ -3,7 +3,7 @@ import Clibgit2
 import FakedMacro
 
 @Faked
-public protocol Stash: AnyObject
+public protocol Stash: AnyObject, Identifiable where ID == GitOID
 {
   associatedtype Commit: XitGit.Commit
 
@@ -16,6 +16,11 @@ public protocol Stash: AnyObject
   func workspaceChanges() -> [FileChange]
   func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
   func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
+}
+
+extension Stash
+{
+  public var id: GitOID { mainCommit?.id ?? .zero() }
 }
 
 /// Wraps a stash to preset a unified list of file changes.
@@ -34,7 +39,7 @@ public final class GitStash: Stash
     self.repo = repo
     self.message = message
     
-    if let mainCommit = repo.commitForStash(at: index) as? GitCommit {
+    if let mainCommit = repo.commitForStash(at: index) {
       self.mainCommit = mainCommit
       if mainCommit.parentOIDs.count > 1 {
         // Should be able to use repo.commit() directly...

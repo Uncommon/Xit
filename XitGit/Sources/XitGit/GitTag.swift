@@ -3,12 +3,12 @@ import Clibgit2
 import FakedMacro
 
 @Faked
-public protocol Tag
+public protocol Tag: PathTreeData, Equatable
 {
   associatedtype Commit: XitGit.Commit
 
   /// Tag name (without "refs/tags/")
-  var name: String { get }
+  var name: TagRefName { get }
   var signature: Signature? { get }
   var targetOID: GitOID? { get }
   var commit: Commit? { get }
@@ -16,6 +16,16 @@ public protocol Tag
   var message: String? { get }
   var type: TagType { get }
   var isSigned: Bool { get }
+}
+
+public extension Tag // PathTreeData, Equatable
+{
+  var treeNodePath: String { name.fullPath }
+
+  static func == (lhs: Self, rhs: Self) -> Bool
+  {
+    lhs.name == rhs.name
+  }
 }
 
 public enum TagType
@@ -33,7 +43,7 @@ public final class GitTag: Tag
   public weak var repository: XTRepository?
   private let ref: OpaquePointer
   private let tag: OpaquePointer?
-  public let name: String
+  public let name: TagRefName
   public var signature: Signature?
   {
     guard let tag = self.tag,
@@ -70,17 +80,16 @@ public final class GitTag: Tag
   /// Initialize with the given tag name.
   /// - parameter name: Can be either fully qualified with `refs/tags/`
   /// or just the tag name itself.
-  init?(repository: XTRepository, name: String)
+  init?(repository: XTRepository, name: TagRefName)
   {
-    let refName = name.withPrefix(RefPrefixes.tags)
     guard let ref = try? OpaquePointer.from({
-            git_reference_lookup(&$0, repository.gitRepo, refName)
+            git_reference_lookup(&$0, repository.gitRepo, name.fullPath)
           }),
           git_reference_is_tag(ref) == 1
     else { return nil }
     
     self.ref = ref
-    self.name = name.droppingPrefix(RefPrefixes.tags)
+    self.name = name
     
     self.tag = try? OpaquePointer.from({
         git_reference_peel(&$0, ref, GIT_OBJECT_TAG) })

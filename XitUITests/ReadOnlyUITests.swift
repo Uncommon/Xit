@@ -30,9 +30,9 @@ class ReadOnlyUITests: XCTestCase
     
   func testSidebar()
   {
-    Sidebar.assertStagingStatus(workspace: 1, staged: 0)
+    Sidebar.Branches.assertStagingStatus(workspace: 1, staged: 0)
     
-    Sidebar.assertBranches(Self.env.repo.defaultBranches)
+    Sidebar.Branches.assertBranches(Self.env.repo.defaultBranches)
   }
   
   /// Tests filtering with no branch folders
@@ -40,37 +40,37 @@ class ReadOnlyUITests: XCTestCase
   {
     let aBranches = Self.env.repo.defaultBranches.filter { $0.contains("a") }
     let andBranches = aBranches.filter { $0.contains("and") }
-    let masterBranchCell = Sidebar.cell(named: "master")
-    let newBranchCell = Sidebar.cell(named: "new")
+    let masterBranchCell = Sidebar.Branches.cell(named: "master")
+    let newBranchCell = Sidebar.Branches.cell(named: "new")
     
     XCTContext.runActivity(named: "Filter with 'a'") { _ in
-      Sidebar.filter.click()
-      Sidebar.filter.typeText("a")
+      Sidebar.Branches.filterField.click()
+      Sidebar.Branches.filterField.typeText("a")
       wait(for: [absence(of: newBranchCell)], timeout: 5.0)
       
-      Sidebar.assertBranches(aBranches)
+      Sidebar.Branches.assertBranches(aBranches)
     }
     
     XCTContext.runActivity(named: "Filter with 'and'") { _ in
-      Sidebar.filter.typeText("nd")
+      Sidebar.Branches.filterField.typeText("nd")
       wait(for: [absence(of: masterBranchCell)], timeout: 5.0)
 
-      Sidebar.assertBranches(andBranches)
+      Sidebar.Branches.assertBranches(andBranches)
     }
     
     XCTContext.runActivity(named: "Clear filter") { _ in
-      Sidebar.filter.buttons["cancel"].click()
+      Sidebar.Branches.cancelButton.click()
       wait(for: [presence(of: newBranchCell)], timeout: 8.0)
 
-      Sidebar.assertBranches(Self.env.repo.defaultBranches)
+      Sidebar.Branches.assertBranches(Self.env.repo.defaultBranches)
     }
   }
 
   /// Commit header and file list are correct
   func testCommitContent()
   {
-    XCTWaiter(delegate: self).wait(for: [presence(of: CommitFileList.list.outlineRows.firstMatch)],
-                                   timeout: 5)
+    XCTAssert(CommitFileList.list.outlineRows.firstMatch.waitForExistence(timeout: 5),
+              "Commit files not found")
     CommitFileList.assertFiles(["README.md", "hero_slide1.png", "jquery-1.8.1.min.js"])
     
     let sha = "a4bca6b67a5483169963572ee3da563da33712f7"
@@ -109,16 +109,19 @@ class ReadOnlyUITests: XCTestCase
   
   func ensureTabBarVisible()
   {
-    let menuBar = XitApp.menuBars
-    let viewMenu = menuBar.menuBarItems["View"]
-    let menuItem = viewMenu.menuItems["Show Tab Bar"]
-    
-    viewMenu.click()
-    if (menuItem.exists) {
-      menuItem.click()
-    }
-    else {
-      XitApp.typeKey(.escape, modifierFlags: [])
+    XCTContext.runActivity(named: "Ensure tab bar visible") {
+      _ in
+      let menuBar = XitApp.menuBars
+      let viewMenu = menuBar.menuBarItems["View"]
+      let menuItem = viewMenu.menuItems["Show Tab Bar"]
+      
+      viewMenu.click()
+      if (menuItem.exists) {
+        menuItem.click()
+      }
+      else {
+        XitApp.typeKey(.escape, modifierFlags: [])
+      }
     }
   }
   
