@@ -178,7 +178,6 @@ class TitleBarController: NSObject
     remoteOpsMenu.items[0].submenu = pullMenu
     remoteOpsMenu.items[1].submenu = pushMenu
     remoteOpsMenu.items[2].submenu = fetchMenu
-    installSearchItems()
     updateSearchControls()
   }
   
@@ -355,27 +354,6 @@ class TitleBarController: NSObject
   var canNavigateSearch: Bool
   { searchEnabled && !searchText.isEmpty }
 
-  private func installSearchItems()
-  {
-    guard let toolbar = window.toolbar
-    else {
-      assertionFailure("no toolbar")
-      return
-    }
-    guard !toolbar.items.contains(where: { $0.itemIdentifier == .historySearch })
-    else { return }
-
-    if let oldSearchIndex = toolbar.items.firstIndex(where: { $0.itemIdentifier == .search }) {
-      toolbar.removeItem(at: oldSearchIndex)
-    }
-    let trailingIndex = toolbar.items.firstIndex(where: { $0.itemIdentifier == .view })
-      .map { $0 + 1 } ?? toolbar.items.count
-
-    toolbar.insertItem(withItemIdentifier: .searchPrevious, at: trailingIndex)
-    toolbar.insertItem(withItemIdentifier: .searchNext, at: trailingIndex + 1)
-    toolbar.insertItem(withItemIdentifier: .historySearch, at: trailingIndex + 2)
-  }
-
   private func updateSearchControls()
   {
     let hasQuery = !searchText.isEmpty
@@ -410,13 +388,9 @@ class TitleBarController: NSObject
   private func makeSearchMenu() -> NSMenu
   {
     let menu = NSMenu()
-    let titleItem = NSMenuItem(title: "Search In", action: nil, keyEquivalent: "")
 
     searchTypeItems = []
     menu.autoenablesItems = false
-    titleItem.isEnabled = false
-    menu.addItem(titleItem)
-    menu.addItem(.separator())
     for (index, type) in HistorySearchType.allCases.enumerated() {
       let item = NSMenuItem(title: type.displayName.rawValue,
                             action: #selector(selectSearchType(_:)),
@@ -431,53 +405,14 @@ class TitleBarController: NSObject
     return menu
   }
 
-  private func makeSearchToolbarItem() -> NSSearchToolbarItem
-  {
-    let item = NSSearchToolbarItem(itemIdentifier: .historySearch)
-    let field = item.searchField
-
-    item.label = "Search"
-    item.paletteLabel = "Search"
-    item.toolTip = "Search History"
-    item.preferredWidthForSearchField = 220
-    item.resignsFirstResponderWithCancel = true
-    field.delegate = self
-    field.target = self
-    field.action = #selector(runSearch(_:))
-    field.sendsWholeSearchString = true
-    field.sendsSearchStringImmediately = false
-    field.searchMenuTemplate = makeSearchMenu()
-    field.setAccessibilityIdentifier(.Search.field)
-    searchToolbarItem = item
-    updateSearchPlaceholder()
-    return item
-  }
-
-  private func makeSearchNavigationItem(identifier: NSToolbarItem.Identifier,
-                                        label: String,
-                                        image: String,
-                                        action: Selector) -> NSToolbarItem
-  {
-    let item = NSToolbarItem(itemIdentifier: identifier)
-
-    item.label = label
-    item.paletteLabel = label
-    item.toolTip = label
-    item.image = .init(systemSymbolName: image, accessibilityDescription: label)
-    item.target = self
-    item.action = action
-    item.isBordered = true
-    return item
-  }
-
-  @objc
+  @IBAction
   private func runSearch(_ sender: NSSearchField)
   {
     searchText = sender.stringValue
     search(.down)
   }
 
-  @objc
+  @IBAction
   private func selectSearchType(_ sender: NSMenuItem)
   {
     guard HistorySearchType.allCases.indices.contains(sender.tag)
@@ -485,13 +420,13 @@ class TitleBarController: NSObject
     searchType = HistorySearchType.allCases[sender.tag]
   }
 
-  @objc
+  @IBAction
   private func searchPrevious(_ sender: Any?)
   {
     search(.up)
   }
 
-  @objc
+  @IBAction
   private func searchNext(_ sender: Any?)
   {
     search(.down)
@@ -505,7 +440,6 @@ extension NSToolbarItem.Identifier
   static let remoteOps: Self = ◊"xit.remote"
   static let stash: Self = ◊"xit.stash"
   static let search: Self = ◊"xit.search"
-  static let historySearch: Self = ◊"xit.historySearch"
   static let searchPrevious: Self = ◊"xit.searchPrevious"
   static let searchNext: Self = ◊"xit.searchNext"
   static let view: Self = ◊"xit.view"
@@ -521,29 +455,6 @@ extension TitleBarController: NSToolbarDelegate
       // Return the saved item to avoid Cocoa throwing exceptions about only
       // one tracking item being allowed.
       return separatorItem
-    }
-    if itemIdentifier == .historySearch {
-      return searchToolbarItem ?? makeSearchToolbarItem()
-    }
-    if itemIdentifier == .searchPrevious {
-      let item = previousSearchItem
-        ?? makeSearchNavigationItem(identifier: .searchPrevious,
-                                    label: "Find Previous",
-                                    image: "chevron.up",
-                                    action: #selector(searchPrevious(_:)))
-
-      previousSearchItem = item
-      return item
-    }
-    if itemIdentifier == .searchNext {
-      let item = nextSearchItem
-        ?? makeSearchNavigationItem(identifier: .searchNext,
-                                    label: "Find Next",
-                                    image: "chevron.down",
-                                    action: #selector(searchNext(_:)))
-
-      nextSearchItem = item
-      return item
     }
     return nil
   }
@@ -596,6 +507,23 @@ extension TitleBarController: NSToolbarDelegate
       
       case .sidebarTrackingSeparator:
         separatorItem = item
+      
+      case .search:
+        guard let searchItem = item as? NSSearchToolbarItem
+        else { break }
+        let field = searchItem.searchField
+
+        searchToolbarItem = searchItem
+        searchItem.resignsFirstResponderWithCancel = true
+        field.searchMenuTemplate = makeSearchMenu()
+        field.setAccessibilityIdentifier(.Search.field)
+        updateSearchPlaceholder()
+
+      case .searchPrevious:
+        previousSearchItem = item
+      
+      case .searchNext:
+        nextSearchItem = item
         
       default:
         return
@@ -633,7 +561,7 @@ extension TitleBarController: NSToolbarItemValidation
   func validateToolbarItem(_ item: NSToolbarItem) -> Bool
   {
     switch item.itemIdentifier {
-      case .historySearch:
+      case .search:
         return searchEnabled
       case .searchPrevious, .searchNext:
         return searchEnabled && !searchText.isEmpty
