@@ -325,20 +325,28 @@ class ReadOnlyUITests: XCTestCase
 
   func testSearch()
   {
-    Toolbar.search.click()
+    Search.show()
     XCTContext.runActivity(named: "Search by summary") {
       _ in
+      HistoryList.row(1).click()
       Search.field.click()
+      if Search.clearButton.exists {
+        Search.clearButton.click()
+      }
       Search.field.typeText("asd")
-      Search.searchDown.click()
+      Search.field.typeKey(.return, modifierFlags: [])
       XCTAssert(HistoryList.row(3).isSelected)
-      Search.searchDown.click()
+      Search.next.click()
       XCTAssert(HistoryList.row(27).isSelected)
-      Search.searchUp.click()
+      let selectedRow = HistoryList.selectedRow()
+      let label = selectedRow.staticTexts.firstMatch.stringValue
+      XCTAssert(label.contains("asd"), "Selected row does not match search")
+      Search.previous.click()
       XCTAssert(HistoryList.row(3).isSelected)
     }
     XCTContext.runActivity(named: "Search by SHA") {
       _ in
+      HistoryList.row(1).click()
       Search.setSearchType(.sha)
       Search.clearButton.click()
       Search.field.typeText("93f5")
@@ -347,10 +355,11 @@ class ReadOnlyUITests: XCTestCase
     }
     XCTContext.runActivity(named: "Search by author") {
       _ in
+      HistoryList.row(5).click()
       Search.setSearchType(.author)
       Search.clearButton.click()
       Search.field.typeText("Danny")
-      Search.searchUp.click()
+      Search.previous.click()
       XCTAssert(HistoryList.row(2).isSelected)
     }
   }
