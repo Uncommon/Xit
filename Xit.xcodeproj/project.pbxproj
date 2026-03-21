@@ -47,21 +47,10 @@
 		89197C9C2EA68CB4005D1825 /* XitTests/XTEmptyRepositoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89197C9B2EA68CB4005D1825 /* XitTests/XTEmptyRepositoryTest.swift */; };
 		89197C9E2EA68CB4005D1825 /* SidebarTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89197C9D2EA68CB4005D1825 /* SidebarTestSupport.swift */; };
 		891B02142666C36400E20F2B /* ClonePanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891B02132666C36400E20F2B /* ClonePanelController.swift */; };
-		891BC3822CA476B200455AA9 /* Xit/Sidebar/BranchListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3812CA476B200455AA9 /* Xit/Sidebar/BranchListViewModel.swift */; };
-		891BC3842CA4777B00455AA9 /* Xit/Sidebar/TagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3832CA4777B00455AA9 /* Xit/Sidebar/TagListViewModel.swift */; };
-		891BC3862CA477B400455AA9 /* Xit/Sidebar/StashListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3852CA477B400455AA9 /* Xit/Sidebar/StashListViewModel.swift */; };
-		891BC3882CA477FE00455AA9 /* Xit/Sidebar/SubmoduleListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3872CA477FE00455AA9 /* Xit/Sidebar/SubmoduleListModel.swift */; };
-		891BC38A2CA4D5BD00455AA9 /* Xit/Sidebar/FilteringListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3892CA4D5BD00455AA9 /* Xit/Sidebar/FilteringListViewModel.swift */; };
-		891BC38C2CA5947E00455AA9 /* Xit/Utils/SwiftUI/ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38B2CA5947E00455AA9 /* Xit/Utils/SwiftUI/ExpansionText.swift */; };
-		891BC38E2CA766F400455AA9 /* Xit/Sidebar/RemoteListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC38D2CA766F400455AA9 /* Xit/Sidebar/RemoteListViewModel.swift */; };
 		891BC3932CA8409B00455AA9 /* XitTests/RemoteListViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3922CA8409B00455AA9 /* XitTests/RemoteListViewModelTest.swift */; };
-		891BC3952CB0A3E500455AA9 /* Xit/Sidebar/RemoteList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3942CB0A3E500455AA9 /* Xit/Sidebar/RemoteList.swift */; };
-		891BC3972CB0FFA500455AA9 /* Xit/Sidebar/BranchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891BC3962CB0FFA500455AA9 /* Xit/Sidebar/BranchCell.swift */; };
 		891C5F7326715C8A0099695D /* PrioritizedResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F7226715C8A0099695D /* PrioritizedResults.swift */; };
 		891C5F8626739AF80099695D /* ProgressPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891C5F8526739AF80099695D /* ProgressPanel.swift */; };
 		892F408D27ECCD2700659BF9 /* NoOpKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892F408C27ECCD2700659BF9 /* NoOpKeychain.swift */; };
-		893FCF072C946D550070FB25 /* Xit/Sidebar/BranchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FCF062C946D550070FB25 /* Xit/Sidebar/BranchList.swift */; };
-		893FCF092C95C6C30070FB25 /* Xit/Sidebar/StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FCF082C95C6C30070FB25 /* Xit/Sidebar/StatusBadge.swift */; };
 		8959E6E12856E35400AD88C4 /* TagPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8959E6E02856E35400AD88C4 /* TagPanel.swift */; };
 		895CD52E265379450073F15A /* CommitPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CD52D265379450073F15A /* CommitPanel.swift */; };
 		895ED19329BBC82A00757AEA /* CheckOutRemotePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895ED19229BBC82A00757AEA /* CheckOutRemotePanel.swift */; };
@@ -70,7 +59,6 @@
 		897056ED20E412AC0020F5E9 /* ClickThroughImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897056EC20E412AC0020F5E9 /* ClickThroughImageView.swift */; };
 		897A1BCC26D0593300EC9B9D /* UIStringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897A1BCB26D0593300EC9B9D /* UIStringExtensions.swift */; };
 		897AE65328BD1D5B00CC165C /* HistorySearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897AE65228BD1D5B00CC165C /* HistorySearchBar.swift */; };
-		897ED3642CA2F6D000C990A3 /* Xit/Sidebar/SubmoduleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897ED3632CA2F6D000C990A3 /* Xit/Sidebar/SubmoduleList.swift */; };
 		8983E19126641BC20075370C /* ClonePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E19026641BC20075370C /* ClonePanel.swift */; };
 		8983E1A7266596BD0075370C /* PathField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8983E1A6266596BD0075370C /* PathField.swift */; };
 		89880ECF20CF2B99007042F8 /* FlippedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89880ECE20CF2B99007042F8 /* FlippedView.swift */; };
@@ -220,11 +208,8 @@
 		C9864466207E9CAC0088209B /* StringIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9864465207E9CAC0088209B /* StringIdentifiers.swift */; };
 		C98925B31DA70D3A00E5645C /* CommitLinesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */; };
 		C98925D51DB6D3D300E5645C /* NewTagOpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98925D41DB6D3D300E5645C /* NewTagOpController.swift */; };
-		C98AA0012EA6E00000C0D301 /* Xit/Sidebar/BranchAccessoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0002EA6E00000C0D301 /* Xit/Sidebar/BranchAccessoryStore.swift */; };
-		C98AA0032EA6E0A000C0D301 /* Xit/Sidebar/SidebarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0022EA6E0A000C0D301 /* Xit/Sidebar/SidebarCoordinator.swift */; };
 		C98AA0112EA6E70000C0D301 /* XitTests/BranchAccessoryStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0102EA6E70000C0D301 /* XitTests/BranchAccessoryStoreTest.swift */; };
 		C98AA0132EA6E78000C0D301 /* XitTests/SidebarCoordinatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0122EA6E78000C0D301 /* XitTests/SidebarCoordinatorTest.swift */; };
-		C98AA0152EA6E8F000C0D301 /* Xit/Sidebar/SidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98AA0142EA6E8F000C0D301 /* Xit/Sidebar/SidebarViewModel.swift */; };
 		C98EBC152126188900EF739E /* ServicesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC142126188900EF739E /* ServicesData.swift */; };
 		C98EBC17212734F900EF739E /* PullRequestCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98EBC16212734F900EF739E /* PullRequestCache.swift */; };
 		C995E32D28D6086E00C66406 /* CleanList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C995E32C28D6086E00C66406 /* CleanList.swift */; };
@@ -265,18 +250,9 @@
 		C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9DAB5D21D4A8D2000586854 /* Preferences.storyboard */; };
 		C9DEA4BB1E4FEC1600DF4069 /* FileListDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */; };
 		C9DEA4F01E53678A00DF4069 /* XTFileChangesDataSourceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DEA4EF1E53678A00DF4069 /* XTFileChangesDataSourceTest.swift */; };
-		C9E594B92C8B4D7900C518C4 /* Xit/Utils/SwiftUI/FilterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594B82C8B4D7900C518C4 /* Xit/Utils/SwiftUI/FilterField.swift */; };
-		C9E594BB2C8BE9E400C518C4 /* Xit/Sidebar/TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BA2C8BE9E400C518C4 /* Xit/Sidebar/TagList.swift */; };
 		C9E594BF2C8F29BA00C518C4 /* XitTests/PathTreeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594BE2C8F29BA00C518C4 /* XitTests/PathTreeTest.swift */; };
-		C9E594C12C914C2600C518C4 /* Xit/Sidebar/FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C02C914C2600C518C4 /* Xit/Sidebar/FilterBar.swift */; };
-		C9E594C32C91568200C518C4 /* Xit/Sidebar/SidebarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C22C91568200C518C4 /* Xit/Sidebar/SidebarButtons.swift */; };
-		C9E594C52C91C46300C518C4 /* Xit/Sidebar/RecursiveDisclosureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C42C91C46300C518C4 /* Xit/Sidebar/RecursiveDisclosureGroup.swift */; };
-		C9E594C72C931B8B00C518C4 /* Xit/Sidebar/TabbedSidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E594C62C931B8B00C518C4 /* Xit/Sidebar/TabbedSidebarController.swift */; };
 		C9E5E27E210A32780069FBD8 /* HistoryViewController+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5E27D210A32780069FBD8 /* HistoryViewController+Search.swift */; };
 		C9E7DA3A2C82215F00B539E0 /* SwiftUIExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA392C82215F00B539E0 /* SwiftUIExtensions.swift */; };
-		C9E7DA3C2C83CA1400B539E0 /* Xit/Sidebar/TabbedSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3B2C83CA1400B539E0 /* Xit/Sidebar/TabbedSidebar.swift */; };
-		C9E7DA3E2C86038100B539E0 /* Xit/Sidebar/IconTabPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3D2C86038100B539E0 /* Xit/Sidebar/IconTabPicker.swift */; };
-		C9E7DA402C87415700B539E0 /* Xit/Sidebar/StashList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E7DA3F2C87415700B539E0 /* Xit/Sidebar/StashList.swift */; };
 		C9E9A37D1D0B5706007BFABF /* XTWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E9A37C1D0B5706007BFABF /* XTWindowController.swift */; };
 		C9EA18F7234F8DB000DDAA25 /* ControlValueWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9EA18F6234F8DB000DDAA25 /* ControlValueWrappers.swift */; };
 		C9F1B5DE2217247E00293305 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F1B5DD2217247E00293305 /* ViewExtensions.swift */; };
@@ -1443,33 +1419,9 @@
 				C90F92781E0199E400FE8589 /* AppDelegate.swift in Sources */,
 				89ADB3BD283F2E6800EF508A /* Box.swift in Sources */,
 				C91F34781D30656B005F9BDF /* Services.swift in Sources */,
-				891BC3972CB0FFA500455AA9 /* Xit/Sidebar/BranchCell.swift in Sources */,
-				891BC3822CA476B200455AA9 /* Xit/Sidebar/BranchListViewModel.swift in Sources */,
-				891BC3842CA4777B00455AA9 /* Xit/Sidebar/TagListViewModel.swift in Sources */,
-				891BC3862CA477B400455AA9 /* Xit/Sidebar/StashListViewModel.swift in Sources */,
-				891BC3882CA477FE00455AA9 /* Xit/Sidebar/SubmoduleListModel.swift in Sources */,
-				891BC38A2CA4D5BD00455AA9 /* Xit/Sidebar/FilteringListViewModel.swift in Sources */,
-				891BC38C2CA5947E00455AA9 /* Xit/Utils/SwiftUI/ExpansionText.swift in Sources */,
-				891BC38E2CA766F400455AA9 /* Xit/Sidebar/RemoteListViewModel.swift in Sources */,
-				891BC3952CB0A3E500455AA9 /* Xit/Sidebar/RemoteList.swift in Sources */,
-				893FCF072C946D550070FB25 /* Xit/Sidebar/BranchList.swift in Sources */,
-				893FCF092C95C6C30070FB25 /* Xit/Sidebar/StatusBadge.swift in Sources */,
-				897ED3642CA2F6D000C990A3 /* Xit/Sidebar/SubmoduleList.swift in Sources */,
 				89C2A7762E7CCFAA00765D84 /* Xit/Document/WorkspaceStatusCountModel.swift in Sources */,
 				89C2A7782E88763600765D84 /* Xit/Utils/CommandDisplay.swift in Sources */,
 				89D942DD2CBAB8B10026C5E8 /* Xit/Utils/LowerCaseString.swift in Sources */,
-				C98AA0012EA6E00000C0D301 /* Xit/Sidebar/BranchAccessoryStore.swift in Sources */,
-				C98AA0032EA6E0A000C0D301 /* Xit/Sidebar/SidebarCoordinator.swift in Sources */,
-				C98AA0152EA6E8F000C0D301 /* Xit/Sidebar/SidebarViewModel.swift in Sources */,
-				C9E594B92C8B4D7900C518C4 /* Xit/Utils/SwiftUI/FilterField.swift in Sources */,
-				C9E594BB2C8BE9E400C518C4 /* Xit/Sidebar/TagList.swift in Sources */,
-				C9E594C12C914C2600C518C4 /* Xit/Sidebar/FilterBar.swift in Sources */,
-				C9E594C32C91568200C518C4 /* Xit/Sidebar/SidebarButtons.swift in Sources */,
-				C9E594C52C91C46300C518C4 /* Xit/Sidebar/RecursiveDisclosureGroup.swift in Sources */,
-				C9E594C72C931B8B00C518C4 /* Xit/Sidebar/TabbedSidebarController.swift in Sources */,
-				C9E7DA3C2C83CA1400B539E0 /* Xit/Sidebar/TabbedSidebar.swift in Sources */,
-				C9E7DA3E2C86038100B539E0 /* Xit/Sidebar/IconTabPicker.swift in Sources */,
-				C9E7DA402C87415700B539E0 /* Xit/Sidebar/StashList.swift in Sources */,
 				C947367E1DF08C03000E3A05 /* ContextMenuOutlineView.swift in Sources */,
 				C936AD0A1D4C0CD400C5ADC3 /* PushOpController.swift in Sources */,
 				C95355FC1D9492EA00AEEF49 /* XTDocumentController.swift in Sources */,
