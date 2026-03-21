@@ -409,7 +409,7 @@ extension XTWindowController: NSWindowDelegate
         if !collapsed {
           self.historyAutoCollapsed = false
         }
-        self.titleBarController?.searchButton?.isEnabled = !collapsed
+        self.titleBarController?.setSearchEnabled(!collapsed)
         self.titleBarController?.updateViewControls()
       }
     }

@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 import Cocoa
 import XitGit
 
@@ -10,7 +9,6 @@ final class HistoryViewController: NSViewController
   @IBOutlet var tableController: HistoryTableController!
   @IBOutlet weak var historyTable: NSTableView!
 
-  var searchController: HostingTitlebarController<HistorySearchBar>!
   weak var splitController: NSSplitViewController!
   weak var fileViewController: FileViewController!
 
@@ -28,27 +26,6 @@ final class HistoryViewController: NSViewController
     
     cellSpacing.height = 0
     historyTable.intercellSpacing = cellSpacing
-  }
-  
-  override func viewDidAppear()
-  {
-    searchController = .init(rootView: .init(searchUp: {
-      [weak self] in
-      guard let self = self
-      else { return }
-      self.search(for: $0,
-                  type: $1,
-                  direction: .up)
-    }, searchDown: {
-      [weak self] in
-      guard let self = self
-      else { return }
-      self.search(for: $0,
-                  type: $1,
-                  direction: .down)
-    }))
-    searchController.isHidden = true
-    view.window?.addTitlebarAccessoryViewController(searchController)
   }
   
   func finishLoad(repository: any FullRepository)

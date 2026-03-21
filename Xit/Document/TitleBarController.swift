@@ -19,7 +19,9 @@ protocol TitleBarDelegate: AnyObject
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
-  func search()
+  func search(for text: String,
+              type: HistorySearchType,
+              direction: SearchDirection)
 }
 
 @MainActor
@@ -30,7 +32,6 @@ class TitleBarController: NSObject
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var stashButton: NSSegmentedControl!
   @IBOutlet weak var spinner: NSProgressIndicator!
-  @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   var stashMenu: NSMenu!
   var fetchMenu: NSMenu!
@@ -45,6 +46,18 @@ class TitleBarController: NSObject
   var progressSink: AnyCancellable?
   
   var separatorItem: NSToolbarItem?
+  private var searchToolbarItem: NSSearchToolbarItem?
+  private var previousSearchItem: NSToolbarItem?
+  private var nextSearchItem: NSToolbarItem?
+  private var searchTypeItems: [NSMenuItem] = []
+  private var searchEnabled = true
+  private var searchText = ""
+  private var searchType: HistorySearchType = .summary {
+    didSet {
+      updateSearchTypeMenuState()
+      updateSearchPlaceholder()
+    }
+  }
   
   @objc dynamic var progressHidden: Bool
   {
@@ -165,6 +178,8 @@ class TitleBarController: NSObject
     remoteOpsMenu.items[0].submenu = pullMenu
     remoteOpsMenu.items[1].submenu = pushMenu
     remoteOpsMenu.items[2].submenu = fetchMenu
+    installSearchItems()
+    updateSearchControls()
   }
   
   func observe(controller: any RepositoryController)
@@ -287,11 +302,199 @@ class TitleBarController: NSObject
     viewControls.setSelected(states.history, forSegment: 1)
     viewControls.setSelected(states.details, forSegment: 2)
   }
-  
-  @IBAction
-  func search(_ sender: Any)
+
+  func setSearchEnabled(_ enabled: Bool)
   {
-    delegate?.search()
+    searchEnabled = enabled
+    if !enabled {
+      hideSearch()
+    }
+    updateSearchControls()
+  }
+
+  func showSearch()
+  {
+    guard searchEnabled
+    else { return }
+
+    searchToolbarItem?.beginSearchInteraction()
+    if let item = searchToolbarItem {
+      window.makeFirstResponder(item.searchField)
+    }
+    updateSearchControls()
+  }
+
+  func search(_ direction: SearchDirection)
+  {
+    guard searchEnabled
+    else { return }
+
+    showSearch()
+    guard !searchText.isEmpty
+    else { return }
+    delegate?.search(for: searchText,
+                     type: searchType,
+                     direction: direction)
+  }
+
+  func useSelectionForSearch(_ text: String)
+  {
+    guard let field = searchToolbarItem?.searchField,
+          searchEnabled
+    else { return }
+
+    showSearch()
+    searchText = text
+    field.stringValue = text
+    updateSearchControls()
+  }
+
+  var canShowSearch: Bool
+  { searchEnabled }
+
+  var canNavigateSearch: Bool
+  { searchEnabled && !searchText.isEmpty }
+
+  private func installSearchItems()
+  {
+    guard let toolbar = window.toolbar
+    else {
+      assertionFailure("no toolbar")
+      return
+    }
+    guard !toolbar.items.contains(where: { $0.itemIdentifier == .historySearch })
+    else { return }
+
+    if let oldSearchIndex = toolbar.items.firstIndex(where: { $0.itemIdentifier == .search }) {
+      toolbar.removeItem(at: oldSearchIndex)
+    }
+    let trailingIndex = toolbar.items.firstIndex(where: { $0.itemIdentifier == .view })
+      .map { $0 + 1 } ?? toolbar.items.count
+
+    toolbar.insertItem(withItemIdentifier: .searchPrevious, at: trailingIndex)
+    toolbar.insertItem(withItemIdentifier: .searchNext, at: trailingIndex + 1)
+    toolbar.insertItem(withItemIdentifier: .historySearch, at: trailingIndex + 2)
+  }
+
+  private func updateSearchControls()
+  {
+    let hasQuery = !searchText.isEmpty
+
+    searchToolbarItem?.isEnabled = searchEnabled
+    previousSearchItem?.isEnabled = searchEnabled && hasQuery
+    nextSearchItem?.isEnabled = searchEnabled && hasQuery
+    window.toolbar?.validateVisibleItems()
+  }
+
+  private func updateSearchTypeMenuState()
+  {
+    for (index, item) in searchTypeItems.enumerated() {
+      item.state = HistorySearchType.allCases[index] == searchType ? .on : .off
+    }
+  }
+
+  private func updateSearchPlaceholder()
+  {
+    searchToolbarItem?.searchField.placeholderString =
+      "Search \(searchType.displayName.rawValue)"
+  }
+
+  private func hideSearch()
+  {
+    searchText = ""
+    searchToolbarItem?.endSearchInteraction()
+    searchToolbarItem?.searchField.stringValue = ""
+    updateSearchControls()
+  }
+
+  private func makeSearchMenu() -> NSMenu
+  {
+    let menu = NSMenu()
+    let titleItem = NSMenuItem(title: "Search In", action: nil, keyEquivalent: "")
+
+    searchTypeItems = []
+    menu.autoenablesItems = false
+    titleItem.isEnabled = false
+    menu.addItem(titleItem)
+    menu.addItem(.separator())
+    for (index, type) in HistorySearchType.allCases.enumerated() {
+      let item = NSMenuItem(title: type.displayName.rawValue,
+                            action: #selector(selectSearchType(_:)),
+                            keyEquivalent: "")
+
+      item.target = self
+      item.tag = index
+      menu.addItem(item)
+      searchTypeItems.append(item)
+    }
+    updateSearchTypeMenuState()
+    return menu
+  }
+
+  private func makeSearchToolbarItem() -> NSSearchToolbarItem
+  {
+    let item = NSSearchToolbarItem(itemIdentifier: .historySearch)
+    let field = item.searchField
+
+    item.label = "Search"
+    item.paletteLabel = "Search"
+    item.toolTip = "Search History"
+    item.preferredWidthForSearchField = 220
+    item.resignsFirstResponderWithCancel = true
+    field.delegate = self
+    field.target = self
+    field.action = #selector(runSearch(_:))
+    field.sendsWholeSearchString = true
+    field.sendsSearchStringImmediately = false
+    field.searchMenuTemplate = makeSearchMenu()
+    field.setAccessibilityIdentifier(.Search.field)
+    searchToolbarItem = item
+    updateSearchPlaceholder()
+    return item
+  }
+
+  private func makeSearchNavigationItem(identifier: NSToolbarItem.Identifier,
+                                        label: String,
+                                        image: String,
+                                        action: Selector) -> NSToolbarItem
+  {
+    let item = NSToolbarItem(itemIdentifier: identifier)
+
+    item.label = label
+    item.paletteLabel = label
+    item.toolTip = label
+    item.image = .init(systemSymbolName: image, accessibilityDescription: label)
+    item.target = self
+    item.action = action
+    item.isBordered = true
+    return item
+  }
+
+  @objc
+  private func runSearch(_ sender: NSSearchField)
+  {
+    searchText = sender.stringValue
+    search(.down)
+  }
+
+  @objc
+  private func selectSearchType(_ sender: NSMenuItem)
+  {
+    guard HistorySearchType.allCases.indices.contains(sender.tag)
+    else { return }
+    searchType = HistorySearchType.allCases[sender.tag]
+  }
+
+  @objc
+  private func searchPrevious(_ sender: Any?)
+  {
+    search(.up)
+  }
+
+  @objc
+  private func searchNext(_ sender: Any?)
+  {
+    search(.down)
   }
 }
 
@@ -302,6 +505,9 @@ extension NSToolbarItem.Identifier
   static let remoteOps: Self = ◊"xit.remote"
   static let stash: Self = ◊"xit.stash"
   static let search: Self = ◊"xit.search"
+  static let historySearch: Self = ◊"xit.historySearch"
+  static let searchPrevious: Self = ◊"xit.searchPrevious"
+  static let searchNext: Self = ◊"xit.searchNext"
   static let view: Self = ◊"xit.view"
 }
 
@@ -315,6 +521,29 @@ extension TitleBarController: NSToolbarDelegate
       // Return the saved item to avoid Cocoa throwing exceptions about only
       // one tracking item being allowed.
       return separatorItem
+    }
+    if itemIdentifier == .historySearch {
+      return searchToolbarItem ?? makeSearchToolbarItem()
+    }
+    if itemIdentifier == .searchPrevious {
+      let item = previousSearchItem
+        ?? makeSearchNavigationItem(identifier: .searchPrevious,
+                                    label: "Find Previous",
+                                    image: "chevron.up",
+                                    action: #selector(searchPrevious(_:)))
+
+      previousSearchItem = item
+      return item
+    }
+    if itemIdentifier == .searchNext {
+      let item = nextSearchItem
+        ?? makeSearchNavigationItem(identifier: .searchNext,
+                                    label: "Find Next",
+                                    image: "chevron.down",
+                                    action: #selector(searchNext(_:)))
+
+      nextSearchItem = item
+      return item
     }
     return nil
   }
@@ -355,9 +584,6 @@ extension TitleBarController: NSToolbarDelegate
           remoteControls.setMenu(menu, forSegment: segment.rawValue)
         }
         stashButton.setMenu(stashMenu, forSegment: 0)
-
-      case .search:
-        searchButton = item.view as? NSButton
     
       case .view:
         viewControls = item.view as? NSSegmentedControl
@@ -392,10 +618,70 @@ extension TitleBarController: NSMenuItemValidation
         state = states.history
       case #selector(viewFiles(_:)):
         state = states.details
+      case #selector(selectSearchType(_:)):
+        return true
       default:
         return false
     }
     menuItem.state = state ? .on : .off
     return true
+  }
+}
+
+extension TitleBarController: NSToolbarItemValidation
+{
+  func validateToolbarItem(_ item: NSToolbarItem) -> Bool
+  {
+    switch item.itemIdentifier {
+      case .historySearch:
+        return searchEnabled
+      case .searchPrevious, .searchNext:
+        return searchEnabled && !searchText.isEmpty
+      default:
+        return true
+    }
+  }
+}
+
+extension TitleBarController: NSSearchFieldDelegate
+{
+  func controlTextDidChange(_ obj: Notification)
+  {
+    if let field = obj.object as? NSSearchField {
+      searchText = field.stringValue
+    }
+    updateSearchControls()
+  }
+
+  func controlTextDidBeginEditing(_ obj: Notification)
+  {
+    updateSearchControls()
+  }
+
+  func controlTextDidEndEditing(_ obj: Notification)
+  {
+    guard let field = obj.object as? NSSearchField
+    else { return }
+    if field.stringValue.isEmpty {
+      searchText = ""
+      hideSearch()
+    }
+    else {
+      searchText = field.stringValue
+    }
+    updateSearchControls()
+  }
+
+  func searchFieldDidStartSearching(_ sender: NSSearchField)
+  {
+    searchText = sender.stringValue
+    updateSearchControls()
+  }
+
+  func searchFieldDidEndSearching(_ sender: NSSearchField)
+  {
+    searchText = ""
+    sender.stringValue = ""
+    updateSearchControls()
   }
 }

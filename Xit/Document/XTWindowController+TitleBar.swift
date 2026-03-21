@@ -69,9 +69,46 @@ extension XTWindowController: TitleBarDelegate
   func showHideSidebar() { showHideSidebar(self) }
   func showHideHistory() { showHideHistory(self) }
   func showHideDetails() { showHideDetails(self) }
-
-  func search()
+  func search(for text: String,
+              type: HistorySearchType,
+              direction: SearchDirection)
   {
-    historyController.toggleSearchBar()
+    historyController.search(for: text, type: type, direction: direction)
+  }
+}
+
+extension XTWindowController
+{
+  @IBAction
+  func performFindPanelAction(_ sender: Any?)
+  {
+    let tag = UInt((sender as? NSMenuItem)?.tag ?? 0)
+
+    guard let action = NSFindPanelAction(rawValue: tag)
+    else { return }
+
+    switch action {
+      case .showFindPanel:
+        titleBarController?.showSearch()
+      case .next:
+        titleBarController?.search(.down)
+      case .previous:
+        titleBarController?.search(.up)
+      case .setFindString:
+        selectedFindString().map { titleBarController?.useSelectionForSearch($0) }
+      default:
+        break
+    }
+  }
+
+  func selectedFindString() -> String?
+  {
+    guard let textView = window?.firstResponder as? NSTextView
+    else { return nil }
+    let selection = textView.selectedRange()
+
+    guard selection.length > 0
+    else { return nil }
+    return (textView.string as NSString).substring(with: selection)
   }
 }

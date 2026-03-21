@@ -3,11 +3,6 @@ import XitGit
 
 extension HistoryViewController
 {
-  func toggleSearchBar()
-  {
-    searchController.isHidden.toggle()
-  }
-  
   func search(for text: String,
               type: HistorySearchType,
               direction: SearchDirection)
