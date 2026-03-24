@@ -328,7 +328,6 @@ class TitleBarController: NSObject
     guard searchEnabled
     else { return }
 
-    showSearch()
     guard !searchText.isEmpty
     else { return }
     delegate?.search(for: searchText,
