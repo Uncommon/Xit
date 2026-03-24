@@ -11,6 +11,16 @@ Target end state:
 - No `XitGit`, `XitGitTestSupport`, or local package references remain in the project.
 - Existing type names and behavior are preserved as much as possible to minimize functional churn.
 
+## Current Status
+Status as of 2026-03-24:
+
+- The `Xit` app target builds cleanly again in Xcode.
+- Former `XitGit` production sources have been copied back into app-owned locations under `Xit/Repository`, `Xit/Repository/Models`, `Xit/Utils`, and `Xit/Utils/Extensions`.
+- App source has been switched back to local ownership; `import XitGit` usage has been removed from `Xit/`.
+- The original production source tree under `XitGit/Sources/XitGit` has been vacated to make moved-file review easier.
+- `XitGit/Sources/XitGit` currently contains only a placeholder source file so the package graph still resolves while package references remain in the project.
+- `XitGit` package wiring still exists for remaining targets/products, so full package removal is not complete yet.
+
 ## Step-by-Step Plan
 
 ### 1. Capture and classify the current package-owned surface area
@@ -158,6 +168,8 @@ These become normal `XitTests` support files again; no compatibility wrappers sh
 - No app/package compatibility shims will be retained after reintegration.
 
 ### 2. Move low-level repository and support types back first
+Status: complete for app production code.
+
 Execution note: this step cannot be landed independently while the app still links
 `XitGit`. Attempting to compile app-owned copies of these leaf types alongside the
 package creates two incompatible type universes (`Xit.GitOID` vs
@@ -174,6 +186,8 @@ dependency on the package.
 - Keep symbol names unchanged unless a collision forces a rename.
 
 ### 3. Move core repository implementation back into `Xit`
+Status: complete for app production code.
+
 - Move the repository layer from `XitGit/Sources/XitGit` into `Xit/Repository`:
   - `XTRepository` and all `XTRepository+*` files
   - all `Git*` wrapper types
@@ -184,8 +198,11 @@ dependency on the package.
   - `TaskQueue`, `PatchMaker`, `TreeLoader`, `FileChange`, `FileChangeNode`
 - Restore direct app target membership for these files.
 - Remove package-specific import assumptions while preserving runtime behavior.
+- This has been validated by a clean `Xit` app-target build.
 
 ### 4. Move package-owned app-facing models back into the app
+Status: complete for app production code.
+
 - Move the former package `Models` folder contents into app-owned locations:
   - `RepositorySelection`
   - `CommitSelection`
@@ -200,6 +217,8 @@ dependency on the package.
 - Update app files to use local symbols again instead of imported package symbols.
 
 ### 5. Move utilities back and remove migration-only splits
+Status: partial.
+
 - Move package-owned non-UI utility files back into `Xit/Utils` and `Xit/Utils/Extensions`:
   - `CombineExtensions`
   - `MutexProtected`
@@ -210,12 +229,20 @@ dependency on the package.
   - `PreferencesCompat`
   - any package-owned extension/helper files that are now app-global concerns
 - Remove migration-only bridge code and splits that existed solely to cross the package boundary, including files such as `Xit/Repository/XitGitExtensions.swift` and package-specific bridging helpers once their functionality is local again.
+- Utility moves needed for the app target are complete.
+- `Xit/Utils/XitGitBridging.swift` has been deleted.
+- `Xit/Repository/XitGitExtensions.swift` still exists and should be removed or folded away in a later cleanup pass.
 
 ### 6. Switch application code back to app-local ownership
+Status: partial.
+
 - Remove `import XitGit` from all app files once the moved types are locally available.
 - Remove `import XitGitTestSupport` from app tests once test support is local again.
 - Tighten access control back down where it was only broadened to satisfy package boundaries.
 - Revert package-only compatibility patterns where the app no longer needs them.
+- App-source `import XitGit` usage has been removed.
+- To preserve simple global protocol names during reintegration, disambiguation now uses explicit `Xit.` qualification where needed instead of temporary `Repository...Protocol` aliases.
+- Test-side package imports and dependencies are still pending.
 
 ### 7. Merge package test support back into `XitTests`
 - Move shared test harness code from the package back into `XitTests`:
@@ -235,6 +262,8 @@ dependency on the package.
 - Preserve existing test names where practical to minimize churn in future debugging and history review.
 
 ### 9. Remove Swift Package integration from the Xcode project
+Status: partial.
+
 - Delete the local package reference from `Xit.xcodeproj/project.pbxproj`.
 - Remove all package product dependencies and framework links for:
   - `XitGit`
@@ -242,8 +271,12 @@ dependency on the package.
   - `Clibgit2`
 - Remove any package-derived framework embedding or copy behavior from the app, unit-test, and UI-test targets.
 - Reassign source membership so all moved files belong directly to `Xit` or `XitTests`.
+- The `Xit` app target no longer depends directly on the `XitGit` package product.
+- The local package reference still remains because other targets/products still resolve through the package graph.
 
 ### 10. Delete the package only after the app is clean
+Status: in progress.
+
 - After builds and tests pass with local source ownership, delete:
   - `XitGit/Package.swift`
   - `XitGit/Package.resolved`
@@ -252,6 +285,8 @@ dependency on the package.
   - remaining package-specific metadata
 - Remove the `XitGit` directory entirely as the final cleanup step.
 - Do not delete any package file until its content has been fully relocated or intentionally discarded.
+- The original Swift sources under `XitGit/Sources/XitGit` have already been removed.
+- `XitGit/Sources/XitGit/XitGitPlaceholder.swift` is intentionally present as a temporary package-resolution stub until the remaining package references are removed.
 
 ### 11. Update documentation and architecture notes
 - Keep this plan document as the reintegration reference.
