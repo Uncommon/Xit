@@ -158,6 +158,14 @@ These become normal `XitTests` support files again; no compatibility wrappers sh
 - No app/package compatibility shims will be retained after reintegration.
 
 ### 2. Move low-level repository and support types back first
+Execution note: this step cannot be landed independently while the app still links
+`XitGit`. Attempting to compile app-owned copies of these leaf types alongside the
+package creates two incompatible type universes (`Xit.GitOID` vs
+`XitGit.GitOID`, `Xit.ReferenceName` vs `XitGit.ReferenceName`, duplicated
+`String`/`PathTree` APIs, etc.). Execute this step atomically with step 3 and
+the corresponding import cleanup in step 6, or after removing the app's direct
+dependency on the package.
+
 - Move leaf types and helpers back before any higher-level code:
   - `SHA`, `OID`, `StringOID`, `ReferenceName`, `RepoError`, `GitEnums`, `LowerCaseString`
   - string/data/array/URL/C-string interop helpers
