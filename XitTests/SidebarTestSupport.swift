@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import XitGit
 
 /// Shared repository doubles for sidebar-focused tests.
 ///

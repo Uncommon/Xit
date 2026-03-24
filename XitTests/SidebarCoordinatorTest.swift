@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import Testing
-import XitGit
 @testable import Xit
 
 private typealias SidebarTestReferencer =
