@@ -13,14 +13,149 @@ Target end state:
 
 ## Step-by-Step Plan
 
-### 1. Capture the current package-owned surface area
-- Inventory every file under `XitGit/Sources/XitGit`, `XitGit/Sources/XitGit/Models`, `XitGit/Sources/XitGit/TestSupport`, and `XitGit/Sources/XitGitTestSupport`.
-- Classify each file into one destination:
-  - `Xit/Repository`
-  - `Xit/Utils` or `Xit/Utils/Extensions`
-  - an existing app feature folder such as `Xit/Sidebar`, `Xit/FileView`, `Xit/HistoryView`, or `Xit/Services`
-  - `XitTests`
-- Record which files are package-only compatibility shims so they can be removed instead of moved.
+### 1. Capture and classify the current package-owned surface area
+Status: complete.
+
+Package-owned production and test code has been inventoried and assigned these destinations.
+
+#### 1.1 Move back into `Xit/Repository`
+- Repository core:
+  - `XTRepository.swift`
+  - `XTRepository+Commands.swift`
+  - `XTRepository+Commits.swift`
+  - `XTRepository+Files.swift`
+  - `XTRepository+Iterators.swift`
+  - `XTRepository+MergePushPull.swift`
+  - `XTRepository+Refs.swift`
+  - `XTRepository+Staging.swift`
+- Repository/controller layer:
+  - `RepositoryProtocols.swift`
+  - `RepositoryController.swift`
+  - `RepositoryWatcher.swift`
+  - `WorkspaceWatcher.swift`
+  - `ConfigWatcher.swift`
+  - `TaskQueue.swift`
+  - `Cache.swift`
+  - `RemoteProgressPublisher.swift`
+- Git wrappers and C-facing repository support:
+  - `Blame.swift`
+  - `CLIRunner.swift`
+  - `FileChange.swift`
+  - `FileChangeNode.swift`
+  - `FileMonitor.swift`
+  - `GiRevWalk.swift`
+  - `GitBlob.swift`
+  - `GitBranch.swift`
+  - `GitBuffer.swift`
+  - `GitCloner.swift`
+  - `GitCommit.swift`
+  - `GitConfig.swift`
+  - `GitDiff.swift`
+  - `GitDiffDelta.swift`
+  - `GitDiffHunk.swift`
+  - `GitDiffStats.swift`
+  - `GitEnums.swift`
+  - `GitExtensions.swift`
+  - `GitIndex.swift`
+  - `GitODB.swift`
+  - `GitPatch.swift`
+  - `GitRefLog.swift`
+  - `GitRefSpec.swift`
+  - `GitReference.swift`
+  - `GitRemote.swift`
+  - `GitStash.swift`
+  - `GitStatusList.swift`
+  - `GitSubmodule.swift`
+  - `GitTag.swift`
+  - `GitTree.swift`
+  - `GitVersionedOptions.swift`
+  - `GitWorkTree.swift`
+  - `PatchMaker.swift`
+  - `TreeLoader.swift`
+  - `RefType.swift`
+  - `ReferenceName.swift`
+  - `RepoError.swift`
+  - `SHA.swift`
+  - `OID.swift`
+  - `StringOID.swift`
+  - `Signature.swift`
+  - `SubmoduleEnums.swift`
+- Repository-adjacent shared models:
+  - `Models/CommitSelection.swift`
+  - `Models/FileListModel.swift`
+  - `Models/RepositorySelection.swift`
+  - `Models/StagingListModel.swift`
+  - `Models/StagingSelection.swift`
+  - `Models/StashSelection.swift`
+  - `Models/WorkspaceTreeBuilder.swift`
+- Repository-adjacent data structures/helpers:
+  - `PathTreeData.swift`
+  - `PathTreeNode.swift`
+  - `StringFakes.swift`
+
+#### 1.2 Move into `Xit/Utils` or `Xit/Utils/Extensions`
+- `ArrayExtensions.swift` -> `Xit/Utils/Extensions`
+- `CombineExtensions.swift` -> `Xit/Utils/Extensions`
+- `DataExtensions.swift` -> `Xit/Utils/Extensions`
+- `StringExtensions.swift` -> `Xit/Utils/Extensions`
+- `URLExtensions.swift` -> `Xit/Utils/Extensions`
+- `CStringInterop.swift` -> `Xit/Utils`
+- `FileEventStream.swift` -> `Xit/Utils`
+- `KeychainStorage.swift` -> `Xit/Utils`
+- `LowerCaseString.swift` -> keep as app utility in `Xit/Utils`
+- `MutexProtected.swift` -> `Xit/Utils`
+- `PreferencesCompat.swift` -> `Xit/Utils`
+- `PublisherGroup.swift` -> `Xit/Utils`
+- `QueueUtils.swift` -> `Xit/Utils`
+- `Signpost.swift` -> `Xit/Utils`
+
+#### 1.3 Move package test support into `XitTests`
+- `XitGit/Sources/XitGit/TestSupport/RepoActionBuilder.swift`
+- `XitGit/Sources/XitGit/TestSupport/RepoActions.swift`
+- `XitGit/Sources/XitGit/TestSupport/RepositoryController+Wait.swift`
+- `XitGit/Sources/XitGitTestSupport/XTTest.swift`
+
+These become normal `XitTests` support files again; no compatibility wrappers should remain.
+
+#### 1.4 Move package tests into `XitTests`
+- Test files to merge back:
+  - `ArrayExtensionsTest.swift`
+  - `BlameTest.swift`
+  - `BranchTest.swift`
+  - `CacheTest.swift`
+  - `CommitRootTest.swift`
+  - `ConfigTest.swift`
+  - `FileListModelTest.swift`
+  - `GitRefSpecTest.swift`
+  - `GitSwiftTests.swift`
+  - `IndexTreeTest.swift`
+  - `LibGit2Test.swift`
+  - `PatchTest.swift`
+  - `ReferenceNameTests.swift`
+  - `SHATest.swift`
+  - `StringExtensionsTest.swift`
+  - `TaskQueueTest.swift`
+  - `XTFileChangesModelTest.swift`
+  - `XTRepositoryHunkTest.swift`
+  - `XTRepositoryMergeTest.swift`
+  - `XTRepositoryTest.swift`
+  - `XTStashTest.swift`
+  - `XTTagTest.swift`
+  - `XitGitTests.swift`
+- Test resources to merge back into `XitTests` resources:
+  - `Resources/lorem.txt`
+  - `Resources/lorem2.txt`
+
+#### 1.5 Delete instead of move
+- Remove the package-only bridge and compatibility files rather than rehoming them:
+  - `Xit/Repository/XitGitExtensions.swift`
+  - `Xit/Utils/XitGitBridging.swift`
+- Remove package infrastructure rather than translating it into app code:
+  - `XitGit/Package.swift`
+  - `XitGit/Package.resolved`
+  - `XitGit/Sources/Clibgit2/*`
+  - all Swift Package metadata/build output under `XitGit/.swiftpm`, `XitGit/.build`, and `XitGit/build`
+- No app/package compatibility shims will be retained after reintegration.
 
 ### 2. Move low-level repository and support types back first
 - Move leaf types and helpers back before any higher-level code:
