@@ -111,7 +111,7 @@
                                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="WPj-TE-tri">
                                             <font key="font" metaFont="system"/>
                                             <segments>
-                                                <segment toolTip="Stash" image="trash.circle" catalog="system" width="32"/>
+                                                <segment toolTip="Stash" image="bubbles.and.sparkles" catalog="system" width="32"/>
                                             </segments>
                                         </segmentedCell>
                                         <accessibility identifier="xit.clean"/>
@@ -236,6 +236,7 @@
     <resources>
         <image name="NSGoRightTemplate" width="12" height="17"/>
         <image name="NSLeftFacingTriangleTemplate" width="12" height="17"/>
+        <image name="bubbles.and.sparkles" catalog="system" width="17" height="15"/>
         <image name="chevron.down" catalog="system" width="15" height="9"/>
         <image name="chevron.up" catalog="system" width="15" height="9"/>
         <image name="inset.filled.bottomthird.rectangle" catalog="system" width="18" height="14"/>
@@ -244,7 +245,6 @@
         <image name="square.and.arrow.down" catalog="system" width="15" height="17"/>
         <image name="square.and.arrow.down.fill" catalog="system" width="15" height="16"/>
         <image name="square.and.arrow.up.fill" catalog="system" width="15" height="17"/>
-        <image name="trash.circle" catalog="system" width="15" height="15"/>
         <image name="tray.fill" catalog="system" width="18" height="13"/>
     </resources>
 </document>
