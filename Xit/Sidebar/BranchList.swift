@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import XitGit
 
 enum BranchTrackingIndicator: Equatable
 {

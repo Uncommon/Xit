@@ -1,4 +1,3 @@
-import XitGit
 
 extension RepoError
 {

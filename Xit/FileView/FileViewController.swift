@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Quartz
-import XitGit
 
 /// View controller for the file list and detail view.
 final class FileViewController: NSViewController, RepositoryWindowViewController

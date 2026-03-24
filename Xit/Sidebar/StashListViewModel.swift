@@ -1,5 +1,4 @@
 import Combine
-import XitGit
 
 class StashListViewModel<Stasher: Stashing>: FilteringListViewModel
 {

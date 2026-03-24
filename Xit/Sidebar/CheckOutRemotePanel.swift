@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 struct CheckOutRemotePanel: View {
   class Model: ObservableObject

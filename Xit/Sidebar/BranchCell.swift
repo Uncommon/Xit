@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 /// List cell view used by local and remote branch lists.
 struct BranchCell<Item: PathTreeData,

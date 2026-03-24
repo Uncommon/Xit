@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import XitGit
 
 protocol RepoSelectionItem: Identifiable where ID == String
 {

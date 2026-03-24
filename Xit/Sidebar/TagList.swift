@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import XitGit
 
 struct TagList<Tagger: Tagging>: View
 {

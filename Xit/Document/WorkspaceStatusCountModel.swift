@@ -1,5 +1,4 @@
 import Combine
-import XitGit
 
 /// Model that tracks the count of staged and unstaged files.
 @MainActor

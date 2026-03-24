@@ -1,6 +1,5 @@
 import Combine
 import SwiftUI
-import XitGit
 
 class TagListViewModel<Tagger: Tagging>: FilteringListViewModel
 {

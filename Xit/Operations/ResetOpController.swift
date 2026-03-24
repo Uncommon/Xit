@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 final class ResetOpController: OperationController
 {

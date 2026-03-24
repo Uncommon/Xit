@@ -1,6 +1,5 @@
 import Foundation
 import Siesta
-import XitGit
 
 protocol PullRequest: Sendable // Identifiable
 {

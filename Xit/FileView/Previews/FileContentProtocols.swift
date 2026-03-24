@@ -1,6 +1,5 @@
 import Foundation
 import AppKit
-import XitGit
 
 /// Interface for a controller that displays file content in some form.
 @MainActor

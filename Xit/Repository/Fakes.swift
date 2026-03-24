@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Siesta
-import XitGit
 
 extension FakeCommit
 {

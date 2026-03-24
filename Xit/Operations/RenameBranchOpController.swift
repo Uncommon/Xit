@@ -1,5 +1,4 @@
 import Cocoa
-import XitGit
 
 final class RenameBranchOpController: OperationController
 {
