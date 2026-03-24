@@ -96,6 +96,7 @@
 		898967A52F6CC2BF00454B37 /* SidebarCoordinatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8989679D2F6CC2BF00454B37 /* SidebarCoordinatorTest.swift */; };
 		898967AA2F6CC32000454B37 /* ExpansionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898967A82F6CC32000454B37 /* ExpansionText.swift */; };
 		898967AB2F6CC32000454B37 /* FilterField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898967A92F6CC32000454B37 /* FilterField.swift */; };
+		898967AD2F6F559400454B37 /* HistorySearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898967AC2F6F508900454B37 /* HistorySearchTest.swift */; };
 		898A381827136881002639CC /* RepoDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898A381727136881002639CC /* RepoDocument.swift */; };
 		898F75842A4E42DA00C157D7 /* RepositoryOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */; };
 		898F75862A51D8C700C157D7 /* OperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898F75852A51D8C700C157D7 /* OperationTests.swift */; };
@@ -404,6 +405,7 @@
 		8989679F2F6CC2BF00454B37 /* XTEmptyRepositoryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XTEmptyRepositoryTest.swift; sourceTree = "<group>"; };
 		898967A82F6CC32000454B37 /* ExpansionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpansionText.swift; sourceTree = "<group>"; };
 		898967A92F6CC32000454B37 /* FilterField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterField.swift; sourceTree = "<group>"; };
+		898967AC2F6F508900454B37 /* HistorySearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySearchTest.swift; sourceTree = "<group>"; };
 		898A381727136881002639CC /* RepoDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepoDocument.swift; sourceTree = "<group>"; };
 		898F75832A4E42DA00C157D7 /* RepositoryOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryOperation.swift; sourceTree = "<group>"; };
 		898F75852A51D8C700C157D7 /* OperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTests.swift; sourceTree = "<group>"; };
@@ -887,6 +889,7 @@
 				C9FCC1D01D50EB1A00AC398E /* CommitHistoryTest.swift */,
 				C98925B21DA70D3A00E5645C /* CommitLinesTest.swift */,
 				C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */,
+				898967AC2F6F508900454B37 /* HistorySearchTest.swift */,
 				C9F5331C217A90B800B2432C /* KeychainTest.swift */,
 				898F75852A51D8C700C157D7 /* OperationTests.swift */,
 				8989679B2F6CC2BF00454B37 /* PathTreeTest.swift */,
@@ -1543,6 +1546,7 @@
 				898967A02F6CC2BF00454B37 /* RemoteListViewModelTest.swift in Sources */,
 				898967A12F6CC2BF00454B37 /* XTAmendTest.swift in Sources */,
 				898967A22F6CC2BF00454B37 /* XTEmptyRepositoryTest.swift in Sources */,
+				898967AD2F6F559400454B37 /* HistorySearchTest.swift in Sources */,
 				898967A32F6CC2BF00454B37 /* BranchAccessoryStoreTest.swift in Sources */,
 				898967A42F6CC2BF00454B37 /* PathTreeTest.swift in Sources */,
 				898967A52F6CC2BF00454B37 /* SidebarCoordinatorTest.swift in Sources */,
