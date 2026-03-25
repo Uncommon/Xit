@@ -1,1 +1,0 @@
-../libgit2/include/git2.h

@@ -46,7 +46,9 @@ class TestRepoEnvironment
   {
     let remoteParent = tempDir.url.path + ".origin"
     
-    remotePath = remoteParent.appending(pathComponent: repo.rawValue)
+    remotePath = URL(fileURLWithPath: remoteParent, isDirectory: true)
+      .appendingPathComponent(repo.rawValue)
+      .path
     try? FileManager.default.createDirectory(atPath: remotePath,
                                              withIntermediateDirectories: true,
                                              attributes: nil)

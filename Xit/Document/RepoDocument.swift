@@ -1,6 +1,5 @@
 import Foundation
 import AppKit
-import XitGit
 
 class RepoDocument: NSDocument
 {

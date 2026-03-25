@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import XitGit
 
 /// Delegate that executes sidebar commands on behalf of the SwiftUI sidebar.
 @MainActor

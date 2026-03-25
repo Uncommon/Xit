@@ -1,6 +1,5 @@
 import Cocoa
 import Combine
-import XitGit
 
 final class ResetPanelController: SheetController
 {

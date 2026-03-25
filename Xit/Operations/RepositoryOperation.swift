@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 /// Encapsulates a higher-level repository action.
 protocol RepositoryOperation

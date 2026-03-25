@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 enum RemoteSearchScope: CaseIterable, Identifiable
 {

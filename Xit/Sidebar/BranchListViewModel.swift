@@ -1,5 +1,4 @@
 import Combine
-import XitGit
 
 struct BranchListItem: Sendable
 {

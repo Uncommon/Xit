@@ -17,3 +17,14 @@ public extension Publisher
     }).debounce(for: delay, scheduler: DispatchQueue.main)
   }
 }
+
+public extension Publisher where Self.Failure == Never
+{
+  /// Convenience function for `receive(on: DispatchQueue.main).sink()`
+  func sinkOnMainQueue(receiveValue: @escaping (Self.Output) -> Void)
+    -> AnyCancellable
+  {
+    receive(on: DispatchQueue.main)
+      .sink(receiveValue: receiveValue)
+  }
+}

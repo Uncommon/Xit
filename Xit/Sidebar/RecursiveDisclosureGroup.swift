@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 /// A partial re-implementation of `OutlineGroup` with the addition of a binding
 /// to read and write the set of expanded items.

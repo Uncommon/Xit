@@ -2,7 +2,6 @@ import Foundation
 import Cocoa
 import Combine
 import UniformTypeIdentifiers
-import XitGit
 
 class FileListController: NSViewController, RepositoryWindowViewController
 {

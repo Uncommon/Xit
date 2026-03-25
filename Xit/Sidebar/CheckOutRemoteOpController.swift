@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import XitGit
 
 final class CheckOutRemoteOpController: OperationController
 {

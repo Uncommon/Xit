@@ -1,5 +1,4 @@
 import Cocoa
-import XitGit
 
 /// Runs a `fetch` operation.
 class FetchOpController: PasswordOpController

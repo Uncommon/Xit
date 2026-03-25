@@ -1,7 +1,6 @@
 import Foundation
 import AppKit
 import SwiftUI
-import XitGit
 
 /// AppKit wrapper that hosts the SwiftUI sidebar and bridges it back to the
 /// existing window-controller operation flow.

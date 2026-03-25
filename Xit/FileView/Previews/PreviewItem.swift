@@ -1,6 +1,5 @@
 import Foundation
 import Quartz
-import XitGit
 
 // QLPreviewItem requires NSObjectProtocol, so it's best to just inherit
 // from NSObject.

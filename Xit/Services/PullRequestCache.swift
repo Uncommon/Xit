@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 /// Object that will be notified of pull request changes.
 protocol PullRequestClient: AnyObject

@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 struct GeneralPrefsPane: View
 {

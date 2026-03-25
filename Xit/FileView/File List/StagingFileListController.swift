@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Cocoa
-import XitGit
 
 /// Controller for staged/unstaged file lists. Conceptually (but not actually
 /// because of Swift) an abstract class.

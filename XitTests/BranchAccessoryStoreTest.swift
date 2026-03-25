@@ -1,6 +1,5 @@
 import SwiftUI
 import Testing
-import XitGit
 @testable import Xit
 
 @MainActor
