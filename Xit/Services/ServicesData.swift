@@ -1,6 +1,8 @@
 import Foundation
 import Siesta
+import FakedMacro
 
+@Faked
 protocol PullRequest: Sendable // Identifiable
 {
   /// In order to be `Sendable`, the source service is identified by ID rather
@@ -44,12 +46,22 @@ enum PullRequestStatus: String
   case other
 }
 
+extension PullRequestStatus: Fakable
+{
+  static func fakeDefault() -> Self { .open }
+}
+
 enum PullRequestApproval: String
 {
   case approved
   case needsWork
   case unreviewed
   case unknown
+}
+
+extension PullRequestApproval: Fakable
+{
+  static func fakeDefault() -> Self { .unknown }
 }
 
 /// A service that is related to specific remote repositories
@@ -88,4 +100,14 @@ struct PullRequestActions: OptionSet, Sendable
   
   // Reopen and delete would require keeping track of inactive (declined/canceled)
   // reviews, and that probably isn't desirable.
+}
+
+extension PullRequestActions: Fakable
+{
+  static func fakeDefault() -> Self { [] }
+}
+
+extension UUID: @retroactive Fakable
+{
+  public static func fakeDefault() -> Self { .init() }
 }

@@ -13,21 +13,16 @@ extension FakeCommit
   }
 }
 
-class FakeConnectedRemote: ConnectedRemote
-{
-  var defaultBranch: String? { nil }
-  
-  func referenceAdvertisements() throws -> [RemoteHead] { [] }
-}
-
 class FakeRemote: Remote
 {
+  typealias RefSpec = NullRefSpec
+
   var name: String?
   var urlString: String?
   var pushURLString: String? { urlString }
   
-  var refSpecs: AnyCollection<FakeRefSpec>
-  { AnyCollection([FakeRefSpec]()) }
+  var refSpecs: AnyCollection<NullRefSpec>
+  { AnyCollection([NullRefSpec]()) }
 
   func rename(_ name: String) throws {}
   func updateURLString(_ URLString: String?) throws {}
@@ -37,72 +32,8 @@ class FakeRemote: Remote
                          callbacks: RemoteCallbacks,
                          action: (ConnectedRemote) throws -> T) throws -> T
   {
-    try action(FakeConnectedRemote())
+    try action(NullConnectedRemote())
   }
-}
-
-struct FakeRefSpec: RefSpec
-{
-  let source: String
-  let destination: String
-  let stringValue: String
-  let force: Bool
-  let direction: Xit.RemoteConnectionDirection
-
-  func sourceMatches(refName: String) -> Bool { false }
-  func destinationMatches(refName: String) -> Bool { false }
-  func transformToTarget(name: String) -> String? { nil }
-  func transformToSource(name: String) -> String? { nil }
-}
-
-class FakeStash: Stash
-{
-  var message: String? = nil
-  var mainCommit: FakeCommit? = nil
-  var indexCommit: FakeCommit? = nil
-  var untrackedCommit: FakeCommit? = nil
-
-  func indexChanges() -> [FileChange] { [] }
-  func workspaceChanges() -> [FileChange] { [] }
-  func stagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
-  { nil }
-  func unstagedDiffForFile(_ path: String) -> PatchMaker.PatchResult?
-  { nil }
-}
-
-struct FakePullRequest: PullRequest
-{
-  var serviceID: UUID
-  var availableActions: PullRequestActions
-  var sourceBranch: String
-  var sourceRepo: URL?
-  var displayName: String
-  var id: String
-  var authorName: String?
-  var status: PullRequestStatus
-  var webURL: URL?
-  
-  func isApproved(by userID: String) -> Bool { false }
-  
-  func reviewerStatus(userID: String) -> PullRequestApproval
-  { .unreviewed }
-  
-  mutating func setReviewerStatus(userID: String, status: PullRequestApproval) {}
-}
-
-class FakePRService: PullRequestService
-{
-  init() {}
-  
-  func getPullRequests() -> [any PullRequest] { [] }
-  func approve(request: PullRequest) {}
-  func unapprove(request: PullRequest) {}
-  func needsWork(request: PullRequest) {}
-  func merge(request: PullRequest) {}
-  
-  func match(remote: any Remote) -> Bool { true }
-  
-  var userID: String = ""
 }
 
 class FakeLocalBranch: LocalBranch
@@ -172,92 +103,4 @@ class FakeRepoController: RepositoryController
   func post(progress: Float, total: Float) {}
   func indexChanged() {}
   func refsChanged() {}
-}
-
-class FakeFileChangesRepo: FileChangesRepo, EmptyBranching
-{
-  typealias Commit = NullCommit
-  typealias Tag = NullTag
-  typealias Tree = FakeTree
-  typealias Blob = NullBlob
-  typealias LocalBranch = NullLocalBranch
-  typealias RemoteBranch = NullRemoteBranch
-  typealias Blame = NullBlame
-
-  var controller: (any RepositoryController)?
-
-  var headRefName: (any ReferenceName)? = nil
-  var currentBranch: LocalBranchRefName? = nil
-    
-  func sha(forRef: any ReferenceName) -> SHA? { nil }
-
-  func tags() throws -> [Tag] { [] }
-  func graphBetween(localBranch: LocalBranchRefName,
-                    upstreamBranch: any ReferenceName) -> GraphStatus?
-  { nil }
-  func localBranch(named name: LocalBranchRefName) -> LocalBranch? { nil }
-  func remoteBranch(named name: String, remote: String) -> RemoteBranch?
-  { nil }
-  func reference(named name: some ReferenceName) -> (any Reference)? { nil }
-  func refs(at oid: GitOID) -> [String] { [] }
-  func allRefs() -> [GeneralRefName] { [] }
-  func rebuildRefsIndex() {}
-  func createCommit(with tree: Tree, message: String, parents: [Commit],
-                    updatingReference refName: String) throws -> GitOID
-  { .zero() }
-  func oid(forRef: any ReferenceName) -> GitOID? { nil }
-
-  var repoURL: URL { URL(fileURLWithPath: "") }
-  
-  func isTextFile(_ path: String, context: FileContext) -> Bool { false }
-  func fileBlob(ref: any ReferenceName, path: String) -> Blob? { nil }
-  func stagedBlob(file: String) -> Blob? { nil }
-  func contentsOfFile(path: String, at commit: any Xit.Commit) -> Data? { nil }
-  func contentsOfStagedFile(path: String) -> Data? { nil }
-  func fileURL(_ file: String) -> URL { URL(fileURLWithPath: "") }
-  
-  func diffMaker(forFile file: String, commitOID: GitOID, parentOID: GitOID?)
-    -> PatchMaker.PatchResult?
-  { nil }
-  func stagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
-  func unstagedDiff(file: String) -> PatchMaker.PatchResult? { nil }
-  func amendingStagedDiff(file: String) -> PatchMaker.PatchResult?{ nil }
-  
-  func blame(for path: String, from startOID: GitOID?,
-             to endOID: GitOID?) -> Blame?
-  { nil }
-  func blame(for path: String, data fromData: Data?,
-             to endOID: GitOID?) -> Blame?
-  { nil }
-  
-  var index: (any StagingIndex)? { nil }
-  
-  func stage(file: String) throws {}
-  func unstage(file: String) throws {}
-  func amendStage(file: String) throws {}
-  func amendUnstage(file: String) throws {}
-  func revert(file: String) throws {}
-  func stageAllFiles() throws {}
-  func unstageAllFiles() throws {}
-  func patchIndexFile(path: String, hunk: any DiffHunk, stage: Bool) throws {}
-  func status(file: String) throws -> (DeltaStatus, DeltaStatus)
-  { (.unmodified, .unmodified) }
-
-  func changes(for oid: GitOID, parent parentOID: GitOID?) -> [FileChange]
-  { [] }
-  func stagedChanges() -> [FileChange] { [] }
-  func unstagedChanges(showIgnored: Bool,
-                       recurseUntracked: Bool,
-                       useCache: Bool) -> [FileChange]
-  { [] }
-  func amendingStagedChanges() -> [FileChange] { [] }
-  func amendingStagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func amendingUnstagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func stagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func unstagedStatus(for path: String) throws -> DeltaStatus
-  { .unmodified }
-  func isIgnored(path: String) -> Bool { false }
 }
