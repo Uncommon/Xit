@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+@testable import Xit
 
 /// Shared repository doubles for sidebar-focused tests.
 ///

@@ -44,7 +44,7 @@ struct Write: StageableAction
     self.file = name.rawValue
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     let url = repository.fileURL(file)
 
@@ -75,7 +75,7 @@ struct CopyFile: StageableAction
     self.file = destination
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     guard let sourceURL = sourceURL ?? source.map({ repository.fileURL($0) })
     else { throw RepoError.unexpected }
@@ -108,7 +108,7 @@ struct RenameFile: StageableAction
     self.newName = newName.rawValue
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     let fileURL = repository.fileURL(file)
     let newURL = repository.fileURL(newName)
@@ -128,7 +128,7 @@ struct WriteData: StageableAction
     self.file = file
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try data.write(to: repository.fileURL(file))
   }
@@ -141,7 +141,7 @@ struct MakeTiffFile: StageableAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     let tiffURL = repository.fileURL(file)
     let bytes: [UInt8] = [0x4D, 0x4D, 0x00, 0x2A, 0x00, 0xFF, 0x00, 0x80]
@@ -156,7 +156,7 @@ struct Delete: StageableAction
   init(_ file: String) { self.file = file }
   init(_ name: TestFileName) { self.file = name.rawValue }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try FileManager.default.removeItem(at: repository.fileURL(file))
   }
@@ -176,7 +176,7 @@ struct Stage: RepoAction
   init(_ name: TestFileName) { self.ref = .path(name.rawValue) }
   init(_ change: FileChange) { self.ref = .change(change) }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     switch ref {
     case .path(let path):
@@ -196,7 +196,7 @@ struct Unstage: RepoAction
   init(_ name: TestFileName) { self.ref = .path(name.rawValue) }
   init(_ change: FileChange) { self.ref = .change(change) }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     switch ref {
     case .path(let path):
@@ -228,7 +228,7 @@ struct CommitFiles: RepoAction
     self.actions = actions()
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     for action in actions {
       try executeAndStage(action, in: repository)
@@ -253,7 +253,7 @@ struct SaveStash: RepoAction
 
   init(_ message: String = "") { self.message = message }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try repository.saveStash(name: message, keepIndex: false,
                              includeUntracked: true, includeIgnored: true)
@@ -266,7 +266,7 @@ struct ApplyStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try repository.applyStash(index: index)
   }
@@ -278,7 +278,7 @@ struct PopStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try repository.popStash(index: index)
   }
@@ -290,7 +290,7 @@ struct DropStash: RepoAction
 
   init(index: UInt = 0) { self.index = index }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try repository.dropStash(index: index)
   }
@@ -307,7 +307,7 @@ struct AddRemote: RepoAction
     self.url = url
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     try repository.addRemote(named: name, url: url)
   }
@@ -322,7 +322,7 @@ struct Fetch: RepoAction
     self.remoteName = remoteName
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     guard let remote = repository.remote(named: remoteName) else {
       throw RepoError.notFound
@@ -336,13 +336,13 @@ struct CreateBranch: RepoAction
   let name: LocalBranchRefName
   let target: any ReferenceName
 
-  init(_ name: LocalBranchRefName, target: any ReferenceName = HeadRefName())
+  init(_ name: LocalBranchRefName, target: any ReferenceName = GeneralRefName.head)
   {
     self.name = name
     self.target = target
   }
 
-  func execute(in repository: any FullRepository) throws
+  func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     _ = try repository.createBranch(named: name, target: target)
   }

@@ -34,7 +34,7 @@ public struct CLIRunner
   public func run(inputData: Data? = nil, args: [String]) throws -> Data
   {
     cliLogger.debug("""
-        command = \(toolPath.lastPathComponent) \(args.joined(separator: " "))
+        command = \((toolPath as NSString).lastPathComponent) \(args.joined(separator: " "))
         """)
     
     let task = Process()
