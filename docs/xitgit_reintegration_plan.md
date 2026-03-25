@@ -20,6 +20,7 @@ Status as of 2026-03-24:
 - The original production source tree under `XitGit/Sources/XitGit` has been vacated to make moved-file review easier.
 - `XitGit/Sources/XitGit` currently contains only a placeholder source file so the package graph still resolves while package references remain in the project.
 - `XitGit` package wiring still exists for remaining targets/products, so full package removal is not complete yet.
+- The remaining Swift package test files have been migrated into `XitTests`; `XitGit/Tests/XitGitTests` now only retains package-side resource files pending final package cleanup.
 
 ## Step-by-Step Plan
 
