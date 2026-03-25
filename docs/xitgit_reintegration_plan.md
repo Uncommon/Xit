@@ -12,17 +12,19 @@ Target end state:
 - Existing type names and behavior are preserved as much as possible to minimize functional churn.
 
 ## Current Status
-Status as of 2026-03-24:
+Status as of 2026-03-25:
 
 - The `Xit` app target builds cleanly again in Xcode.
 - Former `XitGit` production sources have been copied back into app-owned locations under `Xit/Repository`, `Xit/Repository/Models`, `Xit/Utils`, and `Xit/Utils/Extensions`.
 - App source has been switched back to local ownership; `import XitGit` usage has been removed from `Xit/`.
-- The original production source tree under `XitGit/Sources/XitGit` has been vacated to make moved-file review easier.
-- `XitGit/Sources/XitGit` currently contains only a placeholder source file so the package graph still resolves while package references remain in the project.
 - The local `XitGit` package reference and package-product links have now been removed from the Xcode project.
 - The `XitGit` package directory has been deleted from the workspace.
 - The migrated test resources (`lorem.txt`, `lorem2.txt`) now live only under `XitTests`.
 - `build-for-testing` succeeds after package removal; remaining warnings are existing Swift concurrency sendability warnings in app code.
+- `Xit/Repository/XitGitExtensions.swift` has been folded back into `Xit/Repository/RepoError.swift` and removed.
+- No non-plan repository documentation still presents `XitGit` as the intended architecture.
+- `build-for-testing` also succeeds after removing `Xit/Repository/XitGitExtensions.swift`.
+- Remaining close-out work is validation-only: manual smoke coverage and recording final verification.
 
 ## Step-by-Step Plan
 
@@ -220,7 +222,7 @@ Status: complete for app production code.
 - Update app files to use local symbols again instead of imported package symbols.
 
 ### 5. Move utilities back and remove migration-only splits
-Status: partial.
+Status: complete.
 
 - Move package-owned non-UI utility files back into `Xit/Utils` and `Xit/Utils/Extensions`:
   - `CombineExtensions`
@@ -234,10 +236,10 @@ Status: partial.
 - Remove migration-only bridge code and splits that existed solely to cross the package boundary, including files such as `Xit/Repository/XitGitExtensions.swift` and package-specific bridging helpers once their functionality is local again.
 - Utility moves needed for the app target are complete.
 - `Xit/Utils/XitGitBridging.swift` has been deleted.
-- `Xit/Repository/XitGitExtensions.swift` still exists and should be removed or folded away in a later cleanup pass.
+- `Xit/Repository/XitGitExtensions.swift` has been folded back into `Xit/Repository/RepoError.swift` and deleted.
 
 ### 6. Switch application code back to app-local ownership
-Status: partial.
+Status: complete.
 
 - Remove `import XitGit` from all app files once the moved types are locally available.
 - Remove `import XitGitTestSupport` from app tests once test support is local again.
@@ -246,7 +248,7 @@ Status: partial.
 - App-source `import XitGit` usage has been removed.
 - To preserve simple global protocol names during reintegration, disambiguation now uses explicit `Xit.` qualification where needed instead of temporary `Repository...Protocol` aliases.
 - `XitTests` no longer imports `XitGitTestSupport`.
-- Remaining test-side use of `XitGit` package products is still pending broader test migration/package cleanup.
+- Remaining test-side package-product references have been removed along with the package itself.
 
 ### 7. Merge package test support back into `XitTests`
 Status: complete.
@@ -307,11 +309,12 @@ Status: complete.
 - Verification after removal succeeded with `xcodebuild ... build-for-testing`.
 
 ### 11. Update documentation and architecture notes
-Status: in progress.
+Status: complete.
 
 - Keep this plan document as the reintegration reference.
 - Remove or supersede package-migration documents so the repo no longer presents `XitGit` as the target architecture.
-- This plan document now reflects package removal and the current clean build-for-testing state.
+- This plan document now reflects package removal, bridge-file cleanup, and the current clean build-for-testing state.
+- No other top-level repository documentation currently references `XitGit` as the intended architecture.
 
 ## Validation
 
