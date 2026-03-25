@@ -242,9 +242,12 @@ Status: partial.
 - Revert package-only compatibility patterns where the app no longer needs them.
 - App-source `import XitGit` usage has been removed.
 - To preserve simple global protocol names during reintegration, disambiguation now uses explicit `Xit.` qualification where needed instead of temporary `Repository...Protocol` aliases.
-- Test-side package imports and dependencies are still pending.
+- `XitTests` no longer imports `XitGitTestSupport`.
+- Remaining test-side use of `XitGit` package products is still pending broader test migration/package cleanup.
 
 ### 7. Merge package test support back into `XitTests`
+Status: complete.
+
 - Move shared test harness code from the package back into `XitTests`:
   - `XTTest`
   - `RepoActions`
@@ -254,6 +257,13 @@ Status: partial.
   - test-only error and helper types
 - Remove thin wrappers that currently exist only to import package test-support types.
 - Ensure `XitTests` can compile without any package test-support product.
+- Restored local files:
+  - `XitTests/XTTest.swift`
+  - `XitTests/RepoActionBuilder.swift`
+  - `XitTests/RepoActions.swift`
+  - `XitTests/RepositoryController+Wait.swift`
+- Removed the `XitGitTestSupport` package product dependency from the `XitTests` target.
+- Verified with a clean `XitTests` build in Xcode.
 
 ### 8. Merge package test cases back into `XitTests`
 - Move every suite under `XitGit/Tests/XitGitTests` into `XitTests`.
