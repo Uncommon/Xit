@@ -19,8 +19,10 @@ Status as of 2026-03-24:
 - App source has been switched back to local ownership; `import XitGit` usage has been removed from `Xit/`.
 - The original production source tree under `XitGit/Sources/XitGit` has been vacated to make moved-file review easier.
 - `XitGit/Sources/XitGit` currently contains only a placeholder source file so the package graph still resolves while package references remain in the project.
-- `XitGit` package wiring still exists for remaining targets/products, so full package removal is not complete yet.
-- The remaining Swift package test files have been migrated into `XitTests`; `XitGit/Tests/XitGitTests` now only retains package-side resource files pending final package cleanup.
+- The local `XitGit` package reference and package-product links have now been removed from the Xcode project.
+- The `XitGit` package directory has been deleted from the workspace.
+- The migrated test resources (`lorem.txt`, `lorem2.txt`) now live only under `XitTests`.
+- `build-for-testing` succeeds after package removal; remaining warnings are existing Swift concurrency sendability warnings in app code.
 
 ## Step-by-Step Plan
 
@@ -267,13 +269,17 @@ Status: complete.
 - Verified with a clean `XitTests` build in Xcode.
 
 ### 8. Merge package test cases back into `XitTests`
+Status: complete.
+
 - Move every suite under `XitGit/Tests/XitGitTests` into `XitTests`.
 - Reunify tests that were split during migration so related repository coverage lives together again.
 - Keep UI automation only in `XitUITests`.
 - Preserve existing test names where practical to minimize churn in future debugging and history review.
+- All Swift test files from the package have been merged back into `XitTests`.
+- The package-side resource files were subsequently retained only long enough to complete package cleanup, then removed with the package directory.
 
 ### 9. Remove Swift Package integration from the Xcode project
-Status: partial.
+Status: complete.
 
 - Delete the local package reference from `Xit.xcodeproj/project.pbxproj`.
 - Remove all package product dependencies and framework links for:
@@ -283,10 +289,11 @@ Status: partial.
 - Remove any package-derived framework embedding or copy behavior from the app, unit-test, and UI-test targets.
 - Reassign source membership so all moved files belong directly to `Xit` or `XitTests`.
 - The `Xit` app target no longer depends directly on the `XitGit` package product.
-- The local package reference still remains because other targets/products still resolve through the package graph.
+- The `XitUITests` target no longer depends on the `XitGit` package product.
+- The local `XitGit` package reference has been removed from `Xit.xcodeproj/project.pbxproj`.
 
 ### 10. Delete the package only after the app is clean
-Status: in progress.
+Status: complete.
 
 - After builds and tests pass with local source ownership, delete:
   - `XitGit/Package.swift`
@@ -296,12 +303,15 @@ Status: in progress.
   - remaining package-specific metadata
 - Remove the `XitGit` directory entirely as the final cleanup step.
 - Do not delete any package file until its content has been fully relocated or intentionally discarded.
-- The original Swift sources under `XitGit/Sources/XitGit` have already been removed.
-- `XitGit/Sources/XitGit/XitGitPlaceholder.swift` is intentionally present as a temporary package-resolution stub until the remaining package references are removed.
+- The `XitGit` directory has been removed from the workspace.
+- Verification after removal succeeded with `xcodebuild ... build-for-testing`.
 
 ### 11. Update documentation and architecture notes
+Status: in progress.
+
 - Keep this plan document as the reintegration reference.
 - Remove or supersede package-migration documents so the repo no longer presents `XitGit` as the target architecture.
+- This plan document now reflects package removal and the current clean build-for-testing state.
 
 ## Validation
 
