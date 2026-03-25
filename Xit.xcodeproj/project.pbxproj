@@ -107,7 +107,6 @@
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
 		89F411F72856946D009ECF7D /* SheetDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F62856946D009ECF7D /* SheetDialog.swift */; };
-		89F411F82856AA11009ECF7D /* XitGit in Frameworks */ = {isa = PBXBuildFile; productRef = 89E1BBBE2F49242E00B95087 /* XitGit */; };
 		89F76D110E4C010000AA0001 /* CLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F76D100E4C010000AA0001 /* CLIRunner.swift */; };
 		C3FA470113D0F8E200AC4F9B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FA470013D0F8E200AC4F9B /* Cocoa.framework */; };
 		C3FA472913D0F8E300AC4F9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3FA472713D0F8E300AC4F9B /* InfoPlist.strings */; };
@@ -594,7 +593,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89F411F82856AA11009ECF7D /* XitGit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1078,7 +1076,6 @@
 			);
 			name = XitUITests;
 			packageProductDependencies = (
-				89E1BBBE2F49242E00B95087 /* XitGit */,
 			);
 			productName = XitUITests;
 			productReference = C91727B323689F500023DC57 /* XitUITests.xctest */;
@@ -1127,7 +1124,6 @@
 			packageReferences = (
 				C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */,
 				89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */,
-				8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */,
 			);
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
 			projectDirPath = "";
@@ -2149,13 +2145,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = XitGit;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -2176,11 +2165,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		89E1BBBE2F49242E00B95087 /* XitGit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8991F1DF2F3CBBA60022646F /* XCLocalSwiftPackageReference "XitGit" */;
-			productName = XitGit;
-		};
 		89F24B832C498878007D632E /* FakedMacro */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */;
