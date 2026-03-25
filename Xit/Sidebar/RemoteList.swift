@@ -46,17 +46,7 @@ struct RemoteList<Manager: RemoteManagement,
             RecursiveDisclosureGroup(remote.branches,
                                      expandedItems: $expandedItems) {
               (node) in
-              BranchCell(node: node, trailingContent: {
-                if let branch = node.item {
-                  let _ = accessories.revision
-                  accessories.accessory(for: branch)
-                }
-              }, contextMenu: {
-                if let branch = node.item {
-                  remoteBranchContextMenu(for: branch)
-                }
-              })
-                .tag(node.item.map { RemoteListSelection.branch(ref: $0) })
+              remoteBranchRow(for: node)
             }
           } label: {
             remoteRow(for: remote.name)
@@ -139,6 +129,34 @@ struct RemoteList<Manager: RemoteManagement,
   func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
   {
     return $model.expandedRemotes.binding(for: remoteName)
+  }
+
+  @ViewBuilder
+  func remoteBranchRow(for node: PathTreeNode<RemoteBranchRefName>) -> some View
+  {
+    let row = BranchCell(node: node, trailingContent: {
+      if let branch = node.item {
+        let _ = accessories.revision
+        accessories.accessory(for: branch)
+      }
+    }, contextMenu: {
+      if let branch = node.item {
+        remoteBranchContextMenu(for: branch)
+      }
+    })
+
+    if let selectionValue = selectionValue(for: node) {
+      row.tag(selectionValue)
+    }
+    else {
+      row
+    }
+  }
+
+  func selectionValue(for node: PathTreeNode<RemoteBranchRefName>)
+      -> RemoteListSelection?
+  {
+    node.item.map { .branch(ref: $0) }
   }
 
   @ViewBuilder

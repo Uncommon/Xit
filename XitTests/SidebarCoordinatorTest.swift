@@ -346,6 +346,7 @@ struct SidebarCoordinatorTest
   }
 }
 
+@MainActor
 struct BranchListTest
 {
   @Test
@@ -382,5 +383,85 @@ struct BranchListTest
                                 graphStatus: .init(ahead: 3, behind: 2))
 
     #expect(branch.trackingIndicator == BranchTrackingIndicator.none)
+  }
+
+  @Test
+  func branchSelectionValueIsOnlyAssignedToActualBranches() throws
+  {
+    let feature = try #require(LocalBranchRefName.named("feature"))
+    let subfeature = try #require(LocalBranchRefName.named("feature/subfeature"))
+    let items = [
+      BranchListItem(refName: feature,
+                     trackingRefName: nil,
+                     isCurrent: false,
+                     graphStatus: .zero),
+      BranchListItem(refName: subfeature,
+                     trackingRefName: nil,
+                     isCurrent: false,
+                     graphStatus: .zero),
+    ]
+    let tree = PathTreeNode.makeHierarchy(from: items, prefix: RefPrefixes.heads)
+    let brancher = TestBrancher(localBranches: [.init(name: "feature"),
+                                                .init(name: "feature/subfeature")])
+    let referencer = SidebarTestReferencer()
+    let list = BranchList(model: .init(brancher: brancher,
+                                       referencer: referencer,
+                                       detector: TestFileStatusDetector(),
+                                       publisher: TestRepositoryPublisher(),
+                                       workspaceCountModel: .init()),
+                          brancher: brancher,
+                          referencer: referencer,
+                          selection: .constant(nil),
+                          expandedItems: .constant(Set<String>()))
+
+    let featureNode = try #require(tree.first(where: { $0.path == "feature" }))
+    let subfeatureNode =
+        try #require(featureNode.children?.first(where: { $0.path == "feature/subfeature" }))
+    let folderTree = PathTreeNode.makeHierarchy(
+      from: [BranchListItem(refName: try #require(LocalBranchRefName.named("topic/item")),
+                            trackingRefName: nil,
+                            isCurrent: false,
+                            graphStatus: .zero)],
+      prefix: RefPrefixes.heads)
+    let folderNode = try #require(folderTree.first(where: { $0.path == "topic" }))
+
+    #expect(list.selectionValue(for: featureNode) == .branch(feature))
+    #expect(list.selectionValue(for: subfeatureNode) == .branch(subfeature))
+    #expect(list.selectionValue(for: folderNode) == nil)
+  }
+
+  @Test
+  func remoteSelectionValueIsOnlyAssignedToActualBranches() throws
+  {
+    let remoteBranch = try #require(RemoteBranchRefName(remote: "origin",
+                                                        branch: "feature"))
+    let nestedRemoteBranch = try #require(RemoteBranchRefName(remote: "origin",
+                                                              branch: "feature/subfeature"))
+    let tree = PathTreeNode.makeHierarchy(from: [remoteBranch, nestedRemoteBranch],
+                                          prefix: "refs/remotes/origin/")
+    let manager = TestRemoteManager(remoteNames: ["origin"])
+    let brancher = TestBrancher(remoteBranches: [
+      .init(remoteName: "origin", name: "feature"),
+      .init(remoteName: "origin", name: "feature/subfeature"),
+    ])
+    let list = RemoteList(model: .init(manager: manager,
+                                       brancher: brancher,
+                                       publisher: TestRepositoryPublisher()),
+                          manager: manager,
+                          brancher: brancher,
+                          selection: .constant(nil),
+                          expandedItems: .constant(Set<String>()))
+
+    let featureNode = try #require(tree.first(where: { $0.path == "feature" }))
+    let nestedNode =
+        try #require(featureNode.children?.first(where: { $0.path == "feature/subfeature" }))
+    let folderTree = PathTreeNode.makeHierarchy(
+      from: [try #require(RemoteBranchRefName(remote: "origin", branch: "topic/item"))],
+      prefix: "refs/remotes/origin/")
+    let folderNode = try #require(folderTree.first(where: { $0.path == "topic" }))
+
+    #expect(list.selectionValue(for: featureNode) == .branch(ref: remoteBranch))
+    #expect(list.selectionValue(for: nestedNode) == .branch(ref: nestedRemoteBranch))
+    #expect(list.selectionValue(for: folderNode) == nil)
   }
 }
