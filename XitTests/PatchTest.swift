@@ -1,9 +1,9 @@
 import XCTest
-@testable import XitGit
+@testable import Xit
 
 class PatchTest: XCTestCase
 {
-  let testBundle = Bundle.module
+  var testBundle: Bundle { Bundle(for: Self.self) }
   var loremURL, lorem2URL: URL!
   var loremData, lorem2Data: Data!
   var loremText, lorem2Text: String!

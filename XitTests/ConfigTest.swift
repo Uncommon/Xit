@@ -1,5 +1,5 @@
 import XCTest
-@testable import XitGit
+@testable import Xit
 
 final class ConfigTest: XCTestCase
 {

@@ -1,5 +1,4 @@
 import XCTest
-import Clibgit2
 
 final class LibGit2Test: XCTestCase
 {

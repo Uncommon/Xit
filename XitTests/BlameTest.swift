@@ -1,6 +1,5 @@
 import XCTest
-@testable import XitGit
-import XitGitTestSupport
+@testable import Xit
 
 class BlameTest: XTTest
 {
@@ -34,7 +33,7 @@ class BlameTest: XTTest
   {
     try super.setUpWithError()
 
-    blamePath = repository.repoURL.path.appending(pathComponent: TestFileName.blame.rawValue)
+    blamePath = repository.repoURL.path +/ TestFileName.blame.rawValue
     try execute(in: repository) {
       CommitFiles("first") {
         Write(elements1.joined(separator: "\n"), to: .blame)

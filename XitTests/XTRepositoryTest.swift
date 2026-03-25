@@ -1,8 +1,7 @@
 import XCTest
-@testable import XitGit
-import XitGitTestSupport
+@testable import Xit
 
-extension XitGit.PatchMaker.PatchResult
+extension PatchMaker.PatchResult
 {
   func extractPatch() -> (any Patch)?
   {

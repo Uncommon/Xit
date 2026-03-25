@@ -1,6 +1,6 @@
 import Foundation
 import XCTest
-@testable import XitGit
+@testable import Xit
 
 final class SHATest: XCTestCase
 {

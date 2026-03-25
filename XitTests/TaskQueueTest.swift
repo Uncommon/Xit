@@ -1,6 +1,6 @@
 import Combine
 import XCTest
-@testable import XitGit
+@testable import Xit
 
 final class TaskQueueTest: XCTestCase
 {

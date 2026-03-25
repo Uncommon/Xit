@@ -335,15 +335,89 @@ struct CreateBranch: RepoAction
 {
   let name: LocalBranchRefName
   let target: any ReferenceName
+  let checkOut: Bool
 
-  init(_ name: LocalBranchRefName, target: any ReferenceName = GeneralRefName.head)
+  init(_ name: LocalBranchRefName,
+       target: any ReferenceName = GeneralRefName.head,
+       checkOut: Bool = false)
   {
     self.name = name
     self.target = target
+    self.checkOut = checkOut
   }
 
   func execute<Repo: FullRepository>(in repository: Repo) throws
   {
     _ = try repository.createBranch(named: name, target: target)
+    if checkOut {
+      try repository.checkOut(branch: name)
+    }
+  }
+}
+
+struct CheckOut: RepoAction
+{
+  enum Target
+  {
+    case branch(LocalBranchRefName)
+    case ref(any ReferenceName)
+    case sha(SHA)
+  }
+
+  let target: Target
+
+  init(branch: LocalBranchRefName)
+  {
+    self.target = .branch(branch)
+  }
+
+  init(branch: String)
+  {
+    self.init(branch: .named(branch)!)
+  }
+
+  init(refName: any ReferenceName)
+  {
+    self.target = .ref(refName)
+  }
+
+  init(sha: SHA)
+  {
+    self.target = .sha(sha)
+  }
+
+  func execute<Repo: FullRepository>(in repository: Repo) throws
+  {
+    switch target {
+      case .branch(let branch):
+        try repository.checkOut(branch: branch)
+      case .ref(let refName):
+        try repository.checkOut(refName: refName)
+      case .sha(let sha):
+        try repository.checkOut(sha: sha)
+    }
+  }
+}
+
+struct Merge: RepoAction
+{
+  let branch: LocalBranchRefName
+
+  init(branch: LocalBranchRefName)
+  {
+    self.branch = branch
+  }
+
+  init(branch: String)
+  {
+    self.init(branch: .named(branch)!)
+  }
+
+  func execute<Repo: FullRepository>(in repository: Repo) throws
+  {
+    guard let mergeBranch = repository.localBranch(named: branch) else {
+      throw RepoError.notFound
+    }
+    try repository.merge(branch: mergeBranch)
   }
 }

@@ -1,6 +1,5 @@
 import XCTest
-@testable import XitGit
-import XitGitTestSupport
+@testable import Xit
 
 class CommitRootTest: XTTest
 {

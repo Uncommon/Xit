@@ -1,6 +1,5 @@
 import XCTest
-@testable import XitGit
-import XitGitTestSupport
+@testable import Xit
 
 class BranchTest: XTTest
 {
@@ -9,7 +8,7 @@ class BranchTest: XTTest
     let remoteName = "origin"
     
     remoteRepoPath = repoPath.deletingLastPathComponent
-                             .appending(pathComponent: "remotetestrepo")
+                             +/ "remotetestrepo"
     try? FileManager.default.removeItem(atPath: remoteRepoPath)
 
     // Remote must have the same content so the fetch will succeed

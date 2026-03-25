@@ -1,10 +1,9 @@
 import XCTest
-@testable import XitGit
-import XitGitTestSupport
+@testable import Xit
 
 class XTRepositoryHunkTest: XTTest
 {
-  let testBundle = Bundle.module
+  var testBundle: Bundle { Bundle(for: Self.self) }
   let loremName = "lorem.txt"
   var loremURL, lorem2URL: URL!
   var loremRepoURL: URL!
