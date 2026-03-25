@@ -334,11 +334,11 @@ struct Fetch: RepoAction
 struct CreateBranch: RepoAction
 {
   let name: LocalBranchRefName
-  let target: any ReferenceName
+  let target: (any ReferenceName)?
   let checkOut: Bool
 
   init(_ name: LocalBranchRefName,
-       target: any ReferenceName = GeneralRefName.head,
+       target: (any ReferenceName)? = nil,
        checkOut: Bool = false)
   {
     self.name = name
@@ -348,7 +348,12 @@ struct CreateBranch: RepoAction
 
   func execute<Repo: FullRepository>(in repository: Repo) throws
   {
-    _ = try repository.createBranch(named: name, target: target)
+    guard let targetRef = target ?? repository.headRefName
+    else { throw RepoError.notFound }
+
+    guard try repository.createBranch(named: name, target: targetRef) != nil else {
+      throw RepoError.notFound
+    }
     if checkOut {
       try repository.checkOut(branch: name)
     }
