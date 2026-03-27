@@ -43,9 +43,16 @@ struct RemoteList<Manager: RemoteManagement,
                   Brancher: Branching>: View
 {
   @StateObject var model: RemoteListViewModel<Manager, Brancher>
+  /// `List` mutates this state during selection updates. Keeping it local
+  /// avoids publishing back into the coordinator from inside a view update.
   @State private var listSelection: RemoteListSelection?
-  @State private var localExpandedItems: Set<String>
+  /// Local mirror of the outline expansion state for the same reason as
+  /// `listSelection`.
+  @State private var listExpandedItems: Set<String>
   
+  /// Source of truth shared with the coordinator. This is synchronized with
+  /// `listSelection` asynchronously to avoid SwiftUI's "publishing changes
+  /// from within view updates" warning.
   @Binding var selection: RemoteListSelection?
   @Binding var expandedItems: Set<String>
   
@@ -56,7 +63,7 @@ struct RemoteList<Manager: RemoteManagement,
   {
     VStack(spacing: 0) {
       List(selection: $listSelection) {
-        RecursiveDisclosureGroup(treeItems, expandedItems: $localExpandedItems) {
+        RecursiveDisclosureGroup(treeItems, expandedItems: $listExpandedItems) {
           (node) in
           row(for: node)
         }
@@ -133,8 +140,8 @@ struct RemoteList<Manager: RemoteManagement,
           else { return }
           listSelection = selection
         }
-        .onChange(of: localExpandedItems) {
-          let newExpanded = localExpandedItems
+        .onChange(of: listExpandedItems) {
+          let newExpanded = listExpandedItems
           guard expandedItems != newExpanded
           else { return }
           DispatchQueue.main.async {
@@ -142,9 +149,9 @@ struct RemoteList<Manager: RemoteManagement,
           }
         }
         .onChange(of: expandedItems) {
-          guard localExpandedItems != expandedItems
+          guard listExpandedItems != expandedItems
           else { return }
-          localExpandedItems = expandedItems
+          listExpandedItems = expandedItems
         }
     }
       .accessibilityElement(children: .contain)
@@ -278,7 +285,7 @@ struct RemoteList<Manager: RemoteManagement,
     self._selection = selection
     self._expandedItems = expandedItems
     self._listSelection = State(initialValue: selection.wrappedValue)
-    self._localExpandedItems = State(initialValue: expandedItems.wrappedValue)
+    self._listExpandedItems = State(initialValue: expandedItems.wrappedValue)
   }
 }
 
