@@ -134,7 +134,7 @@ private final class SidebarCoordinatorDelegateSpy: SidebarCoordinatorDelegate
 struct SidebarCoordinatorTest
 {
   @Test
-  func branchAndRemoteCommandsDispatchThroughDelegate() throws
+  func branchRemoteCommandsDispatch() throws
   {
     let coordinator = SidebarCoordinator()
     let delegate = SidebarCoordinatorDelegateSpy()
@@ -174,7 +174,7 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func tagStashSubmoduleAndRefreshCommandsDispatchThroughDelegate() throws
+  func tagStashSubmoduleCommandsDispatch() throws
   {
     let coordinator = SidebarCoordinator()
     let delegate = SidebarCoordinatorDelegateSpy()
@@ -203,7 +203,7 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func remoteAndTagPresentationStateUpdates() throws
+  func remoteTagPresentationStateUpdates() throws
   {
     let coordinator = SidebarCoordinator()
     let remoteBranch = try #require(RemoteBranchRefName(remote: "origin",
@@ -227,7 +227,7 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func sidebarViewModelsRefreshUpdatesCachedLists() throws
+  func sidebarRefreshUpdatesCachedLists() throws
   {
     let current = try #require(LocalBranchRefName.named("main"))
     let brancher = TestBrancher(localBranches: [.init(name: "main")],
@@ -285,7 +285,7 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func branchListSelectionHelpersRespectCurrentBranch() throws
+  func branchSelectionHelpersRespectCurrent() throws
   {
     let current = try #require(LocalBranchRefName.named("main"))
     let feature = try #require(LocalBranchRefName.named("feature"))
@@ -316,7 +316,7 @@ struct SidebarCoordinatorTest
   }
 
   @Test
-  func remoteListSelectionOnlyTreatsRemoteRowsAsRemoteActions() throws
+  func remoteSelectionTreatsOnlyRemoteRows() throws
   {
     let manager = TestRemoteManager(remoteNames: ["origin"])
     let brancher = TestBrancher(remoteBranches: [
@@ -346,7 +346,7 @@ struct SidebarCoordinatorTest
 struct BranchListTest
 {
   @Test
-  func trackingIndicatorUsesCachedGraphStatus() throws
+  func trackingIndicatorUsesGraphStatus() throws
   {
     let trackingBranch = TestRemoteBranch(remoteName: "origin", name: "main")
     let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
@@ -359,7 +359,7 @@ struct BranchListTest
   }
 
   @Test
-  func trackingIndicatorShowsNetworkWhenCachedStatusIsZero() throws
+  func trackingIndicatorShowsNetworkAtZero() throws
   {
     let trackingBranch = TestRemoteBranch(remoteName: "origin", name: "main")
     let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
@@ -371,7 +371,7 @@ struct BranchListTest
   }
 
   @Test
-  func trackingIndicatorIsAbsentWithoutTrackingBranch() throws
+  func trackingIndicatorAbsentWithoutTracking() throws
   {
     let branch = BranchListItem(refName: try #require(LocalBranchRefName.named("main")),
                                 trackingRefName: nil,
@@ -382,7 +382,7 @@ struct BranchListTest
   }
 
   @Test
-  func branchSelectionValueIsOnlyAssignedToActualBranches() throws
+  func branchSelectionValueOnlyOnBranches() throws
   {
     let feature = try #require(LocalBranchRefName.named("feature"))
     let subfeature = try #require(LocalBranchRefName.named("feature/subfeature"))
@@ -430,7 +430,7 @@ struct BranchListTest
   }
 
   @Test
-  func remoteSelectionValueIsOnlyAssignedToActualBranches() throws
+  func remoteSelectionValueOnlyOnBranches() throws
   {
     let remoteBranch = try #require(RemoteBranchRefName(remote: "origin",
                                                         branch: "feature"))
