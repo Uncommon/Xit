@@ -76,8 +76,6 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
         Brancher.LocalBranch == Referencer.LocalBranch,
         Brancher.RemoteBranch == Referencer.RemoteBranch
 {
-  @Binding var repoSelection: (any RepositorySelection)?
-
   // These are separate for testing/preview convenience
   let brancher: Brancher
   let remoteManager: Manager
@@ -126,8 +124,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
        submoduleManager: SubManager,
        tagger: Tagger,
        models: SidebarViewModel<Brancher, Manager, Referencer, Stasher,
-                                Tagger, SubManager>,
-       selection: Binding<(any RepositorySelection)?>)
+                                Tagger, SubManager>)
   {
     self.brancher = brancher
     self.remoteManager = remoteManager
@@ -137,7 +134,6 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     self.submobuleManager = submoduleManager
     self.tagger = tagger
     self.models = models
-    self._repoSelection = selection
   }
 
   private func branchList() -> some View
@@ -147,52 +143,14 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
                referencer: referencer,
                selection: $coordinator.branchSelection,
                expandedItems: $coordinator.expandedBranches)
-      .onChange(of: coordinator.branchSelection) {
-        guard let branchSelection = coordinator.branchSelection,
-              let repo = brancher as? any FileChangesRepo
-        else {
-          repoSelection = nil
-          return
-        }
-        switch branchSelection {
-          case .staging:
-            repoSelection = StagingSelection(repository: repo, amending: false)
-          case .branch(let refName):
-            if let branch = brancher.localBranch(named: refName),
-               let commit = branch.targetCommit {
-              repoSelection = CommitSelection(repository: repo, commit: commit)
-            }
-            else {
-              repoSelection = nil
-            }
-        }
-      }
       .environmentObject(accessories)
   }
   
   private func remoteList() -> some View
   {
     RemoteList(model: models.remoteModel,
-               manager: remoteManager,
-               brancher: brancher,
                selection: $coordinator.remoteSelection,
                expandedItems: $coordinator.expandedRemotes)
-      .onChange(of: coordinator.remoteSelection) {
-        switch coordinator.remoteSelection {
-          case .remote, nil:
-            repoSelection = nil
-          case .branch(let refName):
-            if let branch = brancher.remoteBranch(named: refName.name,
-                                                  remote: refName.remoteName),
-               let commit = branch.targetCommit,
-               let repo = brancher as? any FileChangesRepo {
-              repoSelection = CommitSelection(repository: repo, commit: commit)
-            }
-            else {
-              repoSelection = nil
-            }
-        }
-      }
       .environmentObject(accessories)
   }
 
@@ -203,17 +161,6 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
     TagList(model: models.tagModel,
             selection: $coordinator.tagSelection,
             expandedItems: $coordinator.expandedTags)
-      .onChange(of: coordinator.tagSelection) {
-        if let tagRef = coordinator.tagSelection,
-           let tag = tagger.tag(named: tagRef),
-           let commit = tag.commit,
-           let repo = tagger as? any FileChangesRepo {
-          repoSelection = CommitSelection(repository: repo, commit: commit)
-        }
-        else {
-          repoSelection = nil
-        }
-      }
   }
 
   private func stashList(publisher: some RepositoryPublishing) -> some View
@@ -222,16 +169,6 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
               stasher: stasher,
               publisher: publisher,
               selection: $coordinator.stashSelection)
-      .onChange(of: coordinator.stashSelection) {
-        if let selectedStash = coordinator.stashSelection,
-           let index = stasher.findStashIndex(selectedStash),
-           let repo = stasher as? (any FileChangesRepo & Stashing) {
-          repoSelection = StashSelection(repository: repo, index: UInt(index))
-        }
-        else {
-          repoSelection = nil
-        }
-      }
   }
   
   private func submoduleList(manager: some SubmoduleManagement) -> some View
@@ -276,8 +213,7 @@ private class NFSD: EmptyFileStatusDetection {}
   TabbedSidebar(brancher: brancher, remoteManager: manager,
                 referencer: referencer, publisher: publisher,
                 stasher: stasher, submoduleManager: subManager, tagger: tagger,
-                models: models,
-                selection: .constant(nil))
+                models: models)
     .environmentObject(SidebarCoordinator())
     .environmentObject(BranchAccessoryStore())
 }

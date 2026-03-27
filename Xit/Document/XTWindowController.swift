@@ -226,6 +226,7 @@ final class XTWindowController: NSWindowController,
     if let newSelection = selection,
        let oldSelection = oldValue,
        newSelection == oldSelection {
+      reselectSubject.send()
       return
     }
 
