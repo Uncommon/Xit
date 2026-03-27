@@ -58,11 +58,11 @@ final class HistoryTableController: NSViewController,
         },
         controller.reselectPublisher.sink {
           [weak self] in
-          guard let tableView = self?.view as? NSTableView,
-                let selectedIndex = tableView.selectedRowIndexes.first
+          guard let self,
+                let selection = self.repoUIController?.selection
           else { return }
 
-          tableView.scrollRowToCenter(selectedIndex)
+          self.selectRow(target: selection.target, forceScroll: true)
         },
       ])
     }

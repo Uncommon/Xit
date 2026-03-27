@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
 import SwiftUI
+import Combine
 
 /// AppKit wrapper that hosts the SwiftUI sidebar and bridges it back to the
 /// existing window-controller operation flow.
@@ -8,6 +9,7 @@ import SwiftUI
 final class TabbedSidebarController: NSHostingController<AnyView>
 {
   weak var controller: XTWindowController?
+  private var sinks: [AnyCancellable] = []
 
   /// Shared sidebar state injected into the SwiftUI hierarchy.
   let coordinator = SidebarCoordinator()
@@ -24,6 +26,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
        controller: XTWindowController)
   {
     self.controller = controller
+    coordinator.expandedRemotes = .init(repo.remotes().compactMap { $0.name })
     let viewModels = SidebarViewModel(brancher: repo,
                                       detector: repo,
                                       remoteManager: repo,
@@ -42,8 +45,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
                              stasher: repo,
                              submoduleManager: repo,
                              tagger: repo,
-                             models: viewModels,
-                             selection: controller.selectionBinding)
+                             models: viewModels)
       .environment(\.showError) { [weak controller] error in
         controller?.showAlert(nsError: error)
       }
@@ -52,6 +54,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
 
     super.init(rootView: AnyView(view))
     coordinator.delegate = self
+    observeSidebarSelection(repo: repo)
   }
   
   required dynamic init?(coder: NSCoder)
@@ -63,6 +66,92 @@ final class TabbedSidebarController: NSHostingController<AnyView>
   func refresh()
   {
     coordinator.refresh()
+  }
+
+  private func observeSidebarSelection(repo: some FullRepository)
+  {
+    sinks.append(contentsOf: [
+      coordinator.$branchSelection.dropFirst().sinkOnMainQueue { [weak self] selection in
+        guard let self else { return }
+        self.controller?.selection =
+            self.repositorySelection(for: selection, repo: repo)
+      },
+      coordinator.$remoteSelection.dropFirst().sinkOnMainQueue { [weak self] selection in
+        guard let self else { return }
+        self.controller?.selection =
+            self.repositorySelection(for: selection, repo: repo)
+      },
+      coordinator.$tagSelection.dropFirst().sinkOnMainQueue { [weak self] selection in
+        guard let self else { return }
+        self.controller?.selection =
+            self.repositorySelection(for: selection, repo: repo)
+      },
+      coordinator.$stashSelection.dropFirst().sinkOnMainQueue { [weak self] selection in
+        guard let self else { return }
+        self.controller?.selection =
+            self.repositorySelection(for: selection, repo: repo)
+      },
+    ])
+  }
+
+  private func repositorySelection(for selection: BranchListSelection?,
+                                   repo: some FullRepository)
+      -> (any RepositorySelection)?
+  {
+    guard let selection
+    else { return nil }
+
+    switch selection {
+      case .staging:
+        return StagingSelection(repository: repo, amending: false)
+      case .branch(let refName):
+        guard let branch = repo.localBranch(named: refName),
+              let commit = branch.targetCommit
+        else { return nil }
+        return CommitSelection(repository: repo, commit: commit)
+    }
+  }
+
+  private func repositorySelection(for selection: RemoteListSelection?,
+                                   repo: some FullRepository)
+      -> (any RepositorySelection)?
+  {
+    guard let selection
+    else { return nil }
+
+    switch selection {
+      case .remote:
+        return nil
+      case .branch(let refName):
+        guard let branch = repo.remoteBranch(named: refName.localName,
+                                             remote: refName.remoteName),
+              let commit = branch.targetCommit
+        else { return nil }
+        return CommitSelection(repository: repo, commit: commit)
+    }
+  }
+
+  private func repositorySelection(for selection: TagRefName?,
+                                   repo: some FullRepository)
+      -> (any RepositorySelection)?
+  {
+    guard let selection,
+          let tag = repo.tag(named: selection),
+          let commit = tag.commit
+    else { return nil }
+
+    return CommitSelection(repository: repo, commit: commit)
+  }
+
+  private func repositorySelection(for selection: GitOID?,
+                                   repo: some FullRepository)
+      -> (any RepositorySelection)?
+  {
+    guard let selection,
+          let index = repo.findStashIndex(selection)
+    else { return nil }
+
+    return StashSelection(repository: repo, index: UInt(index))
   }
 
   private func mergeLocalBranch(_ refName: LocalBranchRefName)
@@ -77,7 +166,7 @@ final class TabbedSidebarController: NSHostingController<AnyView>
 
   private func performMergeRemoteBranch(_ refName: RemoteBranchRefName)
   {
-    guard let branch = controller?.repository.remoteBranch(named: refName.name,
+    guard let branch = controller?.repository.remoteBranch(named: refName.localName,
                                                            remote: refName.remoteName)
     else { return }
 
