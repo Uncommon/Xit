@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 /// Tag details displayed in the sidebsar popover
 struct TagInfoView: View

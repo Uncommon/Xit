@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 enum RemoteSearchScope: CaseIterable, Identifiable
 {
@@ -24,13 +23,36 @@ enum RemoteSearchScope: CaseIterable, Identifiable
   }
 }
 
+enum RemoteTreeItem: PathTreeData, Hashable
+{
+  case remote(String)
+  case branch(RemoteBranchRefName)
+
+  var treeNodePath: String
+  {
+    switch self {
+      case .remote(let name):
+        name
+      case .branch(let ref):
+        ref.name
+    }
+  }
+}
+
 struct RemoteList<Manager: RemoteManagement,
                   Brancher: Branching>: View
 {
   @StateObject var model: RemoteListViewModel<Manager, Brancher>
+  /// `List` mutates this state during selection updates. Keeping it local
+  /// avoids publishing back into the coordinator from inside a view update.
+  @State private var listSelection: RemoteListSelection?
+  /// Local mirror of the outline expansion state for the same reason as
+  /// `listSelection`.
+  @State private var listExpandedItems: Set<String>
   
-  let manager: Manager
-  let brancher: Brancher
+  /// Source of truth shared with the coordinator. This is synchronized with
+  /// `listSelection` asynchronously to avoid SwiftUI's "publishing changes
+  /// from within view updates" warning.
   @Binding var selection: RemoteListSelection?
   @Binding var expandedItems: Set<String>
   
@@ -40,30 +62,10 @@ struct RemoteList<Manager: RemoteManagement,
   var body: some View
   {
     VStack(spacing: 0) {
-      List(selection: $selection) {
-        ForEach(model.remotes, id: \.name) {
-          (remote) in
-          DisclosureGroup(isExpanded: remoteExpandedBinding(remote.name)) {
-            RecursiveDisclosureGroup(remote.branches,
-                                     expandedItems: $expandedItems) {
-              (node) in
-              BranchCell(node: node, trailingContent: {
-                if let branch = node.item {
-                  let _ = accessories.revision
-                  accessories.accessory(for: branch)
-                }
-              }, contextMenu: {
-                if let branch = node.item {
-                  remoteBranchContextMenu(for: branch)
-                }
-              })
-                .tag(node.item.map { RemoteListSelection.branch(ref: $0) })
-            }
-          } label: {
-            remoteRow(for: remote.name)
-          }
-            .tag(RemoteListSelection.remote(name: remote.name))
-            .listRowSeparator(.hidden)
+      List(selection: $listSelection) {
+        RecursiveDisclosureGroup(treeItems, expandedItems: $listExpandedItems) {
+          (node) in
+          row(for: node)
         }
       }
         .axid(.Sidebar.remotesList)
@@ -125,6 +127,32 @@ struct RemoteList<Manager: RemoteManagement,
         .onChange(of: model.searchScope) {
           model.filterChanged(model.filter)
         }
+        .onChange(of: listSelection) {
+          let newSelection = listSelection
+          guard selection != newSelection
+          else { return }
+          DispatchQueue.main.async {
+            selection = newSelection
+          }
+        }
+        .onChange(of: selection) {
+          guard listSelection != selection
+          else { return }
+          listSelection = selection
+        }
+        .onChange(of: listExpandedItems) {
+          let newExpanded = listExpandedItems
+          guard expandedItems != newExpanded
+          else { return }
+          DispatchQueue.main.async {
+            expandedItems = newExpanded
+          }
+        }
+        .onChange(of: expandedItems) {
+          guard listExpandedItems != expandedItems
+          else { return }
+          listExpandedItems = expandedItems
+        }
     }
       .accessibilityElement(children: .contain)
       .axid(.Sidebar.remotesList)
@@ -132,14 +160,79 @@ struct RemoteList<Manager: RemoteManagement,
 
   var selectedRemote: String?
   {
-    guard case let .remote(name)? = selection
+    guard case let .remote(name)? = listSelection
     else { return nil }
     return name
   }
-  
-  func remoteExpandedBinding(_ remoteName: String) -> Binding<Bool>
+
+  var treeItems: [PathTreeNode<RemoteTreeItem>]
   {
-    return $model.expandedRemotes.binding(for: remoteName)
+    let items = model.remotes.flatMap {
+      [RemoteTreeItem.remote($0.name)] + flattenedBranchItems(in: $0.branches)
+    }
+    return PathTreeNode.makeHierarchy(from: items)
+  }
+
+  func flattenedBranchItems(in nodes: [PathTreeNode<RemoteBranchRefName>])
+      -> [RemoteTreeItem]
+  {
+    nodes.flatMap {
+      ($0.item.map { [RemoteTreeItem.branch($0)] } ?? []) +
+          flattenedBranchItems(in: $0.children ?? [])
+    }
+  }
+
+  @ViewBuilder
+  func row(for node: PathTreeNode<RemoteTreeItem>) -> some View
+  {
+    switch node.item {
+      case .remote(let name):
+        remoteRow(for: name)
+          .tag(RemoteListSelection.remote(name: name))
+          .listRowSeparator(.hidden)
+      case .branch(let branch):
+        remoteBranchRow(for: node, branch: branch)
+      case nil:
+        folderRow(for: node.path.lastPathComponent)
+    }
+  }
+
+  @ViewBuilder
+  func remoteBranchRow(for node: PathTreeNode<RemoteTreeItem>,
+                       branch: RemoteBranchRefName) -> some View
+  {
+    HStack {
+      Label {
+        ExpansionText(node.path.lastPathComponent,
+                      font: .systemFontSized(weight: .regular))
+          .padding(.horizontal, 4)
+          .cornerRadius(4)
+          .accessibilityIdentifier("branch")
+      } icon: {
+        Image("scm.branch")
+      }
+      Spacer()
+      let _ = accessories.revision
+      accessories.accessory(for: branch)
+    }
+      .contentShape(Rectangle())
+      .listRowSeparator(.hidden)
+      .contextMenu {
+        remoteBranchContextMenu(for: branch)
+      }
+      .tag(RemoteListSelection.branch(ref: branch))
+  }
+
+  @ViewBuilder
+  func folderRow(for name: String) -> some View
+  {
+    HStack {
+      Label(name, systemImage: "folder.fill")
+      Spacer()
+    }
+      .contentShape(Rectangle())
+      .listRowSeparator(.hidden)
+      .selectionDisabled(true)
   }
 
   @ViewBuilder
@@ -183,6 +276,17 @@ struct RemoteList<Manager: RemoteManagement,
       coordinator.mergeRemoteBranch(branchRef)
     }
   }
+
+  init(model: RemoteListViewModel<Manager, Brancher>,
+       selection: Binding<RemoteListSelection?>,
+       expandedItems: Binding<Set<String>>)
+  {
+    self._model = StateObject(wrappedValue: model)
+    self._selection = selection
+    self._expandedItems = expandedItems
+    self._listSelection = State(initialValue: selection.wrappedValue)
+    self._listExpandedItems = State(initialValue: expandedItems.wrappedValue)
+  }
 }
 
 #if false
@@ -198,8 +302,6 @@ struct RemoteListPreview: View
   {
     RemoteList(model: .init(manager: manager, brancher: brancher,
                             publisher: NullRepositoryPublishing()),
-               manager: manager,
-               brancher: brancher,
                selection: $selection,
                expandedItems: $expandedItems)
       .environmentObject(SidebarCoordinator())

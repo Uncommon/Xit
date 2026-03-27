@@ -1,6 +1,5 @@
 import Cocoa
 import SwiftUI
-import XitGit
 
 struct FetchDialog: SheetDialog
 {

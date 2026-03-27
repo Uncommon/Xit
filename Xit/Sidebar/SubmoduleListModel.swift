@@ -1,5 +1,4 @@
 import Combine
-import XitGit
 
 class SubmoduleListModel<Manager: SubmoduleManagement>: FilteringListViewModel
 {

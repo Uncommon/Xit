@@ -1,5 +1,4 @@
 import AppKit
-import XitGit
 
 @NSApplicationMain @MainActor
 final class AppDelegate: NSObject

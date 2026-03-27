@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 class RemoteListViewModel<Manager: RemoteManagement, Brancher: Branching>
   : FilteringListViewModel

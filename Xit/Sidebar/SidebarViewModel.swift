@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 /// Common refresh surface for the cached sidebar models owned by the host controller.
 @MainActor

@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Cocoa
-import XitGit
 
 /// Abstract base class for file list data sources.
 @MainActor

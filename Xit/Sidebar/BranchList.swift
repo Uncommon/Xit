@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import XitGit
 
 enum BranchTrackingIndicator: Equatable
 {
@@ -71,21 +70,7 @@ struct BranchList<Brancher: Branching,
                                    expandedItems: $expandedItems) {
             (node) in
             let isCurrent = node.item?.refName == currentBranch
-            BranchCell(node: node,
-                       isCurrent: isCurrent,
-                       trailingContent: {
-              if let item = node.item {
-                upstreamIndicator(for: item)
-                let _ = accessories.revision
-                accessories.accessory(for: item.refName)
-              }
-            })
-              .contextMenu {
-                if let ref = node.item?.refName {
-                  branchContextMenu(for: ref)
-                }
-              }
-              .tag(node.item.map { BranchListSelection.branch($0.refName) })
+            branchRow(for: node, isCurrent: isCurrent)
           }
         }
       }
@@ -156,6 +141,39 @@ struct BranchList<Brancher: Branching,
   func canMergeSelection(_ branchRef: LocalBranchRefName?) -> Bool
   {
     branchRef != nil && branchRef != brancher.currentBranch
+  }
+
+  @ViewBuilder
+  func branchRow(for node: PathTreeNode<BranchListItem>,
+                 isCurrent: Bool) -> some View
+  {
+    let row = BranchCell(node: node,
+                         isCurrent: isCurrent,
+                         trailingContent: {
+      if let item = node.item {
+        upstreamIndicator(for: item)
+        let _ = accessories.revision
+        accessories.accessory(for: item.refName)
+      }
+    })
+      .contextMenu {
+        if let ref = node.item?.refName {
+          branchContextMenu(for: ref)
+        }
+      }
+
+    if let selectionValue = selectionValue(for: node) {
+      row.tag(selectionValue)
+    }
+    else {
+      row
+    }
+  }
+
+  func selectionValue(for node: PathTreeNode<BranchListItem>)
+      -> BranchListSelection?
+  {
+    node.item.map { .branch($0.refName) }
   }
 
   @ViewBuilder

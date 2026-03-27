@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import XitGit
 
 struct SubmoduleList<Manager: SubmoduleManagement>: View
 {

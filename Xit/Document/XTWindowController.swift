@@ -1,6 +1,5 @@
 import Cocoa
 import Combine
-import XitGit
 import SwiftUI
 
 @MainActor
@@ -226,6 +225,7 @@ final class XTWindowController: NSWindowController,
     if let newSelection = selection,
        let oldSelection = oldValue,
        newSelection == oldSelection {
+      reselectSubject.send()
       return
     }
 

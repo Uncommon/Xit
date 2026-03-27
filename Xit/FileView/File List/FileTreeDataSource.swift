@@ -1,6 +1,5 @@
 import Foundation
 import Cocoa
-import XitGit
 
 final class FileTreeDataSource: FileListDataSourceBase
 {

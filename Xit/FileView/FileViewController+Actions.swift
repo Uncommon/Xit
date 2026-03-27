@@ -1,5 +1,4 @@
 import Cocoa
-import XitGit
 
 // MARK: NSUserInterfaceValidations
 extension FileViewController: NSUserInterfaceValidations

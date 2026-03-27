@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import Combine
-import XitGit
 
 enum PathValidationError: Error
 {

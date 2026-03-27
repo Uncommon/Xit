@@ -1,6 +1,5 @@
 import Foundation
 import Testing
-import XitGit
 @testable import Xit
 
 struct RemoteListViewModelTest

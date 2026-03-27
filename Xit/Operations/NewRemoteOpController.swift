@@ -1,5 +1,4 @@
 import Foundation
-import XitGit
 
 /// Operation for adding a new remote
 final class NewRemoteOpController: OperationController

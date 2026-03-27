@@ -1,5 +1,4 @@
 import SwiftUI
-import XitGit
 
 /// Shared source of branch row accessories for the sidebar.
 ///

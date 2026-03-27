@@ -32,8 +32,10 @@ enum TestRepo: String
                                    withExtension: "zip")!
       let unzipTask = Process()
 
-      try? FileManager.default.removeItem(atPath:
-          targetPath.appending(pathComponent: rawValue))
+      try? FileManager.default.removeItem(
+          atPath: URL(fileURLWithPath: targetPath, isDirectory: true)
+            .appendingPathComponent(rawValue)
+            .path)
       unzipTask.launchPath = "/usr/bin/unzip"
       unzipTask.arguments = ["-uo", fixturesURL.path, rawValue + "/*"]
       unzipTask.currentDirectoryPath = targetPath

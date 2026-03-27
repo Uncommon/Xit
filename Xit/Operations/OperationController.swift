@@ -1,5 +1,4 @@
 import Cocoa
-import XitGit
 
 /// Takes charge of executing a command
 @MainActor

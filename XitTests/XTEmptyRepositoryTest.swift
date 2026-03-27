@@ -1,7 +1,5 @@
 import XCTest
 @testable import Xit
-@testable import XitGit
-import XitGitTestSupport
 
 class XTEmptyRepositoryTest: XTTest
 {
