@@ -163,7 +163,7 @@ struct StashList<Stasher: Stashing>: View
   }
 }
 
-#if false
+#if DEBUG
 struct StashListPreview: View
 {
   let stashes: [Stash]
@@ -182,7 +182,8 @@ struct StashListPreview: View
     init(message: String, oid: GitOID,
          stagedCount: Int = 0, unstagedCount: Int = 0)
     {
-      self.mainCommit = .init(parentOIDs: [], message: message, id: oid)
+      self.mainCommit = .init(parentOIDs: [], message: message,
+                              isSigned: false, id: oid)
 
       self.index = (0..<stagedCount).map {
         .init(path: "\($0)", change: .modified)

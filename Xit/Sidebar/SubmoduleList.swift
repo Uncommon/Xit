@@ -58,7 +58,7 @@ struct SubmoduleList<Manager: SubmoduleManagement>: View
   }
 }
 
-#if false
+#if DEBUG
 struct SubmoduleListPreview
 {
   struct Submodule: Xit.Submodule

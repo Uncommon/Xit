@@ -289,7 +289,7 @@ struct RemoteList<Manager: RemoteManagement,
   }
 }
 
-#if false
+#if DEBUG
 struct RemoteListPreview: View
 {
   let manager: FakeRemoteManager

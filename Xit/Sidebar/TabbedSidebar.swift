@@ -178,7 +178,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   }
 }
 
-#if false
+#if DEBUG
 // For some reason NullFileStatusDetection isn't visible, even though
 // calling this NullFileStatusDetection is an "invalid redeclaration"
 private class NFSD: EmptyFileStatusDetection {}

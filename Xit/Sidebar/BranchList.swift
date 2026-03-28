@@ -213,7 +213,7 @@ struct BranchList<Brancher: Branching,
   }
 }
 
-#if false
+#if DEBUG
 
 struct BranchListPreview: View
 {
