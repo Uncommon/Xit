@@ -1,5 +1,4 @@
 import Cocoa
-import Siesta
 import os
 
 let serviceLogger = Logger(subsystem: Bundle.main.bundleIdentifier!,
@@ -246,15 +245,4 @@ func == (a: Services.Status, b: Services.Status) -> Bool
 protocol ServiceAPI
 {
   var type: AccountType { get }
-}
-
-
-public func XMLResponseTransformer(
-    _ transformErrors: Bool = true) -> Siesta.ResponseTransformer
-{
-  return Siesta.ResponseContentTransformer<Data, XMLDocument>(
-      transformErrors: transformErrors) {
-    (entity: Siesta.Entity<Data>) throws -> XMLDocument? in
-    try XMLDocument(data: entity.content, options: [])
-  }
 }

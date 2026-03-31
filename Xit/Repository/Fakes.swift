@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import Siesta
 
 extension FakeCommit
 {
