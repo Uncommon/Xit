@@ -1,110 +1,38 @@
 import Foundation
 import Combine
-import Siesta
 
 extension Notification.Name
 {
   static let authenticationStatusChanged = Self("AuthStatusChanged")
 }
 
-protocol BasicAuthenticatorDelegate: AnyObject
+struct AuthenticationResponse
 {
-  func didAuthenticate(responseResource: Resource)
+  let data: Data
+  let response: URLResponse
 }
 
-protocol Authentication
+enum AuthenticationError: LocalizedError
 {
-  var authenticationStatusPublisher: any Publisher<Services.Status, Never> { get }
-}
+  case invalidURL(baseURL: URL, path: String)
+  case invalidResponse(URLResponse)
+  case unsuccessfulStatus(Int)
 
-class BasicAuthenticator: ObservableObject
-{
-  let account: Account
-  @Published var authenticationStatus: Services.Status
-  var password: String
-  private let authenticationPath: String
-  weak var delegate: BasicAuthenticatorDelegate?
-
-  init?(account: Account, password: String, authenticationPath: String)
+  var errorDescription: String?
   {
-    self.account = account
-    self.password = password
-    self.authenticationStatus = .notStarted
-    self.authenticationPath = authenticationPath
-  }
-
-  func configure(service: Service)
-  {
-    service.configure {
-      (builder) in
-      if let data = "\(self.account.user):\(self.password)"
-        .data(using: String.Encoding.utf8)?
-        .base64EncodedString(options: []) {
-        builder.headers["Authorization"] = "Basic \(data)"
-      }
-      else {
-        serviceLogger.debug("""
-        Couldn't construct auth header for \
-        \(self.account.user) @ \(service.baseURL?.absoluteString ?? "?")
-        """)
-      }
+    switch self {
+      case .invalidURL(let baseURL, let path):
+        "Could not construct auth URL for \(path) relative to \(baseURL.absoluteString)."
+      case .invalidResponse(let response):
+        "Unexpected authentication response: \(type(of: response))."
+      case .unsuccessfulStatus(let status):
+        HTTPURLResponse.localizedString(forStatusCode: status).capitalized
     }
-  }
-
-  /// Checks that the user and password are accepted by the server.
-  func attemptAuthentication(service: Service, path: String? = nil)
-  {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
-
-    authenticationStatus = .inProgress
-
-    let path = path ?? authenticationPath
-    let authResource = service.resource(path)
-
-    for request in authResource.allRequests {
-      request.cancel()
-    }
-    authResource.addObserver(owner: self) {
-      [self] (resource, event) in
-      switch event {
-
-        case .newData, .notModified:
-          authenticationStatus = .done
-          delegate?.didAuthenticate(responseResource: resource)
-
-        case .error:
-          guard let error = resource.latestError
-          else {
-            serviceLogger.debug("Error event with no error")
-            authenticationStatus = .failed(nil)
-            return
-          }
-
-          authenticationStatus =
-              (error.cause is Siesta.RequestError.Cause.RequestCancelled)
-              ? .notStarted
-              : .failed(error)
-
-        default:
-          break
-      }
-    }
-    // Use a custom request to skip the XML transformer
-    _ = authResource.load(using: authResource.request(.get))
-  }
-}
-
-extension BasicAuthenticator: Authentication
-{
-  var authenticationStatusPublisher: any Publisher<Services.Status, Never>
-  {
-    $authenticationStatus
   }
 }
 
 /// Abstract service class that handles HTTP basic authentication.
-class BasicAuthService: Service, ObservableObject, IdentifiableService
+class BasicAuthService: ObservableObject, IdentifiableService
 {
   let id = UUID()
   var account: Account
@@ -122,30 +50,25 @@ class BasicAuthService: Service, ObservableObject, IdentifiableService
                                       object: self)
     }
   }
+
   private let authenticationPath: String
-  
-  init?(account: Account, password: String, authenticationPath: String)
+  private let session: URLSession
+  private var authorizationHeader: String?
+  private var authenticationTask: URLSessionDataTask?
+  private var authenticationToken = UUID()
+
+  init?(account: Account,
+        password: String,
+        authenticationPath: String,
+        session: URLSession = .shared)
   {
     self.account = account
     self.authenticationStatus = .notStarted
     self.authenticationPath = authenticationPath
-    
-    // Exclude the JSON transformer because we'll use JSONDecoder instead
-    super.init(baseURL: account.location, standardTransformers: [.text, .image])
-    
+    self.session = session
+
     if !updateAuthentication(account.user, password: password) {
       return nil
-    }
-    configure {
-      (builder) in
-      builder.decorateRequests {
-        (resource, request) in
-        request.onFailure {
-          (error) in
-          serviceLogger.debug(
-              "Request error: \(error.userMessage) \(resource.url)")
-        }
-      }
     }
   }
 
@@ -155,74 +78,123 @@ class BasicAuthService: Service, ObservableObject, IdentifiableService
       "subclasses should call init(account:password:authenticationPath:)")
     return nil
   }
-  
+
+  deinit
+  {
+    authenticationTask?.cancel()
+  }
+
   /// Re-generates the authentication header with the new credentials.
   func updateAuthentication(_ user: String, password: String) -> Bool
   {
     if let data = "\(user):\(password)"
-                  .data(using: String.Encoding.utf8)?
-                  .base64EncodedString(options: []) {
-      configure {
-        (builder) in
-        builder.headers["Authorization"] = "Basic \(data)"
-      }
+        .data(using: .utf8)?
+        .base64EncodedString(options: []) {
+      authorizationHeader = "Basic \(data)"
       return true
     }
     else {
       serviceLogger.debug("""
           Couldn't construct auth header for \
-          \(user) @ \(self.baseURL?.absoluteString ?? "?")
+          \(user) @ \(self.account.location.absoluteString)
           """)
+      authorizationHeader = nil
       return false
     }
   }
-  
+
   /// Checks that the user and password are accepted by the server.
   func attemptAuthentication(_ path: String? = nil)
   {
+    let resolvedPath = path ?? authenticationPath
+    guard let url = authenticationURL(for: resolvedPath) else {
+      authenticationStatus = .failed(
+        AuthenticationError.invalidURL(baseURL: account.location,
+                                       path: resolvedPath))
+      return
+    }
+
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    if let authorizationHeader {
+      request.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
+    }
+
+    let token = UUID()
+    let task = session.dataTask(with: request) {
+      [weak self] data, response, error in
+      self?.handleAuthenticationResult(token: token,
+                                       data: data,
+                                       response: response,
+                                       error: error)
+    }
+
     objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
-    
+    let previousTask = authenticationTask
+    authenticationToken = token
+    authenticationTask = task
+    objc_sync_exit(self)
+
+    previousTask?.cancel()
     authenticationStatus = .inProgress
-    
-    let path = path ?? authenticationPath
-    let authResource = resource(path)
-    
-    for request in authResource.allRequests {
-      request.cancel()
-    }
-    authResource.addObserver(owner: self) {
-      (resource, event) in
-      switch event {
-        
-        case .newData, .notModified:
-          self.authenticationStatus = .done
-          self.didAuthenticate(responseResource: resource)
-        
-        case .error:
-          guard let error = resource.latestError
-          else {
-            serviceLogger.debug("Error event with no error")
-            self.authenticationStatus = .failed(nil)
-            return
-          }
-          
-          self.authenticationStatus =
-              (error.cause is Siesta.RequestError.Cause.RequestCancelled)
-              ? .notStarted
-              : .failed(error)
-        
-        default:
-          break
-      }
-    }
-    // Use a custom request to skip the XML transformer
-    _ = authResource.load(using: authResource.request(.get))
+    task.resume()
   }
-  
+
   // For subclasses to override when more data needs to be downloaded.
-  func didAuthenticate(responseResource: Resource)
+  func didAuthenticate(response: AuthenticationResponse)
   {
+  }
+
+  private func authenticationURL(for path: String) -> URL?
+  {
+    guard !path.isEmpty
+    else { return account.location }
+    
+    return URL(string: path, relativeTo: account.location)?.absoluteURL
+  }
+
+  private func handleAuthenticationResult(token: UUID,
+                                          data: Data?,
+                                          response: URLResponse?,
+                                          error: Error?)
+  {
+    let isCurrentTask: Bool = {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      
+      guard authenticationToken == token
+      else { return false }
+      
+      authenticationTask = nil
+      return true
+    }()
+    guard isCurrentTask
+    else { return }
+
+    if let urlError = error as? URLError,
+       urlError.code == .cancelled {
+      authenticationStatus = .notStarted
+      return
+    }
+    else if let error {
+      authenticationStatus = .failed(error)
+      return
+    }
+
+    guard let response = response as? HTTPURLResponse else {
+      authenticationStatus = .failed(
+          response.map(AuthenticationError.invalidResponse) ?? nil)
+      return
+    }
+
+    guard (200..<300).contains(response.statusCode) else {
+      authenticationStatus = .failed(
+          AuthenticationError.unsuccessfulStatus(response.statusCode))
+      return
+    }
+
+    authenticationStatus = .done
+    didAuthenticate(response: .init(data: data ?? Data(), response: response))
   }
 }
 
@@ -237,7 +209,8 @@ extension BasicAuthService: AccountService
       authenticationStatus = .unknown
       return
     }
-    
+
+    account = newAccount
     _ = updateAuthentication(newAccount.user, password: password)
     attemptAuthentication()
   }
@@ -257,7 +230,7 @@ class MockAuthService: BasicAuthService
   {
     authenticationStatus = .inProgress
     Task {
-      _ = try? await Task.sleep(nanoseconds: 1000000000)
+      _ = try? await Task.sleep(nanoseconds: 1_000_000_000)
       authenticationStatus = .done
     }
   }
