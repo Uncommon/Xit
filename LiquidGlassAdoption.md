@@ -113,6 +113,22 @@ Actions:
 Why:
 - Search is one of the remaining high-visibility toolbar surfaces and now needs a post-merge design pass.
 
+### 5. Siesta removal follow-up
+Files:
+- `Xit/Services/Services.swift`
+- `Xit/Services/BasicAuthService.swift`
+- `Xit/Utils/Extensions/SiestaExtensions.swift`
+- `Xit.xcodeproj/project.pbxproj`
+
+Actions:
+- Replace the `Siesta.Service`-based `IdentifiableService` base type with a plain app-owned service base.
+- Rewrite `BasicAuthService` authentication checks to use a non-Siesta transport, keeping the existing observable status surface used by Accounts preferences.
+- Remove `Siesta` compatibility glue once `BasicAuthService` no longer depends on it.
+- Remove the `Siesta` project dependency after the replacement compiles cleanly.
+
+Why:
+- Services will return in the future, but the current app should stop depending on `Siesta` while preserving the higher-level service/account architecture.
+
 ## Phased Implementation Plan
 
 ### Phase 0-3 status
@@ -136,6 +152,9 @@ Tasks:
 - Restore history list ref tags after the merge.
 - Add more icons to menu bar or context menu commands where appropriate.
 - Investigate adopting the Liquid Glass expanding Search toolbar item with the extra arrow/search-type controls.
+- Remove the `Siesta` dependency with the smallest worthwhile refactor:
+  - keep service protocols and account UI surface
+  - replace only the `Siesta`-bound base/auth implementation
 - Verify AX IDs and UITests remain stable.
 - Validate dark/light mode, increased contrast, and Reduce Transparency.
 - Check scroll and redraw performance in history and diff/blame views.
