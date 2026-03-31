@@ -15,6 +15,7 @@ extension TabItem {
 struct IconPicker<Item>: View where Item: TabItem {
   let items: [Item]
   let showsDividers: Bool
+  let spacing: CGFloat
   @Binding var selection: Item
 
   var body: some View {
@@ -28,7 +29,7 @@ struct IconPicker<Item>: View where Item: TabItem {
           Button(action: { selection = item },
                  label: {
             item.icon
-              .padding(.horizontal, 6)
+              .padding(.horizontal, spacing)
               .contentShape(Rectangle()) // make padding hittable
           })
             .buttonStyle(.plain)
@@ -44,21 +45,31 @@ struct IconPicker<Item>: View where Item: TabItem {
     }
   }
 
-  init(items: [Item], selection: Binding<Item>, showsDividers: Bool = true)
+  init(items: [Item],
+       selection: Binding<Item>,
+       showsDividers: Bool = true,
+       spacing: CGFloat = 6)
   {
     self.items = items
     self._selection = selection
     self.showsDividers = showsDividers
+    self.spacing = spacing
   }
 }
 
 struct IconTabPicker_Preview: View {
+  let showsDividers: Bool
   @State var selection: SidebarTab = .local(modified: false)
 
   var body: some View {
-    IconPicker(items: SidebarTab.cleanCases, selection: $selection)
+    IconPicker(items: SidebarTab.cleanCases, selection: $selection, showsDividers: showsDividers)
   }
 }
-#Preview {
-  IconTabPicker_Preview().padding()
+
+#Preview("Divider") {
+  IconTabPicker_Preview(showsDividers: true).padding()
+}
+
+#Preview("No Divider") {
+  IconTabPicker_Preview(showsDividers: false).padding()
 }

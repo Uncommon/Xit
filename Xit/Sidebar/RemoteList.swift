@@ -116,7 +116,8 @@ struct RemoteList<Manager: RemoteManagement,
       }, fieldRightContent: {
         IconPicker(items: RemoteSearchScope.allCases,
                    selection: $model.searchScope,
-                   showsDividers: false)
+                   showsDividers: false,
+                   spacing: 0)
       })
         // Using a publisher for model.searchScope doesn't work well because
         // it publishes before the change, making it harder to get the new
