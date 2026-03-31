@@ -104,8 +104,9 @@ extension BasicAuthenticator: Authentication
 }
 
 /// Abstract service class that handles HTTP basic authentication.
-class BasicAuthService: IdentifiableService, ObservableObject
+class BasicAuthService: Service, ObservableObject, IdentifiableService
 {
+  let id = UUID()
   var account: Account
   var authenticationStatus: Services.Status
   {

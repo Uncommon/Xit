@@ -11,9 +11,9 @@ protocol AccountService: AnyObject
   func accountUpdated(oldAccount: Account, newAccount: Account)
 }
 
-class IdentifiableService: Service, Identifiable
+protocol IdentifiableService: AnyObject, Identifiable where ID == UUID
 {
-  let id = UUID()
+  var id: UUID { get }
 }
 
 /// Manages and provides access to all service API instances.
@@ -40,7 +40,7 @@ final class Services
   private var services: [AccountType: [String: BasicAuthService]] = [:]
   var allServices: [any RepositoryService]
   {
-    services.values.flatMap { $0.values }
+    services.values.flatMap { $0.values.map { $0 as any RepositoryService } }
   }
 
   var serviceMakers: [AccountType: (Account) -> BasicAuthService?] = [:]
