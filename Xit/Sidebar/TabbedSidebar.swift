@@ -93,8 +93,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   var body: some View {
     VStack(spacing: 0) {
       Divider()
-      IconTabPicker(items: SidebarTab.cleanCases,
-                    selection: $coordinator.activeTab)
+      IconPicker(items: SidebarTab.cleanCases,
+                 selection: $coordinator.activeTab)
         .padding(6)
       Divider()
       switch coordinator.activeTab {

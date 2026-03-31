@@ -12,7 +12,7 @@ extension TabItem {
   var id: Self { self }
 }
 
-struct IconTabPicker<Item>: View where Item: TabItem {
+struct IconPicker<Item>: View where Item: TabItem {
   let items: [Item]
   @Binding var selection: Item
 
@@ -48,7 +48,7 @@ struct IconTabPicker_Preview: View {
   @State var selection: SidebarTab = .local(modified: false)
 
   var body: some View {
-    IconTabPicker(items: SidebarTab.cleanCases, selection: $selection)
+    IconPicker(items: SidebarTab.cleanCases, selection: $selection)
   }
 }
 #Preview {

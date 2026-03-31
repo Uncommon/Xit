@@ -391,7 +391,6 @@
 		89E4272D2861711700A17651 /* AccountsPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsPrefsPane.swift; sourceTree = "<group>"; };
 		89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountPanel.swift; sourceTree = "<group>"; };
 		89ED01725157F8CC6AFA9C37 /* MutexProtected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MutexProtected.swift; path = Xit/Utils/MutexProtected.swift; sourceTree = SOURCE_ROOT; };
-		89ED01725157F8CC6AFA9C37 /* MutexProtected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MutexProtected.swift; path = Xit/Utils/MutexProtected.swift; sourceTree = SOURCE_ROOT; };
 		89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LiquidGlassAdoption.md; sourceTree = "<group>"; };
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
