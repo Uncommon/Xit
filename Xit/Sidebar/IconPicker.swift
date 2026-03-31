@@ -14,6 +14,7 @@ extension TabItem {
 
 struct IconPicker<Item>: View where Item: TabItem {
   let items: [Item]
+  let showsDividers: Bool
   @Binding var selection: Item
 
   var body: some View {
@@ -35,12 +36,19 @@ struct IconPicker<Item>: View where Item: TabItem {
             .foregroundColor(isSelected ? .accentColor : .primary)
             .help(item.toolTip.rawValue)
             .accessibilityIdentifier(item.toolTip.rawValue),
-          item.id != items.last?.id
+          showsDividers && item.id != items.last?.id
             ? AnyView(Divider().frame(height: 16))
             : AnyView(EmptyView())
         ))
       }
     }
+  }
+
+  init(items: [Item], selection: Binding<Item>, showsDividers: Bool = true)
+  {
+    self.items = items
+    self._selection = selection
+    self.showsDividers = showsDividers
   }
 }
 
