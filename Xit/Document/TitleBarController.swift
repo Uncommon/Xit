@@ -6,7 +6,6 @@ protocol TitleBarDelegate: AnyObject
 {
   var viewStates: (sidebar: Bool, history: Bool, details: Bool) { get }
 
-  func branchSelecetd(_ branch: String)
   func goBack()
   func goForward()
   func fetchSelected()
@@ -19,7 +18,9 @@ protocol TitleBarDelegate: AnyObject
   func showHideSidebar()
   func showHideHistory()
   func showHideDetails()
-  func search()
+  func search(for text: String,
+              type: HistorySearchType,
+              direction: SearchDirection)
 }
 
 @MainActor
@@ -30,8 +31,6 @@ class TitleBarController: NSObject
   @IBOutlet weak var remoteControls: NSSegmentedControl!
   @IBOutlet weak var stashButton: NSSegmentedControl!
   @IBOutlet weak var spinner: NSProgressIndicator!
-  @IBOutlet weak var branchPopup: NSPopUpButton!
-  @IBOutlet weak var searchButton: NSButton!
   @IBOutlet weak var viewControls: NSSegmentedControl!
   var stashMenu: NSMenu!
   var fetchMenu: NSMenu!
@@ -46,6 +45,18 @@ class TitleBarController: NSObject
   var progressSink: AnyCancellable?
   
   var separatorItem: NSToolbarItem?
+  private var searchToolbarItem: NSSearchToolbarItem?
+  private var previousSearchItem: NSToolbarItem?
+  private var nextSearchItem: NSToolbarItem?
+  private var searchTypeItems: [NSMenuItem] = []
+  private var searchEnabled = true
+  private var searchText = ""
+  private var searchType: HistorySearchType = .summary {
+    didSet {
+      updateSearchTypeMenuState()
+      updateSearchPlaceholder()
+    }
+  }
   
   @objc dynamic var progressHidden: Bool
   {
@@ -114,16 +125,30 @@ class TitleBarController: NSObject
     }
     pushMenu.setAccessibilityIdentifier(AXID.PopupMenu.push)
     stashMenu = NSMenu {
-      NSMenuItem(.saveStash, action: #selector(XTWindowController.stash(_:)))
+      NSMenuItem(.saveStash,
+                 systemImage: "tray.and.arrow.down.fill",
+                 action: #selector(XTWindowController.stash(_:)))
       NSMenuItem.separator()
-      NSMenuItem(.pop, action: #selector(XTWindowController.popStash(_:)))
-      NSMenuItem(.apply, action: #selector(XTWindowController.applyStash(_:)))
-      NSMenuItem(.drop, action: #selector(XTWindowController.dropStash(_:)))
+      NSMenuItem(.pop,
+                 systemImage: "tray.and.arrow.up.fill",
+                 action: #selector(XTWindowController.popStash(_:)))
+      NSMenuItem(.apply,
+                 systemImage: "tray.and.arrow.up",
+                 action: #selector(XTWindowController.applyStash(_:)))
+      NSMenuItem(.drop,
+                  systemImage: "trash",
+                 action: #selector(XTWindowController.dropStash(_:)))
     }
     remoteOpsMenu = NSMenu {
-      NSMenuItem(.pull, action: #selector(XTWindowController.pull(_:)))
-      NSMenuItem(.push, action: #selector(XTWindowController.push(_:)))
-      NSMenuItem(.fetch, action: #selector(XTWindowController.fetch(_:)))
+      NSMenuItem(.pull,
+                 systemImage: "square.and.arrow.down.fill",
+                 action: #selector(XTWindowController.pull(_:)))
+      NSMenuItem(.push,
+                 systemImage: "square.and.arrow.up.fill",
+                 action: #selector(XTWindowController.push(_:)))
+      NSMenuItem(.fetch,
+                 systemImage: "square.and.arrow.down",
+                 action: #selector(XTWindowController.fetch(_:)))
     }
     viewMenu = NSMenu {
       NSMenuItem(.sidebar,
@@ -152,6 +177,7 @@ class TitleBarController: NSObject
     remoteOpsMenu.items[0].submenu = pullMenu
     remoteOpsMenu.items[1].submenu = pushMenu
     remoteOpsMenu.items[2].submenu = fetchMenu
+    updateSearchControls()
   }
   
   func observe(controller: any RepositoryController)
@@ -274,55 +300,134 @@ class TitleBarController: NSObject
     viewControls.setSelected(states.history, forSegment: 1)
     viewControls.setSelected(states.details, forSegment: 2)
   }
-  
-  @IBAction
-  func branchSelected(_ sender: NSPopUpButton)
-  {
-    guard let branch = branchPopup.titleOfSelectedItem
-    else { return }
-    
-    delegate?.branchSelecetd(branch)
-  }
-  
-  @IBAction
-  func search(_ sender: Any)
-  {
-    delegate?.search()
-  }
-  
-  var selectedBranch: String?
-  {
-    get { branchPopup.titleOfSelectedItem }
-    set {
-      DispatchQueue.main.async {
-        [weak self] in
-        self?.branchPopup.selectItem(withTitle: newValue ?? "")
-      }
-    }
-  }
-  
-  func updateBranchList(_ branches: [LocalBranchRefName],
-                        current: LocalBranchRefName?)
-  {
-    branchPopup.removeAllItems()
-    for branch in branches {
-      let item = NSMenuItem(title: branch.name, action: nil, keyEquivalent: "")
 
-      item.image = .xtBranch
-      branchPopup.menu?.addItem(item)
+  func setSearchEnabled(_ enabled: Bool)
+  {
+    searchEnabled = enabled
+    if !enabled {
+      hideSearch()
     }
-    if let current = current, branches.contains(current) {
-      selectedBranch = current.name
+    updateSearchControls()
+  }
+
+  func showSearch()
+  {
+    guard searchEnabled
+    else { return }
+
+    searchToolbarItem?.beginSearchInteraction()
+    if let item = searchToolbarItem {
+      window.makeFirstResponder(item.searchField)
     }
-    else {
-      let detachedItem = NSMenuItem(title: current?.name ??
-                                           UIString.detached.rawValue,
-                                    action: nil, keyEquivalent: "")
-      
-      detachedItem.isEnabled = false
-      branchPopup.menu?.insertItem(detachedItem, at: 0)
-      branchPopup.selectItem(at: 0)
+    updateSearchControls()
+  }
+
+  func search(_ direction: SearchDirection)
+  {
+    guard searchEnabled
+    else { return }
+
+    guard !searchText.isEmpty
+    else { return }
+    delegate?.search(for: searchText,
+                     type: searchType,
+                     direction: direction)
+  }
+
+  func useSelectionForSearch(_ text: String)
+  {
+    guard let field = searchToolbarItem?.searchField,
+          searchEnabled
+    else { return }
+
+    showSearch()
+    searchText = text
+    field.stringValue = text
+    updateSearchControls()
+  }
+
+  var canShowSearch: Bool
+  { searchEnabled }
+
+  var canNavigateSearch: Bool
+  { searchEnabled && !searchText.isEmpty }
+
+  private func updateSearchControls()
+  {
+    let hasQuery = !searchText.isEmpty
+
+    searchToolbarItem?.isEnabled = searchEnabled
+    previousSearchItem?.isEnabled = searchEnabled && hasQuery
+    nextSearchItem?.isEnabled = searchEnabled && hasQuery
+    window.toolbar?.validateVisibleItems()
+  }
+
+  private func updateSearchTypeMenuState()
+  {
+    for (index, item) in searchTypeItems.enumerated() {
+      item.state = HistorySearchType.allCases[index] == searchType ? .on : .off
     }
+  }
+
+  private func updateSearchPlaceholder()
+  {
+    searchToolbarItem?.searchField.placeholderString =
+      "Search \(searchType.displayName.rawValue)"
+  }
+
+  private func hideSearch()
+  {
+    searchText = ""
+    searchToolbarItem?.endSearchInteraction()
+    searchToolbarItem?.searchField.stringValue = ""
+    updateSearchControls()
+  }
+
+  private func makeSearchMenu() -> NSMenu
+  {
+    let menu = NSMenu()
+
+    searchTypeItems = []
+    menu.autoenablesItems = false
+    for (index, type) in HistorySearchType.allCases.enumerated() {
+      let item = NSMenuItem(title: type.displayName.rawValue,
+                            action: #selector(selectSearchType(_:)),
+                            keyEquivalent: "")
+
+      item.target = self
+      item.tag = index
+      menu.addItem(item)
+      searchTypeItems.append(item)
+    }
+    updateSearchTypeMenuState()
+    return menu
+  }
+
+  @IBAction
+  private func runSearch(_ sender: NSSearchField)
+  {
+    searchText = sender.stringValue
+    search(.down)
+  }
+
+  @IBAction
+  private func selectSearchType(_ sender: NSMenuItem)
+  {
+    guard HistorySearchType.allCases.indices.contains(sender.tag)
+    else { return }
+    searchType = HistorySearchType.allCases[sender.tag]
+  }
+
+  @IBAction
+  private func searchPrevious(_ sender: Any?)
+  {
+    search(.up)
+  }
+
+  @IBAction
+  private func searchNext(_ sender: Any?)
+  {
+    search(.down)
   }
 }
 
@@ -330,10 +435,11 @@ extension NSToolbarItem.Identifier
 {
   static let navigation: Self = ◊"xit.nav"
   static let spinner: Self = ◊"xit.spinner"
-  static let branches: Self = ◊"xit.branches"
   static let remoteOps: Self = ◊"xit.remote"
   static let stash: Self = ◊"xit.stash"
   static let search: Self = ◊"xit.search"
+  static let searchPrevious: Self = ◊"xit.searchPrevious"
+  static let searchNext: Self = ◊"xit.searchNext"
   static let view: Self = ◊"xit.view"
 }
 
@@ -367,9 +473,6 @@ extension TitleBarController: NSToolbarDelegate
       case .spinner:
         spinner = item.view as? NSProgressIndicator
         
-      case .branches:
-        branchPopup = item.view as? NSPopUpButton
-
       case .remoteOps:
         remoteControls = item.view as? NSSegmentedControl
         
@@ -390,9 +493,6 @@ extension TitleBarController: NSToolbarDelegate
           remoteControls.setMenu(menu, forSegment: segment.rawValue)
         }
         stashButton.setMenu(stashMenu, forSegment: 0)
-
-      case .search:
-        searchButton = item.view as? NSButton
     
       case .view:
         viewControls = item.view as? NSSegmentedControl
@@ -405,6 +505,23 @@ extension TitleBarController: NSToolbarDelegate
       
       case .sidebarTrackingSeparator:
         separatorItem = item
+      
+      case .search:
+        guard let searchItem = item as? NSSearchToolbarItem
+        else { break }
+        let field = searchItem.searchField
+
+        searchToolbarItem = searchItem
+        searchItem.resignsFirstResponderWithCancel = true
+        field.searchMenuTemplate = makeSearchMenu()
+        field.setAccessibilityIdentifier(.Search.field)
+        updateSearchPlaceholder()
+
+      case .searchPrevious:
+        previousSearchItem = item
+      
+      case .searchNext:
+        nextSearchItem = item
         
       default:
         return
@@ -416,10 +533,6 @@ extension TitleBarController: NSMenuItemValidation
 {
   func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
   {
-    if menuItem.menu?.identifier == ◊"branchMenu" {
-      return true
-    }
-    
     guard let states = delegate?.viewStates
     else { return false }
     let state: Bool
@@ -431,10 +544,70 @@ extension TitleBarController: NSMenuItemValidation
         state = states.history
       case #selector(viewFiles(_:)):
         state = states.details
+      case #selector(selectSearchType(_:)):
+        return true
       default:
         return false
     }
     menuItem.state = state ? .on : .off
     return true
+  }
+}
+
+extension TitleBarController: NSToolbarItemValidation
+{
+  func validateToolbarItem(_ item: NSToolbarItem) -> Bool
+  {
+    switch item.itemIdentifier {
+      case .search:
+        return searchEnabled
+      case .searchPrevious, .searchNext:
+        return searchEnabled && !searchText.isEmpty
+      default:
+        return true
+    }
+  }
+}
+
+extension TitleBarController: NSSearchFieldDelegate
+{
+  func controlTextDidChange(_ obj: Notification)
+  {
+    if let field = obj.object as? NSSearchField {
+      searchText = field.stringValue
+    }
+    updateSearchControls()
+  }
+
+  func controlTextDidBeginEditing(_ obj: Notification)
+  {
+    updateSearchControls()
+  }
+
+  func controlTextDidEndEditing(_ obj: Notification)
+  {
+    guard let field = obj.object as? NSSearchField
+    else { return }
+    if field.stringValue.isEmpty {
+      searchText = ""
+      hideSearch()
+    }
+    else {
+      searchText = field.stringValue
+    }
+    updateSearchControls()
+  }
+
+  func searchFieldDidStartSearching(_ sender: NSSearchField)
+  {
+    searchText = sender.stringValue
+    updateSearchControls()
+  }
+
+  func searchFieldDidEndSearching(_ sender: NSSearchField)
+  {
+    searchText = ""
+    sender.stringValue = ""
+    updateSearchControls()
   }
 }

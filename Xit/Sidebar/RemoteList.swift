@@ -1,12 +1,12 @@
 import SwiftUI
 
-enum RemoteSearchScope: CaseIterable, Identifiable
+enum RemoteSearchScope: CaseIterable, Identifiable, TabItem
 {
   case branches, remotes
   
   var id: Self { self }
   
-  var image: some View
+  var icon: some View
   {
     switch self {
       case .branches: Image("scm.branch")
@@ -14,13 +14,16 @@ enum RemoteSearchScope: CaseIterable, Identifiable
     }
   }
   
-  var text: UIString
+  var toolTip: UIString
   {
     switch self {
       case .branches: .filterBranches
       case .remotes: .filterRemotes
     }
   }
+
+  var text: UIString
+  { toolTip }
 }
 
 enum RemoteTreeItem: PathTreeData, Hashable
@@ -111,15 +114,10 @@ struct RemoteList<Manager: RemoteManagement,
             .disabled(remoteName == nil)
         }
       }, fieldRightContent: {
-        Picker(selection: $model.searchScope, content: {
-          ForEach(RemoteSearchScope.allCases) {
-            // TODO: Get Picker to use a smaller image size
-            $0.image.help($0.text.rawValue)
-          }
-        }, label: { EmptyView() })
-          .pickerStyle(.segmented)
-          .frame(maxHeight: 10)
-          .fixedSize(horizontal: true, vertical: false)
+        IconPicker(items: RemoteSearchScope.allCases,
+                   selection: $model.searchScope,
+                   showsDividers: false,
+                   spacing: 0)
       })
         // Using a publisher for model.searchScope doesn't work well because
         // it publishes before the change, making it harder to get the new
@@ -289,7 +287,7 @@ struct RemoteList<Manager: RemoteManagement,
   }
 }
 
-#if false
+#if DEBUG
 struct RemoteListPreview: View
 {
   let manager: FakeRemoteManager

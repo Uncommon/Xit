@@ -120,8 +120,7 @@ final class XTWindowController: NSWindowController,
     
     sinks.append(contentsOf: [
       repo.currentBranchPublisher.sink {
-        [weak self] in
-        self?.titleBarController?.selectedBranch = $0?.name
+        [weak self] _ in
         self?.updateMiniwindowTitle()
       },
       window.publisher(for: \.tabbedWindows).sink {
@@ -410,7 +409,7 @@ extension XTWindowController: NSWindowDelegate
         if !collapsed {
           self.historyAutoCollapsed = false
         }
-        self.titleBarController?.searchButton?.isEnabled = !collapsed
+        self.titleBarController?.setSearchEnabled(!collapsed)
         self.titleBarController?.updateViewControls()
       }
     }

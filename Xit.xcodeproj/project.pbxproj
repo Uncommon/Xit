@@ -114,6 +114,7 @@
 		89E4272E2861711700A17651 /* AccountsPrefsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272D2861711700A17651 /* AccountsPrefsPane.swift */; };
 		89E427302862CF2E00A17651 /* EditAccountPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */; };
 		89E927DD17E972D60093DA6C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31A8939F13E9DA5B008BE0C2 /* WebKit.framework */; };
+		89EFEEE52F548634008D5CC3 /* LiquidGlassAdoption.md in Resources */ = {isa = PBXBuildFile; fileRef = 89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */; };
 		89F24B842C498878007D632E /* FakedMacro in Frameworks */ = {isa = PBXBuildFile; productRef = 89F24B832C498878007D632E /* FakedMacro */; };
 		89F411F32853E039009ECF7D /* FetchDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F22853E039009ECF7D /* FetchDialog.swift */; };
 		89F411F528552A81009ECF7D /* DialogButtonRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F411F428552A81009ECF7D /* DialogButtonRow.swift */; };
@@ -143,7 +144,6 @@
 		C91F34781D30656B005F9BDF /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91F34771D30656B005F9BDF /* Services.swift */; };
 		C923D66C1D906FAA00C6B90B /* TitleBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C923D66B1D906FAA00C6B90B /* TitleBarController.swift */; };
 		C92E30EF1D4FF358001985F7 /* CommitHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92E30EE1D4FF358001985F7 /* CommitHistory.swift */; };
-		C931A0E1275AE340007F441C /* Siesta in Frameworks */ = {isa = PBXBuildFile; productRef = C931A0E0275AE340007F441C /* Siesta */; };
 		C931A0E5275EBE21007F441C /* FileViewOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E4275EBE21007F441C /* FileViewOptions.swift */; };
 		C931A0E727627E84007F441C /* MenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E627627E84007F441C /* MenuBuilder.swift */; };
 		C931A0E92762B8AA007F441C /* ArrayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C931A0E82762B8A9007F441C /* ArrayBuilder.swift */; };
@@ -390,6 +390,7 @@
 		89E4272D2861711700A17651 /* AccountsPrefsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsPrefsPane.swift; sourceTree = "<group>"; };
 		89E4272F2862CF2E00A17651 /* EditAccountPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAccountPanel.swift; sourceTree = "<group>"; };
 		89ED01725157F8CC6AFA9C37 /* MutexProtected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MutexProtected.swift; path = Xit/Utils/MutexProtected.swift; sourceTree = SOURCE_ROOT; };
+		89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LiquidGlassAdoption.md; sourceTree = "<group>"; };
 		89F411F22853E039009ECF7D /* FetchDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchDialog.swift; sourceTree = "<group>"; };
 		89F411F428552A81009ECF7D /* DialogButtonRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogButtonRow.swift; sourceTree = "<group>"; };
 		89F411F62856946D009ECF7D /* SheetDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetDialog.swift; sourceTree = "<group>"; };
@@ -570,7 +571,6 @@
 				DDD4708516F96F7E00CA76FF /* QuickLook.framework in Frameworks */,
 				DDD4708716F9701600CA76FF /* Quartz.framework in Frameworks */,
 				DD858B2C1801325500264F7D /* CoreServices.framework in Frameworks */,
-				C931A0E1275AE340007F441C /* Siesta in Frameworks */,
 				C9CDB91D270D4FD1007C2E77 /* libgit2-mac.a in Frameworks */,
 				C9CDB920270D50A1007C2E77 /* libiconv.tbd in Frameworks */,
 				C9CDB922270D50C1007C2E77 /* libz.tbd in Frameworks */,
@@ -668,6 +668,7 @@
 		C3FA46F113D0F8E200AC4F9B = {
 			isa = PBXGroup;
 			children = (
+				89EFEEE42F548634008D5CC3 /* LiquidGlassAdoption.md */,
 				C9CDB99B270DDEDF007C2E77 /* src */,
 				C9CDB990270DDE0D007C2E77 /* git2 */,
 				3DB98C8223E0928A0039B454 /* Xcode-config */,
@@ -1031,7 +1032,6 @@
 			);
 			name = Xit;
 			packageProductDependencies = (
-				C931A0E0275AE340007F441C /* Siesta */,
 				89F24B832C498878007D632E /* FakedMacro */,
 			);
 			productName = Xit;
@@ -1088,7 +1088,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = XT;
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2630;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					C3FA46FB13D0F8E200AC4F9B = {
@@ -1120,7 +1120,6 @@
 			);
 			mainGroup = C3FA46F113D0F8E200AC4F9B;
 			packageReferences = (
-				C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */,
 				89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */,
 			);
 			productRefGroup = C3FA46FD13D0F8E200AC4F9B /* Products */;
@@ -1160,6 +1159,7 @@
 				C9DAB5D31D4A8D2000586854 /* Preferences.storyboard in Resources */,
 				C9C4ECB52970D0EC0023C239 /* CleanCell.xib in Resources */,
 				C94866C11D25861E000BDB0A /* PasswordPanelController.xib in Resources */,
+				89EFEEE52F548634008D5CC3 /* LiquidGlassAdoption.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1528,10 +1528,11 @@
 					/opt/homebrew/lib,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lgcov";
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = coverage;
@@ -1549,7 +1550,19 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -1565,6 +1578,7 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1662,11 +1676,12 @@
 					/opt/homebrew/lib,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -1716,10 +1731,11 @@
 					/opt/homebrew/lib,
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1738,7 +1754,19 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -1754,6 +1782,7 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1775,7 +1804,19 @@
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Xit/Xit-Prefix.pch";
 				INFOPLIST_FILE = "Xit/Xit-Info.plist";
@@ -1791,6 +1832,7 @@
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.uncommonplace.Xit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Xit/Xit-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2152,14 +2194,6 @@
 				kind = branch;
 			};
 		};
-		C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bustoutsolutions/siesta";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.5.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2167,11 +2201,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 89F24B822C498878007D632E /* XCRemoteSwiftPackageReference "FakedMacro" */;
 			productName = FakedMacro;
-		};
-		C931A0E0275AE340007F441C /* Siesta */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C931A0DF275AE340007F441C /* XCRemoteSwiftPackageReference "siesta" */;
-			productName = Siesta;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

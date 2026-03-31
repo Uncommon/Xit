@@ -97,6 +97,7 @@ class FileListController: NSViewController, RepositoryWindowViewController
   override func loadView()
   {
     super.loadView()
+    applyLiquidGlassStyling()
     updateButtons()
 
     // The FileViewController isn't available as a target in the nib
@@ -107,6 +108,20 @@ class FileListController: NSViewController, RepositoryWindowViewController
         item.action = #selector(FileViewController.sortFilesBy(_:))
       }
     }
+  }
+
+  func applyLiquidGlassStyling()
+  {
+    outlineView.backgroundColor = .clear
+    if let scrollView = outlineView.enclosingScrollView {
+      scrollView.drawsBackground = false
+      scrollView.backgroundColor = .clear
+      scrollView.contentView.drawsBackground = false
+    }
+
+    viewSwitch.prefersCompactControlSizeMetrics = true
+    actionButton.bezelStyle = .recessed
+    actionButton.controlSize = .small
   }
 
   // The controller must be passed in because at this point the window isn't

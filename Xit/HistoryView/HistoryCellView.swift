@@ -226,6 +226,9 @@ final class HistoryCellView: NSTableCellView
           let dotColorIndex = dotValues.1
     else { return }
     
+    let accentStroke = NSColor.separatorColor.withAlphaComponent(
+        LiquidGlassAccessibility.shouldIncreaseContrast ? 0.7 : 0.35)
+
     for line in entry.lines {
       guard let path = path(for: line)
       else { continue }
@@ -236,7 +239,7 @@ final class HistoryCellView: NSTableCellView
       
       path.lineJoinStyle = .round
       if line.parentIndex != line.childIndex {
-        NSColor.textBackgroundColor.setStroke()
+        accentStroke.setStroke()
         path.lineWidth = Widths.line + 1.0
         path.stroke()
       }
@@ -255,7 +258,7 @@ final class HistoryCellView: NSTableCellView
     let dotColor = baseDotColor.blended(withFraction: 0.5,
                                         of: NSColor.textColor) ?? baseDotColor
     
-    NSColor.textBackgroundColor.setStroke()
+    accentStroke.setStroke()
     dotPath.lineWidth = 1.0
     dotPath.stroke()
     dotColor.setFill()

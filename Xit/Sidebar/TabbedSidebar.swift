@@ -93,8 +93,8 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   var body: some View {
     VStack(spacing: 0) {
       Divider()
-      IconTabPicker(items: SidebarTab.cleanCases,
-                    selection: $coordinator.activeTab)
+      IconPicker(items: SidebarTab.cleanCases,
+                 selection: $coordinator.activeTab)
         .padding(6)
       Divider()
       switch coordinator.activeTab {
@@ -178,7 +178,7 @@ struct TabbedSidebar<Brancher, Manager, Referencer, Stasher, Tagger, SubManager>
   }
 }
 
-#if false
+#if DEBUG
 // For some reason NullFileStatusDetection isn't visible, even though
 // calling this NullFileStatusDetection is an "invalid redeclaration"
 private class NFSD: EmptyFileStatusDetection {}

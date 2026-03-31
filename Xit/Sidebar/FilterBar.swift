@@ -17,7 +17,10 @@ struct FilterBar<LeftContent: View, RightContent: View>: View
       } rightContent: {
         fieldRightContent()
       }.padding(2)
-    }.padding(.horizontal, 4)
+       // Apparently NSHostingView isn't passing down the real corner radius
+       // from the AppKit sidebar, so we have to hard-code it here.
+       .containerShape(.rect(cornerRadius: 16, style: .continuous))
+    }.padding(4)
   }
 
   init(text: Binding<String>,

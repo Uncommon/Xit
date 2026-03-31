@@ -11,7 +11,6 @@ enum Window
   static let pushButton = remoteOpSegControl.buttons.element(boundBy: 1)
   static let fetchButton = remoteOpSegControl.buttons.element(boundBy: 2)
   static let progressSpinner = window.progressIndicators["progress"]
-  static let branchPopup = window.popUpButtons["branchPopup"].firstMatch
   static let tabStatus = window.buttons["tabStatus"]
   
   static let pullMenu = XitApp.menus[.PopupMenu.pull]
@@ -21,16 +20,24 @@ enum Window
 
 enum Search
 {
-  static let popup = Window.window.popUpButtons[.Search.typePopup]
   static let field = Window.window.searchFields[.Search.field]
   static let clearButton = field.buttons["cancel"]
-  // No idea where these IDs come from but that's what they are
-  static let searchUp = Window.window.buttons["searchUp"]
-  static let searchDown = Window.window.buttons["searchDown"]
+  static let previous = Window.window.toolbars.buttons["Previous"]
+  static let next = Window.window.toolbars.buttons["Next"]
+
+  static func show(file: StaticString = #file, line: UInt = #line)
+  {
+    if !field.exists, Toolbar.search.exists {
+      Toolbar.search.click()
+    }
+    XCTAssertTrue(field.waitForExistence(timeout: 1.0),
+                  "Search field did not appear", file: file, line: line)
+  }
 
   static func setSearchType(_ searchType: HistorySearchType)
   {
-    popup.click()
+    show()
+    field.buttons.element(boundBy: 0).click()
     XitApp.menuItems[searchType.displayName.rawValue].click()
   }
 }
@@ -317,6 +324,11 @@ enum HistoryList
   static func row(_ index: Int) -> XCUIElement
   {
     list.tableRows.element(boundBy: index)
+  }
+  
+  static func selectedRow() -> XCUIElement
+  {
+    list.tableRows.matching(.init(format: "isSelected == true")).firstMatch
   }
   
   /// Returns the first row containing the given commit message

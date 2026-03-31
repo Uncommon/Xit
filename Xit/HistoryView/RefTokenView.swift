@@ -38,35 +38,28 @@ final class RefTokenView: NSView
   override func draw(_ dirtyRect: NSRect)
   {
     let path = self.makePath()
-    let gradient = type.gradient
-    let transform = NSAffineTransform()
-    
-    gradient.draw(in: path, angle: 270)
-    NSGraphicsContext.saveGraphicsState()
-    path.addClip()
-    transform.translateX(by: 0, yBy: -1)
-    transform.concat()
-    NSColor.refTokenStroke(.shine).set()
-    path.stroke()
-    NSGraphicsContext.restoreGraphicsState()
-    
     let active = type == .activeBranch
+    let fillColor = type.surfaceColor
+    let strokeColor = type.strokeColor.withAlphaComponent(
+        LiquidGlassAccessibility.shouldIncreaseContrast ? 0.9 : 0.55)
+
+    fillColor.setFill()
+    path.fill()
+    path.lineWidth = active ? 1.2 : 0.8
+    strokeColor.setStroke()
+    path.stroke()
+
     let fgColor: NSColor = .refTokenText(active ? .active : .normal)
-    let shadow = NSShadow()
     let paragraphStyle = NSParagraphStyle.default.mutableCopy()
                          as! NSMutableParagraphStyle
-    
-    shadow.shadowBlurRadius = 1.0
-    shadow.shadowOffset = NSSize(width: 0, height: -1)
-    shadow.shadowColor = .refTokenText(active ? .activeEmboss : .normalEmboss)
+
     paragraphStyle.alignment = .center
     paragraphStyle.lineBreakMode = .byTruncatingMiddle
     
     let attributes: [NSAttributedString.Key: Any] = [
           .font: NSFont.refLabelFont,
           .paragraphStyle: paragraphStyle,
-          .foregroundColor: fgColor,
-          .shadow: shadow]
+          .foregroundColor: fgColor]
     let attrText = NSMutableAttributedString(string: text,
                                              attributes: attributes)
     
@@ -76,12 +69,8 @@ final class RefTokenView: NSView
       attrText.addAttribute(.foregroundColor,
                             value: fgColor.withAlphaComponent(0.6),
                             range: pathRange)
-      attrText.removeAttribute(.shadow, range: pathRange)
     }
     attrText.draw(in: bounds)
-    
-    type.strokeColor.set()
-    path.stroke()
   }
   
   private func makePath() -> NSBezierPath

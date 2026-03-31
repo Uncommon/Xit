@@ -299,6 +299,21 @@ extension XTWindowController: NSMenuItemValidation
            #selector(self.newRemote(_:)):
         result = true
 
+      case #selector(self.performFindPanelAction(_:)):
+        guard let action = NSFindPanelAction(rawValue: UInt(menuItem.tag))
+        else { return false }
+        switch action {
+          case .showFindPanel:
+            result = titleBarController?.canShowSearch ?? false
+          case .next, .previous:
+            result = titleBarController?.canNavigateSearch ?? false
+          case .setFindString:
+            result = titleBarController?.canShowSearch == true
+              && selectedFindString() != nil
+          default:
+            result = false
+        }
+
       case #selector(self.pull(_:)),
            #selector(self.pullCurrentBranch(_:)):
         if let (branchName, remote) = trackingBranchInfo() {

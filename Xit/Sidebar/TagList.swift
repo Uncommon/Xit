@@ -100,7 +100,7 @@ struct TagList<Tagger: Tagging>: View
   }
 }
 
-#if false
+#if DEBUG
 struct TagListPreview: View
 {
   struct Tag: EmptyTag

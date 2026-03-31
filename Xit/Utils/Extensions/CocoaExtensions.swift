@@ -1,6 +1,26 @@
 import Foundation
 import Cocoa
 
+enum LiquidGlassTheme
+{
+  static let cornerRadius: CGFloat = 12
+  static let compactCornerRadius: CGFloat = 10
+  static let spacing: CGFloat = 12
+  static let containerSpacing: CGFloat = 16
+  static let fallbackFillAlpha: CGFloat = 0.88
+  static let fallbackStrokeAlpha: CGFloat = 0.20
+  static let contrastStrokeAlpha: CGFloat = 0.35
+}
+
+enum LiquidGlassAccessibility
+{
+  static var shouldReduceTransparency: Bool
+  { NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency }
+
+  static var shouldIncreaseContrast: Bool
+  { NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast }
+}
+
 extension NSObject
 {
   func changingValue(forKey key: String, block: () -> Void)
@@ -53,6 +73,23 @@ extension NSAlert
 
 extension NSColor
 {
+  static var xtLiquidGlassFallbackFill: NSColor
+  {
+    let alpha = LiquidGlassAccessibility.shouldIncreaseContrast
+        ? 1.0 : LiquidGlassTheme.fallbackFillAlpha
+    
+    return .windowBackgroundColor.withAlphaComponent(alpha)
+  }
+
+  static var xtLiquidGlassFallbackStroke: NSColor
+  {
+    let alpha = LiquidGlassAccessibility.shouldIncreaseContrast
+        ? LiquidGlassTheme.contrastStrokeAlpha
+        : LiquidGlassTheme.fallbackStrokeAlpha
+    
+    return .separatorColor.withAlphaComponent(alpha)
+  }
+
   var invertingBrightness: NSColor
   {
     NSColor(deviceHue: hueComponent,
@@ -79,6 +116,17 @@ extension NSColor
     let blue = converted.blueComponent
     
     return "rgb(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)))"
+  }
+
+  var cssRGBA: String
+  {
+    let converted = usingColorSpace(.deviceRGB)!
+    let red = converted.redComponent
+    let green = converted.greenComponent
+    let blue = converted.blueComponent
+    let alpha = converted.alphaComponent
+
+    return "rgba(\(Int(red*255)), \(Int(green*255)), \(Int(blue*255)), \(alpha))"
   }
   
   func withHue(_ hue: CGFloat) -> NSColor
@@ -130,6 +178,9 @@ extension NSImage
   }
 }
 
+private let glassBackgroundIdentifier =
+    NSUserInterfaceItemIdentifier("xt.liquidGlassBackground")
+
 extension NSMenu
 {
   func item(withIdentifier identifier: NSUserInterfaceItemIdentifier)
@@ -177,9 +228,14 @@ extension NSMenuItem
     }
   }
 
-  convenience init(_ titleString: UIString, action: Selector? = nil)
+  convenience init(_ titleString: UIString,
+                   systemImage: String? = nil,
+                   action: Selector? = nil)
   {
     self.init(title: titleString.rawValue, action: action, keyEquivalent: "")
+    if let systemImage {
+      self.image = .init(systemSymbolName: systemImage)
+    }
   }
 
   convenience init(_ titleString: UIString,

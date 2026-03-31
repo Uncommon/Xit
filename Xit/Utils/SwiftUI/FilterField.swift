@@ -33,7 +33,7 @@ struct FilterField<LeftContent: View, RightContent: View>: View
     }
       .buttonStyle(.borderless)
       .padding(4)
-      .background(RoundedRectangle(cornerRadius: 8)
+      .background(ConcentricRectangle(corners: .concentric, isUniform: true)
         .fill(isFocused
               ? AnyShapeStyle(BackgroundStyle.background)
               : AnyShapeStyle(FillShapeStyle.fill))
@@ -103,7 +103,7 @@ struct FilterFieldPreview: View {
 
 #Preview {
   VStack {
-    FilterFieldPreview(text: "")
     TextField("", text: .constant(""), prompt: Text("something else to focus"))
-  }.padding()
+    FilterFieldPreview(text: "")
+  }.padding(4)
 }

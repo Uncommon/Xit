@@ -1,5 +1,4 @@
 import Foundation
-import Siesta
 import FakedMacro
 
 @Faked
