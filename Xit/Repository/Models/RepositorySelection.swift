@@ -74,7 +74,7 @@ public extension RepositorySelection
   }
 }
 
-public enum StagingType
+public enum StagingType: Sendable
 {
   // No staging actions
   case none
