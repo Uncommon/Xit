@@ -58,7 +58,9 @@ extension String
 typealias GitCommitHistory = CommitHistory<GitCommit>
 
 /// Maintains the history list, allowing for dynamic adding and removing.
-final class CommitHistory<C: Commit>
+// This history model is shared across repository queue work and UI reads.
+// Access is coordinated by the task queue plus the explicit locks below.
+final class CommitHistory<C: Commit>: @unchecked Sendable
 {
   typealias Entry = CommitEntry<C>
   typealias Connection = CommitConnection
