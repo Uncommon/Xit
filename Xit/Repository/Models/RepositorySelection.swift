@@ -19,6 +19,9 @@ public enum SelectionTarget: Equatable
   }
 }
 
+// TODO: Factor this into two parts:
+// - A simple identifier that can be Sendable
+// - A more functional object for getting file lists etc.
 /// Protocol for a commit or commit-like object, with metadata, files, and diffs.
 public protocol RepositorySelection: AnyObject
 {
