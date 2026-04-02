@@ -1,6 +1,9 @@
 import XCTest
 @testable import Xit
 
+// This file has some warnings about deprecated SecKeychain APIs, but there
+// is no alternative available for creating a temporary keychain for testing.
+
 /// For testing
 class Keychain
 {
