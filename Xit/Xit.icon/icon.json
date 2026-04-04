@@ -7,15 +7,13 @@
       "blur-material" : 0.5,
       "layers" : [
         {
-          "glass" : true,
-          "hidden" : false,
-          "image-name" : "exit arrows.svg",
-          "name" : "exit arrows",
+          "image-name" : "exit dots.svg",
+          "name" : "exit dots",
           "position" : {
-            "scale" : 10,
+            "scale" : 9.55,
             "translation-in-points" : [
-              24.815748484905683,
-              7.487903777071175
+              36,
+              0
             ]
           }
         }
