@@ -44,16 +44,7 @@ struct BranchCell<Item: PathTreeData,
             Image(systemName: "folder.fill")
           }
           else {
-            Image("scm.branch")
-              .foregroundStyle(Color(nsColor: isCurrent ? .windowBackgroundColor
-                                                        : .labelColor))
-              .background(
-                isCurrent
-                  ? AnyView(Circle().offset(x: -0.5).scale(1.5)
-                                    .fill(Color(nsColor: .labelColor)))
-                  : AnyView(EmptyView())
-              )
-              .fontWeight(isCurrent ? .bold : .regular)
+            branchIcon
               .accessibilityElement()
               .axid(isCurrent ? .Sidebar.currentBranchCheck : .empty)
           }
@@ -89,5 +80,30 @@ struct BranchCell<Item: PathTreeData,
     self.hasContextMenu = true
     self.trailingContent = trailingContent
     self.contextMenuContent = contextMenu
+  }
+}
+
+private extension BranchCell
+{
+  @ViewBuilder
+  var branchIcon: some View
+  {
+    if isCurrent {
+      ZStack {
+        Circle()
+          .offset(x: -0.5)
+          .fill(Color(nsColor: .labelColor))
+        Image("scm.branch")
+          .foregroundStyle(Color.black)
+          .blendMode(.destinationOut)
+      }
+        .compositingGroup()
+        .fontWeight(.bold)
+    }
+    else {
+      Image("scm.branch")
+        .foregroundStyle(Color(nsColor: .labelColor))
+        .fontWeight(.regular)
+    }
   }
 }
