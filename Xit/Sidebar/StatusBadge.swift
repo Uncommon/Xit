@@ -8,6 +8,7 @@ struct StatusBadge: View
   var body: some View
   {
     Text(text)
+      .foregroundStyle(Color(nsColor: .controlTextColor))
       .padding(EdgeInsets(top: 1, leading: 5, bottom: 1, trailing: 5))
       .background(Color(nsColor: .controlColor))
       .clipShape(.capsule)
