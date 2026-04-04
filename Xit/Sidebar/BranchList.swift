@@ -297,6 +297,6 @@ struct BranchListPreview: View
       "feature/things",
       "someWork",
     ],
-    currentBranch: .init("refs/heads/master"))
+    currentBranch: .init("master"))
 }
 #endif

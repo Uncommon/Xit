@@ -45,10 +45,12 @@ struct BranchCell<Item: PathTreeData,
           }
           else {
             Image("scm.branch")
+              .foregroundStyle(Color(nsColor: isCurrent ? .windowBackgroundColor
+                                                        : .labelColor))
               .background(
                 isCurrent
-                  ? AnyView(Image(systemName: "checkmark")
-                    .offset(x: -18, y: 0))
+                  ? AnyView(Circle().offset(x: -0.5).scale(1.5)
+                                    .fill(Color(nsColor: .labelColor)))
                   : AnyView(EmptyView())
               )
               .fontWeight(isCurrent ? .bold : .regular)
