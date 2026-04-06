@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import XitGit
 
 /// A view with a specific data model type.
 protocol DataModelView: View
