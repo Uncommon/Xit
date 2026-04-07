@@ -43,6 +43,18 @@ final class HistoryCellView: NSTableCellView
   @IBOutlet weak var stackView: NSStackView!
   @IBOutlet var stackViewInset: NSLayoutConstraint!
 
+  override func awakeFromNib()
+  {
+    super.awakeFromNib()
+
+    wantsLayer = true
+    layer?.masksToBounds = true
+
+    labelField?.usesSingleLineMode = true
+    labelField?.lineBreakMode = .byTruncatingTail
+    labelField?.allowsExpansionToolTips = true
+  }
+
   var displayMode: DisplayMode = .all
   { didSet { updateConstraints() } }
 
@@ -161,7 +173,10 @@ final class HistoryCellView: NSTableCellView
     super.draw(dirtyRect)
 
     if displayMode != .refsOnly {
+      NSGraphicsContext.saveGraphicsState()
+      NSBezierPath(rect: bounds).addClip()
       drawLines()
+      NSGraphicsContext.restoreGraphicsState()
     }
   }
   

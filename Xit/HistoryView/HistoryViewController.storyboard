@@ -87,7 +87,7 @@
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="2TG-b4-Vah" firstAttribute="leading" secondItem="WuN-aq-nAK" secondAttribute="leading" constant="100" id="27Z-WZ-W4Z"/>
-                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2TG-b4-Vah" secondAttribute="trailing" priority="750" id="CTq-4q-9Yu"/>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2TG-b4-Vah" secondAttribute="trailing" id="CTq-4q-9Yu"/>
                                                                 <constraint firstItem="2TG-b4-Vah" firstAttribute="top" secondItem="WuN-aq-nAK" secondAttribute="top" id="EtO-P7-TQS"/>
                                                             </constraints>
                                                             <connections>
@@ -136,7 +136,7 @@
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="F4j-hu-tEO" firstAttribute="top" secondItem="5xz-wt-fD1" secondAttribute="top" id="fQo-ki-giY"/>
-                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="F4j-hu-tEO" secondAttribute="trailing" priority="750" id="n49-ZO-5me"/>
+                                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="F4j-hu-tEO" secondAttribute="trailing" id="n49-ZO-5me"/>
                                                                 <constraint firstItem="F4j-hu-tEO" firstAttribute="leading" secondItem="5xz-wt-fD1" secondAttribute="leading" id="zWG-u5-3m7"/>
                                                             </constraints>
                                                             <connections>
