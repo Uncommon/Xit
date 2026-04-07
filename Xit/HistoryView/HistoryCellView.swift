@@ -86,15 +86,32 @@ final class HistoryCellView: NSTableCellView
 
     if let returnRange = message.rangeOfCharacter(from: .newlines),
        returnRange.upperBound < message.endIndex {
-      let ellipsis = "⋯"
-      let truncated = message.prefix(upTo: returnRange.lowerBound)
-      let attributed = NSMutableAttributedString(string: truncated + " ")
-      let grayAttributes = [NSAttributedString.Key.foregroundColor:
-                            NSColor.secondaryLabelColor]
-      let ellpisisString = NSAttributedString(string: ellipsis,
-                                              attributes: grayAttributes)
-      
-      attributed.append(ellpisisString)
+      let text = String(message.prefix(upTo: returnRange.lowerBound)) + " ⋯"
+      let paragraph = NSMutableParagraphStyle()
+
+      paragraph.lineBreakMode = .byTruncatingTail
+
+      let baseColor: NSColor = switch backgroundStyle {
+        case .normal:
+          deemphasized ? .disabledControlTextColor : .textColor
+        case .emphasized:
+          .alternateSelectedControlTextColor
+        default:
+          .textColor
+      }
+
+      let attributed = NSMutableAttributedString(
+          string: text,
+          attributes: [
+            .font: labelField.font as Any,
+            .paragraphStyle: paragraph,
+            .foregroundColor: baseColor,
+          ])
+
+      attributed.addAttribute(.foregroundColor,
+                              value: NSColor.secondaryLabelColor,
+                              range: NSRange(location: attributed.length - 1,
+                                             length: 1))
       labelField.attributedStringValue = attributed
       toolTip = message
     }
