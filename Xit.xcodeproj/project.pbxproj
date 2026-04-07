@@ -316,7 +316,7 @@
 		C9CDB91C270D4FD1007C2E77 /* libgit2-mac.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libgit2-mac.a"; sourceTree = SOURCE_ROOT; };
 		C9CDB91F270D50A1007C2E77 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		C9CDB921270D50C1007C2E77 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		C9CDB923270D54F9007C2E77 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = /usr/local/lib/libssh2.a; sourceTree = "<absolute>"; };
+		C9CDB923270D54F9007C2E77 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = /opt/homebrew/lib/libssh2.a; sourceTree = "<absolute>"; };
 		C9CDB990270DDE0D007C2E77 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = libgit2/include/git2; sourceTree = "<group>"; };
 		C9CDB99B270DDEDF007C2E77 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; name = src; path = libgit2/src; sourceTree = "<group>"; };
 		C9DEA4BA1E4FEC1600DF4069 /* FileListDataSourceTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileListDataSourceTest.swift; sourceTree = "<group>"; };
@@ -1048,6 +1048,7 @@
 				CODE_SIGN_IDENTITY = "";
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
@@ -1351,6 +1352,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
+				EXCLUDED_ARCHS = x86_64;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
